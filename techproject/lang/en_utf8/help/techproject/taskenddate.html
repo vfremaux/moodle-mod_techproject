@@ -1,0 +1,17 @@
+<p>A deadline can be set for a task. This deadline MUST be
+consistant with task start date against task estimated duration
+:</p>
+
+<ul>
+<li>If start date is defined, deadline cannot occur before the
+start date summed with expected duration.</li>
+
+<li>If start date is not enabled, it will nevertheless be
+calculated automatically as deadline minus the expected duration (0
+as default for duration).</li>
+
+<li>If the task is assigned to a dated milestone, deadline cannot
+overcome milestone deadline.</li>
+
+<li>Deadline cannot overcome project end date.</li>
+</ul>

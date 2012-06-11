@@ -1,0 +1,29 @@
+<p>This option activates an internal automated grading calculation
+based on the compilation of entered information units. This grade
+is essentially based on the exhaustiveness of the association and
+meta-information feeds from part of the students. More covered the
+project plan is, higher will be the grade.</p>
+
+<p>The autograde is calculated on a three index basis :</p>
+
+<ul>
+<li>The first index is the "association rate". Ideally, any
+requirement should have a path linking to at least one deliverable.
+Moreover, any deliverable should have at least one path back to
+requirements. This index counts the amount of final entities, and
+the amount of unlinked (orphans) entities. If the latter is null,
+this index should give the maximum grade.</li>
+
+<li>The next index is the completion index, based on the propagated
+task completion indexes up to requirements.</li>
+
+<li>The last index works on the task balancing between members.
+Three quarters of the index is given by the rate of assigned tasks
+over total task definition. The remainder is given by the balancing
+of expected costs. A well balance work distribution will give the
+highest score. A more unbalanced distribution will give less.</li>
+</ul>
+
+<p>The three crieria are then meaned with equal weights.</p>
+
+<p>Step 2 : The teacher might redefine the calculus formula.</p>

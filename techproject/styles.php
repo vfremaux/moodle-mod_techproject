@@ -1,0 +1,440 @@
+#mod-techproject-view Table.entity TH.header{
+	background:none;
+}
+
+.level0 { 
+    font-size: 20px ; 
+    font-weight: bold;
+    color:#000000; 
+} 
+.level1 { 
+    font-size: 18px ; 
+    font-weight: bold;
+    color:#101010; 
+} 
+.level2 { 
+    font-size: 16px;
+    color:#202020; 
+} 
+.level3 { 
+    font-size: 14px;
+    color:#303030; 
+} 
+.level4 { 
+    font-size: 12px;
+    color:#404040; 
+} 
+.level5 { 
+    font-size: 10px;
+    color:#505050; 
+} 
+.level6 { 
+    font-size: 9px;
+	color:#606060;
+} 
+
+.parmname{ 
+    font-size: smaller ; 
+    color: white ; 
+    background-color: #909090 
+}
+.parmvalue{ 
+    font-size: smaller ; 
+    color: #303030 ; 
+    background-color: #E0E0E0 
+}
+
+.scale_0 {
+    font-size: 20px ; 
+    font-weight: bold ; 
+    color: #00D700 
+}
+
+.scale_1 {
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #13D985 
+}
+.scale_2 {
+    font-size: 16px ; 
+    font-weight: bold ; 
+    color: #686BE1 
+}
+.scale_3 {
+    font-size: 14px ; 
+    font-weight: bold ; 
+    color: #E8B313 
+}
+.scale_4 {
+    font-size: 12px ; 
+    font-weight: bold ; 
+    color: #D0CB09 
+}
+.scale_5 {
+    font-size: 10px ; 
+    font-weight: 
+    bold ; color: #FF1717 
+}
+
+.scale_default {
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #A0A0A0 
+}
+
+/* severities */
+.scale_goodie {
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #13D985 
+}
+.scale_optional {
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #686BE1 
+}
+.scale_useful {
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #E8B313 
+}
+.scale_essential{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #D0CB09 
+}
+.scale_mandatory{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #FF1717 
+}
+
+/* strenghes */
+span.scale_plus{
+    font-family: "Monotype sorts" ; 
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #13D985 
+}
+span.scale_implicit{
+    font-family: "Monotype sorts" ; 
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #686BE1
+}
+span.scale_wished{
+    font-family: "Monotype sorts" ; 
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #E8B313 
+}
+span.scale_should{
+    font-family: "Monotype sorts" ; 
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #D0CB09 
+}
+span.scale_will{
+    font-family: "Monotype sorts" ; 
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #FF1717
+}
+span.scale_must{
+    font-family: "Monotype sorts" ; 
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #000000 
+}
+
+/* heaviness */
+
+
+table.scale_outofreason{
+	background-color:#F57A7A;
+}
+
+table.scale_heavy{
+	background-color:#E8A295;
+}
+
+table.scale_difficult{
+	background-color:#EBAA69;
+}
+
+table.scale_needswork{
+	background-color:#C4D5DF;
+}
+
+table.scale_wecanhave{
+	background-color:#A5B6DC;
+}
+
+table.scale_needsmoreinfo{
+	background-color:#BB6CB5;
+}
+
+table.scale_impossible{
+	background-color:#282828;
+	color:white;
+}
+table.scale_wehave{
+	background-color:#66EA53;
+}
+
+/* priorities */
+.scale_canwait{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #13D985
+}
+.scale_notprioritary{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #686BE1
+}
+.scale_asap{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #E8B313 
+}
+.scale_urgent{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #D0CB09 
+}
+.scale_prioritary{
+    font-size:18px; 
+    font-weight:bold ; 
+    color:#FF1717;
+}
+
+/* complexities */
+.scale_evident{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #13D985
+}   
+.scale_simple{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #686BE1 
+}
+.scale_medium{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #E8B313 
+}
+.scale_hard{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #D0CB09 
+}
+.scale_verycomplex{
+    font-size: 18px ; 
+    font-weight: bold ; 
+    color: #FF1717 
+}
+
+.dithered { 
+    color: #808080
+}
+ 
+.worktypesbox { 
+    border-bottom: solid 2px gray ; 
+    padding-top: 2px ; 
+    padding-bottom: 2px ; 
+    margin-top: 4px ; 
+    width: 100% ;
+}
+.worktypesheadingcontent { 
+    font-size: 1.3em ; 
+    background-image: url(typegradient.jpg) ; 
+    color: #6A6A60  ;
+}
+.byassigneeheading {
+    font-size: larger ; 
+    background-color: #525252 ; 
+    color: white ; 
+    padding: 2px 
+}
+.entitycontent{ 
+    border: 1px solid #808080 ; 
+    background-color: #F0F0F0 ; 
+    padding: 5px
+}
+
+.technicals { 
+    font-family: monospace ; 
+    color: green ; 
+}
+.smalltechnicals { 
+    font-family: monospace ; 
+    font-size: smaller ; 
+    color: #821582 ;
+}
+.inconsistency { 
+    font-size: smaller ; 
+    color: red ;
+}
+.taskassignee { 
+    font-size: 60% ; 
+    color: #AB18AB ; 
+}
+.passedtime { 
+    color: green ;
+}
+.futuretime { 
+    color: blue ;
+}
+.toolate { 
+    color: #FF6060 ; 
+} 
+.intime { 
+    color: #60FF60 ;
+}
+
+.timedue{
+    font-size : 10pt
+}
+
+.ordercell_canwait { 
+    border: 1px #404040 solid ;
+    font-size: 24px ; 
+    padding: 5px ; 
+    background-color: #18A72B ; 
+    color: #D0D0D0 ;
+} 
+.ordercell_notprioritary { 
+    border: 1px #404040 solid ; 
+    font-size: 24px ; 
+    padding: 5px ; 
+    background-color: #88AC0D ; 
+    color: #D0D0D0 ;
+} 
+.ordercell_asap { 
+    border: 1px #404040 solid ; 
+    font-size: 24px ; 
+    padding: 5px ; 
+    background-color: #B3BB09 ; 
+    color: #D0D0D0 ;
+} 
+.ordercell_urgent { 
+    border: 1px #404040 solid ; 
+    font-size: 24px ; 
+    padding: 5px ; 
+    background-color: #D99904 ; 
+    color: #D0D0D0 ;
+} 
+.ordercell_prioritary { 
+    border: 1px #404040 solid ; 
+    font-size: 24px ; 
+    padding: 5px ; 
+    background-color: #E60000 ; 
+    color: #D0D0D0 ;
+} 
+
+/* Gantt charts */
+.ganttheading { 
+    font-size: larger ; 
+    background-color: #525252 ; 
+    color: white ; 
+    padding: 2px ;
+}
+.gantttasktitle { 
+    font-size: 10px ; 
+    padding: 1px ;
+}
+
+/** special tables **/
+
+.sectionrow {
+   background-color : #808080;
+   color : #FFFFFF;
+   border : 1px solid #FFFFFF;
+   padding : 2px
+}
+
+.subsectionrow {
+   background-color : #E0E0E0;
+   color : #404040;
+   padding : 1px
+}
+
+.description{
+}
+
+.controls{
+}
+
+.nodelevel0{
+    background: #ffffff url(pix/techprojectentityhead0.jpg) repeat-x top left;
+}
+.nodelevel1{
+    background: #fAfAfA url(pix/techprojectentityhead1.jpg) repeat-x top left;
+}
+.nodelevel2{
+    background: #f5f5f5 url(pix/techprojectentityhead2.jpg) repeat-x top left;
+}
+.nodelevel3{
+    background: #f0f0f0 url(pix/techprojectentityhead3.jpg) repeat-x top left;
+}
+.nodelevel4{
+    background: #eAeAeA url(pix/techprojectentityhead4.jpg) repeat-x top left;
+}
+
+/** ensures larger page **/
+div#allpage,
+#page{
+    max-width:1024px;
+}
+
+.validation-UNTRACKED{
+}
+
+.validation-REFUSED{
+   background-color:#BB0000;
+   color:white;
+}
+
+.validation-MISSING{
+   background-color:#C46200;
+   color:white;
+}
+
+.validation-BUGGY{
+   background-color:#CECE00;
+   color:black;
+}
+
+.validation-TOENHANCE{
+   background-color:#258D96;
+   color:white;
+}
+
+.validation-ACCEPTED{
+   background-color:#009500;
+   color:white;
+}
+
+.validation-REGRESSION{
+   background-color:#000000;
+   color:#FF8080;
+   font-weight:bolder;
+}
+
+.validationrow.odd{
+   background-color:#FEFEFE;
+}
+.validationrow.even{
+   background-color:#FAFAFA;
+}
+
+.validationrowbordered.odd{
+   border:#FEFEFE 2px solid;
+   padding:1px;
+}
+.validationrowbordered.even{
+   border:#FAFAFA 2px solid;
+   padding:1px;
+}

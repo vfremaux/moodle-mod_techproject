@@ -1,0 +1,20 @@
+<p>Allows mapping task dependencies.</p>
+
+<p>In a complex project, a task is likely to depend on previous
+works being achieved, because what has been produced by the latter
+is involved in the former.</p>
+
+<p>the trask tree implicitely defines subtasks as mastering a
+supertask, i.e., a supertask can be completed only after all
+subtasks do. This defines an implicit dependency mapping that will
+needs no special work. Thus the dependency mapping list will only
+show tasks that are not in the same hierarchy subtree.</p>
+
+<p>The project manager is featured with a circularity detection
+function, who will avoid circular dependencies to be mapped. In
+case circularity or interdependency has a sense (in real life),
+designers will have to choose a predominant direction for
+dependency.</p>
+
+<p>Cicularity avoidness will also forbid a subtask being dependent
+of any of its superstaks.</p>

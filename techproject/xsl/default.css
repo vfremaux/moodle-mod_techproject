@@ -1,0 +1,89 @@
+/*
+*
+*/
+
+BODY {
+  background-color: #D5D6E3;
+  font-family: Verdana;
+  font-size : 11pt;
+}
+
+TABLE.summary{
+   border: 1px solid gray;
+   background-color: #EBEBEB;
+   margin-bottom : 10px;
+}
+
+TABLE.itemsummary{
+   border: 1px solid gray;
+   background-color: #E8E3F2;
+   margin-bottom : 10px;
+   font-size : 0.9em;
+   width : 100%;
+}
+
+H1{
+}
+
+H2{
+margin-top : 30px;
+}
+
+H3{
+margin-top : 20px;
+}
+
+H4{
+margin-top : 10px;
+}
+
+.node {
+margin-top : 10px;
+}
+
+TR {
+   margin: 1px;
+}
+
+TD.summaryhead {
+   margin: 1px;
+   background-color: #786CAE;
+   color: #FFFFFF;
+}
+
+TH {
+    text-align : left;
+}
+
+DIV {
+   margin-top : 5px;
+}
+
+.nodelink0{
+   font-size : 1.1em;
+}
+
+.nodelink1{
+   font-size : 1.05em;
+   padding-left : 10px;
+}
+
+.nodelink2{
+   font-size : 1.0em;
+   padding-left : 20px;
+}
+
+.nodelink3{
+   font-size : 0.95em;
+   padding-left : 30px;
+}
+
+.nodelink4{
+   font-size : 0.90em;
+   padding-left : 40px;
+}
+
+.nodelink5{
+   font-size : 0.85em;
+   padding-left : 50px;
+}
