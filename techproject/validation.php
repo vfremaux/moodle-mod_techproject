@@ -21,7 +21,7 @@
 
 	$validsessid = required_param('validid', PARAM_INT);
 	if (!$validsession = $DB->get_record('techproject_valid_session', array('id' => $validsessid))){
-		print_error('Bad Valid session ID', 'techproject');
+		print_error('errorbadvalidsessionid', 'techproject');
 	}
 
 	if ($formdata = data_submitted()){

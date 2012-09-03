@@ -146,6 +146,7 @@ $string['errormilestone'] = 'Erreurs dans les étapes';
 $string['errorrequirement'] = 'Erreurs dans les attendus';
 $string['errorspecification'] = 'Erreurs dans les specifications';
 $string['errortask'] = 'Erreurs dans les tâches';
+$ztring['errorbadsessionid'] = 'Session de recette incorrecte';
 $string['essential'] = 'Essentiel';
 $string['essentialdesc'] = 'Simplement essentiel';
 $string['evaluatingfor'] = 'Evaluation pour : ';

@@ -152,6 +152,7 @@ $string['errorrequirement'] = 'Error in requirements';
 $string['errorspecification'] = 'Error in specifications';
 $string['errortask'] = 'Error in tasks';
 $string['errorfatalaction'] = 'Fatal Error: Unknown Action: {$a}';
+$ztring['errorbadsessionid'] = 'Bad validation session ID';
 $string['essential'] = 'Essential';
 $string['essentialdesc'] = 'Simply essential';
 $string['evaluatingfor'] = 'Evaluating for:';
