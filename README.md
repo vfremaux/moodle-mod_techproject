@@ -37,14 +37,17 @@ Each description entity unless Milestone and Validation session are tree-shaped 
 refinement description. This will help students and teacher to drive the refinement process while making a conception, from 
 a rough description to a more detailed view.
 
-Cross linking and completion propagtion
-=======================================
+Cross linking and completion propagation
+========================================
 
 Each entity can be linked to other entities from other trees (i.e. Requirepents can be bound to specification) thus tracking coverage and 
 work completion. Completion and costs indicators propagate up in the task tree and transversaly up to inital requirements to display
 a full project coverage view.
 
 Tasks can be assigned to people so individual workplans can be tracked. 
+
+Using groups
+============
 
 The Techproject uses the Moodle course groups to separate a course audience in several project teams, each one
 evoluating at his own speed in the same techproject instance. Data can be easily copied from a tree to another, or a from a gorup to another group.
