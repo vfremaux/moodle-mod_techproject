@@ -1,4 +1,4 @@
-<?php // $Id: copy.php,v 1.3 2011-12-22 23:23:13 vf Exp $
+<?php // $Id: copy.php,v 1.1.1.1 2012-08-01 10:16:09 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -18,11 +18,9 @@
         print_error(get_string('notateacher','techproject'));
         return;
     }
-    
 /// get groups, will be usefull at many locations
 
-    $groups = get_groups($course->id);
-    
+    $groups = groups_get_all_groups($course->id);
     if ($work == 'docopy'){
         function protectTextRecords(&$aRecord, $fieldList){
             $fields = explode(",", $fieldList);
@@ -36,29 +34,22 @@
         */    
         function unitCopy($project, $from, $to, $what, $detail = false){
             $copied = array();
-    
             foreach(array_keys($what) as $aDatatable){
-                
                 // skip unchecked entites for copying
                 if(!$what[$aDatatable]) continue;
-    
                 echo '<tr><td align="left">' . get_string('copying', 'techproject') . ' ' . get_string("{$aDatatable}s", 'techproject') . '...';
-                delete_records("techproject_$aDatatable", 'projectid', $project->id, 'groupid', $to);
-                if($records = get_records_select("techproject_$aDatatable", "projectid = $project->id AND groupid = $from")){
-    
+                $DB->delete_records("techproject_$aDatatable", array('projectid' => $project->id, 'groupid' => $to));
+                if($records = $DB->get_records_select("techproject_$aDatatable", "projectid = $project->id AND groupid = $from")){
                     // copying each record into target recordset
                     if ($detail)
                         echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying '. count($records) . " from $aDatatable</span>";
-                    
                     foreach($records as $aRecord){
                         $id = $aRecord->id;
                         if ($detail)
                             echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying item : ['. $id . '] ' . @$aRecord->abstract . '</span>';
                         $aRecord->id = 0;
                         $aRecord->groupid = $to;
-    
                         protectTextRecords($aRecord, 'title,abstract,rationale,description,environement,organisation,department');
-                        
                         // unassigns users from entites in copied entities (not relevant context)
                         if (isset($aRecord->assignee)){
                             $aRecord->assignee = 0;
@@ -70,17 +61,14 @@
                         if (isset($aRecord->milestoneid) && $what['milestone'] == 0){
                             $aRecord->milestoneid = 0;
                         }
-                        
-                        $insertedid = insert_record("techproject_$aDatatable", $aRecord);
+                        $insertedid = $DB->insert_record("techproject_$aDatatable", $aRecord);
                         $copied[$aDatatable][$id] = $insertedid;
                     }
                 }
                 echo '</td><td align="right"><span class="technicals">' . get_string('done', 'techproject') . '</span></td></tr>';
             }
-            
             return $copied;
         }
-        
         /**
         * this function fixes in new records (given in recordSet as a comma separated list of indexes
         * some foreign key (fKey) that should shift from an unfixedValue to a fixed value in translations
@@ -89,13 +77,12 @@
         */
         function fixForeignKeys($project, $group, $table, $fKey, $translations, $recordSet){
            global $CFG;
-           
            $result = 1;
            $recordList = implode(',', $recordSet);
            foreach(array_keys($translations) as $unfixedValue){
                $query = "
                    UPDATE 
-                      {$CFG->prefix}techproject_{$table}
+                      {techproject_{$table}}
                    SET
                       $fKey = $translations[$unfixedValue]
                    WHERE
@@ -103,11 +90,10 @@
                       $fKey = $unfixedValue AND
                       id IN ($recordList)
                ";
-               $result = $result && execute_sql($query, false);        
+               $result = $result && $DB->execute($query);        
             }
             return $result;
         }
-        
         $from = required_param('from', PARAM_INT);
         $to = required_param('to', PARAM_RAW);
         $detail = optional_param('detail', 0, PARAM_INT);
@@ -121,14 +107,12 @@
         $what['milestone'] = optional_param('miles', 0, PARAM_INT);
         $what['task'] = optional_param('tasks', 0, PARAM_INT);
         $what['deliverable'] = optional_param('deliv', 0, PARAM_INT);
-    
         $targets = explode(',', $to);
-        print_simple_box_start('center', '70%');
+        echo $OUTPUT->box_start('center', '70%');
         foreach($targets as $aTarget){
             // do copy data
             echo '<table width="100%">';
             $copied = unitCopy($project, $from, $aTarget, $what, $detail);
-    
             // do fix some foreign keys
             echo '<tr><td align="left">' . get_string('fixingforeignkeys', 'techproject') . '...</td><td align="right">';
             if (array_key_exists('spec_to_req', $copied) && count(array_values(@$copied['spec_to_req']))){
@@ -153,7 +137,6 @@
             if (array_key_exists('milestone', $copied) && array_key_exists('deliverable', $copied) && count(array_values(@$copied['deliverable'])) && count(array_values(@$copied['milestone']))){
                 fixForeignKeys($project, $aTarget, 'deliverable', 'milestoneid', $copied['milestone'], array_values($copied['deliverable']));
             }
-            
             // fixing fatherid values
             if(array_key_exists('specification', $copied))
                 fixForeignKeys($project, $aTarget, 'specification', 'fatherid', $copied['specification'], array_values($copied['specification']));
@@ -163,53 +146,48 @@
                 fixForeignKeys($project, $aTarget, 'task', 'fatherid', $copied['task'], array_values($copied['task']));
             if(array_key_exists('deliverable', $copied))
                 fixForeignKeys($project, $aTarget, 'deliverable', 'fatherid', $copied['deliverable'], array_values($copied['deliverable']));
-    
             // must delete all grades in copied group
-            delete_records('techproject_assessment', 'projectid', $project->id, 'groupid', $aTarget);
+            $DB->delete_records('techproject_assessment', array('projectid' => $project->id, 'groupid' => $aTarget));
             echo '<span class="technicals">' . get_string('done', 'techproject') . '</td></tr>';
         }
         echo '</table>';
-        print_simple_box_end();
+        echo $OUTPUT->box_end();
     }
 
 /// Setup project copy operations by defining source and destinations 
 
+	echo $pagebuffer;
+
     if ($work == 'what'){
         $from = required_param('from', PARAM_INT);
         $to = required_param('to', PARAM_RAW);
-        
         // check some inconsistancies here : 
-        
         if (in_array($from, $to)){
             $errormessage = get_string('cannotselfcopy', 'techproject');
             $work = 'setup';
         } else {
-        
     ?>
     <center>
     <?php 
-    print_heading(get_string('copywhat', 'techproject'), 'center'); 
+    echo $OUTPUT->heading(get_string('copywhat', 'techproject')); 
     $toArray = array();
     foreach ($to as $aTarget) $toArray[] = $groups[$aTarget]->name;
     if ($from){
-        print_simple_box($groups[$from]->name . ' &gt;&gt; ' . implode(',',$toArray), 'center');
+        echo $OUTPUT->box($groups[$from]->name . ' &gt;&gt; ' . implode(',',$toArray), 'center');
     } else {
-        print_simple_box(get_string('groupless', 'techproject') . ' &gt;&gt; ' . implode(',',$toArray), 'center');
+        echo $OUTPUT->box(get_string('groupless', 'techproject') . ' &gt;&gt; ' . implode(',',$toArray), 'center');
     }
     ?>
-    
     <script type="text/javascript">
     //<![CDATA[
     function senddata(){
         document.forms['copywhatform'].work.value='confirm';
         document.forms['copywhatform'].submit();
     }
-    
     function cancel(){
         document.forms['copywhatform'].work.value='setup';
         document.forms['copywhatform'].submit();
     }
-    
     function formControl(entity){
         switch(entity){
             case 'requs':{
@@ -288,7 +266,6 @@
     <input type="hidden" name="to" value="<?php p(implode(',', $to)) ?>"/>
     <input type="hidden" name="work" value=""/>
     <table cellpadding="5">
-    
     <tr valign="top">
         <td align="right"><b><?php print_string('what', 'techproject') ?></b></td>
         <td align="left">
@@ -304,7 +281,6 @@
             if (@$project->projectusesspecs) echo "<br/><input type=\"checkbox\" name=\"deliv\" value=\"1\" checked=\"checked\"  onclick=\"formControl('deliv')\" /> " . get_string('deliverables', 'techproject');
             ?>
             </p>
-    
             <p><b><?php print_string('crossentitiesmappings', 'techproject') ?></b></p>
             <?php
             if (@$project->projectusesrequs && @$project->projectusesspecs) echo "<p><input type=\"checkbox\" name=\"spectoreq\" value=\"1\" checked=\"checked\" /> <span id=\"spectoreq_span\" class=\"\"> " . get_string('spec_to_req', 'techproject') . '</span>';
@@ -344,8 +320,8 @@
     ?>
     <center>
     <?php 
-    print_heading(get_string('copyconfirm', 'techproject'), 'center'); 
-    print_simple_box(get_string('copyadvice', 'techproject'), 'center');
+    echo $OUTPUT->heading(get_string('copyconfirm', 'techproject')); 
+    echo $OUTPUT->box(get_string('copyadvice', 'techproject'), 'center');
     ?>
     <script type="text/javascript">
     //<![CDATA[
@@ -353,7 +329,6 @@
         document.forms['confirmcopyform'].work.value='docopy';
         document.forms['confirmcopyform'].submit();
     }
-    
     function cancel(){
         document.forms['confirmcopyform'].work.value='setup';
         document.forms['confirmcopyform'].submit();
@@ -389,9 +364,9 @@
     ?>
     <center>
     <?php 
-        print_heading(get_string('copysetup', 'techproject'), 'center'); 
+        echo $OUTPUT->heading(get_string('copysetup', 'techproject')); 
         if (isset($errormessage)){
-            print_simple_box("<span style=\"color:white\">$errormessage</span>", 'center', '70%', 'warning');
+            echo $OUPPUT->box("<span style=\"color:white\">$errormessage</span>", 'center', '70%', 'warning');
         }
     ?>
     <script type="text/javascript">
@@ -416,11 +391,10 @@
                 $fromgroups[$groups[$aGroupId]->id] = $groups[$aGroupId]->name;
             }
         }
-        choose_from_menu($fromgroups,  'from', 0 + get_current_group($course->id), get_string('groupless', 'techproject'));
+        echo html_writer::select($fromgroups,  'from', 0 + get_current_group($course->id), get_string('groupless', 'techproject'));
     ?>
         </td>
     </tr>
-    
     <tr valign="top">
         <td align="right"><b><?php print_string('upto', 'techproject') ?></b></td>
         <td align="left">
@@ -436,7 +410,6 @@
             </select>
         </td>
     </tr>
-    
     </table>
     <input type="button" name="go_btn" value="<?php print_string('continue'); ?>" onclick="senddata()" />
     </form>

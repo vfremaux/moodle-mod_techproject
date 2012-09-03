@@ -40,17 +40,13 @@ class TechprojectEntrySearchDocument extends SearchDocument {
         $doc->itemtype      = $entry['entry_type'];
         $doc->contextid     = $context_id;
 
-        
         $doc->title     = $entry['abstract'];
         $doc->author    = ($entry['userid']) ? @$entry['author'] : '';
         $doc->contents  = strip_tags($entry['description']);
         $doc->date      = '';
-        
         $doc->url       = techproject_make_link($entry['projectid'], $entry['id'], $entry['entry_type'], $entry['groupid']);
-        
         // module specific information
         $data->techproject = $entry['projectid'];
-        
         parent::__construct($doc, $data, $course_id, $entry['groupid'], $entry['userid'], "mod/".X_SEARCH_TYPE_TECHPROJECT);
     }
 }
@@ -69,7 +65,7 @@ function techproject_make_link($techproject_id, $entry_id, $entry_type, $group_i
 *
 */
 function techproject_iterator() {
-    $techprojects = get_records('techproject');
+    $techprojects = $DB->get_records('techproject');
     return $techprojects;    
 }
 
@@ -82,9 +78,9 @@ function techproject_get_content_for_index(&$techproject) {
     $documents = array();
     if (!$techproject) return $documents;
 
-    $coursemodule = get_field('modules', 'id', 'name', 'techproject');
-    if (!$cm = get_record('course_modules', 'course', $techproject->course, 'module', $coursemodule, 'instance', $techproject->id)) return $documents;
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $coursemodule = $DB->get_field('modules', 'id', array('name' => 'techproject'));
+    if (!$cm = $DB->get_record('course_modules', array('course' => $techproject->course, 'module' => $coursemodule, 'instance' => $techproject->id))) return $documents;
+    $context = context_module::instance($cm->id);
 
     $requirements = techproject_get_entries($techproject->id, 'requirement');
     $specifications = techproject_get_entries($techproject->id, 'specification');
@@ -110,7 +106,7 @@ function techproject_get_content_for_index(&$techproject) {
             if ($aTask) {
                 if (strlen($aTask->description) > 0) {
                     if ($aTask->assignee){
-                        $user = get_record('user', 'id', $aTask->assignee);
+                        $user = $DB->get_record('user', array('id' => $aTask->assignee));
                         $aTask->author = $user->firstname.' '.$user->lastname;
                     }
                     $documents[] = new TechprojectEntrySearchDocument(get_object_vars($aTask), $techproject->course, $context->id);
@@ -128,40 +124,40 @@ function techproject_get_content_for_index(&$techproject) {
 function techproject_single_document($id, $itemtype) {
     switch ($itemtype){
         case 'requirement':{
-            $entry = get_record('techproject_requirement', 'id', $id);
+            $entry = $DB->get_record('techproject_requirement', array('id' => $id));
             $entry->author = '';
             break;
         }
         case 'specification':{
-            $entry = get_record('techproject_specification', 'id', $id);
+            $entry = $DB->get_record('techproject_specification', array('id' => $id));
             $entry->author = '';
             break;
         }
         case 'milestone':{
-            $entry = get_record('techproject_milestone', 'id', $id);
+            $entry = $DB->get_record('techproject_milestone', array('id' => $id));
             $entry->author = '';
             break;
         }
         case 'deliverable':{
-            $entry = get_record('techproject_deliverable', 'id', $id);
+            $entry = $DB->get_record('techproject_deliverable', array('id' => $id));
             $entry->author = '';
             break;
         }
         case 'task':{
-            $entry = get_record('techproject_task', 'id', $id);
+            $entry = $DB->get_record('techproject_task', array('id' => $id));
             if ($entry->assignee){
-                $user = get_record('user', 'id', $entry->assignee);
+                $user = $DB->get_record('user', array('id' => $entry->assignee));
                 $entry->author = $user->firstname.' '.$user->lastname;
             }
             break;
         }
     }
-    $techproject_course = get_field('techproject', 'course', 'id', $entry->projectid);
-    $coursemodule = get_field('modules', 'id', 'name', 'techproject');
-    $cm = get_record('course_modules', 'course', $techproject_course, 'module', $coursemodule, 'instance', $entry->projectid);
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $techproject_course = $DB->get_field('techproject', 'course', array('id' => $entry->projectid));
+    $coursemodule = $DB->get_field('modules', 'id', array('name' => 'techproject'));
+    $cm = $DB->get_record('course_modules', array('course' => $techproject_course, 'module' => $coursemodule, 'instance' => $entry->projectid));
+    $context = context_module::instance($cm->id);
     $entry->type = $itemtype;
-    $techproject = get_record('techproject', 'id', $requirement->projectid);
+    $techproject = $DB->get_record('techproject', array('id' => $requirement->projectid));
     return new TechprojectEntrySearchDocument(get_object_vars($anEntry), $techproject->course, $context->id);
 }
 
@@ -200,7 +196,6 @@ function techproject_db_names() {
 */
 function techproject_get_entries($projectid, $type) {
     global $CFG;
-    
     $query = "
         SELECT 
             e.id, 
@@ -211,11 +206,11 @@ function techproject_get_entries($projectid, $type) {
             e.userid,
             '$type' AS entry_type
         FROM 
-            {$CFG->prefix}techproject_{$type} AS e
+            {techproject_{$type}} AS e
         WHERE 
             e.projectid = '{$projectid}'
     ";
-    return get_records_sql($query);
+    return $DB->get_records_sql($query);
 }
 
 /**
@@ -225,7 +220,6 @@ function techproject_get_entries($projectid, $type) {
 */
 function techproject_get_tasks($projectid) {
     global $CFG;
-    
     $query = "
         SELECT 
             t.id, 
@@ -239,9 +233,9 @@ function techproject_get_tasks($projectid) {
             u.lastname,
             'task' as entry_type
         FROM 
-            {$CFG->prefix}techproject_task AS t
+            {techproject_task} AS t
         LEFT JOIN
-            {$CFG->prefix}user AS u
+            {user} AS u
         ON
             t.owner = u.id            
         WHERE 
@@ -249,7 +243,7 @@ function techproject_get_tasks($projectid) {
         ORDER BY 
             t.taskstart ASC
     ";
-    return get_records_sql($query);
+    return $DB->get_records_sql($query);
 }
 
 /**
@@ -257,18 +251,17 @@ function techproject_get_tasks($projectid) {
 */
 function techproject_search_get_objectinfo($itemtype, $this_id, $context_id = null){
 
-    if (!$entry = get_record("techproject_{$itemtype}", 'id', $this_id)) return false;
-    if (!$techproject = get_record('techproject', 'id', $entry->projectid)) return false;
-    
+    if (!$entry = $DB->get_record("techproject_{$itemtype}", array('id' => $this_id))) return false;
+    if (!$techproject = $DB->get_record('techproject', array('id' => $entry->projectid))) return false;
     $techproject->entry = $entry;
 
     if ($context_id){
-        $info->context = get_record('context', 'id', $context_id);
-        $info->cm = get_record('course_modules', 'id', $info->context->instanceid);
+        $info->context = $DB->get_record('context', array('id' => $context_id));
+        $info->cm = $DB->get_record('course_modules', array('id' => $info->context->instanceid));
     } else {
-        $module = get_record('modules', 'name', 'techproject');
-        $info->cm = get_record('course_modules', 'instance', $techproject->id, 'module', $module->id);
-        $info->context = get_context_instance(CONTEXT_MODULE, $info->cm->id);
+        $module = $DB->get_record('modules', array('name' => 'techproject'));
+        $info->cm = $DB->get_record('course_modules', array('instance' => $techproject->id, 'module' => $module->id));
+        $info->context = context_module::instance($info->cm->id);
     }
     $info->instance = $techproject;
     $info->type = 'mod';
@@ -295,45 +288,37 @@ function techproject_search_get_objectinfo($itemtype, $this_id, $context_id = nu
 */
 function techproject_check_text_access($path, $entry_type, $this_id, $user, $group_id, $context_id){
     global $CFG;
-    
     include_once("{$CFG->dirroot}/{$path}/lib.php");
 
     // get the techproject object and all related stuff
     /*
-    $entry = get_record("techproject_{$entry_type}", 'id', $this_id);
-    $techproject = get_record('techproject', 'id', $entry->projectid);
-    $course = get_record('course', 'id', $techproject->course);
-    $module_context = get_record('context', 'id', $context_id);
-    $cm = get_record('course_modules', 'id', $module_context->instanceid);
-    
+    $entry = $DB->get_record("techproject_{$entry_type}", array('id' => $this_id));
+    $techproject = $DB->get_record('techproject', array('id' => $entry->projectid));
+    $course = $DB->get_record('course', array('id' => $techproject->course));
+    $module_context = $DB->get_record('context', array('id' => $context_id));
+    $cm = $DB->get_record('course_modules', array('id' => $module_context->instanceid));
     */
     if (!$info = techproject_search_get_objectinfo($entry_type, $this_id, $context_id)) return false;
-    
     $cm = $info->cm;
     $context = $info->context;
     $intance = $info->instance;
 
-    $course = get_record('course', 'id', $instance->course);
-    
+    $course = $DB->get_record('course', array('id' => $instance->course));
     if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', $context)) return false;
-    
     //group consistency check : checks the following situations about groups
     // if user is guest check access capabilities for guests :
     // guests can see default project, and other records if groups are liberal
     // TODO : change guestsallowed in a capability
-    if (isguest() && $instance->guestsallowed){
+    if (isguestuser() && $instance->guestsallowed){
         if ($group_id && groupmode($course, $cm) == SEPARATEGROUPS)
             return false;
         return true;
     }
-    
     // trap if user is not same group and groups are separated
     $current_group = get_current_group($course->id);
     if ((groupmode($course) == SEPARATEGROUPS) && $group_id != $current_group && $group_id) return false;
-    
     //trap if ungroupedsees is off in strict access mode and user is not teacher
     if ((groupmode($course) == SEPARATEGROUPS) && !$instance->ungroupedsees && !$group_id && has_capability('mod/techproject:manage', $context)) return false;
-    
     return true;
 }
 
@@ -343,7 +328,6 @@ function techproject_check_text_access($path, $entry_type, $this_id, $user, $gro
 */
 function techproject_link_post_processing($title){
     global $CFG;
-    
     if ($CFG->block_search_utf8dir){
         return mb_convert_encoding($title, 'UTF-8', 'auto');
     }

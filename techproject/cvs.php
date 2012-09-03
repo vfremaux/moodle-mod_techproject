@@ -1,4 +1,4 @@
-<?php // $Id: cvs.php,v 1.1 2011-06-20 16:20:00 vf Exp $
+<?php // $Id: cvs.php,v 1.1.1.1 2012-08-01 10:16:10 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -19,5 +19,7 @@
         return;
     }
 
-    print_simple_box(get_string('notimplementedyet', 'techproject'), 'center', '50%');
+	echo $pagebuffer;
+
+    echo $OUTPUT->box(get_string('notimplementedyet', 'techproject'), 'center', '50%');
 ?>

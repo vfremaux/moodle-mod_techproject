@@ -20,9 +20,8 @@
 /// Controller
 
 	$validsessid = required_param('validid', PARAM_INT);
-	
-	if (!$validsession = get_record('techproject_valid_session', 'id', $validsessid)){
-		error("Bad Valid session ID");
+	if (!$validsession = $DB->get_record('techproject_valid_session', array('id' => $validsessid))){
+		print_error('Bad Valid session ID', 'techproject');
 	}
 
 	if ($formdata = data_submitted()){
@@ -30,17 +29,17 @@
 		if (!empty($statekeys)){
 			foreach($statekeys as $statekey){
 				$stateid = str_replace('state_', '', $statekey);
-				$staterec = get_record('techproject_valid_state', 'id', $stateid);
+				$staterec = $DB->get_record('techproject_valid_state', array('id' => $stateid));
 				$staterec->status = clean_param($_POST[$statekey], PARAM_TEXT);
 				$staterec->comment = clean_param($_POST['comment_'.$stateid], PARAM_TEXT);
 				$staterec->validatorid = $USER->id;
 				$staterec->lastchangedate = time();
-				update_record('techproject_valid_state', $staterec);
+				$DB->update_record('techproject_valid_state', $staterec);
 			}
 		}		
 	}
-	
-	print_heading(get_string('updatevalidation', 'techproject'));
+	echo $pagebuffer;
+	echo $OUTPUT->heading(get_string('updatevalidation', 'techproject'));
 
 	techproject_print_validation_states_form($validsessid, $project, $currentGroupId, 0, $cm->id);
 
@@ -49,6 +48,6 @@
 	echo '<hr>';
 	$options['id'] = $cm->id;
 	$options['view'] = 'validations';
-	print_single_button($CFG->wwwroot."/mod/techproject/view.php", $options, get_string('backtosessions', 'techproject'));
+	echo $OUTPUT->single_button(new moodle_url($CFG->wwwroot."/mod/techproject/view.php", $options), get_string('backtosessions', 'techproject'), 'get');
 	echo '</center>';
 ?>

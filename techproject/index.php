@@ -1,4 +1,4 @@
-<?PHP // $Id: index.php,v 1.1 2011-06-20 16:20:04 vf Exp $
+<?PHP // $Id: index.php,v 1.1.1.1 2012-08-01 10:16:11 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -24,7 +24,7 @@
 
     $id = required_param('id', PARAM_INT);   // course id
 
-    if (!$course = get_record('course', 'id', $id)) {
+    if (!$course = $DB->get_record('course', array('id' => $id))) {
         error("Course ID is incorrect");
     }
 
@@ -45,7 +45,13 @@
         $navigation = "<a href=\"../../course/view.php?id={$course->id}\">$course->shortname</a> ->";
     }
 
-    print_header("$course->shortname: $strprojects", "$course->fullname", "$navigation $strprojects", "", "", true, "", navmenu($course));
+    $PAGE->set_title("$course->shortname: $strprojects");
+    $PAGE->set_heading("$course->fullname");
+    $PAGE->set_focuscontrol("");
+    $PAGE->set_cacheable(true);
+    $PAGE->set_button("");
+    $PAGE->set_headingmenu(navmenu($course));
+    echo $OUTPUT->header();
 
 /// Get all the appropriate data
 
@@ -96,10 +102,10 @@
             } else {
                 // it's a student, show their mean or maximum grade
                 if ($project->usemaxgrade) {
-                    $grade = get_record_sql("SELECT MAX(grade) as grade FROM {$CFG->prefix}techproject_grades
+                    $grade = $DB->get_record_sql("SELECT MAX(grade) as grade FROM {techproject_grades}
                             WHERE projectid = $project->id AND userid = $USER->id GROUP BY userid");
                 } else {
-                    $grade = get_record_sql("SELECT AVG(grade) as grade FROM {$CFG->prefix}techproject_grades
+                    $grade = $DB->get_record_sql("SELECT AVG(grade) as grade FROM {techproject_grades}
                             WHERE projectid = $project->id AND userid = $USER->id GROUP BY userid");
                 }
                 if ($grade) {
@@ -117,10 +123,10 @@
 
     echo "<br />";
 
-    print_table($table);
+    echo html_writer::table($table);
 
 /// Finish the page
 
-    print_footer($course);
+    echo $OUTPUT->footer($course);
 
 ?>

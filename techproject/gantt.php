@@ -1,4 +1,4 @@
-<?php // $Id: gantt.php,v 1.2 2011-12-22 23:23:13 vf Exp $
+<?php // $Id: gantt.php,v 1.1.1.1 2012-08-01 10:16:10 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -14,14 +14,14 @@
     */
 
     $scale = optional_param('scale', 1.0, PARAM_NUMBER);
-    
     $timeXWidth = 600 * $scale ;
     $labelWidth = 200 ;
     $timeFactor = ($project->projectend - $project->projectstart) / $timeXWidth; // seconds per pixel
-    
-    $tasks = get_records_select('techproject_task', "projectid = {$project->id} AND groupid = {$currentGroupId}", "assignee,taskstart");
+    $tasks = $DB->get_records_select('techproject_task', "projectid = {$project->id} AND groupid = {$currentGroupId}", "assignee,taskstart");
 
-    print_heading(get_string('ganttchart', 'techproject'), 'center');
+	echo $pagebuffer;
+
+    echo $OUTPUT->heading(get_string('ganttchart', 'techproject'));
 
     $sortedTasks = array();
     $unscheduledTasks = array();
@@ -37,11 +37,10 @@
 	              	$unassignedfake->id = 0;
 	              	$assignees[0] = $unassignedfake;
 	          	} else {
-	              	$assignees[$aTask->assignee] = get_record('user', 'id', $aTask->assignee);
+	              	$assignees[$aTask->assignee] = $DB->get_record('user', array('id' => $aTask->assignee));
 	          	}
               	continue;
             }
-            
             // fixes actual bounds
             if (!$aTask->taskstartenable && $aTask->taskendenable){
                 $aTask->taskstart = $project->projectstart;
@@ -67,17 +66,15 @@
               	$assignees[0] = $unassignedfake;
             } else {
               	$sortedTasks[$aTask->assignee][] = $aTask;
-              	$assignees[$aTask->assignee] = get_record('user', 'id', $aTask->assignee);
+              	$assignees[$aTask->assignee] = $DB->get_record('user', array('id' => $aTask->assignee));
             }
         }
     } else {
        	echo '<center>';
-      	print_box(get_string('notasks', 'techproject'), 'center', '70%');
+      	echo $OUTPUT->box(get_string('notasks', 'techproject'), 'center', '70%');
        	echo '</center>';
        	return;
     }
-    
-    
     ?>
     <center>
     <table>
@@ -89,7 +86,7 @@
                     print_string('horizontalscale', 'techproject');
                     echo ': ';
                     $scaleopts = array("0.5" => "x 0.5", "0.8" => "x 0.8", "1.0" => "x 1", "1.5" => "x 1.5", "2.0" => "x 2", "3.0" => "x 3", "4.0" => "x 4");
-                    choose_from_menu($scaleopts, 'scale', $scale, '', 'document.forms[\'scaleform\'].submit();'); 
+                    echo html_writer::select($scaleopts, 'scale', $scale, '', 'document.forms[\'scaleform\'].submit();'); 
                     ?>
                 </form>
             </td>
@@ -117,7 +114,6 @@
                     if ($aTask->planned && ($aTask->spent <= $aTask->planned)){
                         $hurryup = $aTask->done - round(($aTask->spent / $aTask->planned) * 100);
                     }
-    
                     $undonecolor = ($hurryup >= 0) ? 'blue' : 'red';
                     $numtask = implode('.', techproject_tree_get_upper_branch('techproject_task', $aTask->id, true, true));
                     echo "<tr><td class=\"gantttasktitle\" width=\"{$labelWidth}\" align=\"left\">".$numtask.' '.shorten_text($aTask->abstract, 25)."</td>";
@@ -131,15 +127,15 @@
     <table width="<?php echo $labelWidth + $timeXWidth ?>">
     <?php
         if ($unscheduledTasks){
-            print_heading_block(get_string('unscheduledtasks','techproject'));
-            print_box_start('center', $labelWidth + $timeXWidth);
+            echo $OUTPUT->heading(get_string('unscheduledtasks','techproject'));
+            echo $OUTPUT->box_start('center', $labelWidth + $timeXWidth);
             foreach($unscheduledTasks as $aTask){
                 techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($unscheduledTasks), false, $style='NOEDIT');
             }
-            print_box_end();
+            echo $OUTPUT->box_end();
         }
     } else {
-       print_box(get_string('noassignee','techproject'), 'center', '100%');
+       echo $OUTPUT->box(get_string('noassignee','techproject'), 'center', '100%');
     }
     ?>
     </table>

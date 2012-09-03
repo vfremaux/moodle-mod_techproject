@@ -14,23 +14,23 @@
     * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
     */
 
+	echo $pagebuffer;
+
     $TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
-    
     /** useless ?
     if (!groups_get_activity_groupmode($cm, $project->course)){
         $groupusers = get_course_users($project->course);
     } else {
         $groupusers = get_group_users($currentGroupId);
     }*/
-    
     // get tasks by worktype
     $query = "
        SELECT
           t.*
        FROM
-          {$CFG->prefix}techproject_task as t
+          {techproject_task} as t
        LEFT JOIN
-          {$CFG->prefix}techproject_qualifier as qu
+          {techproject_qualifier} as qu
        ON 
           qu.code = t.worktype AND
           qu.domain = 'worktype'
@@ -40,7 +40,7 @@
        ORDER BY
           qu.id ASC
     ";
-    if ($tasks = get_records_sql($query)){
+    if ($tasks = $DB->get_records_sql($query)){
     ?>
     <script type="text/javascript">
     function sendgroupdata(){
@@ -55,10 +55,8 @@
         foreach($tasks as $aTask){
             $sortedtasks[$aTask->worktype][] = $aTask;
         }
-        
         foreach(array_keys($sortedtasks) as $aWorktype){
         	$hidesub = "<a href=\"javascript:toggle('{$aWorktype}','sub{$aWorktype}');\"><img name=\"img{$aWorktype}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" style=\"background-color : #E0E0E0\" /></a>";
-    
             $theWorktype = techproject_get_option_by_key('worktype', $project->id, $aWorktype);
             if ($aWorktype == ''){
                  $worktypeicon = '';
@@ -66,7 +64,7 @@
             } else {
                  $worktypeicon = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/{$theWorktype->code}.gif\" title=\"{$theWorktype->description}\" style=\"background-color : #F0F0F0\" />";
             }
-            print_simple_box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theWorktype->label.'</span>', 'center', '100%', 'white', 4, 'worktypesbox');
+            echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theWorktype->label.'</span>', 'center', '100%', 'white', 4, 'worktypesbox');
             echo "<div id=\"sub{$aWorktype}\">";
             foreach($sortedtasks[$aWorktype] as $aTask){
                 techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($sortedtasks[$aWorktype]), 'SHORT_WITHOUT_TYPE');
@@ -80,6 +78,6 @@
     </form>
 <?php
     } else {
-       print_simple_box(get_string('notasks', 'techproject'), 'center', '70%');
+       echo $OUTPUT->box(get_string('notasks', 'techproject'), 'center', '70%');
     }
 ?>

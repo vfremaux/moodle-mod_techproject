@@ -45,7 +45,7 @@
         return -1;
     }
     
-
+	echo $pagebuffer;
 	echo '<table width="100%" class="generaltable"><tr><td align="left">';
 	// print the scopechanging 
 	echo '<form name="changescopeform">';
@@ -53,7 +53,7 @@
 	echo "<input type=\"hidden\" name=\"id\" value=\"{$cm->id}\" />";
 	$scopeoptions[0] = get_string('sharedscope', 'techproject');
 	$scopeoptions[$project->id] = get_string('projectscope', 'techproject');
-	choose_from_menu($scopeoptions, 'scope', $scope, '', 'forms[\'changescopeform\'].submit();');
+	echo html_writer::select($scopeoptions, 'scope', $scope, array(), array('onchange' => 'forms[\'changescopeform\'].submit();'));
 	echo '</from></td><td align="right">';
 	echo "<a href=\"view.php?view=domains_{$domain}&amp;id={$id}&amp;what=add\" >".get_string('addvalue', 'techproject').'</a>';
 	echo '</td></tr></table>';
@@ -61,10 +61,12 @@
 	$domainvalues = techproject_get_domain($domain, null, 'all', $scope, 'code');
 	
     if(!empty($domainvalues)){
+    	$table = new html_table();
 		$table->head = array(	"<b>".get_string('code', 'techproject')."</b>", 
 									"<b>".get_string('label', 'techproject')."</b>",
 									"<b>".get_string('description')."</b>",
 		    						"<b></b>");
+		$table->style = array('', '', '', '');
 		$table->width = "100%";
 		$table->align = array('left', 'left', 'left', 'right');
 		$table->size = array('10%', '20%', '50%', '20%');
@@ -73,8 +75,8 @@
 		foreach($domainvalues as $value){
             $view = array();
 			$view[] = $value->code;
-			$view[] = filter_string($value->label);
-			$view[] = filter_string($value->description);
+			$view[] = format_string($value->label);
+			$view[] = format_string($value->description);
 			$deletestr = get_string('delete');
 			$updatestr = get_string('update');
 			$commands = "<a href=\"{$CFG->wwwroot}/mod/techproject/view.php?view=domains_$domain&amp;id={$id}&amp;what=update&amp;domainid=$value->id\" title=\"$updatestr\" ><img src=\"{$CFG->wwwroot}/pix/t/edit.gif\"></a>";
@@ -82,7 +84,7 @@
 			$view[] = $commands;
 			$table->data[] = $view;
 		}
-		print_table($table);		
+		techproject_print_project_table($table);		
     } else {
 		print("<p style=\"text-align: center; font-style: italic;\">".get_string('novaluesindomain', 'techproject')."</p>");
 	}

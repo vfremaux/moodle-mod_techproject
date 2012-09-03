@@ -6,33 +6,35 @@
   <TABLES>
     <TABLE NAME="techproject" COMMENT="table to store project instances" NEXT="techproject_heading">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="course"/>
-        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="''" SEQUENCE="false" ENUM="false" PREVIOUS="course" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="name" NEXT="projectstart"/>
-        <FIELD NAME="projectstart" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="description" NEXT="assessmentstart"/>
-        <FIELD NAME="assessmentstart" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectstart" NEXT="projectend"/>
-        <FIELD NAME="projectend" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="assessmentstart" NEXT="timemodified"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectend" NEXT="allowdeletewhenassigned"/>
-        <FIELD NAME="allowdeletewhenassigned" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" ENUM="false" PREVIOUS="timemodified" NEXT="timeunit"/>
-        <FIELD NAME="timeunit" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="allowdeletewhenassigned" NEXT="costunit"/>
-        <FIELD NAME="costunit" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="timeunit" NEXT="guestsallowed"/>
-        <FIELD NAME="guestsallowed" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" ENUM="false" PREVIOUS="costunit" NEXT="guestscanuse"/>
-        <FIELD NAME="guestscanuse" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="guestsallowed" NEXT="ungroupedsees"/>
-        <FIELD NAME="ungroupedsees" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="guestscanuse" NEXT="grade"/>
-        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="ungroupedsees" NEXT="teacherusescriteria"/>
-        <FIELD NAME="teacherusescriteria" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="grade" NEXT="allownotifications"/>
-        <FIELD NAME="allownotifications" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" ENUM="false" PREVIOUS="teacherusescriteria" NEXT="autogradingenabled"/>
-        <FIELD NAME="autogradingenabled" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="allownotifications" NEXT="autogradingweight"/>
-        <FIELD NAME="autogradingweight" TYPE="float" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="autogradingenabled" NEXT="enablecvs"/>
-        <FIELD NAME="enablecvs" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="autogradingweight" NEXT="useriskcorrection"/>
-        <FIELD NAME="useriskcorrection" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" COMMENT="impacts risks on costs" PREVIOUS="enablecvs" NEXT="projectusesrequs"/>
-        <FIELD NAME="projectusesrequs" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="useriskcorrection" NEXT="projectusesspecs"/>
-        <FIELD NAME="projectusesspecs" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectusesrequs" NEXT="projectusesdelivs"/>
-        <FIELD NAME="projectusesdelivs" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectusesspecs" NEXT="projectusesvalidations"/>
-        <FIELD NAME="projectusesvalidations" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectusesdelivs" NEXT="xslfilter"/>
-        <FIELD NAME="xslfilter" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" ENUM="false" COMMENT="Xslt filename for custom reports" PREVIOUS="projectusesvalidations" NEXT="cssfilter"/>
-        <FIELD NAME="cssfilter" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" ENUM="false" COMMENT="Css steelsheet filename for reports" PREVIOUS="xslfilter"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="''" SEQUENCE="false" PREVIOUS="course" NEXT="intro"/>
+        <FIELD NAME="intro" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="introformat"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="introformat" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated" NEXT="projectstart"/>
+        <FIELD NAME="projectstart" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="timemodified" NEXT="assessmentstart"/>
+        <FIELD NAME="assessmentstart" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectstart" NEXT="projectend"/>
+        <FIELD NAME="projectend" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="assessmentstart" NEXT="allowdeletewhenassigned"/>
+        <FIELD NAME="allowdeletewhenassigned" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="projectend" NEXT="timeunit"/>
+        <FIELD NAME="timeunit" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="allowdeletewhenassigned" NEXT="costunit"/>
+        <FIELD NAME="costunit" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false" PREVIOUS="timeunit" NEXT="guestsallowed"/>
+        <FIELD NAME="guestsallowed" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="costunit" NEXT="guestscanuse"/>
+        <FIELD NAME="guestscanuse" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="guestsallowed" NEXT="ungroupedsees"/>
+        <FIELD NAME="ungroupedsees" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="guestscanuse" NEXT="grade"/>
+        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="ungroupedsees" NEXT="teacherusescriteria"/>
+        <FIELD NAME="teacherusescriteria" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="grade" NEXT="allownotifications"/>
+        <FIELD NAME="allownotifications" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="teacherusescriteria" NEXT="autogradingenabled"/>
+        <FIELD NAME="autogradingenabled" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="allownotifications" NEXT="autogradingweight"/>
+        <FIELD NAME="autogradingweight" TYPE="float" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="autogradingenabled" NEXT="enablecvs"/>
+        <FIELD NAME="enablecvs" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="autogradingweight" NEXT="useriskcorrection"/>
+        <FIELD NAME="useriskcorrection" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="impacts risks on costs" PREVIOUS="enablecvs" NEXT="projectusesrequs"/>
+        <FIELD NAME="projectusesrequs" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="useriskcorrection" NEXT="projectusesspecs"/>
+        <FIELD NAME="projectusesspecs" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectusesrequs" NEXT="projectusesdelivs"/>
+        <FIELD NAME="projectusesdelivs" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectusesspecs" NEXT="projectusesvalidations"/>
+        <FIELD NAME="projectusesvalidations" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectusesdelivs" NEXT="xslfilter"/>
+        <FIELD NAME="xslfilter" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="Xslt filename for custom reports" PREVIOUS="projectusesvalidations" NEXT="cssfilter"/>
+        <FIELD NAME="cssfilter" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="Css steelsheet filename for reports" PREVIOUS="xslfilter"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject"/>
@@ -40,15 +42,18 @@
     </TABLE>
     <TABLE NAME="techproject_heading" COMMENT="techproject_heading table retrofitted from MySQL" PREVIOUS="techproject" NEXT="techproject_requirement">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="title"/>
-        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="abstract"/>
-        <FIELD NAME="abstract" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="title" NEXT="rationale"/>
-        <FIELD NAME="rationale" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="abstract" NEXT="environment"/>
-        <FIELD NAME="environment" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="rationale" NEXT="organisation"/>
-        <FIELD NAME="organisation" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="environment" NEXT="department"/>
-        <FIELD NAME="department" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="organisation"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="projectid" NEXT="title"/>
+        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="groupid" NEXT="abstract"/>
+        <FIELD NAME="abstract" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="title" NEXT="abstractformat"/>
+        <FIELD NAME="abstractformat" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="abstract" NEXT="rationale"/>
+        <FIELD NAME="rationale" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="abstractformat" NEXT="rationaleformat"/>
+        <FIELD NAME="rationaleformat" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="rationale" NEXT="environment"/>
+        <FIELD NAME="environment" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="rationaleformat" NEXT="environmentformat"/>
+        <FIELD NAME="environmentformat" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="environment" NEXT="organisation"/>
+        <FIELD NAME="organisation" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="environmentformat" NEXT="department"/>
+        <FIELD NAME="department" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="organisation"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_heading"/>
@@ -56,20 +61,20 @@
     </TABLE>
     <TABLE NAME="techproject_requirement" COMMENT="techproject_requirement table retrofitted from MySQL" PREVIOUS="techproject_heading" NEXT="techproject_specification">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="fatherid"/>
-        <FIELD NAME="fatherid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="ordering"/>
-        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="fatherid" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="ordering" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="created"/>
-        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="userid" NEXT="modified"/>
-        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="created" NEXT="lastuserid"/>
-        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="modified" NEXT="abstract"/>
-        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastuserid" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="abstract" NEXT="format"/>
-        <FIELD NAME="format" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="description" NEXT="strength"/>
-        <FIELD NAME="strength" TYPE="char" LENGTH="8" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="format" NEXT="heaviness"/>
-        <FIELD NAME="heaviness" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="strength"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="fatherid"/>
+        <FIELD NAME="fatherid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="ordering"/>
+        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="fatherid" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="ordering" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="groupid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectid" NEXT="created"/>
+        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="modified"/>
+        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="created" NEXT="lastuserid"/>
+        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="modified" NEXT="abstract"/>
+        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="lastuserid" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="abstract" NEXT="descriptionformat"/>
+        <FIELD NAME="descriptionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="description" NEXT="strength"/>
+        <FIELD NAME="strength" TYPE="char" LENGTH="8" NOTNULL="true" SEQUENCE="false" PREVIOUS="descriptionformat" NEXT="heaviness"/>
+        <FIELD NAME="heaviness" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="strength"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_requirement"/>
@@ -77,21 +82,21 @@
     </TABLE>
     <TABLE NAME="techproject_specification" COMMENT="techproject_specification table retrofitted from MySQL" PREVIOUS="techproject_requirement" NEXT="techproject_task">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="fatherid"/>
-        <FIELD NAME="fatherid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="ordering"/>
-        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="fatherid" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="ordering" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="created"/>
-        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="userid" NEXT="modified"/>
-        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="created" NEXT="lastuserid"/>
-        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="modified" NEXT="abstract"/>
-        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastuserid" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="abstract" NEXT="format"/>
-        <FIELD NAME="format" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="description" NEXT="priority"/>
-        <FIELD NAME="priority" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="format" NEXT="severity"/>
-        <FIELD NAME="severity" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="priority" NEXT="complexity"/>
-        <FIELD NAME="complexity" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="severity"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="fatherid"/>
+        <FIELD NAME="fatherid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="ordering"/>
+        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="fatherid" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="ordering" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="groupid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectid" NEXT="created"/>
+        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="modified"/>
+        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="created" NEXT="lastuserid"/>
+        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="modified" NEXT="abstract"/>
+        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="lastuserid" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="abstract" NEXT="descriptionformat"/>
+        <FIELD NAME="descriptionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="description" NEXT="priority"/>
+        <FIELD NAME="priority" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" PREVIOUS="descriptionformat" NEXT="severity"/>
+        <FIELD NAME="severity" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" PREVIOUS="priority" NEXT="complexity"/>
+        <FIELD NAME="complexity" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" PREVIOUS="severity"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_specification"/>
@@ -99,34 +104,34 @@
     </TABLE>
     <TABLE NAME="techproject_task" COMMENT="techproject_task table retrofitted from MySQL" PREVIOUS="techproject_specification" NEXT="techproject_milestone">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="fatherid"/>
-        <FIELD NAME="fatherid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="ordering"/>
-        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="fatherid" NEXT="owner"/>
-        <FIELD NAME="owner" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="ordering" NEXT="assignee"/>
-        <FIELD NAME="assignee" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="owner" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="assignee" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="created"/>
-        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="userid" NEXT="modified"/>
-        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="created" NEXT="lastuserid"/>
-        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="modified" NEXT="abstract"/>
-        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastuserid" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="abstract" NEXT="format"/>
-        <FIELD NAME="format" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="description" NEXT="worktype"/>
-        <FIELD NAME="worktype" TYPE="char" LENGTH="3" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="format" NEXT="status"/>
-        <FIELD NAME="status" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="worktype" NEXT="costrate"/>
-        <FIELD NAME="costrate" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" DECIMALS="2" COMMENT="cost per time unit" PREVIOUS="status" NEXT="planned"/>
-        <FIELD NAME="planned" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="costrate" NEXT="done"/>
-        <FIELD NAME="done" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="planned" NEXT="used"/>
-        <FIELD NAME="used" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" DECIMALS="2" COMMENT="amount of used time" PREVIOUS="done" NEXT="quoted"/>
-        <FIELD NAME="quoted" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" DECIMALS="2" COMMENT="quoted cost as planned * costrate" PREVIOUS="used" NEXT="spent"/>
-        <FIELD NAME="spent" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" DECIMALS="2" COMMENT="real spent cost as used * costrate" PREVIOUS="quoted" NEXT="risk"/>
-        <FIELD NAME="risk" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" COMMENT="risk amount" PREVIOUS="spent" NEXT="milestoneid"/>
-        <FIELD NAME="milestoneid" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="risk" NEXT="taskstartenable"/>
-        <FIELD NAME="taskstartenable" TYPE="int" LENGTH="3" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="milestoneid" NEXT="taskstart"/>
-        <FIELD NAME="taskstart" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="taskstartenable" NEXT="taskendenable"/>
-        <FIELD NAME="taskendenable" TYPE="int" LENGTH="3" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="taskstart" NEXT="taskend"/>
-        <FIELD NAME="taskend" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="taskendenable"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="fatherid"/>
+        <FIELD NAME="fatherid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="ordering"/>
+        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="fatherid" NEXT="owner"/>
+        <FIELD NAME="owner" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="ordering" NEXT="assignee"/>
+        <FIELD NAME="assignee" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="owner" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="assignee" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="groupid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectid" NEXT="created"/>
+        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="modified"/>
+        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="created" NEXT="lastuserid"/>
+        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="modified" NEXT="abstract"/>
+        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="lastuserid" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="abstract" NEXT="descriptionformat"/>
+        <FIELD NAME="descriptionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="description" NEXT="worktype"/>
+        <FIELD NAME="worktype" TYPE="char" LENGTH="3" NOTNULL="false" SEQUENCE="false" PREVIOUS="descriptionformat" NEXT="status"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" PREVIOUS="worktype" NEXT="costrate"/>
+        <FIELD NAME="costrate" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" DECIMALS="2" COMMENT="cost per time unit" PREVIOUS="status" NEXT="planned"/>
+        <FIELD NAME="planned" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="costrate" NEXT="done"/>
+        <FIELD NAME="done" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="planned" NEXT="used"/>
+        <FIELD NAME="used" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" DECIMALS="2" COMMENT="amount of used time" PREVIOUS="done" NEXT="quoted"/>
+        <FIELD NAME="quoted" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" DECIMALS="2" COMMENT="quoted cost as planned * costrate" PREVIOUS="used" NEXT="spent"/>
+        <FIELD NAME="spent" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" DECIMALS="2" COMMENT="real spent cost as used * costrate" PREVIOUS="quoted" NEXT="risk"/>
+        <FIELD NAME="risk" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="risk amount" PREVIOUS="spent" NEXT="milestoneid"/>
+        <FIELD NAME="milestoneid" TYPE="int" LENGTH="4" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="risk" NEXT="taskstartenable"/>
+        <FIELD NAME="taskstartenable" TYPE="int" LENGTH="3" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="milestoneid" NEXT="taskstart"/>
+        <FIELD NAME="taskstart" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="false" SEQUENCE="false" PREVIOUS="taskstartenable" NEXT="taskendenable"/>
+        <FIELD NAME="taskendenable" TYPE="int" LENGTH="3" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="taskstart" NEXT="taskend"/>
+        <FIELD NAME="taskend" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="false" SEQUENCE="false" PREVIOUS="taskendenable"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_task"/>
@@ -134,22 +139,22 @@
     </TABLE>
     <TABLE NAME="techproject_milestone" COMMENT="techproject_milestone table retrofitted from MySQL" PREVIOUS="techproject_task" NEXT="techproject_deliverable">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="ordering"/>
-        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="ordering" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="created"/>
-        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="userid" NEXT="modified"/>
-        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="created" NEXT="lastuserid"/>
-        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="modified" NEXT="abstract"/>
-        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastuserid" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="abstract" NEXT="format"/>
-        <FIELD NAME="format" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="description" NEXT="covered"/>
-        <FIELD NAME="covered" TYPE="number" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0.00" SEQUENCE="false" ENUM="false" DECIMALS="2" PREVIOUS="format" NEXT="cost"/>
-        <FIELD NAME="cost" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0.00" SEQUENCE="false" ENUM="false" DECIMALS="2" PREVIOUS="covered" NEXT="timetocomplete"/>
-        <FIELD NAME="timetocomplete" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0.00" SEQUENCE="false" ENUM="false" DECIMALS="2" PREVIOUS="cost" NEXT="deadline"/>
-        <FIELD NAME="deadline" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="timetocomplete" NEXT="deadlineenable"/>
-        <FIELD NAME="deadlineenable" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" ENUM="false" PREVIOUS="deadline"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="ordering"/>
+        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="ordering" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="groupid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectid" NEXT="created"/>
+        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="modified"/>
+        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="created" NEXT="lastuserid"/>
+        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="modified" NEXT="abstract"/>
+        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="lastuserid" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="abstract" NEXT="descriptionformat"/>
+        <FIELD NAME="descriptionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="description" NEXT="covered"/>
+        <FIELD NAME="covered" TYPE="number" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0.00" SEQUENCE="false" DECIMALS="2" PREVIOUS="descriptionformat" NEXT="cost"/>
+        <FIELD NAME="cost" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0.00" SEQUENCE="false" DECIMALS="2" PREVIOUS="covered" NEXT="timetocomplete"/>
+        <FIELD NAME="timetocomplete" TYPE="number" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0.00" SEQUENCE="false" DECIMALS="2" PREVIOUS="cost" NEXT="deadline"/>
+        <FIELD NAME="deadline" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="timetocomplete" NEXT="deadlineenable"/>
+        <FIELD NAME="deadlineenable" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="deadline"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_milestone"/>
@@ -157,22 +162,22 @@
     </TABLE>
     <TABLE NAME="techproject_deliverable" COMMENT="techproject_deliverable table retrofitted from MySQL" PREVIOUS="techproject_milestone" NEXT="techproject_assessment">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="fatherid"/>
-        <FIELD NAME="fatherid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="ordering"/>
-        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="fatherid" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="ordering" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="created"/>
-        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="userid" NEXT="modified"/>
-        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="created" NEXT="lastuserid"/>
-        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="modified" NEXT="abstract"/>
-        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="lastuserid" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="abstract" NEXT="format"/>
-        <FIELD NAME="format" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="description" NEXT="status"/>
-        <FIELD NAME="status" TYPE="char" LENGTH="3" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="format" NEXT="milestoneid"/>
-        <FIELD NAME="milestoneid" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="status" NEXT="localfile"/>
-        <FIELD NAME="localfile" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="milestoneid" NEXT="url"/>
-        <FIELD NAME="url" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="localfile"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="fatherid"/>
+        <FIELD NAME="fatherid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="ordering"/>
+        <FIELD NAME="ordering" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="fatherid" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="ordering" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="groupid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectid" NEXT="created"/>
+        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="modified"/>
+        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="created" NEXT="lastuserid"/>
+        <FIELD NAME="lastuserid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="modified" NEXT="abstract"/>
+        <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="lastuserid" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="abstract" NEXT="descriptionformat"/>
+        <FIELD NAME="descriptionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="description" NEXT="status"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="3" NOTNULL="false" SEQUENCE="false" PREVIOUS="descriptionformat" NEXT="milestoneid"/>
+        <FIELD NAME="milestoneid" TYPE="int" LENGTH="5" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="status" NEXT="localfile"/>
+        <FIELD NAME="localfile" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="milestoneid" NEXT="url"/>
+        <FIELD NAME="url" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="localfile"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_deliverable"/>
@@ -180,14 +185,14 @@
     </TABLE>
     <TABLE NAME="techproject_assessment" COMMENT="techproject_assessment table retrofitted from MySQL" PREVIOUS="techproject_deliverable" NEXT="techproject_criterion">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="itemid"/>
-        <FIELD NAME="itemid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="userid" NEXT="itemclass"/>
-        <FIELD NAME="itemclass" TYPE="char" LENGTH="32" NOTNULL="false" DEFAULT="milestone" SEQUENCE="false" ENUM="false" PREVIOUS="itemid" NEXT="criterion"/>
-        <FIELD NAME="criterion" TYPE="int" LENGTH="3" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="itemclass" NEXT="grade"/>
-        <FIELD NAME="grade" TYPE="float" NOTNULL="false" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="criterion"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="projectid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="groupid" NEXT="itemid"/>
+        <FIELD NAME="itemid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="itemclass"/>
+        <FIELD NAME="itemclass" TYPE="char" LENGTH="32" NOTNULL="false" DEFAULT="milestone" SEQUENCE="false" PREVIOUS="itemid" NEXT="criterion"/>
+        <FIELD NAME="criterion" TYPE="int" LENGTH="3" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="itemclass" NEXT="grade"/>
+        <FIELD NAME="grade" TYPE="float" NOTNULL="false" UNSIGNED="false" SEQUENCE="false" PREVIOUS="criterion"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_assessment"/>
@@ -195,12 +200,12 @@
     </TABLE>
     <TABLE NAME="techproject_criterion" COMMENT="techproject_criterion table retrofitted from MySQL" PREVIOUS="techproject_assessment" NEXT="techproject_spec_to_req">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="criterion"/>
-        <FIELD NAME="criterion" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="label"/>
-        <FIELD NAME="label" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="criterion" NEXT="weight"/>
-        <FIELD NAME="weight" TYPE="float" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" ENUM="false" PREVIOUS="label" NEXT="isfree"/>
-        <FIELD NAME="isfree" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="weight"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="criterion"/>
+        <FIELD NAME="criterion" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" PREVIOUS="projectid" NEXT="label"/>
+        <FIELD NAME="label" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" PREVIOUS="criterion" NEXT="weight"/>
+        <FIELD NAME="weight" TYPE="float" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="label" NEXT="isfree"/>
+        <FIELD NAME="isfree" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="weight"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_criterion" NEXT="key_criterion_unicity"/>
@@ -209,11 +214,11 @@
     </TABLE>
     <TABLE NAME="techproject_spec_to_req" COMMENT="techproject_spec_to_req table retrofitted from MySQL" PREVIOUS="techproject_criterion" NEXT="techproject_task_to_spec">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="reqid"/>
-        <FIELD NAME="reqid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="specid"/>
-        <FIELD NAME="specid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="reqid"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="projectid" NEXT="reqid"/>
+        <FIELD NAME="reqid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="groupid" NEXT="specid"/>
+        <FIELD NAME="specid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="reqid"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_spec_to_req" NEXT="key_unique_association"/>
@@ -222,11 +227,11 @@
     </TABLE>
     <TABLE NAME="techproject_task_to_spec" COMMENT="techproject_task_to_spec table retrofitted from MySQL" PREVIOUS="techproject_spec_to_req" NEXT="techproject_task_dependency">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="specid"/>
-        <FIELD NAME="specid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="taskid"/>
-        <FIELD NAME="taskid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="specid"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="projectid" NEXT="specid"/>
+        <FIELD NAME="specid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="groupid" NEXT="taskid"/>
+        <FIELD NAME="taskid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="specid"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_task_to_spec" NEXT="key_unique_association"/>
@@ -235,11 +240,11 @@
     </TABLE>
     <TABLE NAME="techproject_task_dependency" COMMENT="techproject_task_dependency table retrofitted from MySQL" PREVIOUS="techproject_task_to_spec" NEXT="techproject_task_to_deliv">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="master"/>
-        <FIELD NAME="master" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="slave"/>
-        <FIELD NAME="slave" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="master"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="projectid" NEXT="master"/>
+        <FIELD NAME="master" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="groupid" NEXT="slave"/>
+        <FIELD NAME="slave" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="master"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_task_dependency" NEXT="key_unique_association"/>
@@ -248,11 +253,11 @@
     </TABLE>
     <TABLE NAME="techproject_task_to_deliv" COMMENT="techproject_task_to_deliv table retrofitted from MySQL" PREVIOUS="techproject_task_dependency" NEXT="techproject_collapse">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="taskid"/>
-        <FIELD NAME="taskid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="delivid"/>
-        <FIELD NAME="delivid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="taskid"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="6" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="projectid" NEXT="taskid"/>
+        <FIELD NAME="taskid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="groupid" NEXT="delivid"/>
+        <FIELD NAME="delivid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="taskid"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_task_to_deliv" NEXT="key_unique_association"/>
@@ -261,12 +266,12 @@
     </TABLE>
     <TABLE NAME="techproject_collapse" COMMENT="stores collapse/expand information about entries" PREVIOUS="techproject_task_to_deliv" NEXT="techproject_qualifier">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="entity"/>
-        <FIELD NAME="entity" TYPE="char" LENGTH="24" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="entryid"/>
-        <FIELD NAME="entryid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="entity" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="entryid" NEXT="collapsed"/>
-        <FIELD NAME="collapsed" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" ENUM="false" PREVIOUS="userid"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="entity"/>
+        <FIELD NAME="entity" TYPE="char" LENGTH="24" NOTNULL="false" SEQUENCE="false" PREVIOUS="projectid" NEXT="entryid"/>
+        <FIELD NAME="entryid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="entity" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="entryid" NEXT="collapsed"/>
+        <FIELD NAME="collapsed" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="userid"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -274,12 +279,12 @@
     </TABLE>
     <TABLE NAME="techproject_qualifier" COMMENT="techproject_qualifier table retrofitted from MySQL" PREVIOUS="techproject_collapse" NEXT="techproject_valid_state">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="domain"/>
-        <FIELD NAME="domain" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="code"/>
-        <FIELD NAME="code" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="domain" NEXT="label"/>
-        <FIELD NAME="label" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="code" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" ENUM="false" PREVIOUS="label"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="domain"/>
+        <FIELD NAME="domain" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" PREVIOUS="projectid" NEXT="code"/>
+        <FIELD NAME="code" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="domain" NEXT="label"/>
+        <FIELD NAME="label" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" PREVIOUS="code" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="label"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -287,15 +292,15 @@
     </TABLE>
     <TABLE NAME="techproject_valid_state" COMMENT="Records validation results" PREVIOUS="techproject_qualifier" NEXT="techproject_valid_session">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="reqid"/>
-        <FIELD NAME="reqid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" COMMENT="Requirement" PREVIOUS="groupid" NEXT="validatorid"/>
-        <FIELD NAME="validatorid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" COMMENT="A User id" PREVIOUS="reqid" NEXT="validationsessionid"/>
-        <FIELD NAME="validationsessionid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="validatorid" NEXT="lastchangedate"/>
-        <FIELD NAME="lastchangedate" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="validationsessionid" NEXT="status"/>
-        <FIELD NAME="status" TYPE="char" LENGTH="16" NOTNULL="true" DEFAULT="UNTRACKED" SEQUENCE="false" ENUM="true" ENUMVALUES="'UNTRACKED', 'MISSING', 'REFUSED', 'BUGGY', 'TOENHANCE', 'ACCEPTED', 'REGRESSION'" COMMENT="Validation outcome" PREVIOUS="lastchangedate" NEXT="comment"/>
-        <FIELD NAME="comment" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="status"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="projectid" NEXT="reqid"/>
+        <FIELD NAME="reqid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Requirement" PREVIOUS="groupid" NEXT="validatorid"/>
+        <FIELD NAME="validatorid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="A User id" PREVIOUS="reqid" NEXT="validationsessionid"/>
+        <FIELD NAME="validationsessionid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="validatorid" NEXT="lastchangedate"/>
+        <FIELD NAME="lastchangedate" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="validationsessionid" NEXT="status"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="16" NOTNULL="true" DEFAULT="UNTRACKED" SEQUENCE="false" COMMENT="Validation outcome" PREVIOUS="lastchangedate" NEXT="comment"/>
+        <FIELD NAME="comment" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="status"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -303,115 +308,22 @@
     </TABLE>
     <TABLE NAME="techproject_valid_session" COMMENT="Default comment for the table, please edit me" PREVIOUS="techproject_valid_state">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="projectid"/>
-        <FIELD NAME="projectid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="projectid" NEXT="datecreated"/>
-        <FIELD NAME="datecreated" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="groupid" NEXT="dateclosed"/>
-        <FIELD NAME="dateclosed" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" COMMENT="No changes after closure" PREVIOUS="datecreated" NEXT="createdby"/>
-        <FIELD NAME="createdby" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="dateclosed" NEXT="untracked"/>
-        <FIELD NAME="untracked" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="createdby" NEXT="missing"/>
-        <FIELD NAME="missing" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="untracked" NEXT="buggy"/>
-        <FIELD NAME="buggy" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="missing" NEXT="toenhance"/>
-        <FIELD NAME="toenhance" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="buggy" NEXT="refused"/>
-        <FIELD NAME="refused" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="toenhance" NEXT="accepted"/>
-        <FIELD NAME="accepted" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="refused"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="projectid"/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectid" NEXT="datecreated"/>
+        <FIELD NAME="datecreated" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="groupid" NEXT="dateclosed"/>
+        <FIELD NAME="dateclosed" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="No changes after closure" PREVIOUS="datecreated" NEXT="createdby"/>
+        <FIELD NAME="createdby" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="dateclosed" NEXT="untracked"/>
+        <FIELD NAME="untracked" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="createdby" NEXT="missing"/>
+        <FIELD NAME="missing" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="untracked" NEXT="buggy"/>
+        <FIELD NAME="buggy" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="missing" NEXT="toenhance"/>
+        <FIELD NAME="toenhance" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="buggy" NEXT="refused"/>
+        <FIELD NAME="refused" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="toenhance" NEXT="accepted"/>
+        <FIELD NAME="accepted" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="refused"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
   </TABLES>
-  <STATEMENTS>
-    <STATEMENT NAME="insert_complexity" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on complexity codes" NEXT="insert_deliv_status">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'complexity', '*', 'evident', 'evidentdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'complexity', '**', 'simple', 'simpledesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'complexity', '***', 'medium', 'mediumspec')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'complexity', '****', 'hard', 'hardspec')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'complexity', '*****', 'verycomplex', 'verycomplexdesc')" />
-      </SENTENCES>
-    </STATEMENT>
-    <STATEMENT NAME="insert_deliv_status" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on deliverable status" PREVIOUS="insert_complexity" NEXT="insert_priority">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', 'CRE', 'created', 'createddesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', 'TST', 'test', 'testdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', 'PCK', 'packaging', 'packagingdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', 'BET', 'beta', 'betadesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', 'REV', 'review', 'reviewdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', 'STB', 'stable', 'stabledesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', 'FIX', 'fix', 'fixdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', 'OBS', 'obsolete', 'obsoletedesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'delivstatus', ' ', 'unassigned', 'unassigneddesc')" />
-      </SENTENCES>
-    </STATEMENT>
-    <STATEMENT NAME="insert_priority" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on priorities" PREVIOUS="insert_deliv_status" NEXT="insert_severity">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'priority', '1', 'canwait', 'canwaitdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'priority', '2', 'notprioritary', 'notprioritarydesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'priority', '3', 'asap', 'asapdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'priority', '4', 'urgent', 'urgentdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'priority', '5', 'prioritary', 'prioritarydesc')" />
-      </SENTENCES>
-    </STATEMENT>
-    <STATEMENT NAME="insert_severity" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on severities" PREVIOUS="insert_priority" NEXT="insert_strength">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'severity', '*', 'goodie', 'goodiedesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'severity', '**', 'optional', 'optionaldesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'severity', '***', 'useful', 'usefuldesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'severity', '****', 'essential', 'essentialdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'severity', '*****', 'mandatory', 'mandatorydesc')" />
-      </SENTENCES>
-    </STATEMENT>
-    <STATEMENT NAME="insert_strength" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on strengthes" PREVIOUS="insert_severity" NEXT="insert_taskstatus">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'strength', '*', 'plus', 'plusdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'strength', '**', 'implicit', 'implicitdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'strength', '***', 'wished', 'wisheddesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'strength', '****', 'should', 'shoulddesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'strength', '*****', 'will', 'willdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'strength', '******', 'must', 'mustdesc')" />
-      </SENTENCES>
-    </STATEMENT>
-    <STATEMENT NAME="insert_taskstatus" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on task statuses" PREVIOUS="insert_strength" NEXT="insert_worktype">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'taskstatus', 'PLANNED', 'planned', 'planneddesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'taskstatus', 'STARTED', 'started', 'starteddesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'taskstatus', 'BLOCKED', 'blocked', 'blockeddesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'taskstatus', 'DELAYED', 'delayed', 'delayeddesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'taskstatus', 'COMPLETE', 'complete', 'completedesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'taskstatus', 'ABANDONED', 'abandoned', 'abandoneddesc')" />
-      </SENTENCES>
-    </STATEMENT>
-    <STATEMENT NAME="insert_worktype" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on work types" PREVIOUS="insert_taskstatus" NEXT="insert_risk">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'worktype', 'PRE', 'investigating', 'investigatingdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'worktype', 'ANA', 'analysing', 'analysingdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'worktype', 'COD', 'coding', 'codingdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'worktype', 'REV', 'reviewing', 'reviewingdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'worktype', 'PAK', 'packaging', 'packagingdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'worktype', 'DOC', 'documenting', 'documentingdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'worktype', 'SPE', 'specifying', 'specifyingdesc')" />
-      </SENTENCES>
-    </STATEMENT>
-    <STATEMENT NAME="insert_risk" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on table techproject_risk" PREVIOUS="insert_worktype" NEXT="insert_heaviness">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'risk', '0', 'none', nonedesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'risk', '10', 'light', 'lightdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'risk', '30', 'medium', 'mediumdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'risk', '80', 'high', 'highdesc')" />
-      </SENTENCES>
-    </STATEMENT>
-    <STATEMENT NAME="insert_heaviness" TYPE="insert" TABLE="techproject_qualifier" COMMENT="Initial insert of records on table techproject_risk" PREVIOUS="insert_risk">
-      <SENTENCES>
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'heaviness', '0', 'needsmoreinfo', 'needsmoreinfodesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'heaviness', '10', 'wehave', 'wehavedesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'heaviness', '20', 'wecanhave', 'wecanhavedesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'heaviness', '30', 'needswork', 'needsworkdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'heaviness', '40', 'difficult', 'difficultdesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'heaviness', '50', 'heavy', 'heavydesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'heaviness', '100', 'outofreason', 'outofreasondesc')" />
-        <SENTENCE TEXT="(projectid, domain, code, label, description) VALUES (0, 'heaviness', '10000', 'impossible', 'impossibledesc')" />
-      </SENTENCES>
-    </STATEMENT>
-  </STATEMENTS>
 </XMLDB>

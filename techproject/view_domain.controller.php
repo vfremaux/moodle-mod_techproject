@@ -17,7 +17,6 @@ switch($action){
     /*************************************** adds a new company ***************************/
     case 'add':
 		require_once('forms/form_domain.class.php');
-					
 		if ($data = data_submitted()){
     	// if there is some error
 	        if ($data->code == '') {
@@ -32,11 +31,11 @@ switch($action){
 	        	$domainrec->label = addslashes(clean_param($data->label, PARAM_CLEANHTML));
 	        	$domainrec->description = addslashes(clean_param($data->description, PARAM_CLEANHTML));
 
-	            if (get_record('techproject_qualifier', 'domain', $domain, 'code', $data->code, 'projectid', $scope)){
+	            if ($DB->get_record('techproject_qualifier', array('domain' => $domain, 'code' => $data->code, 'projectid' => $scope))){
 	                print_error('err_codeexists', 'techproject', "{$CFG->wwwroot}/mod/techproject/view.php?id={$id}&amp;action=add&amp;view=domains_$domain");
 	            } else {
-	                if (!insert_record('techproject_qualifier', $domainrec)){
-	                    error('Cound not insert');
+	                if (!$DB->insert_record('techproject_qualifier', $domainrec)){
+	                    print_error('errorinsertqualifier', 'techproject');
 	                }
 	            	redirect("{$CFG->wwwroot}/mod/techproject/view.php?id={$id}&view=domains_{$domain}");
 	            }
@@ -57,8 +56,8 @@ switch($action){
 		require_once('forms/form_domain.class.php');
 
 		// Check the company
-	    if (!$domainrec = get_record('techproject_qualifier', 'id', $domainid)) {
-	        error('Domain value ID was incorrect');
+	    if (!$domainrec = $DB->get_record('techproject_qualifier', array('id' => $domainid))) {
+	        print_error('errorinvalidedoomainid', 'techproject');
 	    }
 
 		// data was submitted from this form, process it
@@ -69,8 +68,8 @@ switch($action){
             $domainrec->code = clean_param($data->code, PARAM_ALPHANUM);
         	$domainrec->label = addslashes(clean_param($data->label, PARAM_CLEANHTML));
         	$domainrec->description = addslashes(clean_param($data->description, PARAM_CLEANHTML));
-        	if (!update_record('techproject_qualifier', $domainrec)){
-        	    error('Could not update domain value');
+        	if (!$DB->update_record('techproject_qualifier', $domainrec)){
+        	    print_error('errorupdatedomainvalue', 'techproject');
         	}
         	redirect("{$CFG->wwwroot}/mod/techproject/view.php?id={$id}&view=domains_{$domain}");
 		} else {
@@ -80,13 +79,11 @@ switch($action){
 			return -1;
 		}
     	break;
-	    	
     /********************************** deletes domain value **************************************/
     case "delete":
     	$domainid = required_param('domainid', PARAM_INT);
-    	
-    	if (!delete_records('techproject_qualifier', 'id', $domainid)){
-    	    error('Error when deleting domain value');
+    	if (!$DB->delete_records('techproject_qualifier', array('id' => $domainid))){
+    	    print_error('errordeletedomainvalue', 'techproject');
     	}
 
     	break;

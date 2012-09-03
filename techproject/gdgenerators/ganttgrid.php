@@ -10,18 +10,17 @@ if (@$wasIncluded == 0){
     $id = optional_param('id', 0, PARAM_INT);    // Course Module ID
     $outputType = optional_param('outputType', '', PARAM_CLEAN);    // Course Module ID
 
-    $project = get_record('techproject', 'id', $projectid);
-    $cm = get_record('course_modules', 'id', $id);
+    $project = $DB->get_record('techproject', array('id' => $projectid));
+    $cm = $DB->get_record('course_modules', array('id' => $id));
 
     require_login($project->course);
-    
     // check current group and change, for anyone who could
-    $course = get_record('course', 'id', $project->course);
+    $course = $DB->get_record('course', array('id' => $project->course));
 	if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // groups are being used ?
 		$currentGroupId = 0;
 	} else {
         $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;  // Group change requested?
-        if (isguest()){ // for guests, use session
+        if (isguestuser()){ // for guests, use session
             if ($changegroup >= 0){
                 $_SESSION['guestgroup'] = $changegroup;
             }
@@ -59,7 +58,7 @@ $startyear = $cal['year'];
 $today = unixtojd();
 
 // get milestones information
-$milestones = get_records_select('techproject_milestone', "projectid = $project->id AND groupid = $currentGroupId AND deadlineenable = 1", 'deadline');
+$milestones = $DB->get_records_select('techproject_milestone', "projectid = $project->id AND groupid = $currentGroupId AND deadlineenable = 1", 'deadline');
 $milemarks = array();
 if ($milestones){
     foreach($milestones as $aMilestone){
@@ -82,7 +81,6 @@ if (@$outputType == 'HTML'){
     echo "secsPerPixel;    $secsPerPixel<br/>";
     echo "daysInRange;     $daysInRange<br/>";
     echo "pixPerDay;       $pixPerDay<br/>";
-    
     $startRange = 0;
     $color = 'white';
     $toggle = true;
@@ -107,7 +105,6 @@ if (@$outputType == 'HTML'){
 *
 */
 } else {
-  
     // Searching for font files
     $fontFile = $CFG->dirroot . "/mod/techproject/fonts/arial.ttf";
     if (!file_exists($fontFile))
@@ -127,7 +124,6 @@ if (@$outputType == 'HTML'){
     $im = imagecreatetruecolor($w, $height);
 
     // imageantialias($im, TRUE);
-    
     // Assigning colors
     $colors['black'] = imagecolorallocate($im, 0, 0, 0);
     $colors['quiteblack'] = imagecolorallocate($im, 10, 10, 10);
@@ -140,7 +136,6 @@ if (@$outputType == 'HTML'){
     $colors['goldyellow'] = imagecolorallocate($im, 210, 210, 0);
 
     // draw calendar grid for days
-    
     // heading displays Gantt assignee section header with month names
     if (@$outputType == 'HEADING'){
         $startRange = 0;
@@ -170,7 +165,6 @@ if (@$outputType == 'HTML'){
         }
     // heading displays Gantt task grid background
     } else {
-    
         $startRange = 0;
         $color = $colors['white'];
         $toggle = true;
@@ -185,7 +179,6 @@ if (@$outputType == 'HTML'){
             $startRange = $range;
             $i += $daysToComplete;
         }
-    
         for ($i = 0; $i <= $daysInRange ; $i++){
             // prints special marks on calendar
             if ($jdStart + $i == $today){

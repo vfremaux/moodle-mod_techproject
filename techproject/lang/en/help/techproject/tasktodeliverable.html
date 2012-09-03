@@ -1,0 +1,66 @@
+$string['tasktodeliverable_help'] = '
+<p>Tasks are performed in order to produce some concrete parts of
+the project's goal. These identified products are so called
+"deliverables".</p>
+
+<p>This selector allows designating the deliverables the current
+task is responsible of.</p>
+
+<p>By mapping such entities, you will allow some indicators being
+propagated through the project data model, allowing, as an example,
+to display the completion rate of some deliverables based on task
+completion analysis.</p>
+';
+
+$string['tasktomilestone_help'] = '
+<p>A task can be assigned a milestone. When mapped to a milestone,
+some constraints on deadlines are added. The task is known as
+having to be completed BEFORE the milestone is over.</p>
+
+<p>Step 2 impl&Atilde;&copy;mentation will add more accurate
+controls and consistency checks on the schedule.</p>
+';
+
+$string['tasktospecification_help'] = '
+<p>Task can be designated as realizing some subset of
+specifications. A single task may realize multiple specifications,
+if defined as a rather general task (e.g. : "make that software
+component" is a quite undetailed task definition that can realize
+an entire set of detailed specifications for that module).
+Conversely, a set of tasks may be implied in the realization of a
+single specification entry.</p>
+
+<p>This selector allows mapping the current task to multiple
+specification entries.</p>
+
+<p>By mapping such entities, you will allow some indicators being
+propagated through the project data model, allowing, as an example,
+to display the completion rate of some specifications based on task
+completion analysis.</p>
+';
+
+$string['teacherusescriteria_help'] = '
+<p>When this option is enabled, assessing the project will use a
+teacher defined criteria set.</p>
+
+<p>Teachers will setup the criteria with a relevant panel in the
+"teacher's tools" section.</p>
+
+<p>Criteria can be modified event after assessments started.
+Deleting a criterion will delete previous grades for this criterion
+for all assessed workspaces.</p>
+';
+
+$string['ungroupedsees_help'] = '
+<p>If this capability is enabled, and visibility is somehow liberam (no groups or visible groups) 
+ungroup members (non teachers) can view the defaut project content and change data 
+if they own the relevant capabilities.</p>
+<p>If enabled, and visibility policy is rather liberal, ungrouped students should be able to 
+watch the project content, but would not be allowed to change anything in it.
+<p>If enabled and groups are separated, unegrouped users are given an error message.</p>
+';
+
+$string['weight_help'] = '
+<p>The criterion weight allows balancing influence of eacb criteria in the set. The balancing is performed using "barycentric" mean : the sum of all weights will determine the 100% factor on the max
+grade.</p>
+';

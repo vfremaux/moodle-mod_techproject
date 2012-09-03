@@ -58,51 +58,47 @@
     $objectId = $_SESSION['objectId'];
 
 /// making viewer
-    
-    if (!$object = get_record('techproject_' . $objectClass, 'id', $objectId, 'projectid', $project->id, 'groupid', $currentGroupId)){
+	echo $pagebuffer;
+    if (!$object = $DB->get_record('techproject_' . $objectClass, array('id' => $objectId, 'projectid' => $project->id, 'groupid' => $currentGroupId))){
         echo '<center>';
         print_simple_box(format_text(get_string('selectanobjectfirst', 'techproject'), FORMAT_HTML), 'center', '70%');
         echo '</center>';
         return;
     }
-    
     $previousordering = $object->ordering - 1;
     $nextordering = $object->ordering + 1;
     $query = "
        SELECT 
           *
        FROM
-          {$CFG->prefix}techproject_{$objectClass}
+          {techproject_{$objectClass}}
        WHERE
           projectid = {$project->id} AND
           groupid = {$currentGroupId} AND
           fatherid = {$object->fatherid} AND
           ordering = {$previousordering}
     ";
-    $previousobject = get_record_sql($query);
-    
+    $previousobject = $DB->get_record_sql($query);
     $query = "
        SELECT 
           *
        FROM
-          {$CFG->prefix}techproject_{$objectClass}
+          {techproject_{$objectClass}}
        WHERE
           projectid = {$project->id} AND
           groupid = {$currentGroupId} AND
           fatherid = {$object->fatherid} AND
           ordering = {$nextordering}
     ";
-    $nextobject = get_record_sql($query);
-    
+    $nextobject = $DB->get_record_sql($query);
     $linkTable = array();
     $linkTable[0] = array();
     $linkTable[1] = array();
     $linkTable[2] = array();
     $linkTable[3] = array();
-    
     function makeSubTable($objectClass, $object, $cmid){
         // make link tables
-        $res = get_records("techproject_{$objectClass}", 'fatherid', $object->id);
+        $res = $DB->get_records("techproject_{$objectClass}", array('fatherid' => $object->id));
         $linkTable = array();
         if ($res){
             foreach($res as $aNode){
@@ -112,26 +108,24 @@
         }
         return $linkTable;
     }
-    
     if ($object){
         switch($objectClass){
             case 'requirement' : {
                 $linkTableTitle[0] = get_string('sublinks', 'techproject');
                 $linkTable[0] = makeSubTable($objectClass, $object, $cm->id);
-    
                 // getting related specifications
                 $linkTableTitle[1] = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/spec.gif\" /> ". get_string('speclinks', 'techproject');
                 $query = "
                    SELECT
                       s.*
                    FROM
-                      {$CFG->prefix}techproject_specification as s,
-                      {$CFG->prefix}techproject_spec_to_req as str
+                      {techproject_specification} as s,
+                      {techproject_spec_to_req} as str
                    WHERE
                       s.id = str.specid AND
                       str.reqid = {$object->id}
                 ";
-                $res = get_records_sql($query);
+                $res = $DB->get_records_sql($query);
                 if ($res){
                     foreach($res as $aSpecification){
                         $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_specification', $aSpecification->id, true, true));
@@ -146,20 +140,19 @@
             case 'specification' : {
                 $linkTableTitle[0] = get_string('sublinks', 'techproject');
                 $linkTable[0] = makeSubTable($objectClass, $object, $cm->id);
-    
                 // getting related requirements
                 $linkTableTitle[2] = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/req.gif\" /> ". get_string('requlinks', 'techproject');
                 $query = "
                    SELECT
                       r.*
                    FROM
-                      {$CFG->prefix}techproject_requirement as r,
-                      {$CFG->prefix}techproject_spec_to_req as str
+                      {techproject_requirement} as r,
+                      {techproject_spec_to_req} as str
                    WHERE
                       r.id = str.reqid AND
                       str.specid = {$object->id}
                 ";
-                $res = get_records_sql($query);
+                $res = $DB->get_records_sql($query);
                 if ($res){
                     foreach($res as $aRequirement){
                         $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_requirement', $aRequirement->id, true, true));
@@ -169,20 +162,19 @@
                 else{
                     $linkTable[2][] = get_string('norequassigned', 'techproject');
                 }
-    
                 // getting related tasks
                 $linkTableTitle[1] = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/task.gif\" /> ". get_string('tasklinks', 'techproject');
                 $query = "
                    SELECT
                       t.*
                    FROM
-                      {$CFG->prefix}techproject_task as t,
-                      {$CFG->prefix}techproject_task_to_spec as stt
+                      {techproject_task} as t,
+                      {techproject_task_to_spec} as stt
                    WHERE
                       t.id = stt.taskid AND
                       stt.specid = {$object->id}
                 ";
-                $res = get_records_sql($query);
+                $res = $DB->get_records_sql($query);
                 if ($res){
                     foreach($res as $aTask){
                         $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_task', $aTask->id, true, true));
@@ -197,20 +189,19 @@
             case 'task' : {
                 $linkTableTitle[0] = get_string('sublinks', 'techproject');
                 $linkTable[0] = makeSubTable($objectClass, $object, $cm->id);
-    
                 // getting related specifications
                 $linkTableTitle[2] = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/spec.gif\" /> ". get_string('speclinks', 'techproject');
                 $query = "
                    SELECT
                       s.*
                    FROM
-                      {$CFG->prefix}techproject_specification as s,
-                      {$CFG->prefix}techproject_task_to_spec as stt
+                      {techproject_specification} as s,
+                      {techproject_task_to_spec} as stt
                    WHERE
                       s.id = stt.specid AND
                       stt.taskid = {$object->id}
                 ";
-                $res = get_records_sql($query);
+                $res = $DB->get_records_sql($query);
                 if ($res){
                     foreach($res as $aSpecification){
                         $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_specification', $aSpecification->id, true, true));
@@ -220,7 +211,6 @@
                 else{
                     $linkTable[2][] = get_string('nospecassigned', 'techproject');
                 }
-    
                 // getting related deliverable
                 $linkTableTitle[3] = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/deliv.gif\" /> ". get_string('delivlinks', 'techproject');
                 $query = "
@@ -228,13 +218,13 @@
                       d.id,
                       d.abstract
                    FROM
-                      {$CFG->prefix}techproject_deliverable as d,
-                      {$CFG->prefix}techproject_task_to_deliv as std
+                      {techproject_deliverable} as d,
+                      {techproject_task_to_deliv} as std
                    WHERE
                       d.id = std.delivid AND
                       std.taskid = {$object->id}
                 ";
-                $res = get_records_sql($query);
+                $res = $DB->get_records_sql($query);
                 if ($res){
                     foreach($res as $aDeliverable){
                         $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_deliverable', $aDeliverable->id, true, true));
@@ -251,7 +241,6 @@
             case 'deliverable' : {
                 $linkTableTitle[0] = get_string('sublinks', 'techproject');
                 $linkTable[0] = makeSubTable($objectClass, $object, $cm->id);
-    
                 // getting related tasks
                 $linkTableTitle[2] = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/task.gif\" /> ". get_string('tasklinks', 'techproject');
                 $query = "
@@ -259,13 +248,13 @@
                       t.id,
                       t.abstract
                    FROM
-                      {$CFG->prefix}techproject_task as t,
-                      {$CFG->prefix}techproject_task_to_deliv as std
+                      {techproject_task} as t,
+                      {techproject_task_to_deliv} as std
                    WHERE
                       std.id = std.taskid AND
                       std.delivid = {$object->id}
                 ";
-                $res = get_records_sql($query);
+                $res = $DB->get_records_sql($query);
                 if ($res){
                     foreach($res as $aTask){
                         $numtask = implode('.', techproject_tree_get_upper_branch('techproject_task', $aTask->id, true, true));

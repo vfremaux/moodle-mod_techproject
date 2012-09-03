@@ -34,15 +34,15 @@
     class Domain_Form extends moodleform {
     	private $domainvalue;
     	private $domain;
-    	
+
     	function __construct($domain, $domainvalue, $action = ''){
     		$this->domain = $domain;
     		$this->domainvalue = $domainvalue;
         	parent::__construct($action);
         }
-    	
+
     	function definition() {
-    		global $CFG;
+    		global $CFG, $OUTPUT;
     		
     		// Setting variables
     		$mform =& $this->_form;
@@ -51,33 +51,26 @@
     		if (isset($this->domainvalue->id)){
         		$mform->addElement('hidden', 'domainid', $this->domainvalue->id);
         	}
-    		
     		// Adding title and description
-        	$mform->addElement('html', print_heading(get_string('newvalueformfor', 'techproject', get_string($this->domain, 'techproject'))));
-    		
+        	$mform->addElement('html', $OUTPUT->heading(get_string('newvalueformfor', 'techproject', get_string($this->domain, 'techproject'))));
     		// Adding fieldset
     		$codeattributes = 'size="10" maxlength="10"';
     		$attributes = 'size="70" maxlength="128"';
-    		
     		$areaattributes = 'cols="30" rows="5"';
 
     		$mform->addElement('text', 'code', get_string('code', 'techproject'), $codeattributes);
     		$mform->setDefault('code', $this->domainvalue->code);
-    		
     		$mform->addElement('text', 'label', get_string('label', 'techproject'), $attributes);
     		$mform->setDefault('label', $this->domainvalue->label);
 
     		$mform->addElement('textarea', 'description', get_string('description'), $areaattributes);
     		$mform->setDefault('description', $this->domainvalue->description);
-    				
     		$mform->addRule('code', null, 'required');
     		$mform->addRule('label', null, 'required');
-    		
     		// Adding submit and reset button
             $buttonarray = array();
         	$buttonarray[] = &$mform->createElement('submit', 'go_submit', get_string('update'));
         	$buttonarray[] = &$mform->createElement('cancel', 'go_cancel', get_string('cancel'));
-            
             $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
             $mform->closeHeaderBefore('buttonar');		
     	}

@@ -42,7 +42,10 @@ if (!function_exists('recordstoxml')){
                     $xml .= "\t<{$baseelement} id=\"$key\">\n";
                             $xml .= "\t\t<ix>$ix</ix>\n";
                     foreach($fields as $fieldname => $fieldvalue){
-                        $translation = get_string($fieldvalue, $translate);
+                    	$translation = $fieldvalue;
+                    	if (is_string($fieldvalue)){
+                        	// $translation = get_string($fieldvalue, $translate);
+                        }
                         if ($translate && !preg_match('/\[\['.preg_quote($fieldvalue).'\]\]/', $translation)){
                             $fieldvalue = $translation;
                         }

@@ -20,38 +20,39 @@
     }
 
     if ($work == 'update'){
+    	$criterion = new StdClass;
         $criterion->id = required_param('itemid', PARAM_INT);
         $criterion->projectid = $project->id;
         $criterion->criterion = required_param('criterion', PARAM_ALPHANUM);
         $criterion->label = required_param('label', PARAM_TEXT);
         $criterion->weight = required_param('weight', PARAM_INT);
         $criterion->isfree = optional_param('isfree', 0, PARAM_INT);
-        if (get_record('techproject_criterion', 'id', $criterion->id)){
-            update_record('techproject_criterion', $criterion);
+        if ($DB->get_record('techproject_criterion', array('id' => $criterion->id))){
+            $DB->update_record('techproject_criterion', $criterion);
         } else {
-            insert_record('techproject_criterion', $criterion);
+            $DB->insert_record('techproject_criterion', $criterion);
         }
     } elseif ($work == 'doconfirmdelete') {
+    	$criterion = new StdClass;
         $criterion->id = required_param('item', PARAM_INT);
         $criterion->isfree = optional_param('isfree', 0, PARAM_INT);
-        if (get_record('techproject_criterion', 'id', $criterion->id)){
-            delete_records('techproject_criterion', 'id', $criterion->id);
-            delete_records('techproject_assessment', 'projectid', $project->id, 'criterion', $criterion->id);
+        if ($DB->get_record('techproject_criterion', array('id' => $criterion->id))){
+            $DB->delete_records('techproject_criterion', array('id' => $criterion->id));
+            $DB->delete_records('techproject_assessment', array('projectid' => $project->id, 'criterion' => $criterion->id));
         }
     }
-    
     if ($work == 'dodelete'){
+    	$criterion = new StdClass;
         $criterion->id = required_param('item', PARAM_INT);
         $criterion->isfree = optional_param('isfree', 0, PARAM_INT);
-        print_heading(get_string('confirmdeletecriteria', 'techproject'), 'center'); 
-        print_simple_box(get_string('criteriadeleteadvice', 'techproject'), 'center', '70%');
+        echo $OUTPUT->heading(get_string('confirmdeletecriteria', 'techproject')); 
+        echo $OUTPUT->box(get_string('criteriadeleteadvice', 'techproject'), 'center', '70%');
     ?>
     <script type="text/javascript">
     function senddata(cmd){
         document.confirmdeleteform.work.value="do" + cmd;
         document.confirmdeleteform.submit();
     }
-    
     function cancel(){
         document.confirmdeleteform.submit();
     }
@@ -71,15 +72,16 @@
 /// Criteria update form ***************************************************
 
     } else {
-    
-        $freeCriteria = get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 1");
-        $criteria = get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 0");
+        $freeCriteria = $DB->get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 1");
+        $criteria = $DB->get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 0");
     ?>
     <center>
     <table width="80%" cellspacing="10" style="padding : 10px">
         <tr>
             <td valign="top">
-                <?php print_heading_block(get_string('freecriteriaset', 'techproject') . ' ' . helpbutton('freecriteriaset', get_string('freecriteriaset', 'techproject'), 'techproject', true , false, '', true)) ?>
+                <?php 
+                echo $OUTPUT->heading(get_string('freecriteriaset', 'techproject') . ' ' . $OUTPUT->help_icon('freecriteriaset', 'techproject', false)) 
+                ?>
                 <script type="text/javascript">
                 //<![CDATA[
                 function senddatafree(){
@@ -90,7 +92,6 @@
                     document.forms['freecriteriaform'].work.value = "update";
                     document.forms['freecriteriaform'].submit();
                 }
-    
                 function changefree(itemid, criterion, label, weight){
                     document.forms['freecriteriaform'].itemid.value = itemid;
                     document.forms['freecriteriaform'].criterion.value = criterion;
@@ -111,11 +112,10 @@
                         foreach($freeCriteria as $aCriterion){
                             $links = "<a href=\"view.php?id={$cm->id}&amp;work=dodelete&amp;isfree=1&amp;item={$aCriterion->id}\"><img src=\"{$CFG->pixpath}/t/delete.gif\" title=\"".get_string('deletecriteria', 'techproject')."\" border=\"0\" /></a>";
                             $links .= "<a href=\"javascript:changefree('{$aCriterion->id}','{$aCriterion->criterion}','{$aCriterion->label}','{$aCriterion->weight}')\"><img src=\"{$CFG->pixpath}/t/edit.gif\" title=\"".get_string('editcriteria', 'techproject')."\" border=\"0\" /></a>";
-    
                             $table->data[] = array("<b>{$aCriterion->criterion}</b> {$aCriterion->label} ( x {$aCriterion->weight})", $links );
                         }
                     }
-                    print_table($table);
+                    echo html_writer::table($table);
                     unset($table);
                     ?>
                     <table>
@@ -125,7 +125,7 @@
                             </td>
                             <td> 
                                 <input type="text" name="criterion" value="" /> 
-                                <?php helpbutton('criterion', get_string('criterion', 'techproject'), 'techproject') ?>
+                                <?php $OUTPUT->help_icon('criterion', 'techproject') ?>
                             </td>
                         </tr>
                         <tr>
@@ -134,7 +134,7 @@
                             </td>
                             <td> 
                                 <input type="text" name="label" value="" /> 
-                                <?php helpbutton('label', get_string('label', 'techproject'), 'techproject') ?>
+                                <?php $OUTPUT->help_icon('label', 'techproject') ?>
                             </td>
                         </tr>
                         <tr>
@@ -143,7 +143,7 @@
                             </td>
                             <td> 
                                 <input type="text" name="weight" value="" /> 
-                                <?php helpbutton('weight', get_string('weight', 'techproject'), 'techproject') ?>
+                                <?php $OUTPUT->help_icon('weight', 'techproject') ?>
                             </td>
                         </tr>
                         <tr>
@@ -159,7 +159,9 @@
                 </form>
             </td>
             <td valign="top">
-                <?php print_heading_block(get_string('itemcriteriaset', 'techproject') . ' ' . helpbutton('itemcriteriaset', get_string('itemcriteriaset', 'techproject'), 'techproject', true , false, '', true)) ?>
+                <?php 
+                echo $OUTPUT->heading(get_string('itemcriteriaset', 'techproject') . ' ' . $OUTPUT->help_icon('itemcriteriaset', 'techproject', false)) 
+                ?>
                 <script type="text/javascript">
                 //<![CDATA[
                 function senddata(){
@@ -170,7 +172,6 @@
                     document.forms['criteriaform'].work.value = "update";
                     document.forms['criteriaform'].submit();
                 }
-    
                 function change(itemid, criterion, label, weight){
                     document.forms['criteriaform'].itemid.value = itemid;
                     document.forms['criteriaform'].criterion.value = criterion;
@@ -191,11 +192,10 @@
                         foreach($criteria as $aCriterion){
                             $links = "<a href=\"view.php?id={$cm->id}&amp;work=dodelete&amp;isfree=0&amp;item={$aCriterion->id}\"><img src=\"{$CFG->pixpath}/t/delete.gif\" border=\"0\" /></a>";
                             $links .= "<a href=\"javascript:change('{$aCriterion->id}','{$aCriterion->criterion}','{$aCriterion->label}','{$aCriterion->weight}')\"><img src=\"{$CFG->pixpath}/t/edit.gif\" border=\"0\" /></a>";
-    
                             $table->data[] = array("<b>{$aCriterion->criterion}</b> {$aCriterion->label} ( x {$aCriterion->weight})", $links);
                         }
                     }
-                    print_table($table);
+                    echo html_writer::table($table);
                     unset($table);
                     ?>
                     <table>

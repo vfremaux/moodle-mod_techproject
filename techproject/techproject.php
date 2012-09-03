@@ -1,4 +1,4 @@
-<?php // $Id: techproject.php,v 1.2 2011-12-22 23:23:15 vf Exp $
+<?php // $Id: techproject.php,v 1.1.1.1 2012-08-01 10:16:17 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -13,7 +13,6 @@
     * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
     * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
     */
-    
     if (!defined('MOODLE_INTERNAL')) die ("You cannot enter directly in this script");
 
 ///memorizes current page - typical session switch
@@ -40,7 +39,7 @@
 /// Print groupe name
     /*
     if ($currentGroupId) {
-    	$group = get_record("groups", "id", $currentGroupId);
+    	$group = $DB->get_record("groups", array("id" => $currentGroupId));
     	echo "<center><b>". get_string('groupname', 'techproject') . $group->name . "</b></center><br/>";
     }
     */
@@ -50,7 +49,7 @@
     $tabrequtitle = get_string('requirements', 'techproject');
     $tabrequlabel = (!has_capability('mod/techproject:changerequs', $context)) ? $tabrequtitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabrequtitle ;
     $tabspectitle = get_string('specifications', 'techproject');
-    $tabspeclabel = (!has_capability('mod/techproject:changespecs', $context)) ? "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/spec.gif\" /> " . $tabspectitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabspectitle ;
+    $tabspeclabel = (!has_capability('mod/techproject:changespecs', $context)) ? "<img src=\"".$OUPTUT->pix_url('p/spec', 'techproject').'" /> ' . $tabspectitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabspectitle ;
     $tabtasktitle = get_string('tasks', 'techproject');
     $tabtasklabel = (!has_capability('mod/techproject:changetasks', $context)) ? "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/task.gif\" /> " . $tabtasktitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabtasktitle ;
     $tabmiletitle = get_string('milestones', 'techproject');
@@ -63,10 +62,9 @@
     $tabspeclabel = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/spec.gif\" height=\"14\" /> " . $tabspeclabel;
     $tabtasklabel = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/task.gif\" height=\"14\" /> " . $tabtasklabel;
     $tabdelivlabel = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/deliv.gif\" height=\"14\" /> " . $tabdelivlabel;
-    
     $tabs = array();
     $tabs[0][] = new tabobject('description', "view.php?id={$cm->id}&amp;view=description", get_string('description', 'techproject'));
-    if(has_capability('mod/techproject:viewpreproductionentities', $context, $USER->id, false)){
+    if(has_capability('mod/techproject:viewpreproductionentities', $context, $USER->id)){
     	if (@$project->projectusesrequs){
 	        $tabs[0][] = new tabobject('requirements', "view.php?id={$cm->id}&amp;view=requirements", $tabrequlabel, $tabrequtitle);
 	    }
@@ -135,14 +133,12 @@
     } else {
         $activated = NULL;
     }
-    print_tabs($tabs, $_SESSION['currentpage'], NULL, $activated, false);
-        
-    echo "<br/>";
-        
+    $pagebuffer .= print_tabs($tabs, $_SESSION['currentpage'], NULL, $activated, true);
+    $pagebuffer .= '<br/>';
 /// Route to detailed screens
 
     if ($currentpage == 'description') {
-    	techproject_print_assignement_info($project);
+    	$pagebuffer .= techproject_print_assignement_info($project, true);
         include 'description.php';
     } elseif ($currentpage == 'requirements') {
     	include("requirement.php");
@@ -175,10 +171,8 @@
     	    include("gantt.php");
         }
     } elseif (preg_match("/teacher_/", $currentpage)) {
-    
         // falldown if no grading enabled.
         if (!$project->grade && ($currentpage == 'teacher_assess' || $currentpage == 'teacher_criteria')) $currentpage = 'teacher_projectcopy';
-    
         if ($currentpage == 'teacher_assess') {
     	    include("assessments.php");
         }
@@ -198,7 +192,6 @@
         $action = optional_param('what', '', PARAM_RAW);
         $domain = str_replace('domains_', '', $currentpage);
         include "view_domain.php";
-    
     } else {
     	error("Fatal Error: Unknown page: ".$currentpage."\n");
     }

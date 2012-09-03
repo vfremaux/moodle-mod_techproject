@@ -1,4 +1,4 @@
-<?php // $Id: assessments.php,v 1.1 2011-06-20 16:19:57 vf Exp $
+<?php // $Id: assessments.php,v 1.1.1.1 2012-08-01 10:16:08 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -28,11 +28,13 @@
                 $scalegrades[$i] = $i; 
         } else {
             $scaleid = - ($project->grade);
-            if ($scale = get_record('scale', 'id', $scaleid)) {
+            if ($scale = $DB->get_record('scale', array('id' => $scaleid))) {
                 $scalegrades = make_menu_from_list($scale->scale);
             }
         }
-        return choose_from_menu($scalegrades, $id, $selected, 'choose', '', '', $return);
+        $str = html_writer::select($scalegrades, $id, $selected, '');
+        if ($return) return $str;
+        echo $str;
     }
 
 
@@ -40,9 +42,7 @@
         print_error(get_string('notateacher','techproject'));
         return;
     }
-    
-    print_heading(get_string('assessment'), 'center');
-    
+    echo $OUTPUT->heading(get_string('assessment'));
     // checks if assessments can occur
     if (!groups_get_activity_groupmode($cm, $project->course)){
         // $groupStudents = get_course_students($project->course);
@@ -55,17 +55,20 @@
         }
     }
     if (!isset($groupStudents) || count($groupStudents) == 0 || empty($groupStudents)){
-        print_simple_box(get_string('noonetoassess', 'techproject'), 'center', '70%');
+        echo $OUTPUT->box(get_string('noonetoassess', 'techproject'), 'center', '70%');
         return;
     } else {
        $studentListArray = array();
        foreach($groupStudents as $aStudent){
-          $studentListArray[] = $aStudent->lastname . ' ' . $aStudent->firstname . ' ' . print_user_picture($aStudent->id, $course->id, !empty($aStudent->picture), 0, true, true) ;
+          $userpic = new user_picture();
+          $userpic->user = $aStudent->id;
+          $userpic->courseid = $course->id;
+          $userpic->image->src = !empty($aStudent->picture);
+          $studentListArray[] = $aStudent->lastname . ' ' . $aStudent->firstname . ' ' . $OUTPUT->user_picture($userpic) ;
        }
-       print_simple_box_start('center', '80%');
+       echo $OUTPUT->box_start('center', '80%');
        echo '<center><i>'.get_string('evaluatingforusers', 'techproject') .' : </i> '. implode(',', $studentListArray) . '</center><br/>';
     }
-    
     if ($work == 'regrade'){
         $autograde = techproject_autograde($project, $currentGroupId);
         if ($project->grade > 0){
@@ -78,33 +81,28 @@
             $assessment->itemclass = 'auto';
             $assessment->criterion = 0;
             $assessment->grade = round($autograde * $project->grade);
-            if ($oldrecord = get_record_select('techproject_assessment', "projectid = {$project->id} AND userid = {$aStudent->id} AND itemid = 0 AND itemclass='auto'")){
+            if ($oldrecord = $DB->get_record_select('techproject_assessment', "projectid = {$project->id} AND userid = {$aStudent->id} AND itemid = 0 AND itemclass='auto'")){
                 $assessment->id = $oldrecord->id;
-                update_record('techproject_assessment', $assessment);
+                $DB->update_record('techproject_assessment', $assessment);
                 add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary", $project->id, $cm->id, $aStudent->id);
             } else {
-                insert_record('techproject_assessment', $assessment);
+                $DB->insert_record('techproject_assessment', $assessment);
             }
         }
     }
-    print_simple_box_end();
-    
+    echo $OUTPUT->box_end();
     // do what needed
     if ($work == 'dosave'){
         // getting candidate keys for grading
         $parmKeys = array_keys($_POST);
-    
         function filterTeachergradeKeys($var){
             return preg_match("/teachergrade_/", $var);
         }
-    
         function filterFreegradeKeys($var){
             return preg_match("/free_/", $var);
         }
-    
         $teacherGrades = array_filter($parmKeys, 'filterTeachergradeKeys');
         $freeGrades = array_filter($parmKeys, 'filterFreegradeKeys');
-            
         foreach($groupStudents as $aStudent){
             // dispatch autograde for all students 
             if ($project->autogradingenabled){
@@ -118,15 +116,14 @@
                 $assessment->criterion = 0;
                 $grade = optional_param('autograde', '', PARAM_INT);
                 if (!empty($grade)) $assessment->grade = $grade;
-                if ($oldrecord = get_record_select('techproject_assessment', "projectid = {$project->id} AND userid = {$aStudent->id} AND itemid = '{$assessment->itemid}' AND itemclass='{$assessment->itemclass}'")){
+                if ($oldrecord = $DB->get_record_select('techproject_assessment', "projectid = {$project->id} AND userid = {$aStudent->id} AND itemid = '{$assessment->itemid}' AND itemclass='{$assessment->itemclass}'")){
                     $assessment->id = $oldrecord->id;
-                    update_record('techproject_assessment', $assessment);
+                    $DB->update_record('techproject_assessment', $assessment);
                     add_to_log($course->id, 'techproject', 'grade', "view.php?id={$cm->id}&view=view_summary&group={$currentGroupId}", $project->id, $cm->id, $aStudent->id);
                 } else {
-                    insert_record('techproject_assessment', $assessment);
+                    $DB->insert_record('techproject_assessment', $assessment);
                 }
             }
-    
             // dispatch teachergrades for all students 
             foreach($teacherGrades as $aGradeKey){
                 preg_match('/teachergrade_([^_]*?)_([^_]*?)(?:_(.*?))?$/', $aGradeKey, $matches);
@@ -144,14 +141,13 @@
                 }
                 $grade = optional_param($aGradeKey, '', PARAM_INT);
                 if (!empty($grade)) $assessment->grade = $grade;
-                if ($oldrecord = get_record_select('techproject_assessment', "projectid = {$project->id} AND userid = {$aStudent->id} AND itemid = {$assessment->itemid} AND itemclass='{$assessment->itemclass}' {$criterionClause}")){
+                if ($oldrecord = $DB->get_record_select('techproject_assessment', "projectid = {$project->id} AND userid = {$aStudent->id} AND itemid = {$assessment->itemid} AND itemclass='{$assessment->itemclass}' {$criterionClause}")){
                     $assessment->id = $oldrecord->id;
-                    update_record('techproject_assessment', $assessment);
+                    $DB->update_record('techproject_assessment', $assessment);
                 } else {
-                    insert_record('techproject_assessment', $assessment);
+                    $DB->insert_record('techproject_assessment', $assessment);
                 }
             }
-    
             // dispatch freegrades
             foreach($freeGrades as $aGradeKey){
                 preg_match('/free_([^_]*?)$/', $aGradeKey, $matches);
@@ -165,11 +161,11 @@
                 $assessment->criterion = $matches[1];
                 $grade = optional_param($aGradeKey, '', PARAM_INT);
                 if (!empty($grade)) $assessment->grade = $grade;
-                if ($oldrecord = get_record_select('techproject_assessment', "projectid = {$project->id} AND userid = {$aStudent->id} AND itemclass = 'free' AND itemid = 0 AND criterion = {$assessment->criterion}")){
+                if ($oldrecord = $DB->get_record_select('techproject_assessment', "projectid = {$project->id} AND userid = {$aStudent->id} AND itemclass = 'free' AND itemid = 0 AND criterion = {$assessment->criterion}")){
                     $assessment->id = $oldrecord->id;
-                    update_record('techproject_assessment', $assessment);
+                    $DB->update_record('techproject_assessment', $assessment);
                 } else {
-                    insert_record('techproject_assessment', $assessment);
+                    $DB->insert_record('techproject_assessment', $assessment);
                 }
             }
             add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary&group={$currentGroupId}", $project->id, $cm->id, $aStudent->id);
@@ -177,21 +173,20 @@
     }
     elseif ($work == 'doerase'){
         foreach($groupStudents as $aStudent){
-            delete_records('techproject_assessment', 'projectid', $project->id, 'userid', $aStudent->id);
+            $DB->delete_records('techproject_assessment', array('projectid' => $project->id, 'userid' => $aStudent->id));
             add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary&group={$currentGroupId}", 'erase', $cm->id, $aStudent->id);
             add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary&group={$currentGroupId}", 'erase', $cm->id);
         }
     }
     if ($project->teacherusescriteria){
-        $freecriteria =  get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 1");
-        $criteria = get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 0");
+        $freecriteria =  $DB->get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 1");
+        $criteria = $DB->get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 0");
         if (!$criteria && !$freecriteria){
-            print_simple_box(format_text(get_string('cannotevaluatenocriteria','techproject'), FORMAT_HTML), 'center');
+            echo $OUTPUT->box(format_text(get_string('cannotevaluatenocriteria','techproject'), FORMAT_HTML), 'center');
             return;
         }
     }
     $canGrade = false;
-    
     ?>
     <center>
     <script type="text/javascript">
@@ -200,7 +195,6 @@
         document.forms['assessform'].work.value="do" + cmd;
         document.forms['assessform'].submit();
     }
-    
     function cancel(){
         document.forms['assessform'].submit();
     }
@@ -211,10 +205,9 @@
     <input type="hidden" name="work" value=""/>
     <table width="80%">
     <?php
-        $milestones = get_records_select('techproject_milestone', "projectid = {$project->id} AND groupid = {$currentGroupId}");
-        $grades = get_records_select('techproject_assessment', "projectid = {$project->id} AND groupid = {$currentGroupId} GROUP BY itemid,criterion,itemclass");
+        $milestones = $DB->get_records_select('techproject_milestone', "projectid = {$project->id} AND groupid = {$currentGroupId}");
+        $grades = $DB->get_records_select('techproject_assessment', "projectid = {$project->id} AND groupid = {$currentGroupId} GROUP BY itemid,criterion,itemclass");
         $gradesByClass = array();
-        
         // if there are any grades yet, compile them by categories
         if($grades){
             $grades = array_values($grades);
@@ -222,11 +215,10 @@
                 $gradesByClass[$grades[$i]->itemclass][$grades[$i]->itemid][$grades[$i]->criterion] = $grades[$i]->grade;
             }
         }
-        
         if($milestones && (!$project->teacherusescriteria || $criteria)){
             $canGrade = true;
             echo "<tr><td colspan=\"2\" align=\"center\">";
-            print_heading_block(get_string('itemevaluators', 'techproject'));
+            echo $OUTPUT->heading(get_string('itemevaluators', 'techproject'));
             echo "</td></tr>";
             foreach($milestones as $aMilestone){
                 echo "<tr valign=\"top\"><td align=\"left\"><b>";
@@ -247,11 +239,10 @@
                 echo "</td></tr>";
             }
         }
-        
         // additional free criteria for grading (including autograde)
         if ($project->autogradingenabled || $project->teacherusescriteria){
             echo "<tr><td colspan=\"2\">";
-            print_heading_block(get_string('globalevaluators', 'techproject'));
+            echo $OUTPUT->heading(get_string('globalevaluators', 'techproject'));
             echo "</td></tr>";
             $canGrade = true;
         }
@@ -271,11 +262,9 @@
                 }
             }
         }
-        
         if (!$canGrade){
-            print_simple_box(get_string('cannotevaluate', 'techproject'), 'center', '70%');
+            echo $OUTPUT->box(get_string('cannotevaluate', 'techproject'), 'center', '70%');
         }
-        
     ?>
     </table>
     <br/>

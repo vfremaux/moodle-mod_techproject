@@ -1,4 +1,4 @@
-<?php  // $Id: view.php,v 1.2 2011-07-14 13:33:03 vf Exp $
+<?php  // $Id: view.php,v 1.2 2012-08-12 22:01:36 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -21,42 +21,40 @@
     require_once($CFG->dirroot.'/mod/techproject/locallib.php');
     require_once($CFG->dirroot.'/mod/techproject/notifylib.php');
 
-	require_js($CFG->wwwroot.'/mod/techproject/js/js.js');
-    
+	$PAGE->requires->js('/mod/techproject/js/js.js');
     // fixes locale for all date printing.
     setLocale(LC_TIME, substr(current_language(), 0, 2));
 
     $id = required_param('id', PARAM_INT);   // module id
     $view = optional_param('view', @$_SESSION['currentpage'], PARAM_CLEAN);   // viewed page id
-    
     $nohtmleditorneeded = true;
     $editorfields = '';
 
     $timenow = time();
-    
     // get some useful stuff...
     if (! $cm = get_coursemodule_from_id('techproject', $id)) {
-        error('Course Module ID was incorrect');
+        print_error('invalidcoursemodule');
     }
-    if (! $course = get_record('course', 'id', $cm->course)) {
-        error('Course is misconfigured');
+    if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
+        print_error('coursemisconf');
     }
-    if (! $project = get_record('techproject', 'id', $cm->instance)) {
-        error('Course module is incorrect');
+    if (! $project = $DB->get_record('techproject', array('id' => $cm->instance))) {
+        print_error('invalidtechprojectid', 'techproject');
     }
+    
+    $project->cmid = $cm->id;
     
     require_login($course->id, false, $cm);
-    
+
     if (@$CFG->enableajax){
-        require_js(array('yui_yahoo',
-                         'yui_dom',
-                         'yui_event',
-                         'yui_dragdrop',
-                         'yui_connection'));
+        $PAGE->requires->yui2_lib('yui_yahoo');
+        $PAGE->requires->yui2_lib('yui_dom');
+        $PAGE->requires->yui2_lib('yui_event');
+        $PAGE->requires->yui2_lib('yui_dragdrop');
+        $PAGE->requires->yui2_lib('yui_connection');
     }
-    
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
-    $systemcontext = get_context_instance(CONTEXT_SYSTEM, 0);
+    $context = context_module::instance($cm->id);
+    $systemcontext = context_system::instance(0);
 
     $strprojects = get_string('modulenameplural', 'techproject');
     $strproject  = get_string('modulename', 'techproject');
@@ -76,36 +74,38 @@
 		$currentGroupId = 0;
 	} else {
         $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;  // Group change requested?
-        if (isguest()){ // for guests, use session
+        if (isguestuser()){ // for guests, use session
             if ($changegroup >= 0){
                 $_SESSION['guestgroup'] = $changegroup;
             }
             $currentGroupId = 0 + @$_SESSION['guestgroup'];
         } else { // for normal users, change current group
-            $currentGroupId = 0 + get_and_set_current_group($course, $groupmode, $changegroup);
-            if (!groups_is_member($currentGroupId , $USER->id) && !has_capability('moodle/site:doanything', $systemcontext)) $USER->editmode = "off";
+            $currentGroupId = 0 + groups_get_course_group($course, true);
+            if (!groups_is_member($currentGroupId , $USER->id) && !is_siteadmin($USER->id)) $USER->editmode = "off";
         }
     }
 
     // ...display header...
-    print_header_simple(format_string($project->name), 
-                        '',
-                        build_navigation(array(), $cm),
-                        '', 
-                        '', 
-                        true, 
-                        update_module_button($cm->id, $course->id, $strproject), navmenu($course, $cm));
+    $url = $CFG->wwwroot."/mod/techproject/view.php?id=$id";
+    $PAGE->set_title(format_string($project->name));
+    $PAGE->set_url($url);
+    $PAGE->set_heading('');
+    $PAGE->set_focuscontrol('');
+    $PAGE->set_cacheable(true);
+    $PAGE->set_button(update_module_button($cm->id, $course->id, $strproject));
+    $PAGE->set_headingmenu(navmenu($course, $cm));
+    $pagebuffer = $OUTPUT->header();
 
-    echo "<div align=\"right\">";
-    echo techproject_edition_enable_button($cm, $course, $project, $USER->editmode);
-    echo "</div>";
+    $pagebuffer .= "<div align=\"right\">";
+    $pagebuffer .= techproject_edition_enable_button($cm, $course, $project, $USER->editmode);
+    $pagebuffer .= "</div>";
     // ...and if necessary set default action
     if (has_capability('mod/techproject:gradeproject', $context)) {
         if (empty($action)) { // no action specified, either go straight to elements page else the admin page
 			$action = 'teachersview';
         }
     }
-    elseif (!isguest()) { // it's a student then
+    elseif (!isguestuser()) { // it's a student then
         if (!$cm->visible) {
             notice(get_string('activityiscurrentlyhidden'));
         }
@@ -124,75 +124,39 @@
             $action = 'notavailable';
         }
     }
-    
     // ...log activity...
     add_to_log($course->id, 'techproject', 'view', "view.php?id=$cm->id", $project->id, $cm->id);
 
-	// ...Fonction for hide/show some information
-	echo"
-		<script type=\"text/javascript\">
-		function toggle(i,n) {
-			e = document.getElementById(n);
-			if (e.style.display == 'none') {
-				e.style.display = 'block';
-				document.images['img' + i].src = '{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif';
-	";
-    if (@$CFG->enableajax){
-        echo "
-                    var sUrl = '{$CFG->wwwroot}/mod/techproject/ajax/updatecollapse.php?id={$cm->id}&entity={$view}&userid={$USER->id}&state=0&entryid=' + i;
-                    var transaction = YAHOO.util.Connect.asyncRequest('GET', sUrl, null, null);
-        ";
-    }
-    echo "
-			} else {
-				e.style.display = 'none';
-				document.images['img' + i].src = '{$CFG->wwwroot}/mod/techproject/pix/p/switch_plus.gif';
-	";
-    if (@$CFG->enableajax){
-            echo "
-                var sUrl = '{$CFG->wwwroot}/mod/techproject/ajax/updatecollapse.php?id={$cm->id}&entity={$view}&userid={$USER->id}&state=1&entryid=' + i;
-                var transaction = YAHOO.util.Connect.asyncRequest('GET', sUrl, null, null);
-    ";
-}
-    echo "
-			}
-		}
+	// pass useful values to javasctript: 
 
-		function toggle_show(i,n) {
-			e = document.getElementById(n);
-			if (e.style.display == 'none') {
-				e.style.display = 'block';
-				document.images['eye' + i].src = '{$CFG->wwwroot}/mod/techproject/pix/p/show.gif';
-			} else {
-				e.style.display = 'none';
-				document.images['eye' + i].src = '{$CFG->wwwroot}/mod/techproject/pix/p/hide.gif';
-			}
-		}
-		</script> 
-	";
-    require_js(array('yui_yahoo', 'yui_event', 'yui_connection'));
-
+	$moodlevars = new StdClass;
+	$moodlevars->view = $view;
+	$moodlevars->userid = $USER->id;
+	$moodlevars->cmid = $cm->id;
+	$moodlevarsjson = addslashes(json_encode($moodlevars));
+	$pagebuffer .= "<script type=\"text/javascript\">";
+	$pagebuffer .= "var moodlevars = eval('({$moodlevarsjson})');";
+	$pagebuffer .= "</script>";
+	
 
     /****************** display final grade (for students) ************************************/
     if ($action == 'displayfinalgrade' ) {
-    	echo "Fin de projet, affichage des notes";
-    	//==========> Y'as plus qu'a remplir
-    
-    
+    	echo $pagebuffer;
+    	echo get_string('endofproject', 'techproject');
     /****************** assignment not available (for students)***********************/
     } elseif ($action == 'notavailable') {
-        print_heading(get_string('notavailable', 'techproject'));
+    	echo $pagebuffer;
+        echo $OUTPUT->heading(get_string('notavailable', 'techproject'));
 
     /****************** student's view  ***********************/
     } elseif ($action == 'studentsview') {
 
 		if ($timenow > $project->projectend) { // if project is over, just cannot change anything more
-		    print_simple_box('<span class="inconsistency">'.get_string('projectisover','techproject').'</span>', 'center', '70%');
+		    $pagebuffer .= $OUTPUT->box('<span class="inconsistency">'.get_string('projectisover','techproject').'</span>', 'center', '70%');
 		    $USER->editmode = 'off';
 		}
-    	
             /// Print settings and things in a table across the top
-        echo '<table width="100%" border="0" cellpadding="3" cellspacing="0"><tr valign="top">';
+        $pagebuffer .= '<table width="100%" border="0" cellpadding="3" cellspacing="0"><tr valign="top">';
 
         /// Allow the student to change groups (for this session), seeing other's work
         if ($groupmode){ // if group are used
@@ -206,17 +170,12 @@
                     if (($groupmode == VISIBLEGROUPS) && groups_is_member($aGroup->id, $USER->id)) $aGroup->name .= ' (*)';
                     $grouptable[$aGroup->id] = $aGroup->name;
                 }
-                echo '<td>';
-                  echo '<form name="groupchooser" action="#" method="GET">';
-                  echo "<input type=\"hidden\" name=\"id\" value=\"{$cm->id}\" />";
-                  print_string('currentgroup', 'techproject');
-                  choose_from_menu($grouptable, 'group', $currentGroupId, get_string('nogroup','techproject'), 'document.groupchooser.submit();');
-                  echo "</form>";
-                echo ' <span style="font-size : smaller">(*) '. get_string('mygroupsadvice', 'techproject') . '</td>';
+                $pagebuffer .= '<td>';
+                $pagebuffer .= groups_print_activity_menu($cm, $url, true);
+				$pagebuffer .= '</td>';
             }
         }
-        echo '</table>';    
-    	
+        $pagebuffer .= '</table>';    
         // ungrouped students can view group 0's project (teacher's) but not change it if ungroupedsees is off.
         // in visible mode, student from other groups cannot edit our material.
     	if ($groupmode != SEPARATEGROUPS && (!$currentGroupId || !groups_is_member($currentGroupId, $USER->id))) {
@@ -236,14 +195,13 @@
         if (!$project->guestscanuse || $currentGroupId != 0){ // guest can sometimes edit group 0
             $USER->editmode = 'off';
         } elseif ($project->guestscanuse && !$currentGroupId && $timenow < $project->projectend) { // guest could have edited but project is closed
-            $demostr = '(' . get_string('demomodeclosedproject', 'techproject') . ') ' . helpbutton('demomode', get_string('demomode', 'techproject'), 'techproject', true, false, '',true);
+            $demostr = '(' . get_string('demomodeclosedproject', 'techproject') . ') ' . $OUTPUT->help_icon('demomode', 'techproject', false);
 		    $USER->editmode = 'off';
 		} else {
-           $demostr = '(' . get_string('demomode', 'techproject') . ') ' . helpbutton('demomode', get_string('demomode', 'techproject'), 'techproject', true, false, '',true);
+           $demostr = '(' . get_string('demomode', 'techproject') . ') ' . $OUTPUT->help_icon('demomode', 'techproject', false);
         }
-    
         /// Print settings and things in a table across the top
-        echo '<table width="100%" border="0" cellpadding="3" cellspacing="0"><tr valign="top">';
+        $pagebuffer .= '<table width="100%" border="0" cellpadding="3" cellspacing="0"><tr valign="top">';
 
         /// Allow the guest to change groups (for this session) only for visible groups
         if ($groupmode == VISIBLEGROUPS) {
@@ -253,29 +211,21 @@
                 foreach($groups as $aGroup){
                     $grouptable[$aGroup->id] = $aGroup->name;
                 }
-                echo '<td>';
-                  echo '<form name="groupchooser" action="#" method="GET">';
-                  echo "<input type=\"hidden\" name=\"id\" value=\"{$cm->id}\" />";
-                  print_string('currentgroup', 'techproject');
-                  choose_from_menu($grouptable, 'group', $currentGroupId, get_string('nogroup','techproject'), 'document.groupchooser.submit();');
-                  echo "</form>";
-                echo '</td>';
+                $pagebuffer .= '<td>';
+                $pagebuffer .= groups_print_activity_menu($cm, $url, true);
+                $pagebuffer .= '</td>';
             }
         }    	
-        echo '</table>';    
-    	
+        $pagebuffer .= '</table>';    
     	include('techproject.php');    	
 
     /****************** teacher's view - display admin page  ************/
     } elseif ($action == 'teachersview') {
         /// Check to see if groups are being used in this workshop
         /// and if so, set $currentGroupId to reflect the current group
-        $changegroup = isset($_REQUEST['group']) ? $_REQUEST['group'] : -1 ;  // Group change requested?
-        $groupmode = groups_get_activity_groupmode($cm, $course);   // Groups are being used?
-        $currentGroupId = 0 + get_and_set_current_group($course, $groupmode, $changegroup); 
-        
+        $currentGroupId = 0 + groups_get_course_group($course, true); 
         /// Print settings and things in a table across the top
-        echo '<table width="100%" border="0" cellpadding="3" cellspacing="0"><tr valign="top">';
+        $pagebuffer .= '<table width="100%" border="0" cellpadding="3" cellspacing="0"><tr valign="top">';
 
         /// Allow the teacher to change groups (for this session)
         if ($groupmode) {
@@ -285,17 +235,12 @@
                 foreach($groups as $aGroup){
                     $grouptable[$aGroup->id] = $aGroup->name;
                 }
-                echo '<td>';
-                  echo '<form name="groupchooser" action="#" method="GET">';
-                  echo "<input type=\"hidden\" name=\"id\" value=\"{$cm->id}\" />";
-                  print_string('currentgroup', 'techproject');
-                  choose_from_menu($grouptable, 'group', $currentGroupId, get_string('nogroup','techproject'), "document.forms['groupchooser'].submit()");
-                  echo "</form>";
-                echo '</td>';
+                $pagebuffer .= '<td>';
+                $pagebuffer .= groups_print_activity_menu($cm, $url, true);
+                $pagebuffer .= '</td>';
             }
         }    	
-        echo '</tr></table>';    
-    	
+        $pagebuffer .= '</tr></table>';    
     	if (empty($currentGroupId)){
     		$currentGroupId = 0;
     	}
@@ -303,24 +248,23 @@
 
     /****************** show description  ************/
     } elseif ($action == 'showdescription') {
+    	echo $pagebuffer;
         techproject_print_assignement_info($project);
-        print_simple_box(format_text($project->description, $project->format), 'center', '70%', '', 5, 'generalbox', 'intro');
-        print_continue($_SERVER["HTTP_REFERER"]);
+        echo $OUTPUT->box(format_text($project->description, $project->format), 'center', '70%', '', 5, 'generalbox', 'intro');
+        echo $OUTPUT->continue_button($_SERVER["HTTP_REFERER"]);
 
     /*************** student is not in a group **************************************/
     } elseif ($action == 'notingroup') {
-		print_simple_box(format_text(get_string('notingroup', 'techproject'), 'HTML'), 'center', '70%', '', 5, 'generalbox', 'intro');
-		print_continue($_SERVER["HTTP_REFERER"]);     
+    	echo $pagebuffer;
+		echo $OUTPUT->box(format_text(get_string('notingroup', 'techproject'), 'HTML'), 'center', '70%', '', 5, 'generalbox', 'intro');
+		echo $OUTPUT->continue_button($_SERVER["HTTP_REFERER"]);     
 
     /*************** no man's land **************************************/
     } else {
-        error("Fatal Error: Unknown Action: ".$action."\n");
+    	echo $pagebuffer;
+        print_error('errorfatalaction', 'techproject', $action);
     }
 
-    if (empty($nohtmleditorneeded) and $usehtmleditor) {
-        use_html_editor($editorfields);
-    }
-
-    print_footer($course);
+    echo $OUTPUT->footer($course);
 
 ?>

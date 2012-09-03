@@ -13,11 +13,9 @@
     * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
     * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
     */
-    
 /// counting leaf requests
-    
     if (has_capability('mod/techproject:viewpreproductionentities', $context)){
-        $requirements = get_records_select('techproject_requirement', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", '', 'id,abstract');
+        $requirements = $DB->get_records_select('techproject_requirement', "projectid = ? AND groupid = ? AND fatherid = 0 ", array($project->id, $currentGroupId) , '', 'id,abstract');
         $leafRequs = array();
         $leafRequList = '';
         if ($requirements){
@@ -27,11 +25,9 @@
             $leafRequList = implode("','", $leafRequs);
         }
         $countrequ = count($leafRequs);
-    
-    
 /// counting specifications
 
-        $specifications = get_records_select('techproject_specification', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", '', 'id,abstract');
+        $specifications = $DB->get_records_select('techproject_specification', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", array($project->id, $currentGroupId), '', 'id,abstract');
         $leafSpecs = array();
         $leafSpecList = '';
         if ($specifications){
@@ -42,10 +38,9 @@
         }
         $countspec = count($leafSpecs);
     }
-    
 /// counting tasks
 
-        $tasks = get_records_select('techproject_task', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", '', 'id,abstract');
+        $tasks = $DB->get_records_select('techproject_task', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", array($project->id, $currentGroupId), '', 'id,abstract');
         $leafTasks = array();
         $leafTaskList = '';
         if ($tasks){
@@ -55,10 +50,9 @@
             $leafTaskList = implode("','", $leafTasks);
         }
         $counttask = count($leafTasks);
-    
 /// counting deliverables
 
-        $deliverables = get_records_select('techproject_deliverable', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", '', 'id,abstract');
+        $deliverables = $DB->get_records_select('techproject_deliverable', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", array($project->id, $currentGroupId), '', 'id,abstract');
         $leafDelivs = array();
         $leafDelivList = '';
         if ($deliverables){
@@ -68,7 +62,6 @@
             $leafDelivList = implode("','", $leafDelivs);
         }
         $countdeliv = count($leafDelivs);
-        
 /// counting requirements uncovered
 
     if (has_capability('mod/techproject:viewpreproductionentities', $context)){
@@ -77,9 +70,9 @@
                SELECT
                  COUNT(IF(str.specid IS NULL, 1, NULL)) as uncovered
                FROM
-                 {$CFG->prefix}techproject_requirement as r
+                 {techproject_requirement} as r
                LEFT JOIN
-                 {$CFG->prefix}techproject_spec_to_req as str
+                 {techproject_spec_to_req} as str
                ON 
                  r.id = str.reqid
                WHERE
@@ -87,13 +80,12 @@
                  r.groupid = {$currentGroupId} AND
                  r.id IN ('{$leafRequList}')
             ";
-            $res = get_records_sql($query);
+            $res = $DB->get_records_sql($query);
             $res = array_values($res);
             $res = $res[0];
             $uncoveredrequ = $res->uncovered;
             $coveredrequ = $countrequ - $res->uncovered;
         }
-        
 /// counting specs uncovered
 
         if(isset($leafSpecList)){
@@ -101,9 +93,9 @@
                SELECT
                  COUNT(IF(stt.taskid IS NULL,1,NULL)) as uncovered
                FROM
-                 {$CFG->prefix}techproject_specification as s
+                 {techproject_specification} as s
                LEFT JOIN
-                 {$CFG->prefix}techproject_task_to_spec as stt
+                 {techproject_task_to_spec} as stt
                ON 
                  s.id = stt.specid
                WHERE
@@ -111,15 +103,14 @@
                  s.groupid = {$currentGroupId} AND
                  s.id IN ('{$leafSpecList}')
             ";
-            $res = get_records_sql($query);
+            $res = $DB->get_records_sql($query);
             $res = array_values($res);
             $res = $res[0];
             $uncoveredspec = $res->uncovered;
             $coveredspec = $countspec - $res->uncovered;
         }
     }
-    
-    $projectheading = get_record('techproject_heading', 'projectid', $project->id, 'groupid', $currentGroupId);
+    $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentGroupId));
     // if missing create one
     if (!$projectheading){
         $projectheading->id = 0;
@@ -131,20 +122,20 @@
         $projectheading->environment = '';
         $projectheading->organisation = '';
         $projectheading->department = '';        
-        insert_record('techproject_heading', $projectheading);
+        $DB->insert_record('techproject_heading', $projectheading);
     }
-    
 /********************************************* Start producing summary ***************************/
 
+	echo $pagebuffer;
     echo '<center>';
-    print_simple_box_start('center', '100%');
+    echo $OUTPUT->box_start('center', '100%');
     ?>
     <table width="80%">
         <tr valign="top">
             <th align="left" width="60%">
                 <?php 
                 print_string('summaryforproject', 'techproject');
-                helpbutton ('leaves', get_string('singularentries','techproject'), 'techproject', true, false, '',false); 
+                echo $OUTPUT->help_icon('leaves', 'techproject', true); 
                 ?>
              </th>
              <th align="left" width="40%">
@@ -157,38 +148,31 @@
         echo '<td align="left">'.get_string('totalrequ', 'techproject').'</td>';
         echo '<td align="left">'.(0 + @$countrequ).'</td>';
         echo '</tr>';
-    
         echo '<tr class="subsectionrow">';
         echo '<td align="left"><span class="level4">&nbsp;&nbsp;&nbsp;' . get_string('covered', 'techproject') . '</span></td>';
         echo '<td align="left">'.(0 + @$coveredrequ).'</td>';
         echo '</tr>';
-    
         echo '<tr class="subsectionrow">';
         echo '<td align="left"><span class="level4">&nbsp;&nbsp;&nbsp;' . get_string('uncovered', 'techproject') . '</span></td>';
         echo '<td align="left">'.(0 + @$uncoveredrequ).'</td>';
         echo '</tr>';
-    
         echo '<tr class="sectionrow">';
         echo '<td align="left">'.get_string('totalspec', 'techproject').'</td>';
         echo '<td align="left">'.(0 + @$countspec).'</td>';
         echo '</tr>';
-    
         echo '<tr class="subsectionrow">';
         echo '<td align="left"><span class="level4">&nbsp;&nbsp;&nbsp;' . get_string('covered', 'techproject') . '</span></td>';
         echo '<td align="left">'.(0 + @$coveredspec).'</td>';
         echo '</tr>';
-    
         echo '<tr class="subsectionrow">';
         echo '<td align="left"><span class="level4">&nbsp;&nbsp;&nbsp;' . get_string('uncovered', 'techproject') . '</span></td>';
         echo '<td align="left">'.(0 + @$uncoveredspec).'</td>';
         echo '</tr>';
     }
-    
     echo '<tr class="sectionrow">';
     echo '<td align="left">' . get_string('totaltask', 'techproject') . '</td>';
     echo '<td align="left">'.(0 + @$counttask).'</td>';
     echo '</tr>';
-    
     echo '<tr class="sectionrow">';
     echo '<td align="left">' . get_string('totaldeliv', 'techproject') . '</td>';
     echo '<td align="left">'.(0 + @$countdeliv).'</td>';
@@ -197,16 +181,15 @@
     </table>
     <br/>
     <?php
-    
-    
     if ($project->teacherusescriteria){
+    	$table = new html_table();
         $table->head = array(get_string('criteria', 'techproject'), '');
         $table->align = array('left', 'left');
         $table->size = array('40%', '60%');
         $table->wrap = array('','');
         $table->data = array();
-        $freeCriteria = get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 1");
-        $criteria = get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 0");
+        $freeCriteria = $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 1", array($project->id));
+        $criteria = $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 0", array($project->id));
         $str = '';
         if ($criteria){
             foreach($criteria as $aCriteria){
@@ -221,33 +204,30 @@
             }
             $table->data[] = array(get_string('freecriteriaset', 'techproject'), $str);
         }
-        print_table($table);
+        echo html_writer::table($table);
         unset($table);
     }
-    
+    $table = new html_table();
     $table->head = array(get_string('assessments', 'techproject'), '');
     $table->align = array('left', 'left');
     $table->size = array('40%', '60%');
     $table->wrap = array('','');
-    
     if (time() < $project->assessmentstart){
         $table->data[] = array(get_string('notavailable'), '');
     }
     else{
         // getting all grades
-        $milestones = get_records_select('techproject_milestone', "projectid = {$project->id} AND groupid = {$currentGroupId}");
-        $grades = get_records_select('techproject_assessment', "projectid = {$project->id} AND groupid = {$currentGroupId} GROUP BY itemid, criterion, itemclass");
-        $freecriteria =  get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 1");
-        $criteria = get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 0");
+        $milestones = $DB->get_records_select('techproject_milestone', "projectid = ? AND groupid = ? ", array($project->id, $currentGroupId));
+        $grades = $DB->get_records_select('techproject_assessment', "projectid = ? AND groupid = ? GROUP BY itemid, criterion, itemclass", array($project->id, $currentGroupId));
+        $freecriteria =  $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 1", array($project->id));
+        $criteria = $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 0", array($project->id));
         $gradesByClass = array();
-        
         // if there are any grades yet, compile them by categories
         if($grades){
             $grades = array_values($grades);
             for($i = 0 ; $i < count($grades) ; $i++ ){
                 $gradesByClass[$grades[$i]->itemclass][$grades[$i]->itemid][$grades[$i]->criterion] = $grades[$i]->grade;
             }
-        
             if($milestones && (!$project->teacherusescriteria || $criteria)){
                 foreach($milestones as $aMilestone){
                     $table->data[] = array(get_string('evaluatingfor','techproject'), $aMilestone->abstract);
@@ -277,7 +257,6 @@
                 }
             }
         }
-        
         // additional free criteria for grading
         if ($freecriteria){
             foreach($freecriteria as $aFreeCriterion){
@@ -289,10 +268,9 @@
             }
         }
     }
-    print_table($table);
+    echo html_writer::table($table);
     unset($table);
-    
-    print_simple_box_end();
+    echo $OUTPUT->box_end();
     echo '</center>';
 
 ?>

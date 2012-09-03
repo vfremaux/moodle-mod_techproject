@@ -4,6 +4,7 @@
     * Project : Technical Project Manager (IEEE like)
     *
     * Ajax receptor for updating collapse status.
+    * when Moodle enables ajax, will also, when expanding, return all the underlying div structure
     *
     * @package mod-techproject
     * @category mod
@@ -15,6 +16,7 @@
 
 
     include "../../../config.php";
+    require_once $CFG->dirroot."/mod/techproject/locallib.php";
 
     $id = required_param('id', PARAM_INT);   // module id
     $entity = required_param('entity', PARAM_ALPHA);   // module id
@@ -22,29 +24,46 @@
     $state = required_param('state', PARAM_INT);   // module id
 
     // get some useful stuff...
-    if (! $cm = get_record('course_modules', "id", $id)) {
-        error('Course Module ID was incorrect');
+    if (! $cm = get_coursemodule_from_id('techproject', $id)) {
+        print_error('invalidcoursemodule');
     }
-    if (! $course = get_record('course', 'id', $cm->course)) {
-        error('Course is misconfigured');
+    if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
+        print_error('coursemisconf');
     }
-    if (! $techproject = get_record('techproject', 'id', $cm->instance)) {
-        error('Course module is incorrect');
+    if (! $project = $DB->get_record('techproject', array('id' => $cm->instance))) {
+        print_error('invalidtechprojectid', 'techproject');
     }
+    
+    $group = 0 + groups_get_course_group($course, true);
 
     require_login($course->id, false, $cm);
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
-        
+    $context = context_module::instance($cm->id);
     if ($state){
         $collapse->userid = $USER->id;
         $collapse->projectid = $techproject->id;
         $collapse->entryid = $entryid;
         $collapse->entity = $entity;
         $collapse->collapsed = 1;
-        insert_record('techproject_collapse', $collapse);
+        $DB->insert_record('techproject_collapse', $collapse);
+
+		// prepare for hidden branch / may not bne usefull
+		/*
+	    if ($CFG->enableajax && $CFG->enablecourseajax){
+	    	$printfuncname = "techproject_print_{$entity}s";
+	    	$propagated->collapsed = true;
+	    	$printfuncname($project, $group, $entryid, $cm->id, $propagated);
+	    }
+	    */
+
     } else {
-        delete_records('techproject_collapse', 'userid', $USER->id, 'entryid', $entryid, 'entity', $entity);
+        $DB->delete_records('techproject_collapse', array('userid' => $USER->id, 'entryid' => $entryid, 'entity' => $entity));
+
+		// prepare for showing branch
+	    if ($CFG->enableajax && $CFG->enablecourseajax){
+	    	$printfuncname = "techproject_print_{$entity}";
+	    	$printfuncname($project, $group, $entryid, $cm->id);
+	    }
+
     }
-    
 
 ?>
