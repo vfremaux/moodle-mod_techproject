@@ -1,0 +1,251 @@
+$string['leaves_help'] = '
+<p>"Effective" entities are those that are not splitted into
+subbentites (leaves). They are "terminal" elements of the project,
+i.e., elements that designate an "effective" work to perfom.</p>
+
+<p>As an example, if a task A is splitted into two tasks B and C
+performing B and C will realize A. The real work which has to be
+done is the work defined by B and C. Here we conclude those tasks
+are "effective".</p>
+
+<p>This definition can be generalized to the entire entity set
+managed by the project manager: Final requirements can also be
+qualified as "effective", thus being those on which the final
+delivery checkup will concentrate its sight.</p>
+';
+
+$string['milestonedeadline_help'] = '
+<p>A milestone can be given a deadline.</p>
+
+<p>If this deadline is enabled, the dated milestone becomes an
+"official" phase of the activity module, and the assessment
+strategy may use them for calculating late indicators.</p>
+
+<p>Deadline cannot be set before project starts, nor overcome the
+project's end. Project end is considered as a built in phase, in
+addition of any dated milestone.</p>
+
+<p>The list ordering in the GUI being an ergonomic facility,
+consistency of deadline sequence is not verified when moving
+milestones up and down. Step 2 will reinforce signalling about such
+inconsistencies.</p>
+';
+
+$string['priority_help'] = '
+<p>This qualifier allows setting a priority for a specification.
+Priority will have influence on the tasks items that have been
+assigned to these specifications. Priority and szeverity are
+distinct qualifiers, in that a low severity specification (thus
+important in the final delivery) may have hight priority, because
+involved in a set of urgent realizations.</p>
+';
+
+$string['severity_help'] = '
+<p>This qualifier qualifies severity of a specification, i.e., the
+importance it will have in the final delivery.</p>
+
+<p>A severe specification will produce some deliverables that are
+highly expected. Such features are central objectives of the
+project itself. Severity is usually linked to the strength given to
+relevant requirements. But in some cases, severity could be a
+technical recommandation, out of care of the final customer.</p>
+
+<p>Less severe specifications will continue to be negotiable,
+although lack of them will always pull the final delivery to lower
+quality.</p>
+';
+
+$string['specificationtorequirement_help'] = '
+<p>This selector maps current specification to relevant
+requirements, according to the following semantic.</p>
+
+<p><i>"Specification X is a description of the functional and/or
+technical solution that accomplishes the requirement Y"</i></p>
+
+<p>Here the selection is multiple : An undetailed specification can
+realize a whole set of requirements. E.g., specifying existance of
+an authentication unit could induce following accomplishments :</p>
+
+<ol>
+<li>user inditity requirement.</li>
+
+<li>login/password authnetication.</li>
+
+<li>roles abstraction definition.</li>
+</ol>
+
+<p>Conversely, a set of detailed specification could be needed to
+describe a less detailed requirement.</p>
+';
+
+$string['status_help'] = '
+<p>This qualifier tells in which state the task is. Task life cicle
+will occur changing from state to state. In step 1, task status
+changing is free.</p>
+
+<p>The default status set can be changed altering database, or
+setting a new value set for that project instance.</p>
+
+<p>Default values are :</p>
+
+<ul>
+<li><b>PLANNED:</b> task is scheduled (with or without dates).</li>
+
+<li><b>STARTED:</b> task is on work.</li>
+
+<li><b>BLOCKED:</b> something externally blocks our work. We wait
+for issue resolution.</li>
+
+<li><b>DELAYED:</b> we decided to suspend our work for this
+task.</li>
+
+<li><b>COMPLETE:</b> task is complete. No more work to do.</li>
+<li><b>ABANDONED:</b> task is over. No more work to do and result is not significant.</li>
+</ul>
+
+<p>Step 2 may add some formal "workflow" feature for managing task
+life cycle control.</p>
+';
+
+$string['strengh_help'] = '
+<p>This qualifier allows defining some "strength" of a requirement,
+i.e., some measurement of the importance the customer attached to
+this requirement.</p>
+
+<p>Strong requirements will be no negociable parts of the project.
+They are usually central topics for which the project is
+launched.</p>
+
+<p>Lighter requirements might be subject to adaptation or even
+negociation, if staff or skills appear being unsufficiant after
+project started.</p>
+';
+
+$string['taskdependency_help'] = '
+<p>Allows mapping task dependencies.</p>
+
+<p>In a complex project, a task is likely to depend on previous
+works being achieved, because what has been produced by the latter
+is involved in the former.</p>
+
+<p>the trask tree implicitely defines subtasks as mastering a
+supertask, i.e., a supertask can be completed only after all
+subtasks do. This defines an implicit dependency mapping that will
+needs no special work. Thus the dependency mapping list will only
+show tasks that are not in the same hierarchy subtree.</p>
+
+<p>The project manager is featured with a circularity detection
+function, who will avoid circular dependencies to be mapped. In
+case circularity or interdependency has a sense (in real life),
+designers will have to choose a predominant direction for
+dependency.</p>
+
+<p>Cicularity avoidness will also forbid a subtask being dependent
+of any of its superstaks.</p>
+';
+
+$string['taskenddate_help'] = '
+<p>A deadline can be set for a task. This deadline MUST be
+consistant with task start date against task estimated duration
+:</p>
+
+<ul>
+<li>If start date is defined, deadline cannot occur before the
+start date summed with expected duration.</li>
+
+<li>If start date is not enabled, it will nevertheless be
+calculated automatically as deadline minus the expected duration (0
+as default for duration).</li>
+
+<li>If the task is assigned to a dated milestone, deadline cannot
+overcome milestone deadline.</li>
+
+<li>Deadline cannot overcome project end date.</li>
+</ul>
+';
+
+$string['taskstartdate_help'] = '
+<p>A task can be assigned a start date. This date will be used for
+Gantt workmap generation (step 2) and faisibility checks (step 2
+either).</p>
+
+<p>In step 1, the start date will have some checks performed :</p>
+
+<ul>
+<li>Task cannot start after the milestone deadline minus expected
+duration, if the current task is assigned to a dated
+milestone.</li>
+
+<li>Task cannot start after project ends (minus expected
+duration).</li>
+
+<li>Task cannot start before project starts.</li>
+</ul>
+';
+
+$string['tasktodeliverable_help'] = '
+<p>Tasks are performed in order to produce some concrete parts of
+the project's goal. These identified products are so called
+"deliverables".</p>
+
+<p>This selector allows designating the deliverables the current
+task is responsible of.</p>
+
+<p>By mapping such entities, you will allow some indicators being
+propagated through the project data model, allowing, as an example,
+to display the completion rate of some deliverables based on task
+completion analysis.</p>
+';
+
+$string['tasktomilestone_help'] = '
+<p>A task can be assigned a milestone. When mapped to a milestone,
+some constraints on deadlines are added. The task is known as
+having to be completed BEFORE the milestone is over.</p>
+
+<p>Step 2 impl&Atilde;&copy;mentation will add more accurate
+controls and consistency checks on the schedule.</p>
+';
+
+$string['tasktospecification_help'] = '
+<p>Task can be designated as realizing some subset of
+specifications. A single task may realize multiple specifications,
+if defined as a rather general task (e.g. : "make that software
+component" is a quite undetailed task definition that can realize
+an entire set of detailed specifications for that module).
+Conversely, a set of tasks may be implied in the realization of a
+single specification entry.</p>
+
+<p>This selector allows mapping the current task to multiple
+specification entries.</p>
+
+<p>By mapping such entities, you will allow some indicators being
+propagated through the project data model, allowing, as an example,
+to display the completion rate of some specifications based on task
+completion analysis.</p>
+';
+
+$string['teacherusescriteria_help'] = '
+<p>When this option is enabled, assessing the project will use a
+teacher defined criteria set.</p>
+
+<p>Teachers will setup the criteria with a relevant panel in the
+"teacher's tools" section.</p>
+
+<p>Criteria can be modified event after assessments started.
+Deleting a criterion will delete previous grades for this criterion
+for all assessed workspaces.</p>
+';
+
+$string['ungroupedsees_help'] = '
+<p>If this capability is enabled, and visibility is somehow liberam (no groups or visible groups) 
+ungroup members (non teachers) can view the defaut project content and change data 
+if they own the relevant capabilities.</p>
+<p>If enabled, and visibility policy is rather liberal, ungrouped students should be able to 
+watch the project content, but would not be allowed to change anything in it.
+<p>If enabled and groups are separated, unegrouped users are given an error message.</p>
+';
+
+$string['weight_help'] = '
+<p>The criterion weight allows balancing influence of eacb criteria in the set. The balancing is performed using "barycentric" mean : the sum of all weights will determine the 100% factor on the max
+grade.</p>
+';
