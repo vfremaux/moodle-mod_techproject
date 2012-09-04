@@ -23,4 +23,3 @@ $module->cron     = 0;           // Period for cron to check this module (secs)
 $module->release  = '2.2.0 (build 2012090400)';           // Period for cron to check this module (secs)
 $module->maturiy  = 'MATURITY_BETA';
 
-?>
