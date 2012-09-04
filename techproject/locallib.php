@@ -715,8 +715,9 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
 	$headdetaillink = '';
 	$timeduestr = '';
 	if (!preg_match('/SHORT_WITHOUT_ASSIGNEE/', $style) && $task->assignee){
-	    $assignee = $DB->get_record('user', array('id' => $task->assignee));
-	    $assigneestr = "<span class=\"taskassignee\">({$assignee->lastname} {$assignee->firstname})</span>";
+	    if ($assignee = $DB->get_record('user', array('id' => $task->assignee))){
+		    $assigneestr = "<span class=\"taskassignee\">({$assignee->lastname} {$assignee->firstname})</span>";
+		}
         if ($task->taskendenable) {
             $tasklate = ($task->taskend < time()) ? 'toolate' : 'futuretime' ;
             $timeduestr = "<span class=\"$tasklate timedue\">[".userdate($task->taskend)."]</span>";
