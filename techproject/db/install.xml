@@ -73,7 +73,7 @@
         <FIELD NAME="abstract" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="lastuserid" NEXT="description"/>
         <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="abstract" NEXT="descriptionformat"/>
         <FIELD NAME="descriptionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="description" NEXT="strength"/>
-        <FIELD NAME="strength" TYPE="char" LENGTH="8" NOTNULL="true" SEQUENCE="false" PREVIOUS="descriptionformat" NEXT="heaviness"/>
+        <FIELD NAME="strength" TYPE="char" LENGTH="8" NOTNULL="true" SEQUENCE="false" PREVIOUS="descriptionformat" NEXT="heavyness"/>
         <FIELD NAME="heavyness" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="strength"/>
       </FIELDS>
       <KEYS>
