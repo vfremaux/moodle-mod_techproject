@@ -148,6 +148,14 @@ function xmldb_techproject_install() {
     $record = new stdClass();
     $record->projectid	 = 0;
     $record->domain 	 = 'priority';
+    $record->code 		 = ' ';
+    $record->label 		 = 'unassigned';
+    $record->description = 'unassigneddesc';
+    $DB->insert_record('techproject_qualifier', $record);
+
+    $record = new stdClass();
+    $record->projectid	 = 0;
+    $record->domain 	 = 'priority';
     $record->code 		 = '1';
     $record->label 		 = 'canwait';
     $record->description = 'canwaitdesc';
@@ -188,6 +196,14 @@ function xmldb_techproject_install() {
     $record = new stdClass();
     $record->projectid	 = 0;
     $record->domain 	 = 'severity';
+    $record->code 		 = ' ';
+    $record->label 		 = 'unassigned';
+    $record->description = 'unassigneddesc';
+    $DB->insert_record('techproject_qualifier', $record);
+
+    $record = new stdClass();
+    $record->projectid	 = 0;
+    $record->domain 	 = 'severity';
     $record->code 		 = '*';
     $record->label 		 = 'goodie';
     $record->description = 'goodiedesc';
@@ -223,6 +239,14 @@ function xmldb_techproject_install() {
     $record->code 		 = '*****';
     $record->label 		 = 'mandatory';
     $record->description = 'mandatorydesc';
+    $DB->insert_record('techproject_qualifier', $record);
+
+    $record = new stdClass();
+    $record->projectid	 = 0;
+    $record->domain 	 = 'strength';
+    $record->code 		 = ' ';
+    $record->label 		 = 'unassigned';
+    $record->description = 'unassigneddesc';
     $DB->insert_record('techproject_qualifier', $record);
 
     $record = new stdClass();
@@ -319,6 +343,14 @@ function xmldb_techproject_install() {
     $record->code 		 = 'ABANDONED';
     $record->label 		 = 'abandoned';
     $record->description = 'abandoneddesc';
+    $DB->insert_record('techproject_qualifier', $record);
+
+    $record = new stdClass();
+    $record->projectid	 = 0;
+    $record->domain 	 = 'worktype';
+    $record->code 		 = 'OTH';
+    $record->label 		 = 'other';
+    $record->description = 'otherdesc';
     $DB->insert_record('techproject_qualifier', $record);
 
     $record = new stdClass();

@@ -1,3 +1,8 @@
+Version
+#######
+
+Moodle 2.3 beta
+
 This "techproject" activity module is intended to give a complete project driving environement in a pedagogical environement, allowing to teach first principles of pragmatic project management to students through standard steps that are collecting needs, specifying solution, and controlling developement tasks. Its goal is to fit moodle with a fully featured project management tool that could elsewhere be used to manage real projects. Teacher/students interaction will be based on state-of-the art practices in Moodle and using most of the core tools and API we can.
 
 Content:

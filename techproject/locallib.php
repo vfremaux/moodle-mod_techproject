@@ -495,10 +495,10 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
 	    $strengthsignal = "<span class=\"scale_{$strengthoption->truelabel}\" title=\"{$strengthoption->label}\">s</span>";
     }
 
-	$heavinessoption = techproject_get_option_by_key('heaviness', $project->id, $requirement->heaviness);
-    $heavinessclass = '';
-    if (!empty($requirement->heaviness)){
-	    $heavinessclass = "scale_{$heavinessoption->truelabel}";
+	$heavynessoption = techproject_get_option_by_key('heaviness', $project->id, $requirement->heavyness);
+    $heavynessclass = '';
+    if (!empty($requirement->heavyness)){
+	    $heavynessclass = "scale_{$heavynessoption->truelabel}";
 	}
 
 	if (!$fullsingle){
@@ -507,7 +507,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
 	} else {
 	    $hidedesc = '';
 	}
-	$head = "<table width='100%' class=\"nodecaption $heavinessclass\"><tr><td align='left' width='70%'><span class=\"level{$requlevel}\">{$checkbox}{$indent}{$hidesub} <a name=\"node{$requirement->id}\"></a>R{$numrequ} - ".format_string($requirement->abstract)."</span></td><td align='right' width='30%'>{$strengthsignal} {$speccount} {$completion} {$hidedesc}</td></tr></table>";
+	$head = "<table width='100%' class=\"nodecaption $heavynessclass\"><tr><td align='left' width='70%'><span class=\"level{$requlevel}\">{$checkbox}{$indent}{$hidesub} <a name=\"node{$requirement->id}\"></a>R{$numrequ} - ".format_string($requirement->abstract)."</span></td><td align='right' width='30%'>{$strengthsignal} {$speccount} {$completion} {$hidedesc}</td></tr></table>";
 
     unset($innertable);
     $innertable = new html_table();
@@ -715,9 +715,8 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
 	$headdetaillink = '';
 	$timeduestr = '';
 	if (!preg_match('/SHORT_WITHOUT_ASSIGNEE/', $style) && $task->assignee){
-	    if ($assignee = $DB->get_record('user', array('id' => $task->assignee))){
-	    	$assigneestr = "<span class=\"taskassignee\">({$assignee->lastname} {$assignee->firstname})</span>";
-	    }
+	    $assignee = $DB->get_record('user', array('id' => $task->assignee));
+	    $assigneestr = "<span class=\"taskassignee\">({$assignee->lastname} {$assignee->firstname})</span>";
         if ($task->taskendenable) {
             $tasklate = ($task->taskend < time()) ? 'toolate' : 'futuretime' ;
             $timeduestr = "<span class=\"$tasklate timedue\">[".userdate($task->taskend)."]</span>";
@@ -1018,8 +1017,6 @@ function techproject_print_deliverables($project, $group, $fatherid, $cmid, $pro
 			echo $OUTPUT->box_end();
 		}
 	}
-    $level--;
-
 }
 
 /**
@@ -2298,4 +2295,53 @@ function techproject_check_startup_level($entity, $fatherid, &$level, &$startupl
 		$startuplevelcheck = true;
 	}
 }
+
+function techproject_print_localfile($deliverable, $cmid, $type=NULL, $align="left") {
+	global $CFG, $DB, $OUTPUT;
+	
+	    if (!$context = get_context_instance(CONTEXT_MODULE, $cmid)) {
+	        return '';
+	    }
+	
+	    $fs = get_file_storage();
+	
+	    $imagereturn = '';
+	    $output = '';
+	
+	    if ($files = $fs->get_area_files($context->id, 'mod_techproject', 'localfile', $deliverable->id, "timemodified", false)) {
+	        foreach ($files as $file) {
+	            $filename = $file->get_filename();
+	            $mimetype = $file->get_mimetype();
+	            $iconimage = '<img src="'.$OUTPUT->pix_url(file_mimetype_icon($mimetype)).'" class="icon" alt="'.$mimetype.'" />';
+	            $path = file_encode_url($CFG->wwwroot.'/pluginfile.php', '/'.$context->id.'/mod_techproject/localfile/'.$deliverable->id.'/'.$filename);
+	
+	            if ($type == 'html') {
+	                $output .= "<a href=\"$path\">$iconimage</a> ";
+	                $output .= "<a href=\"$path\">".s($filename)."</a>";
+	                $output .= "<br />";
+	
+	            } else if ($type == 'text') {
+	                $output .= "$strattachment ".s($filename).":\n$path\n";
+	
+	            } else {
+	                if (in_array($mimetype, array('image/gif', 'image/jpeg', 'image/png'))) {
+	                    // Image attachments don't get printed as links
+	                    $imagereturn .= "<br /><img src=\"$path\" alt=\"\" />";
+	                } else {
+	                    $output .= "<a href=\"$path\">$iconimage</a> ";
+	                    $output .= format_text("<a href=\"$path\">".s($filename)."</a>", FORMAT_HTML, array('context'=>$context));
+	                    $output .= '<br />';
+	                }
+	            }
+	        }
+	    }
+	
+	    if ($type) {
+	        return $output;
+	    } else {
+	        echo $output;
+	        return $imagereturn;
+	    }
+	}
+
 ?>

@@ -27,12 +27,12 @@ switch($action){
             	//data was submitted from this form, process it
                 $domainrec->projectid = $scope;
                 $domainrec->domain = $domain;
-                $domainrec->code = addslashes(clean_param($data->code, PARAM_ALPHANUM));
-	        	$domainrec->label = addslashes(clean_param($data->label, PARAM_CLEANHTML));
-	        	$domainrec->description = addslashes(clean_param($data->description, PARAM_CLEANHTML));
+                $domainrec->code = clean_param($data->code, PARAM_ALPHANUM);
+	        	$domainrec->label = clean_param($data->label, PARAM_CLEANHTML);
+	        	$domainrec->description = clean_param($data->description, PARAM_CLEANHTML);
 
 	            if ($DB->get_record('techproject_qualifier', array('domain' => $domain, 'code' => $data->code, 'projectid' => $scope))){
-	                print_error('err_codeexists', 'techproject', "{$CFG->wwwroot}/mod/techproject/view.php?id={$id}&amp;action=add&amp;view=domains_$domain");
+	                print_error('err_codeexists', 'techproject', '', "{$CFG->wwwroot}/mod/techproject/view.php?id={$id}&amp;action=add&amp;view=domains_$domain");
 	            } else {
 	                if (!$DB->insert_record('techproject_qualifier', $domainrec)){
 	                    print_error('errorinsertqualifier', 'techproject');

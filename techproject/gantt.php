@@ -13,11 +13,13 @@
     * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
     */
 
+	if (!defined('MOODLE_INTERNAL'))  die('You cannot use this script that way');
+
     $scale = optional_param('scale', 1.0, PARAM_NUMBER);
     $timeXWidth = 600 * $scale ;
     $labelWidth = 200 ;
     $timeFactor = ($project->projectend - $project->projectstart) / $timeXWidth; // seconds per pixel
-    $tasks = $DB->get_records_select('techproject_task', "projectid = {$project->id} AND groupid = {$currentGroupId}", "assignee,taskstart");
+    $tasks = $DB->get_records_select('techproject_task', "projectid = ? AND groupid = ? ", array($project->id, $currentGroupId), "assignee,taskstart");
 
 	echo $pagebuffer;
 

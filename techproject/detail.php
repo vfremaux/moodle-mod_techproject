@@ -34,6 +34,10 @@
     * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
     */
 
+	if (!defined('MOODLE_INTERNAL'))  die('You cannot use this script that way');
+
+	echo $pagebuffer;
+
 /// get some session toggles
 
     if (array_key_exists('objectClass', $_GET) && !empty($_GET['objectClass'])){
@@ -49,7 +53,7 @@
     else{
         if (!array_key_exists('objectId', $_SESSION)){
             echo '<center>';
-            print_simple_box(format_text(get_string('selectanobjectfirst', 'techproject'), FORMAT_HTML), 'center', '70%');
+            echo $OUTPUT->box(format_text(get_string('selectanobjectfirst', 'techproject'), FORMAT_HTML), 'center', '70%');
             echo '</center>';
             return;
         }
@@ -58,10 +62,9 @@
     $objectId = $_SESSION['objectId'];
 
 /// making viewer
-	echo $pagebuffer;
     if (!$object = $DB->get_record('techproject_' . $objectClass, array('id' => $objectId, 'projectid' => $project->id, 'groupid' => $currentGroupId))){
         echo '<center>';
-        print_simple_box(format_text(get_string('selectanobjectfirst', 'techproject'), FORMAT_HTML), 'center', '70%');
+        echo $OUTPUT->box(format_text(get_string('selectanobjectfirst', 'techproject'), FORMAT_HTML), 'center', '70%');
         echo '</center>';
         return;
     }
@@ -96,7 +99,9 @@
     $linkTable[1] = array();
     $linkTable[2] = array();
     $linkTable[3] = array();
+
     function makeSubTable($objectClass, $object, $cmid){
+    	global $DB;
         // make link tables
         $res = $DB->get_records("techproject_{$objectClass}", array('fatherid' => $object->id));
         $linkTable = array();
@@ -108,6 +113,7 @@
         }
         return $linkTable;
     }
+
     if ($object){
         switch($objectClass){
             case 'requirement' : {
@@ -269,7 +275,7 @@
         }
     }
     else{
-        print_simple_box(get_string('invalidobject','techproject'), 'center', '80%');
+        echo $OUTPUT->box(get_string('invalidobject','techproject'), 'center', '80%');
         return;
     }
     ?>
