@@ -110,9 +110,9 @@
         if (has_capability('mod/techproject:configure', $context)){
             $tabs[0][] = new tabobject('domains', $CFG->wwwroot."/mod/techproject/view.php?view=domains&id={$id}", get_string('domains', 'techproject'));
             if (preg_match("/domains_?/", $currentpage)){
-                if (!preg_match("/domains_heaviness|domains_complexity|domains_severity|domains_priority|domains_worktype|domains_taskstatus|domains_strength|domains_deliv_status/", $view)) $view = 'domains_complexity';
+                if (!preg_match("/domains_heavyness|domains_complexity|domains_severity|domains_priority|domains_worktype|domains_taskstatus|domains_strength|domains_deliv_status/", $view)) $view = 'domains_complexity';
                 $tabs[1][] = new tabobject('domains_strength', "view.php?id={$id}&amp;view=domains_strength", get_string('strength', 'techproject'));
-                $tabs[1][] = new tabobject('domains_heaviness', "view.php?id={$id}&amp;view=domains_heaviness", get_string('heaviness', 'techproject'));
+                $tabs[1][] = new tabobject('domains_heavyness', "view.php?id={$id}&amp;view=domains_heavyness", get_string('heavyness', 'techproject'));
                 $tabs[1][] = new tabobject('domains_complexity', "view.php?id={$id}&amp;view=domains_complexity", get_string('complexity', 'techproject'));
                 $tabs[1][] = new tabobject('domains_severity', "view.php?id={$id}&amp;view=domains_severity", get_string('severity', 'techproject'));
                 $tabs[1][] = new tabobject('domains_priority', "view.php?id={$id}&amp;view=domains_priority", get_string('priority', 'techproject'));
@@ -193,6 +193,6 @@
         $domain = str_replace('domains_', '', $currentpage);
         include "view_domain.php";
     } else {
-    	error("Fatal Error: Unknown page: ".$currentpage."\n");
+    	print_error('errorfatalscreen', 'techproject', $currentpage);
     }
 ?>

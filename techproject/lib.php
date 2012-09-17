@@ -104,7 +104,7 @@ function techproject_update_instance($project){
                 update_event($event);
             } 
             else if ($date) {
-                $event = new SrdClass;
+                $event = new StdClass;
                 $event->name        = get_string($type.'event','techproject', $project->name);
                 $event->description = $project->intro;
                 $event->courseid    = $project->course;

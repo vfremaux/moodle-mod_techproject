@@ -281,6 +281,8 @@ $string['optional'] = 'Optionnel';
 $string['optionaldesc'] = 'On peut faire d\'une autre façon, mais moins souple.'; 
 $string['organisation'] = 'Organisation';
 $string['oruploadfile'] = 'ou téléchargez un fichier';
+$string['other'] = 'Autre';
+$string['otherdesc'] = 'Autre type de tâche';
 $string['over'] = 'sur';
 $string['overdone'] = 'Dépassement';
 $string['overoverdone'] = 'Dépassement...';
@@ -296,6 +298,8 @@ $string['phasestart'] = 'Le projet n\'a pas encore démarré';
 $string['planned'] = 'Prévue';
 $string['planneddesc'] = 'La tâche est enregistrée mais pas encore planifiée'; 
 $string['plus'] = 'EXTRA';
+$string['pluginadministration'] = 'Modifier projet technique';
+$string['pluginname'] = 'Projet technique';
 $string['plusdesc'] = 'Bon, c\'était pas franchement demandé, mais c\'est si beau !!'; 
 $string['preparingrestore'] = 'Préparation de la restauration';
 $string['previous'] = 'Précédent';
@@ -540,7 +544,14 @@ $string['difficult'] = 'Difficile';
 $string['needswork'] = 'A développer';
 $string['wecanhave'] = 'Accessible (existe)';
 $string['wehave'] = 'Disponible';
-$string['heaviness'] = 'Faisabilité';
+$string['heavyness'] = 'Faisabilité';
+$string['heavyness_help'] = '
+<p>La faisabilité est l\'estimation de la difficulté à produire et livrer l\'exigence.</p>
+<p>Cette mesure est différente de la complexité, qui produit une conslusion factuelle sur la fonctionnalité une
+fois qu\'elle a été analysée. La faisabilité ne connait pas forcément la nature exacte de la solution technique
+qui sera mise en oeuvre, mais exprise une estimation préalable basée sur l\'expérience.</p>
+';
+
 $string['needsmoreinfo'] = 'Précisions requises';
 
 // help strings

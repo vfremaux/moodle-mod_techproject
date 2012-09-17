@@ -38,47 +38,58 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
 
         // Define each element separated
         $techproject = new backup_nested_element('techproject', array('id'), array(
-            'name', 'intro', 'introformat', 'timecreated', 'timemodified', 'projectstart', 'assessmentstart', 'projectend', 
-            'allowdeletewhenassigned', 'timeunit', 'costunit', 'guestsallowed', 'guestscanuse', 'ungroupedsees', 'grade', 
-            'teacherusescriteria', 'allownotifications', 'autogradingenabled', 'autogradingweight', 'enablecvs', 'useriskcorrection', 
-            'projectusesrequs', 'projectusesspecs', 'projectusesdelivs', 'projectusesvalidations', 'xslfilter', 'cssfilter'));
+            'name', 'intro', 'introformat', 'projectstart', 'assessmentstart', 'projectend', 
+            'timemodified', 'allowdeletewhenassigned', 'timeunit', 'costunit', 'guestsallowed', 
+            'guestscanuse', 'ungroupedsees', 'grade', 'teacherusescriteria', 'allownotifications', 
+            'autogradingenabled', 'autogradingweight', 'enablecvs', 'useriskcorrection', 'projectusesrequs', 
+            'projectusesspecs', 'projectusesdelivs', 'projectusesvalidations', 'xslfilter', 'cssfilter'));
+
+        $globaldomains = new backup_nested_element('globaldomains');
+        $globalqualifier = new backup_nested_element('globalqualifier', array('id'), array(
+            'domain', 'code', 'label', 'description'));
 
         $heading = new backup_nested_element('heading', array('id'), array(
-            'groupid', 'title', 'abstract', 'abstractformat', 'rationale', 'rationaleformat', 'environment', 'environmentformat4? 
-            4organisation', 'department'));
+            'groupid', 'title', 'abstract', 'rationale', 'environment', 'organisation', 'department'));
 
         $requirements = new backup_nested_element('requirements');
         $requirement = new backup_nested_element('requirement', array('id'), array(
-            'fatherid', 'ordering', 'groupid', 'userid', 'created', 'modified', 'lastuserid', 'abstract', 
-            'description', 'descriptionformat', 'strength', 'heaviness'));
+            'fatherid', 'ordering', 'groupid', 'userid', 'created', 
+            'modified', 'lastuserid', 'abstract', 'description', 'format', 'strength', 'heavyness'));
 
         $specifications = new backup_nested_element('specifications');
         $specification = new backup_nested_element('specification', array('id'), array(
-            'fatherid', 'ordering', 'groupid', 'userid', 'created', 'modified', 'lastuserid', 'abstract', 
-            'description', 'descriptionformat', 'priority', 'severity', 'complexity'));
+            'fatherid', 'ordering', 'groupid', 'userid', 
+            'created', 'modified', 'lastuserid', 'abstract', 'description', 'descriptionformat', 
+            'priority', 'severity', 'complexity'));
 
         $tasks = new backup_nested_element('tasks');
         $task = new backup_nested_element('task', array('id'), array(
-             	'fatherid', 'ordering', 'owner', 'assignee', 'groupid', 'userid', 'created', 
-             	'modified', 'lastuserid', 'abstract', 'description', 'descriptionformat', 'worktype', 
-             	'status', 'costrate', 'planned', 'done', 'used', 'quoted', 'spent', 'risk', 
-             	'milestoneid', 'taskstartenable', 'taskstart', 'taskendenable', 'taskend'));
+            'fatherid', 'ordering', 'owner', 'assignee', 'groupid', 'userid', 
+            'created', 'modified', 'lastuserid', 'abstract', 'description', 
+            'descriptionformat', 'worktype', 'status', 'costrate', 'planned', 'done', 
+            'used', 'quoted', 'spent', 'risk', 'milestoneid', 'taskstartenable', 
+            'taskstart', 'taskendenable', 'taskend'));
 
         $milestones = new backup_nested_element('milestones');
         $milestone = new backup_nested_element('milestone', array('id'), array(
-            'ordering', 'groupid', 'userid', 'created', 'modified', 'lastuserid', 'abstract', 
-            'description', 'descriptionformat', 'covered', 'cost', 'timetocomplete', 'deadline', 
+            'ordering', 'groupid', 'userid', 'created', 'modified', 'lastuserid', 
+            'abstract', 'description', 'descriptionformat', 'covered', 'cost', 'timetocomplete', 'deadline', 
             'deadlineenable'));
 
         $deliverables = new backup_nested_element('deliverables');
         $deliverable = new backup_nested_element('deliverable', array('id'), array(
-            'fatherid', 'ordering', 'groupid', 'userid', 'created', 'modified', 'lastuserid', 'abstract', 
-            'description', 'descriptionformat', 'status', 'milestoneid', 'localfile', 'url'));
+            'fatherid', 'ordering', 'groupid', 'userid', 'created', 'modified', 
+            'lastuserid', 'abstract', 'description', 'descriptionformat', 'status', 'milestoneid', 
+            'localfile', 'url'));
 
         $validations = new backup_nested_element('validations');
         $validationsession = new backup_nested_element('validationsession', array('id'), array(
-            'groupid', 'datecreated', 'dateclosed', 'createdby', 'untracked', 'missing', 'buggy', 'toenhance', 'refused', 'accepted'));
+            'groupid', 'datecreated', 'dateclosed', 'createdby', 'untracked', 
+            'missing', 'buggy', 'toenhance', 'refused', 'accepted'));
 
+        $validationsessions = new backup_nested_element('validationsessions');
+        $validationsession = new backup_nested_element('validationsession', array('id'), array(
+        	'groupid', 'datecreated', 'dateclosed', 'createdby', 'untracked', 'missing', 'buggy', 'toenhance', 'refused', 'accepted'));
         $validationresults = new backup_nested_element('validationresults');
         $validationresult = new backup_nested_element('validationresult', array('id'), array(
             'groupid', 'reqid', 'validatorid', 'validationsessionid', 'lastchangedate', 'status', 'comment'));
@@ -86,13 +97,13 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
         $links = new backup_nested_element('links');
         $spectoreqs = new backup_nested_element('spectoreqs');
         $spectoreq = new backup_nested_element('spectoreq', array('id'), array(
-            'groupid', 'reqid', 'specid '));
+            'groupid', 'specid', 'reqid'));
         $tasktospecs = new backup_nested_element('tasktospecs');
         $tasktospec = new backup_nested_element('tasktospec', array('id'), array(
-            'groupid', 'specid', 'taskid '));
+            'groupid', 'taskid', 'specid'));
         $tasktodelivs = new backup_nested_element('tasktodelivs');
         $tasktodeliv = new backup_nested_element('tasktodeliv', array('id'), array(
-            'groupid', 'taskid', 'delivid '));
+            'groupid', 'taskid', 'delivid'));
         $taskdeps = new backup_nested_element('taskdeps');
         $taskdep = new backup_nested_element('taskdep', array('id'), array(
             'groupid', 'master', 'slave'));
@@ -111,19 +122,11 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
 
         // Build the tree
         // (love this)
-        
-        // Note : collapse states ARE NOT backuped
-        
+
+        $techproject->add_child($globaldomains);
+        $globaldomains->add_child($globalqualifier);
+
         $techproject->add_child($heading);
-
-        $techproject->add_child($domains);
-        $domains->add_child($qualifier);
-
-        $techproject->add_child($criteria);
-        $criteria->add_child($criterion);
-
-        $techproject->add_child($assessments);
-        $assessments->add_child($assessment);
 
         $techproject->add_child($requirements);
         $requirements->add_child($requirement);
@@ -140,7 +143,15 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
         $techproject->add_child($delivs);
         $delivs->add_child($delivs);
 
+        $techproject->add_child($validationsessions);
+        $validationsessions->add_child($validationsession);
+        $validationsession->add_child($validationresults);
+        $validationresults->add_child($validationresult);
+
         $techproject->add_child($links);
+        $links->add_child($spectoreqs);
+        $spectoreqs->add_child($spectoreq);
+
         $links->add_child($spectoreqs);
         $spectoreqs->add_child($spectoreq);
 
@@ -150,18 +161,15 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
         $links->add_child($tasktodelivs);
         $tasktodelivs->add_child($tasktodeliv);
 
-        $links->add_child($taskdeps);
-        $taskdeps->add_child($taskdep);
+        $techproject->add_child($assessments);
+        $assessments->add_child($assessment);
 
-        $techproject->add_child($validations);
-        $validations->add_child($validationsession);
-        
-        $validationsession->add_child($validationresults);
-        $validationresults->add_child($validationresult);
+        $techproject->add_child($criteria);
+        $criteria->add_child($criterion);
 
         // Define sources
         $techproject->set_source_table('techproject', array('id' => backup::VAR_ACTIVITYID));
-        $criterion->set_source_table('techproject_criterion', array('projectid' => backup::VAR_ACTIVITYID));
+        $globalqualifier->set_source_table('techproject_qualifier', array('projectid' => 0));
 
         if ($userinfo) {
             $heading->set_source_table('techproject_heading', array('projectid' => backup::VAR_ACTIVITYID));
@@ -211,6 +219,7 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
         $milestone->annotate_ids('user', 'lastuserid');
         $deliverable->annotate_ids('user', 'userid');
         $assessment->annotate_ids('user', 'userid');
+        $validationresult->annotate_ids('user', 'validatorid');
 
         $requirement->annotate_ids('group', 'groupid');
         $specification->annotate_ids('group', 'groupid');
@@ -236,6 +245,8 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
         $techproject->annotate_files('mod_techproject', 'milestonedescription', 'id'); 
         $techproject->annotate_files('mod_techproject', 'deliverabledescription', 'id'); 
         $techproject->annotate_files('mod_techproject', 'localfile', 'id'); 
+        $techproject->annotate_files('mod_techproject', 'xslfilter', null); // This file area hasn't itemid
+        $techproject->annotate_files('mod_techproject', 'cssfilter', null); // This file area hasn't itemid
 
         // Return the root element (techproject), wrapped into standard activity structure
         return $this->prepare_activity_structure($techproject);

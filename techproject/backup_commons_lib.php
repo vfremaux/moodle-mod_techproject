@@ -20,7 +20,7 @@
 */
 
 global $SITE;
-$SITE->TECHPROJECT_BACKUP_FIELDS['requirement'] = 'abstract,description,format,strength,heaviness';
+$SITE->TECHPROJECT_BACKUP_FIELDS['requirement'] = 'abstract,description,format,strength,heavyness';
 $SITE->TECHPROJECT_BACKUP_FIELDS['specification'] = 'abstract,description,format,priority,severity,complexity';
 $SITE->TECHPROJECT_BACKUP_FIELDS['task'] = 'owner,assignee,abstract,description,format,worktype,status,costrate,planned,quoted,done,used,spent,risk,,milestoneid,taskstartenable,taskstart,taskendenable,taskend';
 $SITE->TECHPROJECT_BACKUP_FIELDS['milestone'] = 'abstract,description,format,deadline,deadlineenable';

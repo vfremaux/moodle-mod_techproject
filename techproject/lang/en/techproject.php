@@ -570,12 +570,12 @@ $string['needswork'] = 'To develop';
 $string['wecanhave'] = 'Exists, we can have';
 $string['wehave'] = 'Available';
 $string['needsmoreinfo'] = 'Needs more info';
-$string['heaviness'] = 'Faisibility';
+$string['heavyness'] = 'Faisibility';
 
-$string['heaviness_help'] = '
-<p>The heaviness is the estimation of the difficulty to provide the requirement to the customer.</p>
+$string['heavyness_help'] = '
+<p>The heavyness is the estimation of the difficulty to provide the requirement to the customer.</p>
 <p>This measurement is different of the complexity, that will provide factual information over the feature once
-the analysis is performed.The heavyness may not know exactly what solution is available that could fullfill the requirement,
+the analysis is performed. The heavyness may not know exactly what solution is available that could fullfill the requirement,
 but will exprime the skill of estimation based on experience.</p>
 ';
 

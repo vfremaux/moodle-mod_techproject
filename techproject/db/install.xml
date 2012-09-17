@@ -47,11 +47,11 @@
         <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="projectid" NEXT="title"/>
         <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="groupid" NEXT="abstract"/>
         <FIELD NAME="abstract" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="title" NEXT="abstractformat"/>
-        <FIELD NAME="abstractformat" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="abstract" NEXT="rationale"/>
+        <FIELD NAME="abstractformat" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false" PREVIOUS="abstract" NEXT="rationale"/>
         <FIELD NAME="rationale" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="abstractformat" NEXT="rationaleformat"/>
-        <FIELD NAME="rationaleformat" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="rationale" NEXT="environment"/>
+        <FIELD NAME="rationaleformat" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false" PREVIOUS="rationale" NEXT="environment"/>
         <FIELD NAME="environment" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="rationaleformat" NEXT="environmentformat"/>
-        <FIELD NAME="environmentformat" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="environment" NEXT="organisation"/>
+        <FIELD NAME="environmentformat" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false" PREVIOUS="environment" NEXT="organisation"/>
         <FIELD NAME="organisation" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="environmentformat" NEXT="department"/>
         <FIELD NAME="department" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="organisation"/>
       </FIELDS>
@@ -74,7 +74,7 @@
         <FIELD NAME="description" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="abstract" NEXT="descriptionformat"/>
         <FIELD NAME="descriptionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="description" NEXT="strength"/>
         <FIELD NAME="strength" TYPE="char" LENGTH="8" NOTNULL="true" SEQUENCE="false" PREVIOUS="descriptionformat" NEXT="heaviness"/>
-        <FIELD NAME="heaviness" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="strength"/>
+        <FIELD NAME="heavyness" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="strength"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject_requirement"/>

@@ -16,10 +16,12 @@
 ///  This fragment is called by moodle_needs_upgrading() and /admin/index.php
 /////////////////////////////////////////////////////////////////////////////////
 
-$module->version  = 2012090400;  // The current module version (Date: YYYYMMDDXX)
-$module->requires = 2012062501;  // Requires this Moodle version
+defined('MOODLE_INTERNAL') || die;
+
+$module->version  = 2012090800;  // The current module version (Date: YYYYMMDDXX)
+$module->requires = 2011120500;  // Requires this Moodle version
 $module->component = 'mod_techproject';   // Full name of the plugin (used for diagnostics)
 $module->cron     = 0;           // Period for cron to check this module (secs)
-$module->release  = '2.3.0 (build 2012090400)';           // Period for cron to check this module (secs)
-$module->maturiy  = 'MATURITY_BETA';
+$module->maturity = MATURITY_BETA;
+$module->release = '2.2.0 (Build 2012090800)';
 

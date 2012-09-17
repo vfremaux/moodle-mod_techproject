@@ -14,6 +14,8 @@
     * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
     */
 
+	if (!defined('MOODLE_INTERNAL'))  die('You cannot use this script that way');
+
 	echo $pagebuffer;
 
     $TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));

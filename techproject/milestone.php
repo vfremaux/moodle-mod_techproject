@@ -28,12 +28,8 @@ if ($work == 'add' || $work == 'update') {
 
 } elseif ($work == 'clearall') {
 	echo $pagebuffer;
-    ?>
-    <center>
-    <?php 
-		echo $OUTPUT->heading(get_string('clearallmilestones','techproject')); 
-    ?>
-    <?php 
+    echo '<center>';
+	echo $OUTPUT->heading(get_string('clearallmilestones','techproject')); 
     echo $OUTPUT->box (get_string('clearwarning','techproject'), $align = 'center', $width = '80%', $color = '#FF3030', $padding = 5, $class = 'generalbox'); 
     ?>
     <script type="text/javascript">
@@ -53,15 +49,16 @@ if ($work == 'add' || $work == 'update') {
     </form>
     </center>
     <?php
-    } else {
-    	if ($work){
-    		include 'milestones.controller.php';
-    	}
-   		techproject_print_milestones($project, $currentGroupId, NULL, $cm->id);
-           if ($USER->editmode == 'on' && (has_capability('mod/techproject:changemiles', $context))) {
-       		echo "<br/><a href='view.php?id={$cm->id}&amp;work=add'>".get_string('addmilestone','techproject')."</a>";
-       		echo " - <a href='view.php?id={$cm->id}&amp;work=clearall'>".get_string('clearall','techproject')."</a>";
-       		echo " - <a href='view.php?id={$cm->id}&amp;work=sortbydate'>".get_string('sortbydate','techproject')."</a>";
-       	}
+} else {
+	if ($work){
+		include 'milestones.controller.php';
+	}
+	echo $pagebuffer;
+	techproject_print_milestones($project, $currentGroupId, NULL, $cm->id);
+       if ($USER->editmode == 'on' && (has_capability('mod/techproject:changemiles', $context))) {
+   		echo "<br/><a href='view.php?id={$cm->id}&amp;work=add'>".get_string('addmilestone','techproject')."</a>";
+   		echo " - <a href='view.php?id={$cm->id}&amp;work=clearall'>".get_string('clearall','techproject')."</a>";
+   		echo " - <a href='view.php?id={$cm->id}&amp;work=sortbydate'>".get_string('sortbydate','techproject')."</a>";
    	}
+}
 ?>
