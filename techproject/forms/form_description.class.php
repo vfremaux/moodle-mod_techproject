@@ -32,13 +32,13 @@ class Description_Form extends moodleform {
     	
     	$mform->addElement('text', 'title', get_string('projecttitle', 'techproject'), array('size' => "100%"));
 
-    	$mform->addElement('editor', 'abstract_editor', get_string('abstract', 'techproject'));		    	
+    	$mform->addElement('editor', 'abstract_editor', get_string('abstract', 'techproject'), null,  $this->editoroptions);		    	
 		$mform->setType('abstract_editor', PARAM_RAW);
 
-    	$mform->addElement('editor', 'rationale_editor', get_string('rationale', 'techproject'));		    	
+    	$mform->addElement('editor', 'rationale_editor', get_string('rationale', 'techproject'), null,  $this->editoroptions);		    	
 		$mform->setType('rationale_editor', PARAM_RAW);
 
-    	$mform->addElement('editor', 'environment_editor', get_string('environment', 'techproject'));		    	
+    	$mform->addElement('editor', 'environment_editor', get_string('environment', 'techproject'), null,  $this->editoroptions);		    	
 		$mform->setType('environment_editor', PARAM_RAW);
 
     	$mform->addElement('text', 'organisation', get_string('organisation', 'techproject'), array('size' => "100%"));
