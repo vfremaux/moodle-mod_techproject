@@ -114,7 +114,7 @@ class Task_Form extends moodleform {
         // $mform->addHelpButton('spent', 'spent', 'techproject'); 
 
         $tasks = techproject_get_tree_options('techproject_task', $this->project->id, $currentGroup);
-        $selection = $DB->get_records_select_menu('techproject_task_dependency', "slave = ? ", array($this->current->id), 'master,slave');
+        $selection = $DB->get_records_select_menu('techproject_task_dependency', "slave = ? ", array(@$this->current->id), 'master,slave');
         $uptasksoptions = array();
         foreach($tasks as $aTask){
             $aTask->abstract = format_string($aTask->abstract);

@@ -40,23 +40,24 @@ if ($work == 'edit'){
 	}
 
     if ($heading = $mform->get_data()){
+    	
+        $heading->abstract = $heading->abstract_editor['text'];
+        $heading->rationale = $heading->rationale_editor['text'];
+        $heading->environment = $heading->environment_editor['text'];
 
 		$abstract_draftid_editor = file_get_submitted_draft_itemid('abstract_editor');
-		$data->abstract = file_save_draft_area_files($abstract_draftid_editor, $context->id, 'mod_techproject', 'abstract', $data->id, array('subdirs' => true), $data->abstract);
+		$heading->abstract = file_save_draft_area_files($abstract_draftid_editor, $context->id, 'mod_techproject', 'abstract', $heading->id, array('subdirs' => true), $heading->abstract);
 
 		$rationale_draftid_editor = file_get_submitted_draft_itemid('rationale_editor');
-		$data->rationale = file_save_draft_area_files($rationale_draftid_editor, $context->id, 'mod_techproject', 'rationale', $data->id, array('subdirs' => true), $data->rationale);
+		$heading->rationale = file_save_draft_area_files($rationale_draftid_editor, $context->id, 'mod_techproject', 'rationale', $heading->id, array('subdirs' => true), $heading->rationale);
 
 		$environment_draftid_editor = file_get_submitted_draft_itemid('environment_editor');
-		$data->rationale = file_save_draft_area_files($environment_draftid_editor, $context->id, 'mod_techproject', 'environment', $data->id, array('subdirs' => true), $data->environment);
+		$heading->environment = file_save_draft_area_files($environment_draftid_editor, $context->id, 'mod_techproject', 'environment', $heading->id, array('subdirs' => true), $heading->environment);
 
         $heading->id = $heading->headingid;
         $heading->projectid = $project->id;
         $heading->groupid = $currentGroupId;
         $heading->title = $heading->title;
-        $heading->abstract = $heading->abstract_editor['text'];
-        $heading->rationale = $heading->rationale_editor['text'];
-        $heading->environment = $heading->environment_editor['text'];
         $heading->organisation = $heading->organisation;
         $heading->department = $heading->department;
 
