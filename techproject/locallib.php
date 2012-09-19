@@ -661,7 +661,7 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
 *
 * // TODO clean up $fullsingle and $style commands
 */
-function techproject_print_single_task($task, $project, $group, $cmid, $setSize, $fullsingle = false, $style=''){
+function techproject_print_single_task($task, $project, $group, $cmid, $setSize, $fullsingle = false, $style='', $nocollapse = false){
     global $CFG, $USER, $SESSION, $DB, $OUTPUT;
 
     $TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
@@ -682,7 +682,7 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
 	}
 
     $numtask = implode('.', techproject_tree_get_upper_branch('techproject_task', $task->id, true, true));
-    if (!$fullsingle){
+    if (!$fullsingle && !$nocollapse){
     	if (techproject_count_subs('techproject_task', $task->id) > 0) {
     		$ajax = $CFG->enableajax && $CFG->enablecourseajax;
     		$hidesub = "<a href=\"javascript:toggle('{$task->id}','sub{$task->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$task->id}\" src=\"".$OUTPUT->pix_url('/p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
@@ -934,7 +934,9 @@ function techproject_print_milestones($project, $group, $numstage, $cmid){
 			}
 
 			$table->style = "generaltable";
+		    echo "<div class=\"nodelevel0\">";
 			techproject_print_project_table($table);
+		    echo "</div>";
 			unset($table);
 
 			$i++;

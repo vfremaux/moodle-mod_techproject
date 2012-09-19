@@ -31,6 +31,9 @@
     if (!empty($tasks)){
         foreach($tasks as $aTask){
             if (!$aTask->taskstartenable && !$aTask->taskendenable){
+            	$nodes = techproject_tree_get_upper_branch('techproject_task', $aTask->id, true, true);
+            	$aTask->num = implode('.', $nodes);
+            	$aTask->level = count($nodes) - 1;
               	$unscheduledTasks[] = $aTask;
 	          	if ($aTask->assignee == 0){
 	              	$unassignedfake = new StdClass;
@@ -88,7 +91,7 @@
                     print_string('horizontalscale', 'techproject');
                     echo ': ';
                     $scaleopts = array("0.5" => "x 0.5", "0.8" => "x 0.8", "1.0" => "x 1", "1.5" => "x 1.5", "2.0" => "x 2", "3.0" => "x 3", "4.0" => "x 4");
-                    echo html_writer::select($scaleopts, 'scale', $scale, '', 'document.forms[\'scaleform\'].submit();'); 
+                    echo html_writer::select($scaleopts, 'scale', $scale, '', array('onchange' => 'document.forms[\'scaleform\'].submit();')); 
                     ?>
                 </form>
             </td>
@@ -129,10 +132,21 @@
     <table width="<?php echo $labelWidth + $timeXWidth ?>">
     <?php
         if ($unscheduledTasks){
+        	
+        	function sortbytreenum($a, $b){
+        		if ($a->num == $b->num) return 0;
+        		if ($a->num > $b->num) return 1;
+        		return -1;
+        	}
+        	
+        	uasort($unscheduledTasks, 'sortbytreenum');
+        	
             echo $OUTPUT->heading(get_string('unscheduledtasks','techproject'));
             echo $OUTPUT->box_start('center', $labelWidth + $timeXWidth);
             foreach($unscheduledTasks as $aTask){
-                techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($unscheduledTasks), false, $style='NOEDIT');
+		    	echo "<div class=\"nodelevel{$aTask->level}\">";
+                techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($unscheduledTasks), false, $style='NOEDIT', true);
+		    	echo "</div>";
             }
             echo $OUTPUT->box_end();
         }
