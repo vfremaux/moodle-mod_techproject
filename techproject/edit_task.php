@@ -30,6 +30,9 @@
 		$data->description = $data->description_editor['text'];
 		$data->lastuserid = $USER->id;
 
+		if ($data->taskstart) $data->taskstartenable = 1;
+		if ($data->taskend) $data->taskendenable = 1;
+
 		// editors pre save processing
 		$draftid_editor = file_get_submitted_draft_itemid('description_editor');
 		$data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'taskdescription', $data->id, array('subdirs' => true), $data->description);
@@ -73,9 +76,10 @@
         	}
 
     		$mapped = optional_param_array('taskdependency', null, PARAM_INT);
+		    // removes previous mapping
+		    $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'slave' => $data->id));
+		    $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'master' => $data->id));
     		if (count($mapped) > 0){
-    		    // removes previous mapping
-    		    $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'slave' => $data->id));
     		    // stores new mapping
         		foreach($mapped as $mappedid){
         		    $amap->id = 0;
