@@ -304,7 +304,7 @@ $string['organisation'] = 'Organisation';
 $string['oruploadfile'] = 'or upload some file';
 $string['other'] = 'Other';
 $string['otherdesc'] = 'Other task type';
-$string['outofreasondesc'] = 'It\s faisible but pragmatically out of reason';
+$string['outofreasondesc'] = 'It\s feasible but pragmatically out of reason';
 $string['over'] = 'over';
 $string['overdone'] = 'Overlap';
 $string['overoverdone'] = 'Overlapped...';
@@ -572,7 +572,7 @@ $string['needswork'] = 'To develop';
 $string['wecanhave'] = 'Exists, we can have';
 $string['wehave'] = 'Available';
 $string['needsmoreinfo'] = 'Needs more info';
-$string['heavyness'] = 'Faisibility';
+$string['heavyness'] = 'Feasibility';
 
 $string['heavyness_help'] = '
 <p>The heavyness is the estimation of the difficulty to provide the requirement to the customer.</p>
@@ -951,7 +951,7 @@ as default for duration).</li>
 ';
 
 $string['taskstartdate_help'] = '
-<p>A task can be assigned a start date. This date will be used for Gantt workmap generation (step 2) and faisibility checks (step 2
+<p>A task can be assigned a start date. This date will be used for Gantt workmap generation (step 2) and feasibility checks (step 2
 either).</p>
 
 <p>In step 1, the start date will have some checks performed :</p>
