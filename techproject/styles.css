@@ -397,12 +397,6 @@ table.scale_wehave{
     background: #eAeAeA url(pix/techprojectentityhead4.jpg) repeat-x top left;
 }
 
-/** ensures larger page **/
-div#allpage,
-#page{
-    max-width:1024px;
-}
-
 .validation-UNTRACKED{
 }
 

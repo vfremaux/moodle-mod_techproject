@@ -82,7 +82,7 @@ function techproject_update_instance($project){
     $project->timemodified = time();
 
     if (!techproject_check_dates($project)) {
-        return get_string('invalid dates', 'techproject');
+        return get_string('invaliddates', 'techproject');
     }
 
     $project->id = $project->instance;

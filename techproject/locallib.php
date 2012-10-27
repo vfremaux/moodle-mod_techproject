@@ -1299,7 +1299,7 @@ function techproject_get_option_by_key($domain, $projectid, $value){
 function techproject_bar_graph_over($value, $over, $width = 50, $height = 4, $maxover = 60){
     global $CFG;
     
-    if ($value == -1) return "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/graypixel.gif\" title=\"".get_string('N.C.','techproject')."\" width=\"{$width}\" height=\"{$height}\" />";
+    if ($value == -1) return "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/graypixel.gif\" title=\"".get_string('nc','techproject')."\" width=\"{$width}\" height=\"{$height}\" />";
     $done = floor($width * $value / 100);
     $todo = floor($width * ( 1 - $value / 100));
     $bargraph = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/greenpixel.gif\" title=\"{$value}%\" width=\"{$done}\" height=\"{$height}\" />";

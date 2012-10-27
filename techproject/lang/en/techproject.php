@@ -1,6 +1,6 @@
 <?php // $Id: techproject.php,v 1.2 2012-08-12 22:01:40 vf Exp $ 
 
-$string['N.C.'] = 'N.C.';
+$string['nc'] = 'N.C.';
 $string['abandoned'] = 'Abandoned';
 $string['abandoneddesc'] = 'Task is over whatever completion level it has. Results are not used.';
 $string['abstract'] = 'Abstract';
@@ -223,7 +223,7 @@ $string['installing'] = 'Install/deployment';
 $string['installingdesc'] = 'Install/deployment';
 $string['introformat'] = 'Format';
 $string['introtechproject'] = 'Description';
-$string['invalid dates'] = 'Invalid Dates';
+$string['invaliddates'] = 'Invalid Dates';
 $string['invalidobject'] = 'Invalid Object';
 $string['investigating'] = 'Investigation';
 $string['investigation'] = 'Investigation';
@@ -321,6 +321,7 @@ $string['planned'] = 'Planned';
 $string['planneddesc'] = 'Task is not started but registered'; 
 $string['plus'] = 'EXTRA';
 $string['pluginadministration'] = 'Project parameters';
+$string['pluginname'] = 'Technical project';
 $string['plusdesc'] = 'Well, something that was\'nt expected at all, but so nice !!'; 
 $string['preparingrestore'] = 'Preparing restore';
 $string['previous'] = 'Previous';
@@ -453,7 +454,7 @@ $string['teachergrade'] = 'Teacher grade';
 $string['teacherstools'] = 'Teacher\'s tools';
 $string['teacherusescriteria'] = 'Teacher uses criteria';
 $string['techproject'] = 'Technical project';
-$string['techproject:addinstance'] = 'Add a project';
+$string['techproject:addinstance'] = 'Add an instance';
 $string['techproject:beassignedtasks'] = 'Be assigned tasks';
 $string['techproject:canattachfiles'] = 'Can attach files';
 $string['techproject:canbeevaluated'] = 'Be evaluated';
