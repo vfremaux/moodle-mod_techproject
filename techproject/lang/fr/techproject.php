@@ -1,6 +1,6 @@
 <?php // $Id: techproject.php,v 1.2 2012-07-29 21:03:14 vf Exp $ 
 
-$string['N.C.'] = 'N.C.';
+$string['nc'] = 'N.C.';
 $string['abandoned'] = 'Abandonnée';
 $string['abandoneddesc'] = 'Tâche abandonée quelque soit l\'état';
 $string['abstract'] = 'Résumé';
@@ -207,7 +207,7 @@ $string['imports'] = 'Fonctions d\'import';
 $string['importsexports'] = 'Import/export';
 $string['installing'] = 'Installation/déploiement';
 $string['installingdesc'] = 'Installation/déploiement';
-$string['invalid dates'] = 'Dates invalides';
+$string['invaliddates'] = 'Dates invalides';
 $string['invalidobject'] = 'Objet invalide';
 $string['investigating'] = 'Préétude';
 $string['investigatingdesc'] = 'Recherche d\'information, examen des solutions possibles';
