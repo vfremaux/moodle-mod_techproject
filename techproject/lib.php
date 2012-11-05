@@ -863,6 +863,19 @@ function techproject_grades($cmid) {
 }
 
 /**
+ *
+ **/
+function techproject_scale_used_anywhere($scaleid){
+    global $DB;
+
+    if ($scaleid and $DB->record_exists('techproject', array('grade' => -$scaleid))) {
+        return true;
+    } else {
+        return false;
+    }	
+}
+
+/**
  * Must return an array of user records (all data) who are participants
  * for a given instance of newmodule. Must include every user involved
  * in the instance, independient of his role (student, teacher, admin...)
