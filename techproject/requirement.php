@@ -27,7 +27,7 @@
         $requirement->format = required_param('format', PARAM_INT);
 		$requirement->fatherid = required_param('fatherid', PARAM_INT);
 		$requirement->strength = required_param('strength', PARAM_CLEAN);
-		$requirement->heaviness = required_param('heaviness', PARAM_CLEAN);
+		$requirement->heavyness = required_param('heavyness', PARAM_CLEAN);
 		$requirement->userid = $USER->id;
 		$requirement->created = time();
 		$requirement->modified = time();
@@ -50,7 +50,7 @@
 		$requirement->description = addslashes(required_param('description', PARAM_CLEANHTML));
         $requirement->format = required_param('format', PARAM_INT);
 		$requirement->strength = required_param('strength', PARAM_CLEAN);
-		$requirement->heaviness = required_param('heaviness', PARAM_CLEAN);
+		$requirement->heavyness = required_param('heavyness', PARAM_CLEAN);
 		$requirement->modified = time();
 		$requirement->lastuserid = $USER->id;
 
@@ -229,17 +229,17 @@
         </td>
     </tr>
     <tr valign="top">
-    	<td align="right"><b><?php print_string('heaviness', 'techproject') ?>:</b>
+    	<td align="right"><b><?php print_string('heavyness', 'techproject') ?>:</b>
     	</td>
         <td align="left">
     <?php
-            $heavinesses = techproject_get_options('heaviness', $project->id);
-            $heavinessoptions = array();
-            foreach($heavinesses as $anHeaviness){
-                $heavinessoptions[$anHeaviness->code] = '['. $anHeaviness->code . '] ' . $anHeaviness->label;
+            $heavynesses = techproject_get_options('heavyness', $project->id);
+            $heavynessoptions = array();
+            foreach($heavynesses as $anHeavyness){
+                $heavynessoptions[$anHeavyness->code] = '['. $anHeavyness->code . '] ' . $anHeavyness->label;
             }
-            choose_from_menu ($heavinessoptions, 'heaviness');
-            helpbutton('heaviness', get_string('heaviness', 'techproject'), 'techproject', true, false);
+            choose_from_menu ($heavynessoptions, 'heavyness');
+            helpbutton('heavyness', get_string('heavyness', 'techproject'), 'techproject', true, false);
     ?>
         </td>
     </tr>
@@ -342,17 +342,17 @@
         </td>
     </tr>
     <tr valign="top">
-    	<td align="right"><b><?php print_string('heaviness', 'techproject') ?>:</b>
+    	<td align="right"><b><?php print_string('heavyness', 'techproject') ?>:</b>
     	</td>
         <td align="left">
     <?php
-            $heavinesses = techproject_get_options('heaviness', $project->id);
-            $heavinessoptions = array();
-            foreach($heavinesses as $anHeaviness){
-                $heavinessoptions[$anHeaviness->code] = '['. $anHeaviness->code . '] ' . $anHeaviness->label;
+            $heavynesses = techproject_get_options('heavyness', $project->id);
+            $heavynessoptions = array();
+            foreach($heavynesses as $anHeavyness){
+                $heavynessoptions[$anHeavyness->code] = '['. $anHeavyness->code . '] ' . $anHeavyness->label;
             }
-            choose_from_menu ($heavinessoptions, 'heaviness', $requirement->heaviness);
-            helpbutton('heaviness', get_string('heaviness', 'techproject'), 'techproject', true, false);
+            choose_from_menu ($heavynessoptions, 'heavyness', $requirement->heavyness);
+            helpbutton('heavyness', get_string('heavyness', 'techproject'), 'techproject', true, false);
     ?>
         </td>
     </tr>
@@ -496,6 +496,8 @@
     <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
     <input type="hidden" name="work" value="groupcmd" />
     <?php
+	    $indicatordesc = get_string('requirementriskcalculation', 'techproject');
+    	echo "<center><table width=\"80%\"><tr><td width=\"60%\">$indicatordesc</td><td><img src=\"{$CFG->wwwroot}/mod/techproject/gdgenerators/projectrisk.php?id={$cm->id}&amp;projectid={$project->id}&amp;group={$currentGroupId}\" width=\"250\" height=\"250\" /></td></tr></table></center>";
         if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
         	echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequirement','techproject')."</a>&nbsp;";
         }

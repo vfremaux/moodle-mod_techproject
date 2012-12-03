@@ -33,12 +33,12 @@
 //<![CDATA[
 function senddata(){
     document.forms['addspecform'].work.value='new';
-    <?php if ($usehtmleditor && $CFG->defaulthtmleditor == 'htmlarea') echo "document.forms['addspecform'].onsubmit();\n"; ?>
+    <?php if ($usehtmleditor && @$CFG->defaulthtmleditor == 'htmlarea') echo "document.forms['addspecform'].onsubmit();\n"; ?>
     document.forms['addspecform'].submit();
 }
 
 function cancel(){
-    <?php if ($usehtmleditor && $CFG->defaulthtmleditor == 'htmlarea') echo "document.forms['addspecform'].onsubmit();\n"; ?>
+    <?php if ($usehtmleditor && @$CFG->defaulthtmleditor == 'htmlarea') echo "document.forms['addspecform'].onsubmit();\n"; ?>
     document.forms['addspecform'].submit();
 }
 //]]>

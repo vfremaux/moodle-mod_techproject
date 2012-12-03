@@ -3,9 +3,10 @@
 */
 
 BODY {
-  background-color: #D5D6E3;
+  background-color: #F0F0F4;
   font-family: Verdana;
   font-size : 11pt;
+  max-width:750px;
 }
 
 TABLE.summary{
@@ -86,4 +87,10 @@ DIV {
 .nodelink5{
    font-size : 0.85em;
    padding-left : 50px;
+}
+
+P {
+	margin-top:10px;
+	text-align:justify;
+	margin-bottom:6px;
 }

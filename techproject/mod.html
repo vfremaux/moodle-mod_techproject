@@ -321,6 +321,16 @@
     </td>
 </tr>
 
+<tr valign="top">
+    <td align="right"><b><?php print_string('accesskey', 'techproject') ?>:</b></td>
+    <td>
+    	<input type="text" name="accesskey" value="<?php echo @$form->accesskey ?>" />
+        <?php
+        helpbutton('accesskey', get_string('accesskey', 'techproject'), 'techproject'); 
+        ?>
+    </td>
+</tr>
+
 <?php print_standard_coursemodule_settings($form); ?>
 </table>
 <br />

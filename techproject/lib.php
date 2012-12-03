@@ -1,4 +1,4 @@
-<?php  // $Id: lib.php,v 1.1 2011-06-20 16:20:05 vf Exp $
+<?php  // $Id: lib.php,v 1.2 2012-12-03 18:38:51 vf Exp $
 
 /**
  * Project : Technical Project Manager (IEEE like)
@@ -107,6 +107,11 @@ function techproject_update_instance($project){
     if (!techproject_check_dates($project)) {
         return get_string('invalid dates', 'techproject');
     }
+    
+    if (!isset($project->projectusesrequs)) $project->projectusesrequs = 0;
+    if (!isset($project->projectusesspecs)) $project->projectusesspecs = 0;
+    if (!isset($project->projectusesdelivs)) $project->projectusesdelivs = 0;
+    if (!isset($project->projectusesvalidations)) $project->projectusesvalidations = 0;
 
     $project->id = $project->instance;
 

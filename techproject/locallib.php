@@ -1,4 +1,4 @@
-<?php  // $Id: locallib.php,v 1.6 2012-03-17 13:01:24 vf Exp $
+<?php  // $Id: locallib.php,v 1.9 2012-12-03 18:38:51 vf Exp $
 
 /**
  * Project : Technical Project Manager (IEEE like)
@@ -494,10 +494,10 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
 	    $strengthsignal = "<span class=\"scale_{$strengthoption->truelabel}\" title=\"{$strengthoption->label}\">s</span>";
     }
 
-	$heavinessoption = techproject_get_option_by_key('heaviness', $project->id, $requirement->heaviness);
-    $heavinessclass = '';
-    if (!empty($requirement->heaviness)){
-	    $heavinessclass = "scale_{$heavinessoption->truelabel}";
+	$heavynessoption = techproject_get_option_by_key('heavyness', $project->id, $requirement->heavyness);
+    $heavynessclass = '';
+    if (!empty($requirement->heavyness)){
+	    $heavynessclass = "scale_{$heavynessoption->truelabel}";
 	}
 
 	if (!$fullsingle){
@@ -506,7 +506,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
 	} else {
 	    $hidedesc = '';
 	}
-	$head = "<table width='100%' class=\"nodecaption $heavinessclass\"><tr><td align='left' width='70%'><span class=\"level{$requlevel}\">{$checkbox}{$indent}{$hidesub} <a name=\"req{$requirement->id}\"></a>R{$numrequ} - ".format_string($requirement->abstract)."</span></td><td align='right' width='30%'>{$strengthsignal} {$speccount} {$completion} {$hidedesc}</td></tr></table>";
+	$head = "<table width='100%' class=\"nodecaption $heavynessclass\"><tr><td align='left' width='70%'><span class=\"level{$requlevel}\">{$checkbox}{$indent}{$hidesub} <a name=\"req{$requirement->id}\"></a>R{$numrequ} - ".format_string($requirement->abstract)."</span></td><td align='right' width='30%'>{$strengthsignal} {$speccount} {$completion} {$hidedesc}</td></tr></table>";
 
     unset($innertable);
     $innertable->class = 'unclassed';
@@ -705,8 +705,9 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
 	$headdetaillink = '';
 	$timeduestr = '';
 	if (!preg_match('/SHORT_WITHOUT_ASSIGNEE/', $style) && $task->assignee){
-	    $assignee = get_record('user', 'id' , $task->assignee);
-	    $assigneestr = "<span class=\"taskassignee\">({$assignee->lastname} {$assignee->firstname})</span>";
+	    if ($assignee = get_record('user', 'id' , $task->assignee)){
+	    	$assigneestr = "<span class=\"taskassignee\">({$assignee->lastname} {$assignee->firstname})</span>";
+	    }
         if ($task->taskendenable) {
             $tasklate = ($task->taskend < time()) ? 'toolate' : 'futuretime' ;
             $timeduestr = "<span class=\"$tasklate timedue\">[".userdate($task->taskend)."]</span>";
@@ -733,8 +734,16 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
         $priorityDesc = techproject_get_option_by_key('priority', $project->id, $task->priority);
         $orderCell = "<td class=\"ordercell_{$priorityDesc->label}\" width=\"3%\" align=\"center\" title=\"{$priorityDesc->description}\">{$order}</td>";
     }
+    
+    // adding special headeing showing styles
+    $showstyle = '';
+    if (@$SESSION->techproject_taskshow == 'cost'){
+    	if ($task->quoted != 0.00) $showstyle = 'task-quoted';
+    } elseif (@$SESSION->techproject_taskshow == 'risk'){
+    	if ($task->risk) $showstyle = "task-risk-{$task->risk}";
+    }
 
-    $head = "<table width='100%' class=\"nodecaption\"><tr>{$orderCell}<td align='left' width='70%'>&nbsp;{$worktypeicon} <span class=\"level{$tasklevel} {$style}\">{$checkbox}{$indent}{$hidesub} <a name=\"tsk{$task->id}\"></a>T{$numtask} - ".format_string($task->abstract)." {$headdetaillink} {$assigneestr} {$timeduestr}</span></td><td align='right' width='30%'> {$taskcount} {$delivcount} {$completion} {$milestone} {$taskDependency} {$hidetask}</td></tr></table>";
+    $head = "<table width='100%' class=\"nodecaption\"><tr>{$orderCell}<td align='left' width='70%' class='{$showstyle}'>&nbsp;{$worktypeicon} <span class=\"level{$tasklevel} {$style}\">{$checkbox}{$indent}{$hidesub} <a name=\"tsk{$task->id}\"></a>T{$numtask} - ".format_string($task->abstract)." {$headdetaillink} {$assigneestr} {$timeduestr}</span></td><td align='right' width='30%' class='{$showstyle}'> {$taskcount} {$delivcount} {$completion} {$milestone} {$taskDependency} {$hidetask}</td></tr></table>";
 
 	$statusoption = techproject_get_option_by_key('taskstatus', $project->id, $task->status);
 
@@ -1001,8 +1010,6 @@ function techproject_print_deliverables($project, $group, $fatherid, $cmid, $pro
 			print_box_end();
 		}
 	}
-    $level--;
-
 }
 
 /**

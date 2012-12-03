@@ -1,4 +1,4 @@
-<?php  //$Id: upgrade.php,v 1.3 2011-12-22 23:23:17 vf Exp $
+<?php  //$Id: upgrade.php,v 1.4 2012-12-03 18:38:54 vf Exp $
 
 /**
 * This file keeps track of upgrades to 
@@ -556,6 +556,35 @@ function xmldb_techproject_upgrade($oldversion=0) {
         $result = $result && add_field($table, $field);
     }
 
+    if ($result && $oldversion < 2012120200) {
+    /// Rename field heaviness on table techproject_requirement to heavyniess
+        $table = new XMLDBTable('techproject_requirement');
+        $field = new XMLDBField('heaviness');
+        $field->setAttributes(XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null, null, null, 'strength');
+
+    /// Launch rename field heaviness
+        $result = $result && rename_field($table, $field, 'heavyness');
+        
+        $sql = "
+        	UPDATE
+        		{$CFG->prefix}techproject_qualifier
+        	SET
+        		domain = 'heavyness'
+        	WHERE
+        		domain = 'heaviness'
+        ";
+        execute_sql($sql, false);
+    }
+
+    if ($result && $oldversion < 2012120201) {
+    /// Define field accesskey to be added to techproject
+        $table = new XMLDBTable('techproject');
+        $field = new XMLDBField('accesskey');
+        $field->setAttributes(XMLDB_TYPE_CHAR, '32', null, null, null, null, null, null, 'cssfilter');
+
+    /// Launch add field cssfilter
+        $result = $result && add_field($table, $field);
+	}
     return $result;
 }
 

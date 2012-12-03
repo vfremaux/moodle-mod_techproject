@@ -1,4 +1,4 @@
-<?php //$Id: backuplib.php,v 1.2 2011-07-07 14:04:23 vf Exp $
+<?php //$Id: backuplib.php,v 1.3 2012-12-03 18:38:50 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -133,6 +133,7 @@
         fwrite ($bf,full_tag("USERISKCORRECTION",$level,false,$project->useriskcorrection));
         fwrite ($bf,full_tag("XSLFILTER",$level,false,$project->xslfilter));
         fwrite ($bf,full_tag("CSSFILTER",$level,false,$project->cssfilter));
+        fwrite ($bf,full_tag("ACCESSKEY",$level,false,$project->accesskey));
 
         techproject_backup_qualifiers($bf, $preferences, $level, $project->id);
         techproject_backup_criteria($bf, $preferences, $level, $project->id);

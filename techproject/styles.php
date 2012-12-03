@@ -1,5 +1,9 @@
-#mod-techproject-view Table.entity TH.header{
+#mod-techproject-view table.entity TH.header,
+#mod-techproject-view table.nodecaption TH.header,
+#mod-techproject-view table.nodecaption TD.header,
+#mod-techproject-view table.entity TD.header{
 	background:none;
+	color:#404040;
 }
 
 .level0 { 
@@ -147,7 +151,7 @@ span.scale_must{
     color: #000000 
 }
 
-/* heaviness */
+/* heavyness */
 
 
 table.scale_outofreason{
@@ -437,4 +441,23 @@ div#allpage,
 .validationrowbordered.even{
    border:#FAFAFA 2px solid;
    padding:1px;
+}
+
+.task-quoted{
+   background-color:#F0F0F0;
+   background-image:url(/mod/techproject/pix/quoted.jpg);
+   background-repeat:repeat-x;
+   color:white;
+}
+
+.task-risk-80{
+   background-color:#FF8080;
+}
+
+.task-risk-30{
+   background-color:#FFC0C0;
+}
+
+.task-risk-10{
+   background-color:#FFF0F0;
 }

@@ -1,8 +1,9 @@
-<?php // $Id: techproject.php,v 1.4 2012-03-17 13:01:28 vf Exp $ 
+<?php // $Id: techproject.php,v 1.6 2012-12-03 18:38:55 vf Exp $ 
 
 $string['N.C.'] = 'N.C.';
+$string['accesskey'] = 'Clef d\'accès au document de projet';
 $string['abandoned'] = 'Abandonnée';
-$string['abandoneddesc'] = 'Tâche abandonée quelque soit l\'état';
+$string['abandoneddesc'] = 'Tâche abandonnée quelque soit l\'état';
 $string['abstract'] = 'Résumé';
 $string['accepted'] = 'Validé';
 $string['adddeliv'] = 'Ajouter un livrable';
@@ -329,6 +330,7 @@ $string['requirements'] = 'Attendus';
 $string['requirementsrate'] = 'Taux de couverture des attendus';
 $string['requirementswithbindings'] = 'Attendus autoliés';
 $string['requirementtitle'] = 'Libellé de l\'attendu ';
+$string['requirementriskcalculation'] = 'Le calcul de risque du projet (risque à priori) combine les indicateurs de faisabilité et de force du besoin. Un besoin impératif et complexe à obtenir pousse le projet en zone dangereuse, c\'est-à-dire, dans zone ou le risque de ne pas aboutir augmente, dû à l\'accumulation de facteurs défavorables. Les attendus en attente d\'information complémentaire zont ignorés.';
 $string['requlinks'] = 'Attendus liés';
 $string['resetproject'] = 'Suppression des données de projet ';
 $string['resetting_courseproject'] = 'Effacement du projet de niveau cours';
@@ -532,7 +534,11 @@ $string['difficult'] = 'Difficile';
 $string['needswork'] = 'A développer';
 $string['wecanhave'] = 'Accessible (existe)';
 $string['wehave'] = 'Disponible';
-$string['heaviness'] = 'Faisabilité';
+$string['heavyness'] = 'Faisabilité';
 $string['needsmoreinfo'] = 'Précisions requises';
+
+$string['showcost'] = 'Visualiser les coûts';
+$string['showrisk'] = 'Visualiser le facteur risque';
+$string['hideall'] = 'Cacher';
 
 ?>

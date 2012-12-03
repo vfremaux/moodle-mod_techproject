@@ -848,6 +848,31 @@ if (@$project->projectusesdelivs){
     }
     //]]>
     </script>
+    <?php
+	$showcost = get_string('showcost', 'techproject');
+	$showrisk = get_string('showrisk', 'techproject');
+	$hideall = get_string('hideall', 'techproject');
+	echo '<p><center>';
+	if (@$SESSION->techproject_taskshow != 'cost'){
+		echo "<a href=\"view.php?id={$cm->id}&amp;&amp;work=showcost\">$showcost</a> - ";
+	} else {
+		echo "$showcost - ";
+	}
+	if ($project->useriskcorrection){
+		if (@$SESSION->techproject_taskshow != 'risk'){
+			echo "<a href=\"view.php?id={$cm->id}&amp;&amp;work=showrisk\">$showrisk</a> - ";
+		} else {
+			echo "$showrisk - ";
+		}
+	}
+	if (@$SESSION->techproject_taskshow != ''){	
+		echo "<a href=\"view.php?id={$cm->id}&amp;&amp;work=hideall\">$hideall</a>";
+	} else {
+		echo "$hideall";
+	}
+	echo '</center></p>';
+    
+    ?>
     <form name="groupopform" method="post" action="view.php">
     <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
     <input type="hidden" name="work" value="groupcmd" />

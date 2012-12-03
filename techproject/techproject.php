@@ -1,4 +1,4 @@
-<?php // $Id: techproject.php,v 1.2 2011-12-22 23:23:15 vf Exp $
+<?php // $Id: techproject.php,v 1.3 2012-12-03 18:38:53 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -112,9 +112,9 @@
         if (has_capability('mod/techproject:configure', $context)){
             $tabs[0][] = new tabobject('domains', $CFG->wwwroot."/mod/techproject/view.php?view=domains&id={$id}", get_string('domains', 'techproject'));
             if (preg_match("/domains_?/", $currentpage)){
-                if (!preg_match("/domains_heaviness|domains_complexity|domains_severity|domains_priority|domains_worktype|domains_taskstatus|domains_strength|domains_deliv_status/", $view)) $view = 'domains_complexity';
+                if (!preg_match("/domains_heavyness|domains_complexity|domains_severity|domains_priority|domains_worktype|domains_taskstatus|domains_strength|domains_deliv_status/", $view)) $view = 'domains_complexity';
                 $tabs[1][] = new tabobject('domains_strength', "view.php?id={$id}&amp;view=domains_strength", get_string('strength', 'techproject'));
-                $tabs[1][] = new tabobject('domains_heaviness', "view.php?id={$id}&amp;view=domains_heaviness", get_string('heaviness', 'techproject'));
+                $tabs[1][] = new tabobject('domains_heavyness', "view.php?id={$id}&amp;view=domains_heavyness", get_string('heavyness', 'techproject'));
                 $tabs[1][] = new tabobject('domains_complexity', "view.php?id={$id}&amp;view=domains_complexity", get_string('complexity', 'techproject'));
                 $tabs[1][] = new tabobject('domains_severity', "view.php?id={$id}&amp;view=domains_severity", get_string('severity', 'techproject'));
                 $tabs[1][] = new tabobject('domains_priority', "view.php?id={$id}&amp;view=domains_priority", get_string('priority', 'techproject'));

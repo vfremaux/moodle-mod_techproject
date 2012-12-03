@@ -1,6 +1,7 @@
-<?php // $Id: techproject.php,v 1.4 2012-03-17 13:01:27 vf Exp $ 
+<?php // $Id: techproject.php,v 1.6 2012-12-03 18:38:54 vf Exp $ 
 
 $string['validations'] = 'Validations';
+$string['accesskey'] = 'Access key for project generaed document';
 $string['emptyproject'] = 'Empty project';
 $string['nospecifications'] = 'No specification';
 $string['norequirements'] = 'No requirement';
@@ -330,6 +331,7 @@ $string['redirectingtoview'] = 'Redirecting to view';
 $string['requirement'] = 'Requirement';
 $string['requirements'] = 'Requirements';
 $string['requirementswithbindings'] = 'Requirements with bindings';
+$string['requirementriskcalculation'] = 'Requirement risk calculation relies on both Strength and Heavyness qualifiers. A strong and heavy requirement pullsproject to danger zone, that is, a zone where the risk of not delivering can increase, du to the accumalation of defavorable factors. Requirements needing more information are ignored. A requirement \"out of reason\" increases drastically the risk on the heavyness axis.';
 $string['requirementsrate'] = 'Requirements covering rate';
 $string['requirementtitle'] = 'Requirement title';
 $string['requlinks'] = 'Associated requirements';
@@ -530,6 +532,10 @@ $string['needswork'] = 'To develop';
 $string['wecanhave'] = 'Exists, we can have';
 $string['wehave'] = 'Available';
 $string['needsmoreinfo'] = 'Needs more info';
-$string['heaviness'] = 'Faisibility';
+$string['heavyness'] = 'Faisibility';
+
+$string['showcost'] = 'Show cost quotes';
+$string['showrisk'] = 'Show risk evaluation';
+$string['hideall'] = 'Hide all';
 
 ?>

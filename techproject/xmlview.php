@@ -29,6 +29,7 @@
 
     $id = required_param('id', PARAM_INT);   // module id
     $view = optional_param('view', '', PARAM_CLEAN);   // viewed page id
+    $accesskey = optional_param('accesskey', '', PARAM_TEXT);
     
     $timenow = time();
     
@@ -42,8 +43,14 @@
     if (! $project = get_record('techproject', 'id', $cm->instance)) {
         error('Course module is incorrect');
     }
-    
-    require_login($course->id, false, $cm);
+
+	// allow anonymized access (document reading) with access key   
+    if (empty($project->accesskey) || $accesskey != $project->accesskey){
+	    require_login($course->id, false, $cm);
+	} else {
+		$COURSE = $course;
+	}
+
     $context = get_context_instance(CONTEXT_MODULE, $cm->id);
     
 /// check current group and change, for anyone who could
@@ -73,6 +80,7 @@
         
         $doc = new DOMDocument();
         $xsl_sheet = $project->xslfilter;
+        // $doc->load($CFG->dataroot.'/'.$course->id.'/moddata/techproject/'.$project->id.'/'.$xsl_sheet);
         $doc->load($xsl_sheet);
         $xsl->importStyleSheet($doc);
         
@@ -85,13 +93,13 @@
             $formattedxml = htmlentities($xml, ENT_QUOTES, 'UTF-8');
             $formattedxmllines = explode("\n", $formattedxml);
             $html = "XML Generation Error";
-            $html .="<hr/><pre>";
+            $html .= "<hr/><pre>";
             $i = 1;
             foreach($formattedxmllines as $line){
                 $html .= $i . " " . $line."\n";
                 $i++;
             }
-            $html .="</pre><hr/>";
+            $html .= "</pre><hr/>";
         }
     } else {
         /*

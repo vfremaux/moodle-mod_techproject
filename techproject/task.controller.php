@@ -464,6 +464,13 @@
    	} elseif ($work == 'right') {
    	    $taskid = required_param('taskid', PARAM_INT);
    		techproject_tree_right($project, $currentGroupId, $taskid, 'techproject_task');
+/** ********************** **/
+   	} elseif ($work == 'showcost') {
+   		$SESSION->techproject_taskshow = 'cost';
+   	} elseif ($work == 'showrisk') {
+   		$SESSION->techproject_taskshow = 'risk';
+   	} elseif ($work == 'hideall') {
+   		$SESSION->techproject_taskshow = '';
    	}
 
 ?>

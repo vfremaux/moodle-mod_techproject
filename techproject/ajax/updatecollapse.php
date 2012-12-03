@@ -15,6 +15,7 @@
 
 
     include "../../../config.php";
+    require_once $CFG->dirroot."/mod/techproject/locallib.php";
 
     $id = required_param('id', PARAM_INT);   // module id
     $entity = required_param('entity', PARAM_ALPHA);   // module id
@@ -44,6 +45,11 @@
         insert_record('techproject_collapse', $collapse);
     } else {
         delete_records('techproject_collapse', 'userid', $USER->id, 'entryid', $entryid, 'entity', $entity);
+		// prepare for showing branch
+	    if ($CFG->enableajax && $CFG->enablecourseajax){
+	    	$printfuncname = "techproject_print_{$entity}";
+	    	$printfuncname($project, $group, $entryid, $cm->id);
+	    }
     }
     
 

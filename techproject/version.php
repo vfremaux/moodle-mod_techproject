@@ -1,4 +1,4 @@
-<?php // $Id: version.php,v 1.3 2011-12-22 23:23:16 vf Exp $
+<?php // $Id: version.php,v 1.4 2012-12-03 18:38:53 vf Exp $
 
 /**
 * Project : Technical Project Manager (IEEE like)
@@ -16,7 +16,7 @@
 ///  This fragment is called by moodle_needs_upgrading() and /admin/index.php
 /////////////////////////////////////////////////////////////////////////////////
 
-$module->version  = 2011122300;  // The current module version (Date: YYYYMMDDXX)
+$module->version  = 2012120201;  // The current module version (Date: YYYYMMDDXX)
 $module->requires = 2007021510;  // Requires this Moodle version
 $module->cron     = 0;           // Period for cron to check this module (secs)
 

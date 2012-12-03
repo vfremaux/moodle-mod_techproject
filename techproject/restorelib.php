@@ -1,4 +1,4 @@
-<?php //$Id: restorelib.php,v 1.2 2011-07-07 14:04:23 vf Exp $
+<?php //$Id: restorelib.php,v 1.3 2012-12-03 18:38:52 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -142,6 +142,7 @@
             $techproject->useriskcorrection = backup_todb($modXmlBase['USERISKCORRECTION']['0']['#']);
             $techproject->xslfilter = backup_todb($modXmlBase['XSLFILTER']['0']['#']);
             $techproject->cssfilter = backup_todb($modXmlBase['CSSFILTER']['0']['#']);
+            $techproject->accesskey = backup_todb($modXmlBase['ACCESSKEY']['0']['#']);
             
             //We have to recode the grade field if it is <0 (scale)
             if ($techproject->grade < 0) {

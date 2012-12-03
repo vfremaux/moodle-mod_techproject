@@ -20,12 +20,12 @@
         $heading->id = required_param('headingid', PARAM_INT);
         $heading->projectid = $project->id;
         $heading->groupid = $currentGroupId;
-        $heading->title = htmlentities(required_param('title', PARAM_TEXT), ENT_QUOTES, 'UTF-8');
+        $heading->title = addslashes(required_param('title', PARAM_CLEANHTML));
         $heading->abstract = addslashes(required_param('abstract', PARAM_CLEANHTML));
         $heading->rationale = addslashes(required_param('rationale', PARAM_CLEANHTML));
         $heading->environment = addslashes(required_param('environment', PARAM_CLEANHTML));
-        $heading->organisation = htmlentities(required_param('organisation', PARAM_TEXT), ENT_QUOTES, 'UTF-8');
-        $heading->department = htmlentities(required_param('department', PARAM_TEXT), ENT_QUOTES, 'UTF-8');
+        $heading->organisation = addslashes(required_param('organisation', PARAM_CLEANHTML));
+        $heading->department = addslashes(required_param('department', PARAM_CLEANHTML));
         
         update_record('techproject_heading', $heading);
     }
