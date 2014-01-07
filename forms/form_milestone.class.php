@@ -33,15 +33,20 @@ class Milestone_Form extends moodleform {
 		$this->descriptionoptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'context' => $modcontext);
     	
     	$mform->addElement('hidden', 'id');
+    	$mform->setType('id', PARAM_INT);
     	$mform->addElement('hidden', 'milestoneid');
+    	$mform->setType('milestoneid', PARAM_INT);
     	$mform->addElement('hidden', 'work');
+    	$mform->setType('work', PARAM_TEXT);
     	$mform->setDefault('work', $this->mode);
     	
     	$mform->addElement('text', 'abstract', get_string('milestonetitle', 'techproject'), array('size' => "100%"));
+    	$mform->setType('abstract', PARAM_CLEANHTML);
 
     	$mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);		    	
 
-    	$mform->addElement('date_time_selector', 'deadline', get_string('deadline', 'techproject'), array('optional' => true));
+		$startyear = date('Y', time());
+    	$mform->addElement('date_time_selector', 'deadline', get_string('deadline', 'techproject'), array('optional' => true, 'startyear' => $startyear));
 		
 		$this->add_action_buttons(true);
     }

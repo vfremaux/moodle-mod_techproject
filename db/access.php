@@ -42,6 +42,16 @@
 
 $capabilities = array(
 
+    'mod/techproject:addinstance' => array(
+
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
     'mod/techproject:manage' => array(
 
         'captype' => 'read',

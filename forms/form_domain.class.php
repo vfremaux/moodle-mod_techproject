@@ -48,8 +48,10 @@
     		$mform =& $this->_form;
 
     		$mform->addElement('hidden', 'view', 'domains_'.$this->domain);
+    		$mform->setType('view', PARAM_TEXT);
     		if (isset($this->domainvalue->id)){
         		$mform->addElement('hidden', 'domainid', $this->domainvalue->id);
+    			$mform->setType('domainid', PARAM_INT);
         	}
     		// Adding title and description
         	$mform->addElement('html', $OUTPUT->heading(get_string('newvalueformfor', 'techproject', get_string($this->domain, 'techproject'))));
@@ -59,8 +61,10 @@
     		$areaattributes = 'cols="30" rows="5"';
 
     		$mform->addElement('text', 'code', get_string('code', 'techproject'), $codeattributes);
+    		$mform->setType('code', PARAM_TEXT);
     		$mform->setDefault('code', $this->domainvalue->code);
     		$mform->addElement('text', 'label', get_string('label', 'techproject'), $attributes);
+    		$mform->setType('label', PARAM_CLEANHTML);
     		$mform->setDefault('label', $this->domainvalue->label);
 
     		$mform->addElement('textarea', 'description', get_string('description'), $areaattributes);
@@ -75,4 +79,3 @@
             $mform->closeHeaderBefore('buttonar');		
     	}
     }
-?>

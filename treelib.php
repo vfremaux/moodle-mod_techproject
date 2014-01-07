@@ -1,4 +1,4 @@
-<?php  // $Id: treelib.php,v 1.2 2012-07-29 21:02:41 vf Exp $
+<?php  // $Id: treelib.php,v 1.2 2012-08-12 22:01:36 vf Exp $
 
 /**
 * Project : Technical Project Manager (IEEE like)
@@ -401,9 +401,9 @@ function techproject_tree_right(&$project, $group, $id, $table){
 
 		if ($resbrothers = $DB->get_records_sql($sql)) {
 			foreach($resbrothers as $resbrother){
-				$objet->id = $resbrother->id;
-				$objet->ordering = $newbrotherordering;
-				$DB->update_record("$table", $objet);
+				$treeitem->id = $resbrother->id;
+				$treeitem->ordering = $newbrotherordering;
+				$DB->update_record("$table", $treeitem);
 				$newbrotherordering = $newbrotherordering + 1;
 			}
 		}
@@ -412,10 +412,11 @@ function techproject_tree_right(&$project, $group, $id, $table){
 		$newordering = $maxordering + 1;
 
 		//assigning father's id
-		$objet->id = $id;
-		$objet->fatherid = $newfatherid;
-		$objet->ordering = $newordering;
-		$DB->update_record("$table", $objet);
+		$treeitem = new StdClass;
+		$treeitem->id = $id;
+		$treeitem->fatherid = $newfatherid;
+		$treeitem->ordering = $newordering;
+		$DB->update_record("$table", $treeitem);
 	}
 }
 
@@ -573,6 +574,7 @@ function techproject_tree_propagate_up($table, $field, $id, $function = '~', $by
                 } break;
             }
             // make a "father object"
+            $theFather = new StdClass();
             $theFather->id = $fatherid;
             $theFather->{$field} = $fieldValue;
             $DB->update_record($table, $theFather);
@@ -612,6 +614,7 @@ function techproject_tree_propagate_down(&$project, $table, $field, $fatherid = 
                 } 
                 break;
             }
+            $rec = new StdClass();
             $rec->id = $fatherid;
             $rec->$field = $fieldValue;
             $DB->update_record($table, $rec);
@@ -751,6 +754,7 @@ function techproject_tree_copy_set($set, $fromtable, $totable, $fields = 'descri
             			}
         			break;
             	}
+            	$bind = new StdClass();
             	$bind->projectid = $projectid;
             	$bind->groupid = $group;
             	$bind->$t1 = $originalid ; // old id
@@ -775,7 +779,7 @@ function techproject_tree_copy_set($set, $fromtable, $totable, $fields = 'descri
         /// get original record
         $node = $DB->get_record($fromtable, array('id' => $anItem));
 
-        unset($aClone);
+        $aClone = new StdClass();
         $aClone->id = $node->id;
         $aClone->ordering = $node->ordering;
         $aClone->fatherid = 0; // destroys all tree information as being reconstructed later

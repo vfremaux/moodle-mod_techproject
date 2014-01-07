@@ -38,12 +38,13 @@
         echo '<br/>';
         echo $OUTPUT->box_start('center', '100%');
         foreach($groupusers as $aUser){
+        	techproject_complete_user($aUser);
     ?>
     <table width="100%">
         <tr>
             <td class="byassigneeheading level1">
     <?php 
-			$hidesub = "<a href=\"javascript:toggle('{$aUser->id}','sub{$aUser->id}');\"><img name=\"img{$aUser->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" style=\"background-color : #E0E0E0\" /></a>";
+			$hidesub = "<a href=\"javascript:toggle('{$aUser->id}','sub{$aUser->id}', false, '{$CFG->wwwroot}');\"><img name=\"img{$aUser->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
             echo $hidesub.' '.get_string('assignedto','techproject').' '.fullname($aUser).' '.$OUTPUT->user_picture($USER);
     ?>
             </td>

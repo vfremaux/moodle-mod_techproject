@@ -1,4 +1,4 @@
-<?php  // $Id: locallib.php,v 1.3 2012-07-30 08:13:45 vf Exp $
+<?php  // $Id: locallib.php,v 1.2 2012-08-12 22:01:34 vf Exp $
 
 /**
  * Project : Technical Project Manager (IEEE like)
@@ -49,7 +49,7 @@ function techproject_edition_enable_button($cm, $course, $project, $editmode){
 
     // protect agains some unwanted situations
     $groupmode = 0 + groups_get_activity_groupmode($cm, $course);
-    $currentGroupId = (isguestuser()) ? $_SESSION['guestgroup'] : get_current_group($cm->course);
+    $currentGroupId = (isguestuser()) ? $_SESSION['guestgroup'] : groups_get_activity_group($cm);
     $context = context_course::instance($course->id);
     if (!has_capability('moodle/grade:edit', $context)){
         if (isguestuser() && !$project->guestscanuse) return '';
@@ -249,7 +249,7 @@ function techproject_print_single_specification($specification, $project, $group
     $numspec = implode('.', techproject_tree_get_upper_branch('techproject_specification', $specification->id, true, true));
     if (!$fullsingle){
     	if (techproject_count_subs('techproject_specification', $specification->id) > 0) {
-			$ajax = $CFG->enableajax && $CFG->enablecourseajax;
+			$ajax = $CFG->enableajax;
     		$hidesub = "<a href=\"javascript:toggle('{$specification->id}','sub{$specification->id}', $ajax, '$CFG->wwwroot');\"><img name=\"img{$specification->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
     	} else {
     		$hidesub = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/empty.gif\" />";
@@ -453,7 +453,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
     $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_requirement', $requirement->id, true, true));
     if (!$fullsingle){
     	if (techproject_count_subs('techproject_requirement', $requirement->id) > 0) {
-    		$ajax = $CFG->enableajax && $CFG->enablecourseajax;
+    		$ajax = $CFG->enableajax;
     		$hidesub = "<a href=\"javascript:toggle('{$requirement->id}','sub{$requirement->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$requirement->id}\" src=\"".$OUTPUT->pix_url('/p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
     	} else {
     		$hidesub = "<img src=\"".$OUTPUT->pix_url('/p/empty', 'techproject')."\" />";
@@ -618,15 +618,15 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
 		    $level++;
 		    $propagatedroot = $propagated;
 		    if ($propagated == null || !isset($propagated->milestoneid) && $task->milestoneid) {
+		        $propagatedroot = new StdClass();
 		        $propagatedroot->milestoneid = $task->milestoneid;
 		        $propagatedroot->milestoneabstract = $task->milestoneabstract;
-		    }
-		    else{
+		    } else {
 		       $task->milestoneid = $propagated->milestoneid;
 		       $task->milestoneabstract = $propagated->milestoneabstract;
 		       $task->milestoneforced = 1;
 		    }
-		    if (!@$propagated->collapsed || !$CFG->enablecourseajax || !$CFG->enableajax){
+		    if (!@$propagated->collapsed || !$CFG->enableajax){
 			    techproject_print_single_task($task, $project, $group, $cmid, count($tasks), false, '');
 			}
 
@@ -661,7 +661,7 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
 *
 * // TODO clean up $fullsingle and $style commands
 */
-function techproject_print_single_task($task, $project, $group, $cmid, $setSize, $fullsingle = false, $style='', $nocollapse = false){
+function techproject_print_single_task($task, $project, $group, $cmid, $setSize, $fullsingle = false, $style=''){
     global $CFG, $USER, $SESSION, $DB, $OUTPUT;
 
     $TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
@@ -682,9 +682,9 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
 	}
 
     $numtask = implode('.', techproject_tree_get_upper_branch('techproject_task', $task->id, true, true));
-    if (!$fullsingle && !$nocollapse){
+    if (!$fullsingle){
     	if (techproject_count_subs('techproject_task', $task->id) > 0) {
-    		$ajax = $CFG->enableajax && $CFG->enablecourseajax;
+    		$ajax = $CFG->enableajax;
     		$hidesub = "<a href=\"javascript:toggle('{$task->id}','sub{$task->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$task->id}\" src=\"".$OUTPUT->pix_url('/p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
     	} else {
     		$hidesub = "<img src=\"".$OUTPUT->pix_url('/p/empty', 'techproject')."\" />";
@@ -728,8 +728,8 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
     $worktypeicon = '';
     $worktypeoption = techproject_get_option_by_key('worktype', $project->id, $task->worktype);
     if ($style == '' || !$style === 'SHORT_WITHOUT_TYPE'){
-    	if (file_exists("{$CFG->dirroot}/mod/techproject/pix/p/".@$worktypeoption->code.".gif")){
-    	    $worktypeicon = "<img src=\"".$OUTPUT->pix_url("/p/{$worktypeoption->code}", 'techproject')."\" title=\"".$worktypeoption->label."\" height=\"24\" align=\"middle\" />";
+    	if (file_exists("{$CFG->dirroot}/mod/techproject/pix/p/".strtolower(@$worktypeoption->code).".gif")){
+    	    $worktypeicon = "<img src=\"".$OUTPUT->pix_url('/p/'.strtolower($worktypeoption->code), 'techproject')."\" title=\"".$worktypeoption->label."\" height=\"24\" align=\"middle\" />";
     	}
     }
     $orderCell = '';
@@ -748,7 +748,6 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
 	$statusoption = techproject_get_option_by_key('taskstatus', $project->id, $task->status);
 
 	//affichage de la task
-    unset($innertable);
 	$innertable = new html_table();
     $innertable->width = '100%';
     $innertable->style = array('parmname', 'parmvalue');
@@ -901,7 +900,7 @@ function techproject_print_milestones($project, $group, $numstage, $cmid){
 			$rows[] = "<tr><td class=\"projectparam\" valign=\"top\">" . get_string('totaltime', 'techproject'). "</td><td valign=\"top\" class=\"projectdata\">{$toptasks->used} ".$TIMEUNITS[$project->timeunit]."</td></tr>";
 			$rows[] = "<tr><td class=\"projectparam\" valign=\"top\">" . get_string('totalcost', 'techproject'). "</td><td valign=\"top\" class=\"projectdata\">{$toptasks->spent} ".$project->costunit."</td></tr>";
 			$rows[] = "<tr><td class=\"projectparam\" valign=\"top\">" . get_string('assignedtasks', 'techproject'). "</td><td valign=\"top\" class=\"projectdata\">{$toptasks->count}</td></tr>";
-			$rows[] = "<tr><td class=\"projectparam\" valign=\"top\">" . get_string('assigneddeliverables', 'techproject'). "</td><td valign=\"top\" class=\"projectdata\">{$deliverables}</td></tr>";
+			$rows[] = "<tr><td class=\"projectparam\" valign=\"top\">" . get_string('assigneddeliverables', 'techproject'). "</td><td valign=\"top\" class=\"projectdata\">{$delivCount}</td></tr>";
     		$description = file_rewrite_pluginfile_urls($milestone->description, 'pluginfile.php', $context->id, 'mod_techproject', 'milestonedescription', $milestone->id);
 			$rows[] = "<tr><td class=\"projectdata description\" valign=\"top\" colspan=\"2\">".format_string(format_text($description, $milestone->descriptionformat))."</td></tr>";
 
@@ -934,9 +933,7 @@ function techproject_print_milestones($project, $group, $numstage, $cmid){
 			}
 
 			$table->style = "generaltable";
-		    echo "<div class=\"nodelevel0\">";
 			techproject_print_project_table($table);
-		    echo "</div>";
 			unset($table);
 
 			$i++;
@@ -1038,7 +1035,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
     $numdeliv = implode('.', techproject_tree_get_upper_branch('techproject_deliverable', $deliverable->id, true, true));
     if (!$fullsingle){
     	if (techproject_count_subs('techproject_deliverable', $deliverable->id) > 0) {
-    		$ajax = $CFG->enableajax && $CFG->enablecourseajax;
+    		$ajax = $CFG->enableajax;
     		$hidesub = "<a href=\"javascript:toggle('{$deliverable->id}','sub{$deliverable->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$deliverable->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
     	} else {
     		$hidesub = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/empty.gif\" />";
@@ -1278,10 +1275,11 @@ function techproject_get_option_by_key($domain, $projectid, $value){
         if ($option = $DB->get_record('techproject_qualifier', array('domain' => $domain, 'projectid' => 0, 'code' => $value))){
             getLocalized($option);
         } else {
-           $option->id = 0;
-           $option->truelabel = 'default';
-           $option->label = get_string('unqualified', 'techproject');
-           $option->description = '';
+        	$option = new StdClass();
+			$option->id = 0;
+			$option->truelabel = 'default';
+			$option->label = get_string('unqualified', 'techproject');
+			$option->description = '';
         }
     }
     return $option;
@@ -1299,7 +1297,7 @@ function techproject_get_option_by_key($domain, $projectid, $value){
 function techproject_bar_graph_over($value, $over, $width = 50, $height = 4, $maxover = 60){
     global $CFG;
     
-    if ($value == -1) return "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/graypixel.gif\" title=\"".get_string('nc','techproject')."\" width=\"{$width}\" height=\"{$height}\" />";
+    if ($value == -1) return "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/graypixel.gif\" title=\"".get_string('N.C.','techproject')."\" width=\"{$width}\" height=\"{$height}\" />";
     $done = floor($width * $value / 100);
     $todo = floor($width * ( 1 - $value / 100));
     $bargraph = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/greenpixel.gif\" title=\"{$value}%\" width=\"{$done}\" height=\"{$height}\" />";
@@ -2049,7 +2047,8 @@ function techproject_print_single_entity_validation(&$validationsessions, &$enti
     $canedit = has_capability('mod/techproject:validate', $context);
     $numrec = implode('.', techproject_tree_get_upper_branch('techproject_'.$entityname, $entity->id, true, true));
 	if (techproject_count_subs('techproject_'.$entityname, $entity->id) > 0) {
-		$hidesub = "<a href=\"javascript:toggle('{$entity->id}','sub{$entity->id}');\"><img name=\"img{$entity->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
+		$ajax = $CFG->enableajax;
+		$hidesub = "<a href=\"javascript:toggle('{$entity->id}','sub{$entity->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$entity->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
 	} else {
 		$hidesub = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/empty.gif\" />";
 	}
@@ -2061,6 +2060,7 @@ function techproject_print_single_entity_validation(&$validationsessions, &$enti
 	$validationcells = '';
 	foreach($validationsessions as $session){
 		if (!isset($session->states[$entity->id])){
+			$newstate = new StdClass();
 			$newstate->projectid = $project->id;
 			$newstate->reqid = $entity->id;
 			$newstate->groupid = $group;
@@ -2301,49 +2301,65 @@ function techproject_check_startup_level($entity, $fatherid, &$level, &$startupl
 function techproject_print_localfile($deliverable, $cmid, $type=NULL, $align="left") {
 	global $CFG, $DB, $OUTPUT;
 	
-	    if (!$context = get_context_instance(CONTEXT_MODULE, $cmid)) {
-	        return '';
-	    }
-	
-	    $fs = get_file_storage();
-	
-	    $imagereturn = '';
-	    $output = '';
-	
-	    if ($files = $fs->get_area_files($context->id, 'mod_techproject', 'localfile', $deliverable->id, "timemodified", false)) {
-	        foreach ($files as $file) {
-	            $filename = $file->get_filename();
-	            $mimetype = $file->get_mimetype();
-	            $iconimage = '<img src="'.$OUTPUT->pix_url(file_mimetype_icon($mimetype)).'" class="icon" alt="'.$mimetype.'" />';
-	            $path = file_encode_url($CFG->wwwroot.'/pluginfile.php', '/'.$context->id.'/mod_techproject/localfile/'.$deliverable->id.'/'.$filename);
-	
-	            if ($type == 'html') {
-	                $output .= "<a href=\"$path\">$iconimage</a> ";
-	                $output .= "<a href=\"$path\">".s($filename)."</a>";
-	                $output .= "<br />";
-	
-	            } else if ($type == 'text') {
-	                $output .= "$strattachment ".s($filename).":\n$path\n";
-	
-	            } else {
-	                if (in_array($mimetype, array('image/gif', 'image/jpeg', 'image/png'))) {
-	                    // Image attachments don't get printed as links
-	                    $imagereturn .= "<br /><img src=\"$path\" alt=\"\" />";
-	                } else {
-	                    $output .= "<a href=\"$path\">$iconimage</a> ";
-	                    $output .= format_text("<a href=\"$path\">".s($filename)."</a>", FORMAT_HTML, array('context'=>$context));
-	                    $output .= '<br />';
-	                }
-	            }
-	        }
-	    }
-	
-	    if ($type) {
-	        return $output;
-	    } else {
-	        echo $output;
-	        return $imagereturn;
-	    }
+    if (!$context = get_context_instance(CONTEXT_MODULE, $cmid)) {
+        return '';
+    }
+
+    $fs = get_file_storage();
+
+    $imagereturn = '';
+    $output = '';
+
+    if ($files = $fs->get_area_files($context->id, 'mod_techproject', 'localfile', $deliverable->id, "timemodified", false)) {
+        foreach ($files as $file) {
+            $filename = $file->get_filename();
+            $mimetype = $file->get_mimetype();
+            $iconimage = '<img src="'.$OUTPUT->pix_url(file_mimetype_icon($mimetype)).'" class="icon" alt="'.$mimetype.'" />';
+            $path = file_encode_url($CFG->wwwroot.'/pluginfile.php', '/'.$context->id.'/mod_techproject/localfile/'.$deliverable->id.'/'.$filename);
+
+            if ($type == 'html') {
+                $output .= "<a href=\"$path\">$iconimage</a> ";
+                $output .= "<a href=\"$path\">".s($filename)."</a>";
+                $output .= "<br />";
+
+            } else if ($type == 'text') {
+                $output .= "$strattachment ".s($filename).":\n$path\n";
+
+            } else {
+                if (in_array($mimetype, array('image/gif', 'image/jpeg', 'image/png'))) {
+                    // Image attachments don't get printed as links
+                    $imagereturn .= "<br /><img src=\"$path\" alt=\"\" />";
+                } else {
+                    $output .= "<a href=\"$path\">$iconimage</a> ";
+                    $output .= format_text("<a href=\"$path\">".s($filename)."</a>", FORMAT_HTML, array('context'=>$context));
+                    $output .= '<br />';
+                }
+            }
+        }
+    }
+
+    if ($type) {
+        return $output;
+    } else {
+        echo $output;
+        return $imagereturn;
+    }
+}
+
+/**
+* special user records fix for demanding fullname() function
+* caches some result for efficiency
+*/
+function techproject_complete_user(&$user){
+	global $DB;
+	static $USERCOMPS;
+
+	if (empty($USERCOMPS[$user->id])){
+		$fields = get_all_user_name_fields(true);
+		$USERCOMPS[$user->id] = $DB->get_record('user', array('id' => $user->id), $fields);
+	}
+	foreach($USERCOMPS[$user->id] AS $var => $value){
+    	$user->$var = $value;
 	}
 
-?>
+}

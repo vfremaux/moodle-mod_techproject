@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" href="../codebase/default.css" type="text/css" media="screen" title="no title" charset="utf-8"><title>
+    dhtmlxgantt:api_constructor    [DHX documentation]
+  </title></head>
+
+<body>
+<div class="dokuwiki">
+  
+  <div class="stylehead">
+
+    <div class="header">
+    <a class="logo" href="http://dhtmlx.com" title="DHTMLX Home Page"></a>
+    <span class="tittle-dhtmlx">DHTMLX Docs & Samples Explorer</span>
+
+    <div class="search-field">
+        <form action="/dhtmlx/docs/doku.php" accept-charset="utf-8" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" title="Search" /><button type="submit"></button><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>    </div>
+        <div class="buttons">
+                <a class="doc"></a>
+                <a title="DHTMLX Samples homepage" href="../samples.html" class="sample"/></a>
+        </div>
+     <!-- <div class="pagename">
+        [[<a href="#"  title="Backlinks">dhtmlxgantt:api_constructor</a>]]
+      </div>
+      <div class="logo">
+        <a href="/dhtmlx/docs/doku.php"  name="dokuwiki__top" id="dokuwiki__top" accesskey="h" title="[H]">DHX documentation</a>      </div>
+
+      <div class="clearer"></div>-->
+        
+    </div>
+
+    
+<!--   <div class="bar" id="bar__top">
+      <div class="bar-left" id="bar__topleft">
+        <form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>        <form class="button btn_revs" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>      </div>
+
+      <div class="bar-right" id="bar__topright">
+        <form class="button btn_recent" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="recent" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>        <form action="/dhtmlx/docs/doku.php" accept-charset="utf-8" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" title="Search" /><button type="submit"></button><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>&nbsp;
+      </div>
+
+      <div class="clearer"></div>
+    </div> -->
+
+<!--        <div class="breadcrumbs">
+      <span class="bchead">Trace:</span> <span class="bcsep">&raquo;</span> <span class="curid"><a href="/dhtmlx/docs/doku.php?id=dhtmlxgantt:api_constructor"  class="breadcrumbs" title="dhtmlxgantt:api_constructor">api_constructor</a></span>    </div>
+    -->
+
+    
+  </div>
+  
+  
+  <div class="page">
+    <!-- wikipage start -->
+    <!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="clear">
+
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#ganttchart_constructor" class="toc">GanttChart Constructor</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#ganttprojectinfo_constructor" class="toc">GanttProjectInfo Constructor</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#gantttaskinfo_constructor" class="toc">GanttTaskInfo Constructor</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<p>
+<div class='backlinks'><div class='backlink last_backlink'><img src="icons___file.gif"  class="media" alt="" /><a href="../index.html" class="wikilink1" title="start">Index</a></div><div class='arrow'></div><div class='backlink last_backlink'><a href="/dhtmlx/docs/doku.php?id=dhtmlxgantt:toc" class="media" title="dhtmlxgantt:toc"></a><a href="index.html" class="wikilink1" title="dhtmlxgantt:toc">dhtmlxgantt</a></div><div class='arrow'></div><div class='backlink'><span class="curid"><a href="dhtmlxgantt___api_constructor.html" class="wikilink1" title="dhtmlxgantt:api_constructor"> GanttChart Constructor </a></span></div></div>
+
+</p>
+
+<h2><a name="ganttchart_constructor" id="ganttchart_constructor">GanttChart Constructor</a></h2>
+<div class="level2">
+<pre class="code javascript">    <span class="kw2">var</span> gantt <span class="sy0">=</span> <span class="kw2">new</span> GanttChart<span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+<p>
+
+The constructor itself has no parameters. We have create() method to construct Gantt chart on the page.
+
+</p>
+<pre class="code javascript">    gantt.<span class="me1">create</span><span class="br0">&#40;</span>divID<span class="br0">&#41;</span>;</pre>
+<p>
+
+where 
+</p>
+<ul>
+<li class="level1"><div class="li"> divID - id of <acronym title="HyperText Markup Language">HTML</acronym> element which will be used as parent</div>
+</li>
+</ul>
+
+<p>
+
+It is easy to initialize object on page. Just create some div element on your page, it is better if you use absolute or relative style position for it. Then call create() method passign your div ID as an argument. This method will create html Gantt inside of your div. <strong>Remember</strong>, most of appearance related methods should be called before create(). They are mentioned in <a href="dhtmlxgantt___api_toc_categories.html" class="wikilink1" title="dhtmlxgantt:api_toc_categories">API reference</a> in sections “Initialization” and “Appearance”.
+</p>
+<pre class="code javascript"><span class="sy0">&lt;</span>div style<span class="sy0">=</span><span class="st0">&quot;width:950px;height:620px;position:absolute&quot;</span> id<span class="sy0">=</span><span class="st0">&quot;GanttDiv&quot;</span><span class="sy0">&gt;&lt;/</span>div<span class="sy0">&gt;</span>
+<span class="sy0">&lt;</span>script<span class="sy0">&gt;</span>
+    <span class="kw2">var</span> gantt <span class="sy0">=</span> <span class="kw2">new</span> GanttChart<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    gantt.<span class="me1">setImagePath</span><span class="br0">&#40;</span><span class="st0">&quot;imgs/&quot;</span><span class="br0">&#41;</span>;
+    gantt.<span class="me1">setEditable</span><span class="br0">&#40;</span><span class="kw2">true</span><span class="br0">&#41;</span>;
+    <span class="co1">//...</span>
+    gantt.<span class="me1">addProject</span><span class="br0">&#40;</span>project_1<span class="br0">&#41;</span>;
+    <span class="co1">//...</span>
+    gantt.<span class="me1">create</span><span class="br0">&#40;</span><span class="st0">&quot;GanttDiv&quot;</span><span class="br0">&#41;</span>;
+<span class="sy0">&lt;/</span>script<span class="sy0">&gt;</span></pre>
+</div>
+<div class="secedit"><form class="button btn_secedit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="lines" value="95-1184" /><input type="hidden" name="rev" value="1282818709" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Edit" class="button" title="GanttChart Constructor" /></div></form></div>
+<h2><a name="ganttprojectinfo_constructor" id="ganttprojectinfo_constructor">GanttProjectInfo Constructor</a></h2>
+<div class="level2">
+<pre class="code javascript">    <span class="kw2">var</span> project1 <span class="sy0">=</span> <span class="kw2">new</span> GanttProjectInfo<span class="br0">&#40;</span>id<span class="sy0">,</span> <span class="kw3">name</span><span class="sy0">,</span> startDate<span class="br0">&#41;</span>;</pre>
+<p>
+
+where
+</p>
+<ul>
+<li class="level1"><div class="li"> id - id of the project</div>
+</li>
+<li class="level1"><div class="li"> name - name of the project</div>
+</li>
+<li class="level1"><div class="li"> startDate - start date of the project (JavaScript Date object)</div>
+</li>
+</ul>
+
+<p>
+<strong>Remember:</strong> JavaScript Date object counts month part from 0 (January) to 11 (December). <br/>
+
+In the sample below the date <em>new Date(2006, 5, 11)</em> is June, 11th of 2006.
+
+</p>
+<pre class="code javascript">    <span class="kw2">var</span> project1 <span class="sy0">=</span> <span class="kw2">new</span> GanttProjectInfo<span class="br0">&#40;</span><span class="nu0">1</span><span class="sy0">,</span> <span class="st0">&quot;Applet redesign&quot;</span><span class="sy0">,</span> <span class="kw2">new</span> Date<span class="br0">&#40;</span><span class="nu0">2006</span><span class="sy0">,</span> <span class="nu0">5</span><span class="sy0">,</span> <span class="nu0">11</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    gantt.<span class="me1">addProject</span><span class="br0">&#40;</span>project1<span class="br0">&#41;</span>;</pre>
+</div>
+<div class="secedit"><form class="button btn_secedit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="lines" value="1185-1759" /><input type="hidden" name="rev" value="1282818709" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Edit" class="button" title="GanttProjectInfo Constructor" /></div></form></div>
+<h2><a name="gantttaskinfo_constructor" id="gantttaskinfo_constructor">GanttTaskInfo Constructor</a></h2>
+<div class="level2">
+<pre class="code javascript">    <span class="kw2">var</span> parentTask1 <span class="sy0">=</span> <span class="kw2">new</span> GanttTaskInfo<span class="br0">&#40;</span>id<span class="sy0">,</span> <span class="kw3">name</span><span class="sy0">,</span> EST<span class="sy0">,</span> duration<span class="sy0">,</span> percentCompleted<span class="sy0">,</span> predecessorTaskId<span class="br0">&#41;</span>;</pre>
+<p>
+
+where
+</p>
+<ul>
+<li class="level1"><div class="li"> id - task id</div>
+</li>
+<li class="level1"><div class="li"> name - task name</div>
+</li>
+<li class="level1"><div class="li"> EST- Estimated Start Date of task</div>
+</li>
+<li class="level1"><div class="li"> duration - task duration (in hours)</div>
+</li>
+<li class="level1"><div class="li"> percentCompleted - task percentCompleted in range (0-100)</div>
+</li>
+<li class="level1"><div class="li"> predecessorTaskId - predecessor task Id. Predecessor and this task will be joined by dependency line in the Gantt Chart.</div>
+</li>
+</ul>
+<pre class="code javascript">    <span class="kw2">var</span> parentTask1 <span class="sy0">=</span> <span class="kw2">new</span> GanttTaskInfo<span class="br0">&#40;</span><span class="nu0">1</span><span class="sy0">,</span> <span class="st0">&quot;Old code review&quot;</span><span class="sy0">,</span> <span class="kw2">new</span> Date<span class="br0">&#40;</span><span class="nu0">2006</span><span class="sy0">,</span> <span class="nu0">5</span><span class="sy0">,</span> <span class="nu0">11</span><span class="br0">&#41;</span><span class="sy0">,</span> <span class="nu0">208</span><span class="sy0">,</span> <span class="nu0">50</span><span class="sy0">,</span> <span class="st0">&quot;&quot;</span><span class="br0">&#41;</span>;
+    parentTask1.<span class="me1">addChildTask</span><span class="br0">&#40;</span><span class="kw2">new</span> GanttTaskInfo<span class="br0">&#40;</span><span class="nu0">2</span><span class="sy0">,</span> <span class="st0">&quot;Convert to J#&quot;</span><span class="sy0">,</span> <span class="kw2">new</span> Date<span class="br0">&#40;</span><span class="nu0">2006</span><span class="sy0">,</span> <span class="nu0">5</span><span class="sy0">,</span> <span class="nu0">11</span><span class="br0">&#41;</span><span class="sy0">,</span> <span class="nu0">100</span><span class="sy0">,</span> <span class="nu0">40</span><span class="sy0">,</span> <span class="st0">&quot;&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    parentTask1.<span class="me1">addChildTask</span><span class="br0">&#40;</span><span class="kw2">new</span> GanttTaskInfo<span class="br0">&#40;</span><span class="nu0">13</span><span class="sy0">,</span> <span class="st0">&quot;Add new functions&quot;</span><span class="sy0">,</span> <span class="kw2">new</span> Date<span class="br0">&#40;</span><span class="nu0">2006</span><span class="sy0">,</span> <span class="nu0">5</span><span class="sy0">,</span> <span class="nu0">12</span><span class="br0">&#41;</span><span class="sy0">,</span> <span class="nu0">80</span><span class="sy0">,</span> <span class="nu0">90</span><span class="sy0">,</span> <span class="st0">&quot;&quot;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+&nbsp;
+    project1.<span class="me1">addTask</span><span class="br0">&#40;</span>parentTask1<span class="br0">&#41;</span>;</pre>
+</div>
+<div class="secedit"><form class="button btn_secedit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="lines" value="1760-" /><input type="hidden" name="rev" value="1282818709" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Edit" class="button" title="GanttTaskInfo Constructor" /></div></form></div>
+    <!-- wikipage stop -->
+  </div>
+
+  <div class="clearer">&nbsp;</div>
+
+  
+  <div class="stylefoot">
+
+    <div class="meta">
+      <div class="user">
+              </div>
+     <!-- <div class="doc">
+        dhtmlxgantt/api_constructor.txt &middot; Last modified: 2010/08/26 13:31 (external edit)      </div>
+    </div>-->
+
+   
+    <!--<div class="bar" id="bar__bottom">-->
+      <!--<div class="bar-left" id="bar__bottomleft">-->
+        <!--<form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>-->
+        <!--<form class="button btn_revs" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>-->
+      <!--</div>-->
+      <!--<div class="bar-right" id="bar__bottomright">-->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!--<form class="button btn_index" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="index" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Index" class="button" accesskey="x" title="Index [X]" /></div></form>-->
+        <!--<a class="nolink" href="#dokuwiki__top"><input type="button" class="button" value="Back to top" onclick="window.scrollTo(0, 0)" title="Back to top" /></a>&nbsp;-->
+      <!--</div>-->
+      <!--<div class="clearer"></div>-->
+    <!--</div>-->
+
+  </div>
+
+  
+
+</div>
+
+<div class="footerinc">
+
+
+</div>
+
+<div class="no"><img src="/dhtmlx/docs/lib/exe/indexer.php?id=dhtmlxgantt%3Aapi_constructor&amp;1282819193" width="1" height="1" alt=""  /></div>
+     <div class="footer">
+        <div class="footer-logo"></div>
+        <div class="copyright">Copyright © 1998-2009 DHTMLX LTD.<br />All rights reserved.</div>
+        <form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:api_constructor" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>    	    </div>
+</body>
+</html>

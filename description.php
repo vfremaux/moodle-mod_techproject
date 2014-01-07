@@ -40,24 +40,23 @@ if ($work == 'edit'){
 	}
 
     if ($heading = $mform->get_data()){
-    	
-        $heading->abstract = $heading->abstract_editor['text'];
-        $heading->rationale = $heading->rationale_editor['text'];
-        $heading->environment = $heading->environment_editor['text'];
 
 		$abstract_draftid_editor = file_get_submitted_draft_itemid('abstract_editor');
-		$heading->abstract = file_save_draft_area_files($abstract_draftid_editor, $context->id, 'mod_techproject', 'abstract', $heading->id, array('subdirs' => true), $heading->abstract);
+		$data->abstract = file_save_draft_area_files($abstract_draftid_editor, $context->id, 'mod_techproject', 'abstract', $data->id, array('subdirs' => true), $data->abstract);
 
 		$rationale_draftid_editor = file_get_submitted_draft_itemid('rationale_editor');
-		$heading->rationale = file_save_draft_area_files($rationale_draftid_editor, $context->id, 'mod_techproject', 'rationale', $heading->id, array('subdirs' => true), $heading->rationale);
+		$data->rationale = file_save_draft_area_files($rationale_draftid_editor, $context->id, 'mod_techproject', 'rationale', $data->id, array('subdirs' => true), $data->rationale);
 
 		$environment_draftid_editor = file_get_submitted_draft_itemid('environment_editor');
-		$heading->environment = file_save_draft_area_files($environment_draftid_editor, $context->id, 'mod_techproject', 'environment', $heading->id, array('subdirs' => true), $heading->environment);
+		$data->rationale = file_save_draft_area_files($environment_draftid_editor, $context->id, 'mod_techproject', 'environment', $data->id, array('subdirs' => true), $data->environment);
 
         $heading->id = $heading->headingid;
         $heading->projectid = $project->id;
         $heading->groupid = $currentGroupId;
         $heading->title = $heading->title;
+        $heading->abstract = $heading->abstract_editor['text'];
+        $heading->rationale = $heading->rationale_editor['text'];
+        $heading->environment = $heading->environment_editor['text'];
         $heading->organisation = $heading->organisation;
         $heading->department = $heading->department;
 
@@ -92,5 +91,9 @@ if ($work == 'edit'){
         echo " - <a href=\"view.php?work=doexport&amp;id={$cm->id}\" >".get_string('exportheadingtoXML','techproject')."</a>";
     }
     echo "<br/><a href=\"xmlview.php?id={$cm->id}\" target=\"_blank\">".get_string('gettheprojectfulldocument','techproject')."</a>";
+    if (!empty($project->accesskey)){
+    	$encodedkey = urlencode($project->accesskey);
+        echo '<br/>'.get_string('sharethisdocument','techproject', "{$CFG->wwwroot}/mod/techproject/xmlview.php?accesskey={$encodedkey}&id={$cm->id}");
+    }
     echo "</center>";
 }

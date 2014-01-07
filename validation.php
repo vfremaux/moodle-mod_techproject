@@ -50,4 +50,3 @@
 	$options['view'] = 'validations';
 	echo $OUTPUT->single_button(new moodle_url($CFG->wwwroot."/mod/techproject/view.php", $options), get_string('backtosessions', 'techproject'), 'get');
 	echo '</center>';
-?>

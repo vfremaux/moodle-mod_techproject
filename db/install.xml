@@ -34,7 +34,8 @@
         <FIELD NAME="projectusesdelivs" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectusesspecs" NEXT="projectusesvalidations"/>
         <FIELD NAME="projectusesvalidations" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="projectusesdelivs" NEXT="xslfilter"/>
         <FIELD NAME="xslfilter" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="Xslt filename for custom reports" PREVIOUS="projectusesvalidations" NEXT="cssfilter"/>
-        <FIELD NAME="cssfilter" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="Css steelsheet filename for reports" PREVIOUS="xslfilter"/>
+        <FIELD NAME="cssfilter" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="Css steelsheet filename for reports" PREVIOUS="xslfilter" NEXT="accesskey" />
+        <FIELD NAME="accesskey" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="Access key for project document" PREVIOUS="cssfilter"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for techproject"/>

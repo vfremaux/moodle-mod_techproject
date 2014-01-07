@@ -44,6 +44,7 @@
     		    $DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'reqid' => $data->id));
     		    // stores new mapping
         		foreach($spectoreq as $aSpec){
+        			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
         		    $amap->groupid = $currentGroupId;
@@ -68,7 +69,7 @@
 
 	echo $pagebuffer;
 	if ($mode == 'add'){
-		$requirement = new StdClass;
+		$requirement = new StdClass();
 		$requirement->fatherid = required_param('fatherid', PARAM_INT);
 		$reqtitle = ($requirement->fatherid) ? 'addsubrequ' : 'addrequ';
 		$requirement->id = $cm->id; // course module

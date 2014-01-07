@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" href="../codebase/default.css" type="text/css" media="screen" title="no title" charset="utf-8"><title>
+    dhtmlxgantt:overview    [DHX documentation]
+  </title></head>
+
+<body>
+<div class="dokuwiki">
+  
+  <div class="stylehead">
+
+    <div class="header">
+    <a class="logo" href="http://dhtmlx.com" title="DHTMLX Home Page"></a>
+    <span class="tittle-dhtmlx">DHTMLX Docs & Samples Explorer</span>
+
+    <div class="search-field">
+        <form action="/dhtmlx/docs/doku.php" accept-charset="utf-8" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" title="Search" /><button type="submit"></button><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>    </div>
+        <div class="buttons">
+                <a class="doc"></a>
+                <a title="DHTMLX Samples homepage" href="../samples.html" class="sample"/></a>
+        </div>
+     <!-- <div class="pagename">
+        [[<a href="#"  title="Backlinks">dhtmlxgantt:overview</a>]]
+      </div>
+      <div class="logo">
+        <a href="/dhtmlx/docs/doku.php"  name="dokuwiki__top" id="dokuwiki__top" accesskey="h" title="[H]">DHX documentation</a>      </div>
+
+      <div class="clearer"></div>-->
+        
+    </div>
+
+    
+<!--   <div class="bar" id="bar__top">
+      <div class="bar-left" id="bar__topleft">
+        <form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:overview" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>        <form class="button btn_revs" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="hidden" name="id" value="dhtmlxgantt:overview" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>      </div>
+
+      <div class="bar-right" id="bar__topright">
+        <form class="button btn_recent" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="recent" /><input type="hidden" name="id" value="dhtmlxgantt:overview" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>        <form action="/dhtmlx/docs/doku.php" accept-charset="utf-8" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" title="Search" /><button type="submit"></button><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>&nbsp;
+      </div>
+
+      <div class="clearer"></div>
+    </div> -->
+
+<!--        <div class="breadcrumbs">
+      <span class="bchead">Trace:</span> <span class="bcsep">&raquo;</span> <span class="curid"><a href="/dhtmlx/docs/doku.php?id=dhtmlxgantt:overview"  class="breadcrumbs" title="dhtmlxgantt:overview">overview</a></span>    </div>
+    -->
+
+    
+  </div>
+  
+  
+  <div class="page">
+    <!-- wikipage start -->
+    
+<p>
+<div class='backlinks'><div class='backlink last_backlink'><img src="icons___file.gif"  class="media" alt="" /><a href="../index.html" class="wikilink1" title="start">Index</a></div><div class='arrow'></div><div class='backlink last_backlink'><a href="/dhtmlx/docs/doku.php?id=dhtmlxgantt:toc" class="media" title="dhtmlxgantt:toc"></a><a href="index.html" class="wikilink1" title="dhtmlxgantt:toc">dhtmlxgantt</a></div><div class='arrow'></div><div class='backlink'><span class="curid"><a href="dhtmlxgantt___overview.html" class="wikilink1" title="dhtmlxgantt:overview"> Data Model Overview </a></span></div></div>
+
+</p>
+
+<h2><a name="data_model_overview" id="data_model_overview">Data Model Overview</a></h2>
+<div class="level2">
+
+<p>
+
+Using our Gantt control, you may display read-only Gantt charts as well as create new and edit existing charts interactively in your web browser. Then it can be saved back to server in <acronym title="Extensible Markup Language">XML</acronym> format.
+</p>
+
+<p>
+In our data model, a chart consists of Projects and Tasks. One task can contain child tasks, which are limited by the parent task duration. It may  also be interpreted as a sub-project. Chart may also contain multiple projects.
+</p>
+
+<p>
+Tasks may be linked by a predecessor-successor relation, which is represented by a connecting line on the chart. It means one task (successor) depends on the completion of its predecessor and will run not earlier than its predecessor task ends. To create such relation you must select successor task and using tree menu set a predecessor to it. If you want to delete this relation, you should set an empty predecessor. Remember, you can only link tasks with one single parent.
+</p>
+
+<p>
+Each task has a progress indicator which is controlled by “Percent Complete” property of the task. It should be an integer from 0 to 100 (%).
+</p>
+
+<p>
+We define duration of tasks and projects in hours. We assume one day is equal to 8 (working) hours. We use date format as DD.MM.YYYY as 20.12.2009 in our input fields, and in JavaScript initialization we use JavaScript Date() object. Remember that in JavaScript Date() object they cound month from zero, so 0 is January (strange and confusing). So “new Date(2009,11,20)” will create December 20, 2009 entry.
+</p>
+
+<p>
+When you mouse hover a task, we display its properties in a popup box. You may also control the displaying of most important properties inline in the chart, after the task bar - use GanttChart.showDescTask() method for that.
+</p>
+
+<p>
+If the chart is in edit mode, you may move tasks along with the time line. If you keep “CTRL” key down while moving a task, it is moved together with all children/successors, otherwise it is moved within current possible limits. While moving, you may see the current EST (earliest start date) inline.
+</p>
+
+<p>
+You may also resize (change task duration) task by moving its right-end. While resizing, you can see current task duration inline.
+</p>
+
+<p>
+In the tree you may collapse and expand sub-nodes.
+</p>
+
+<p>
+The best way of initialization is <acronym title="Extensible Markup Language">XML</acronym> - it is fast and easy. You should use JavaScript initialization in cases you have integration with another user controls on your page.
+The same - you should read <acronym title="Extensible Markup Language">XML</acronym> content from the chart and save it back to your server or database. 
+</p>
+
+</div>
+<div class="secedit"><form class="button btn_secedit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="lines" value="85-" /><input type="hidden" name="rev" value="1282818710" /><input type="hidden" name="id" value="dhtmlxgantt:overview" /><input type="submit" value="Edit" class="button" title="Data Model Overview" /></div></form></div>
+    <!-- wikipage stop -->
+  </div>
+
+  <div class="clearer">&nbsp;</div>
+
+  
+  <div class="stylefoot">
+
+    <div class="meta">
+      <div class="user">
+              </div>
+     <!-- <div class="doc">
+        dhtmlxgantt/overview.txt &middot; Last modified: 2010/08/26 13:31 (external edit)      </div>
+    </div>-->
+
+   
+    <!--<div class="bar" id="bar__bottom">-->
+      <!--<div class="bar-left" id="bar__bottomleft">-->
+        <!--<form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:overview" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>-->
+        <!--<form class="button btn_revs" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="hidden" name="id" value="dhtmlxgantt:overview" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>-->
+      <!--</div>-->
+      <!--<div class="bar-right" id="bar__bottomright">-->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!--<form class="button btn_index" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="index" /><input type="hidden" name="id" value="dhtmlxgantt:overview" /><input type="submit" value="Index" class="button" accesskey="x" title="Index [X]" /></div></form>-->
+        <!--<a class="nolink" href="#dokuwiki__top"><input type="button" class="button" value="Back to top" onclick="window.scrollTo(0, 0)" title="Back to top" /></a>&nbsp;-->
+      <!--</div>-->
+      <!--<div class="clearer"></div>-->
+    <!--</div>-->
+
+  </div>
+
+  
+
+</div>
+
+<div class="footerinc">
+
+
+</div>
+
+<div class="no"><img src="/dhtmlx/docs/lib/exe/indexer.php?id=dhtmlxgantt%3Aoverview&amp;1282819216" width="1" height="1" alt=""  /></div>
+     <div class="footer">
+        <div class="footer-logo"></div>
+        <div class="copyright">Copyright © 1998-2009 DHTMLX LTD.<br />All rights reserved.</div>
+        <form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:overview" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>    	    </div>
+</body>
+</html>

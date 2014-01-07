@@ -27,19 +27,30 @@
 
     $id = required_param('id', PARAM_INT);   // module id
     $view = optional_param('view', '', PARAM_CLEAN);   // viewed page id
+    $accesskey = optional_param('accesskey', '', PARAM_TEXT);
+
     $timenow = time();
+
     // get some useful stuff...
     if (! $cm = $DB->get_record('course_modules', array("id" => $id))) {
-        error('Course Module ID was incorrect');
+        print_error('invalidcoursemodule');
     }
     if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
-        error('Course is misconfigured');
+        print_error('coursemisconf');
     }
     if (! $project = $DB->get_record('techproject', array('id' => $cm->instance))) {
-        error('Course module is incorrect');
+        print_error('invalidtechprojectid', 'techproject');
     }
-    require_login($course->id, false, $cm);
+
+	// allow anonymized access (document reading) with access key   
+    if (empty($project->accesskey) || $accesskey != $project->accesskey){
+	    require_login($course->id, false, $cm);
+	} else {
+		$COURSE = $course;
+	}
+
     $context = context_module::instance($cm->id);
+
 /// check current group and change, for anyone who could
     if (!$groupmode = groupmode($course, $cm)){ // groups are being used ?
     	$currentGroupId = 0;

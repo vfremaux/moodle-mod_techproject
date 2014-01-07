@@ -77,6 +77,8 @@ if ($work == "add" || $work == "update") {
     <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
     <input type="hidden" name="work" value="groupcmd" />
     <?php
+	    $indicatordesc = get_string('requirementriskcalculation', 'techproject');
+    	echo "<center><table width=\"80%\"><tr><td width=\"60%\">$indicatordesc</td><td><img src=\"{$CFG->wwwroot}/mod/techproject/gdgenerators/projectrisk.php?id={$cm->id}&amp;projectid={$project->id}&amp;group={$currentGroupId}\" width=\"250\" height=\"250\" /></td></tr></table></center>";
         if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
         	echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequ','techproject')."</a>&nbsp;";
         }

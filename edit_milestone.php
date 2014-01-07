@@ -6,7 +6,7 @@
 *
 */
 
-	require_once($CFG->dirroot."/mod/techproject/forms/form_milestone.class.php");
+	require_once($CFG->dirroot.'/mod/techproject/forms/form_milestone.class.php');
 	
 	$mileid = optional_param('milestoneid', '', PARAM_INT);
 	
@@ -56,6 +56,7 @@
 	echo $pagebuffer;
 	if ($mode == 'add'){
 		echo $OUTPUT->heading(get_string('addmilestone', 'techproject'));
+		$milestone = new StdClass();
 		$milestone->id = $cm->id;
 		$milestone->projectid = $project->id;
 		$milestone->descriptionformat = FORMAT_HTML;

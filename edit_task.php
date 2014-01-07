@@ -30,9 +30,6 @@
 		$data->description = $data->description_editor['text'];
 		$data->lastuserid = $USER->id;
 
-		if ($data->taskstart) $data->taskstartenable = 1;
-		if ($data->taskend) $data->taskendenable = 1;
-
 		// editors pre save processing
 		$draftid_editor = file_get_submitted_draft_itemid('description_editor');
 		$data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'taskdescription', $data->id, array('subdirs' => true), $data->description);
@@ -50,6 +47,7 @@
     		    $DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'taskid' => $data->id));
     		    // stores new mapping
         		foreach($tasktospec as $aSpec){
+        			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
         		    $amap->groupid = $currentGroupId;
@@ -66,6 +64,7 @@
     		    $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'taskid' => $data->id));
     		    // stores new mapping
         		foreach($mapped as $mappedid){
+        			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
         		    $amap->groupid = $currentGroupId;
@@ -76,12 +75,12 @@
         	}
 
     		$mapped = optional_param_array('taskdependency', null, PARAM_INT);
-		    // removes previous mapping
-		    $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'slave' => $data->id));
-		    $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'master' => $data->id));
     		if (count($mapped) > 0){
+    		    // removes previous mapping
+    		    $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'slave' => $data->id));
     		    // stores new mapping
         		foreach($mapped as $mappedid){
+        			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
         		    $amap->groupid = $currentGroupId;
@@ -111,12 +110,15 @@
 
    		// if subtask, force dependency upon father
    		if ($data->fatherid != 0){
+   			$aDependency = new StdClass();
             $aDependency->id = 0;
    		    $aDependency->projectid = $project->id;
    		    $aDependency->groupid = $currentGroupId;
    		    $aDependency->slave = $data->fatherid;
    		    $aDependency->master = $data->id;
-   		    $DB->insert_record('techproject_task_dependency', $aDependency);
+   		    if (!$DB->record_exists('techproject_task_dependency', array('projectid' => $project->id, 'slave' => $data->fatherid, 'master' => $data->id))){
+	   		    $DB->insert_record('techproject_task_dependency', $aDependency);
+	   		}
    		}
    		// if subtask, calculate branch propagation
    		if ($data->fatherid != 0){
@@ -137,6 +139,7 @@
 
 	echo $pagebuffer;
 	if ($mode == 'add'){
+		$task = new StdClass();
 		$task->fatherid = required_param('fatherid', PARAM_INT);
 		$tasktitle = ($task->fatherid) ? 'addsubtask' : 'addtask';
 		$task->id = $cm->id;

@@ -239,12 +239,12 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
         $techproject->annotate_files('mod_techproject', 'abstract', null); // This file area hasn't itemid
         $techproject->annotate_files('mod_techproject', 'rationale', null); // This file area hasn't itemid
         $techproject->annotate_files('mod_techproject', 'environment', null); // This file area hasn't itemid
-        $techproject->annotate_files('mod_techproject', 'requirementdescription', 'id'); 
-        $techproject->annotate_files('mod_techproject', 'specificationdescription', 'id'); 
-        $techproject->annotate_files('mod_techproject', 'taskdescription', 'id'); 
-        $techproject->annotate_files('mod_techproject', 'milestonedescription', 'id'); 
-        $techproject->annotate_files('mod_techproject', 'deliverabledescription', 'id'); 
-        $techproject->annotate_files('mod_techproject', 'localfile', 'id'); 
+        $requirement->annotate_files('mod_techproject', 'requirementdescription', 'id'); 
+        $specification->annotate_files('mod_techproject', 'specificationdescription', 'id'); 
+        $task->annotate_files('mod_techproject', 'taskdescription', 'id'); 
+        $milestone->annotate_files('mod_techproject', 'milestonedescription', 'id'); 
+        $deliverable->annotate_files('mod_techproject', 'deliverabledescription', 'id'); 
+        $techproject->annotate_files('mod_techproject', 'localfile', null); 
         $techproject->annotate_files('mod_techproject', 'xslfilter', null); // This file area hasn't itemid
         $techproject->annotate_files('mod_techproject', 'cssfilter', null); // This file area hasn't itemid
 

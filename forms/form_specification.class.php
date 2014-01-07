@@ -34,12 +34,17 @@ class Specification_Form extends moodleform {
 		$this->descriptionoptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'context' => $modcontext);    	
 
     	$mform->addElement('hidden', 'id');
+    	$mform->setType('id', PARAM_INT);
     	$mform->addElement('hidden', 'fatherid');
+    	$mform->setType('fatherid', PARAM_INT);
     	$mform->addElement('hidden', 'specid');
+    	$mform->setType('specid', PARAM_INT);
     	$mform->addElement('hidden', 'work');
+    	$mform->setType('work', PARAM_TEXT);
     	$mform->setDefault('work', $this->mode);
     	
     	$mform->addElement('text', 'abstract', get_string('spectitle', 'techproject'), array('size' => "100%"));
+    	$mform->setType('abstract', PARAM_INT);
 
         $severities = techproject_get_options('severity', $this->project->id);
         $severityoptions = array();

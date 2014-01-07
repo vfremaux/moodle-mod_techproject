@@ -1,4 +1,4 @@
-<?php // $Id: techproject.php,v 1.1 2012-07-05 21:18:48 vf Exp $
+<?php // $Id: techproject.php,v 1.1.1.1 2012-08-01 10:16:17 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -195,4 +195,3 @@
     } else {
     	print_error('errorfatalscreen', 'techproject', $currentpage);
     }
-?>

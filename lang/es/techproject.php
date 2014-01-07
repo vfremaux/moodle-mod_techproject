@@ -1,6 +1,6 @@
-<?php // $Id: techproject.php,v 1.1 2012-07-05 21:18:57 vf Exp $ 
+<?php // $Id: techproject.php,v 1.1.1.1 2012-08-01 10:16:29 vf Exp $ 
 
-$string['nc'] = 'N.C.';
+$string['N.C.'] = 'N.C.';
 $string['abandoned'] = 'Abandonado';
 $string['abandoneddesc'] = 'Abandonado cual sea el estado';
 $string['abstract'] = 'Resumen';
@@ -185,7 +185,7 @@ $string['imports'] = 'Functiones de importaci&oacute;n';
 $string['import'] = 'Importar';
 $string['importsexports'] = 'Importaci&oacute;n/exportaci&oacute;n';
 $string['installingdesc'] = 'Instalaci&oacute;n/despliegue';
-$string['invaliddates'] = 'Fechas invalidas';
+$string['invalid dates'] = 'Fechas invalidas';
 $string['invalidobject'] = 'Objeto invalido';
 $string['investigating'] = 'Estudio preliminar';
 $string['investigatingdesc'] = 'Busca de informaci&oacute;n, examen des soluciones possibles';
@@ -246,8 +246,6 @@ $string['optional'] = 'Opci&oacute;n';
 $string['optionaldesc'] = 'Se puede conseguir de otra manera.'; 
 $string['organisation'] = 'Organisaci&oacute;n';
 $string['oruploadfile'] = 'o carga un fichero';
-$string['other'] = 'Otro';
-$string['otherdesc'] = 'Otro tipo de tarea';
 $string['over'] = 'sobre';
 $string['overdone'] = 'Dépassement';
 $string['overoverdone'] = 'Dépassement...';
@@ -380,6 +378,7 @@ $string['tasktospec'] = 'Specificaciones afectadas';
 $string['teachergrade'] = 'Evaluaci&oacute;n por el responsable ';
 $string['teacherstools'] = 'Herramientas del director de proyecto';
 $string['teacherusescriteria'] = 'Utilizar la evaluaci&oacute;n multi-criteriada';
+$string['techproject:addinstance'] = 'Añadir una instancia';
 $string['techproject:beassignedtasks'] = 'Estar asignado a tareas';
 $string['techproject:canbeevaluated'] = 'Estar evaluado';
 $string['techproject:canattachfiles'] = 'Puede telecargar ficheros';
@@ -474,3 +473,4 @@ $string['october'] = 'Octubre';
 $string['november'] = 'Noviembre';
 $string['december'] = 'Diciembre';
 
+?>

@@ -58,7 +58,7 @@ $startyear = $cal['year'];
 $today = unixtojd();
 
 // get milestones information
-$milestones = $DB->get_records_select('techproject_milestone', "projectid = ? AND groupid = ? AND deadlineenable = 1", array($project->id, $currentGroupId), 'deadline');
+$milestones = $DB->get_records_select('techproject_milestone', "projectid = $project->id AND groupid = $currentGroupId AND deadlineenable = 1", 'deadline');
 $milemarks = array();
 if ($milestones){
     foreach($milestones as $aMilestone){

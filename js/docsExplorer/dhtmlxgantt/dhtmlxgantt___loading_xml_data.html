@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" href="../codebase/default.css" type="text/css" media="screen" title="no title" charset="utf-8"><title>
+    dhtmlxgantt:loading_xml_data    [DHX documentation]
+  </title></head>
+
+<body>
+<div class="dokuwiki">
+  
+  <div class="stylehead">
+
+    <div class="header">
+    <a class="logo" href="http://dhtmlx.com" title="DHTMLX Home Page"></a>
+    <span class="tittle-dhtmlx">DHTMLX Docs & Samples Explorer</span>
+
+    <div class="search-field">
+        <form action="/dhtmlx/docs/doku.php" accept-charset="utf-8" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" title="Search" /><button type="submit"></button><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>    </div>
+        <div class="buttons">
+                <a class="doc"></a>
+                <a title="DHTMLX Samples homepage" href="../samples.html" class="sample"/></a>
+        </div>
+     <!-- <div class="pagename">
+        [[<a href="#"  title="Backlinks">dhtmlxgantt:loading_xml_data</a>]]
+      </div>
+      <div class="logo">
+        <a href="/dhtmlx/docs/doku.php"  name="dokuwiki__top" id="dokuwiki__top" accesskey="h" title="[H]">DHX documentation</a>      </div>
+
+      <div class="clearer"></div>-->
+        
+    </div>
+
+    
+<!--   <div class="bar" id="bar__top">
+      <div class="bar-left" id="bar__topleft">
+        <form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>        <form class="button btn_revs" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>      </div>
+
+      <div class="bar-right" id="bar__topright">
+        <form class="button btn_recent" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="recent" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>        <form action="/dhtmlx/docs/doku.php" accept-charset="utf-8" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" title="Search" /><button type="submit"></button><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>&nbsp;
+      </div>
+
+      <div class="clearer"></div>
+    </div> -->
+
+<!--        <div class="breadcrumbs">
+      <span class="bchead">Trace:</span> <span class="bcsep">&raquo;</span> <span class="curid"><a href="/dhtmlx/docs/doku.php?id=dhtmlxgantt:loading_xml_data"  class="breadcrumbs" title="dhtmlxgantt:loading_xml_data">loading_xml_data</a></span>    </div>
+    -->
+
+    
+  </div>
+  
+  
+  <div class="page">
+    <!-- wikipage start -->
+    <!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#loading_data_with_xml" class="toc">Loading data with XML</a></span></div>
+<ul class="toc">
+<li class="clear">
+
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#xml_structure_definition" class="toc">XML structure definition:</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#sample_xml_file" class="toc">Sample XML file:</a></span></div></li></ul>
+</li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<p>
+<div class='backlinks'><div class='backlink last_backlink'><img src="icons___file.gif"  class="media" alt="" /><a href="../index.html" class="wikilink1" title="start">Index</a></div><div class='arrow'></div><div class='backlink last_backlink'><a href="/dhtmlx/docs/doku.php?id=dhtmlxgantt:toc" class="media" title="dhtmlxgantt:toc"></a><a href="index.html" class="wikilink1" title="dhtmlxgantt:toc">dhtmlxgantt</a></div><div class='arrow'></div><div class='backlink'><span class="curid"><a href="dhtmlxgantt___loading_xml_data.html" class="wikilink1" title="dhtmlxgantt:loading_xml_data"> Loading data with XML </a></span></div></div>
+
+</p>
+
+<h1><a name="loading_data_with_xml" id="loading_data_with_xml">Loading data with XML</a></h1>
+<div class="level1">
+
+<p>
+
+Simply initialize the control, create() it on the page and after that call loadData() method. First parameter is the url to your xml document. It can be some script as well, which will produce xml output. Next parameter “true” means that you provide url and not the xml string (see <acronym title="Application Programming Interface">API</acronym>, you may directly pass the xml string to initialize the chart in the first parameter instead of url). And the last “true” means that you provide the full url, no need to pass additional data.
+</p>
+<pre class="code javascript"><span class="sy0">&lt;</span>script<span class="sy0">&gt;</span>
+        <span class="kw2">var</span> gantt <span class="sy0">=</span> <span class="kw2">new</span> GanttChart<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+        gantt.<span class="me1">setImagePath</span><span class="br0">&#40;</span><span class="st0">&quot;../codebase/imgs/&quot;</span><span class="br0">&#41;</span>;
+        gantt.<span class="me1">create</span><span class="br0">&#40;</span><span class="st0">&quot;mydiv&quot;</span><span class="br0">&#41;</span>;
+        gantt.<span class="me1">loadData</span><span class="br0">&#40;</span><span class="st0">&quot;data/chart1.xml&quot;</span><span class="sy0">,</span><span class="kw2">true</span><span class="sy0">,</span><span class="kw2">true</span><span class="br0">&#41;</span>;
+<span class="sy0">&lt;/</span>script<span class="sy0">&gt;</span></pre>
+</div>
+<div class="secedit"><form class="button btn_secedit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="lines" value="95-827" /><input type="hidden" name="rev" value="1282818710" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Edit" class="button" title="Loading data with XML" /></div></form></div>
+<h3><a name="xml_structure_definition" id="xml_structure_definition">XML structure definition:</a></h3>
+<div class="level3">
+<pre class="code xml">root tag - <span class="sc3"><span class="re1">&lt;projects<span class="re2">&gt;</span></span></span>
+it has a number of nested <span class="sc3"><span class="re1">&lt;project<span class="re2">&gt;</span></span></span> tags.
+&nbsp;
+tag <span class="sc3"><span class="re1">&lt;project<span class="re2">&gt;</span></span></span> has 3 mandatory attributes: id (string), name (string), startdate(formatted string YYYY,MM,DD as in 2006,12,14)
+&nbsp;
+ <span class="sc3"><span class="re1">&lt;project</span> id = <span class="st0">&quot;1&quot;</span> name = <span class="st0">&quot;project1&quot;</span> startdate = <span class="st0">&quot;2006,12,14&quot;</span><span class="re2">&gt;</span></span>
+&nbsp;
+it has a number of nested <span class="sc3"><span class="re1">&lt;task<span class="re2">&gt;</span></span></span> tags.
+&nbsp;
+tag <span class="sc3"><span class="re1">&lt;task<span class="re2">&gt;</span></span></span> has one mandatory attribute id (string)
+&nbsp;
+ <span class="sc3"><span class="re1">&lt;task</span> <span class="re0">id</span>=<span class="st0">&quot;1&quot;</span><span class="re2">&gt;</span></span>
+&nbsp;
+and a number of nested tag-properties:
+&nbsp;
+<span class="sc3"><span class="re1">&lt;name<span class="re2">&gt;</span></span></span>task1<span class="sc3"><span class="re1">&lt;/name<span class="re2">&gt;</span></span></span>     - task name, string
+&nbsp;
+<span class="sc3"><span class="re1">&lt;est<span class="re2">&gt;</span></span></span>2006,12,14<span class="sc3"><span class="re1">&lt;/est<span class="re2">&gt;</span></span></span>  - task start date, formatted string YYYY,MM,DD
+&nbsp;
+<span class="sc3"><span class="re1">&lt;duration<span class="re2">&gt;</span></span></span>120<span class="sc3"><span class="re1">&lt;/duration<span class="re2">&gt;</span></span></span> - task duration in hours
+&nbsp;
+<span class="sc3"><span class="re1">&lt;percentcompleted<span class="re2">&gt;</span></span></span>60<span class="sc3"><span class="re1">&lt;/percentcompleted<span class="re2">&gt;</span></span></span> - percent complete of this task, integer range 0..100
+&nbsp;
+<span class="sc3"><span class="re1">&lt;predecessortasks<span class="re2">&gt;</span></span></span>2<span class="sc3"><span class="re1">&lt;/predecessortasks<span class="re2">&gt;</span></span></span> - id of the predecessor task (the one linked to this task with an arrow),
+                 so this task runs always after its predecessor. Could be an empty tag.
+&nbsp;
+<span class="sc3"><span class="re1">&lt;childtasks<span class="re2">&gt;</span></span></span>
+&nbsp;
+ ... nested <span class="sc3"><span class="re1">&lt;task<span class="re2">&gt;</span></span></span> tags
+&nbsp;
+<span class="sc3"><span class="re1">&lt;/childtasks<span class="re2">&gt;</span></span></span>   - defines nested sub-tasks, could be an empty tag.
+&nbsp;
+End of XML definition.
+&nbsp;
+Sample XML structure - see below, or &quot;samples/data/data.xml&quot; file.</pre>
+</div>
+<div class="secedit"><form class="button btn_secedit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="lines" value="828-1948" /><input type="hidden" name="rev" value="1282818710" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Edit" class="button" title="XML structure definition:" /></div></form></div>
+<h3><a name="sample_xml_file" id="sample_xml_file">Sample XML file:</a></h3>
+<div class="level3">
+<pre class="code xml"><span class="sc3"><span class="re1">&lt;?xml</span> <span class="re0">version</span>=<span class="st0">&quot;1.0&quot;</span> <span class="re0">encoding</span>=<span class="st0">&quot;UTF-8&quot;</span><span class="re2">?&gt;</span></span>
+<span class="sc3"><span class="re1">&lt;projects<span class="re2">&gt;</span></span></span>
+  <span class="sc3"><span class="re1">&lt;project</span> <span class="re0">id</span>=<span class="st0">&quot;1&quot;</span> <span class="re0">name</span>=<span class="st0">&quot;project1&quot;</span> <span class="re0">startdate</span>=<span class="st0">&quot;2006,12,14&quot;</span><span class="re2">&gt;</span></span>
+     <span class="sc3"><span class="re1">&lt;task</span> <span class="re0">id</span>=<span class="st0">&quot;1&quot;</span><span class="re2">&gt;</span></span>
+  	<span class="sc3"><span class="re1">&lt;name<span class="re2">&gt;</span></span></span>project1 task1<span class="sc3"><span class="re1">&lt;/name<span class="re2">&gt;</span></span></span>
+	<span class="sc3"><span class="re1">&lt;est<span class="re2">&gt;</span></span></span>2006,12,14<span class="sc3"><span class="re1">&lt;/est<span class="re2">&gt;</span></span></span>
+	<span class="sc3"><span class="re1">&lt;duration<span class="re2">&gt;</span></span></span>120<span class="sc3"><span class="re1">&lt;/duration<span class="re2">&gt;</span></span></span>
+    	<span class="sc3"><span class="re1">&lt;percentcompleted<span class="re2">&gt;</span></span></span>60<span class="sc3"><span class="re1">&lt;/percentcompleted<span class="re2">&gt;</span></span></span>
+	<span class="sc3"><span class="re1">&lt;predecessortasks<span class="re2">&gt;</span></span><span class="re1">&lt;/predecessortasks<span class="re2">&gt;</span></span></span>
+            <span class="sc3"><span class="re1">&lt;childtasks<span class="re2">&gt;</span></span></span>
+                  <span class="sc3"><span class="re1">&lt;task</span> <span class="re0">id</span>=<span class="st0">&quot;2&quot;</span><span class="re2">&gt;</span></span>
+                    <span class="sc3"><span class="re1">&lt;name<span class="re2">&gt;</span></span></span>project1 task2<span class="sc3"><span class="re1">&lt;/name<span class="re2">&gt;</span></span></span>
+              	    <span class="sc3"><span class="re1">&lt;est<span class="re2">&gt;</span></span></span>2006,12,14<span class="sc3"><span class="re1">&lt;/est<span class="re2">&gt;</span></span></span>
+        	    <span class="sc3"><span class="re1">&lt;duration<span class="re2">&gt;</span></span></span>100<span class="sc3"><span class="re1">&lt;/duration<span class="re2">&gt;</span></span></span>
+    	            <span class="sc3"><span class="re1">&lt;percentcompleted<span class="re2">&gt;</span></span></span>20<span class="sc3"><span class="re1">&lt;/percentcompleted<span class="re2">&gt;</span></span></span>
+        	    <span class="sc3"><span class="re1">&lt;predecessortasks<span class="re2">&gt;</span></span><span class="re1">&lt;/predecessortasks<span class="re2">&gt;</span></span></span>
+                    <span class="sc3"><span class="re1">&lt;childtasks<span class="re2">&gt;</span></span><span class="re1">&lt;/childtasks<span class="re2">&gt;</span></span></span>
+        	  <span class="sc3"><span class="re1">&lt;/task<span class="re2">&gt;</span></span></span>
+                  <span class="sc3"><span class="re1">&lt;task</span> <span class="re0">id</span>=<span class="st0">&quot;6&quot;</span><span class="re2">&gt;</span></span>
+            	    <span class="sc3"><span class="re1">&lt;name<span class="re2">&gt;</span></span></span>project1 task6<span class="sc3"><span class="re1">&lt;/name<span class="re2">&gt;</span></span></span>
+	            <span class="sc3"><span class="re1">&lt;est<span class="re2">&gt;</span></span></span>2006,12,15<span class="sc3"><span class="re1">&lt;/est<span class="re2">&gt;</span></span></span>
+            	    <span class="sc3"><span class="re1">&lt;duration<span class="re2">&gt;</span></span></span>90<span class="sc3"><span class="re1">&lt;/duration<span class="re2">&gt;</span></span></span>
+        	    <span class="sc3"><span class="re1">&lt;percentcompleted<span class="re2">&gt;</span></span></span>10<span class="sc3"><span class="re1">&lt;/percentcompleted<span class="re2">&gt;</span></span></span>
+        	    <span class="sc3"><span class="re1">&lt;predecessortasks<span class="re2">&gt;</span></span></span>2<span class="sc3"><span class="re1">&lt;/predecessortasks<span class="re2">&gt;</span></span></span>
+                    <span class="sc3"><span class="re1">&lt;childtasks<span class="re2">&gt;</span></span><span class="re1">&lt;/childtasks<span class="re2">&gt;</span></span></span>
+                  <span class="sc3"><span class="re1">&lt;/task<span class="re2">&gt;</span></span></span>
+            <span class="sc3"><span class="re1">&lt;/childtasks<span class="re2">&gt;</span></span></span>
+     <span class="sc3"><span class="re1">&lt;/task<span class="re2">&gt;</span></span></span>
+  <span class="sc3"><span class="re1">&lt;/project<span class="re2">&gt;</span></span></span>
+  <span class="sc3"><span class="re1">&lt;project</span> <span class="re0">id</span>=<span class="st0">&quot;2&quot;</span> <span class="re0">name</span>=<span class="st0">&quot;project2&quot;</span> <span class="re0">startdate</span>=<span class="st0">&quot;2006,12,20&quot;</span><span class="re2">&gt;</span></span>
+     <span class="sc3"><span class="re1">&lt;task</span> <span class="re0">id</span>=<span class="st0">&quot;12&quot;</span><span class="re2">&gt;</span></span>
+	<span class="sc3"><span class="re1">&lt;name<span class="re2">&gt;</span></span></span>project2 task12<span class="sc3"><span class="re1">&lt;/name<span class="re2">&gt;</span></span></span>
+	<span class="sc3"><span class="re1">&lt;est<span class="re2">&gt;</span></span></span>2006,12,20<span class="sc3"><span class="re1">&lt;/est<span class="re2">&gt;</span></span></span>
+	<span class="sc3"><span class="re1">&lt;duration<span class="re2">&gt;</span></span></span>140<span class="sc3"><span class="re1">&lt;/duration<span class="re2">&gt;</span></span></span>
+	<span class="sc3"><span class="re1">&lt;percentcompleted<span class="re2">&gt;</span></span></span>60<span class="sc3"><span class="re1">&lt;/percentcompleted<span class="re2">&gt;</span></span></span>
+	<span class="sc3"><span class="re1">&lt;predecessortasks<span class="re2">&gt;</span></span><span class="re1">&lt;/predecessortasks<span class="re2">&gt;</span></span></span>
+        <span class="sc3"><span class="re1">&lt;childtasks<span class="re2">&gt;</span></span></span>
+            <span class="sc3"><span class="re1">&lt;task</span> <span class="re0">id</span>=<span class="st0">&quot;14&quot;</span><span class="re2">&gt;</span></span>
+	        <span class="sc3"><span class="re1">&lt;name<span class="re2">&gt;</span></span></span>project2 task14<span class="sc3"><span class="re1">&lt;/name<span class="re2">&gt;</span></span></span>
+       		<span class="sc3"><span class="re1">&lt;est<span class="re2">&gt;</span></span></span>2006,12,20<span class="sc3"><span class="re1">&lt;/est<span class="re2">&gt;</span></span></span>
+       		<span class="sc3"><span class="re1">&lt;duration<span class="re2">&gt;</span></span></span>100<span class="sc3"><span class="re1">&lt;/duration<span class="re2">&gt;</span></span></span>
+	        <span class="sc3"><span class="re1">&lt;percentcompleted<span class="re2">&gt;</span></span></span>20<span class="sc3"><span class="re1">&lt;/percentcompleted<span class="re2">&gt;</span></span></span>
+       		<span class="sc3"><span class="re1">&lt;predecessortasks<span class="re2">&gt;</span></span><span class="re1">&lt;/predecessortasks<span class="re2">&gt;</span></span></span>
+                <span class="sc3"><span class="re1">&lt;childtasks<span class="re2">&gt;</span></span><span class="re1">&lt;/childtasks<span class="re2">&gt;</span></span></span>
+        	<span class="sc3"><span class="re1">&lt;/task<span class="re2">&gt;</span></span></span>
+        <span class="sc3"><span class="re1">&lt;/childtasks<span class="re2">&gt;</span></span></span>
+     <span class="sc3"><span class="re1">&lt;/task<span class="re2">&gt;</span></span></span>
+  <span class="sc3"><span class="re1">&lt;/project<span class="re2">&gt;</span></span></span>
+<span class="sc3"><span class="re1">&lt;/projects<span class="re2">&gt;</span></span></span></pre>
+</div>
+<div class="secedit"><form class="button btn_secedit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="lines" value="1949-" /><input type="hidden" name="rev" value="1282818710" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Edit" class="button" title="Sample XML file:" /></div></form></div>
+    <!-- wikipage stop -->
+  </div>
+
+  <div class="clearer">&nbsp;</div>
+
+  
+  <div class="stylefoot">
+
+    <div class="meta">
+      <div class="user">
+              </div>
+     <!-- <div class="doc">
+        dhtmlxgantt/loading_xml_data.txt &middot; Last modified: 2010/08/26 13:31 (external edit)      </div>
+    </div>-->
+
+   
+    <!--<div class="bar" id="bar__bottom">-->
+      <!--<div class="bar-left" id="bar__bottomleft">-->
+        <!--<form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>-->
+        <!--<form class="button btn_revs" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>-->
+      <!--</div>-->
+      <!--<div class="bar-right" id="bar__bottomright">-->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!--<form class="button btn_index" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="index" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Index" class="button" accesskey="x" title="Index [X]" /></div></form>-->
+        <!--<a class="nolink" href="#dokuwiki__top"><input type="button" class="button" value="Back to top" onclick="window.scrollTo(0, 0)" title="Back to top" /></a>&nbsp;-->
+      <!--</div>-->
+      <!--<div class="clearer"></div>-->
+    <!--</div>-->
+
+  </div>
+
+  
+
+</div>
+
+<div class="footerinc">
+
+
+</div>
+
+<div class="no"><img src="/dhtmlx/docs/lib/exe/indexer.php?id=dhtmlxgantt%3Aloading_xml_data&amp;1282819212" width="1" height="1" alt=""  /></div>
+     <div class="footer">
+        <div class="footer-logo"></div>
+        <div class="copyright">Copyright © 1998-2009 DHTMLX LTD.<br />All rights reserved.</div>
+        <form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:loading_xml_data" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>    	    </div>
+</body>
+</html>

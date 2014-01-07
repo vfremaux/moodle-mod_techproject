@@ -45,6 +45,7 @@
     		    $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'delivid' => $data->id));
     		    // stores new mapping
         		foreach($tasktodeliv as $aTask){
+        			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
         		    $amap->groupid = $currentGroupId;
@@ -69,6 +70,7 @@
 
 	echo $pagebuffer;
 	if ($mode == 'add'){
+		$deliverable = new StdClass();
 		$deliverable->fatherid = required_param('fatherid', PARAM_INT);
 		$delivtitle = ($deliverable->fatherid) ? 'addsubdeliv' : 'adddeliv';
 		echo $OUTPUT->heading(get_string($delivtitle, 'techproject'));

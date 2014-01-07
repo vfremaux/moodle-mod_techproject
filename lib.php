@@ -1,4 +1,4 @@
-<?php  // $Id: lib.php,v 1.2 2012-07-29 21:02:40 vf Exp $
+<?php  // $Id: lib.php,v 1.2 2012-08-12 22:01:33 vf Exp $
 
 /**
  * Project : Technical Project Manager (IEEE like)
@@ -20,6 +20,8 @@
 if (file_exists($CFG->libdir.'/openlib.php')){
     require_once($CFG->libdir.'/openlib.php');//openmod lib by rick chaides
 }
+
+require_once $CFG->dirroot.'/calendar/lib.php';
 
 /**
 * Given an object containing all the necessary data,
@@ -48,11 +50,11 @@ function techproject_add_instance($project){
         $event->eventtype   = 'projectstart';
         $event->timestart   = $project->projectstart;
         $event->timeduration = 0;
-        add_event($event);
+        calendar_event::create($event);
         $event->name        = get_string('projectendevent','techproject', $project->name);
         $event->eventtype   = 'projectend';
         $event->timestart   = $project->projectend;
-        add_event($event);         
+        calendar_event::create($event);         
     }
 
     return $returnid;
@@ -82,10 +84,15 @@ function techproject_update_instance($project){
     $project->timemodified = time();
 
     if (!techproject_check_dates($project)) {
-        return get_string('invaliddates', 'techproject');
+        return get_string('invalid dates', 'techproject');
     }
 
     $project->id = $project->instance;
+
+    if (!isset($project->projectusesrequs)) $project->projectusesrequs = 0;
+    if (!isset($project->projectusesspecs)) $project->projectusesspecs = 0;
+    if (!isset($project->projectusesdelivs)) $project->projectusesdelivs = 0;
+    if (!isset($project->projectusesvalidations)) $project->projectusesvalidations = 0;
 
     if ($returnid = $DB->update_record('techproject', $project)) {
 
@@ -965,7 +972,7 @@ function techproject_pluginfile($course, $cm, $context, $filearea, $args, $force
 
     require_course_login($course, true, $cm);
 
-    $fileareas = array('requirementdescription', 'specificationdescription', 'milestonedescription', 'taskdescription', 'deliverabledescription', 'abstract', 'rationale', 'environment');
+    $fileareas = array('intro', 'requirementdescription', 'specificationdescription', 'milestonedescription', 'taskdescription', 'deliverabledescription', 'abstract', 'rationale', 'environment');
     $areastotables = array('requirementdescription' => 'techproject_requirement', 'specificationdescription' => 'techproject_specifciation', 'milestonedescription' => 'techproject_milestone', 'taskdescription' => 'techproject_task', 'deliverabledescription' => 'techproject_deliverable', 'abstract' => 'techproject_heading', 'rationale' => 'techproject_heading', 'environment' => 'techproject_heading');
     if (!in_array($filearea, $fileareas)) {
         return false;

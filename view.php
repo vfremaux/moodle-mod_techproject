@@ -1,4 +1,4 @@
-<?php  // $Id: view.php,v 1.2 2012-07-29 21:02:42 vf Exp $
+<?php  // $Id: view.php,v 1.2 2012-08-12 22:01:36 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -22,6 +22,8 @@
     require_once($CFG->dirroot.'/mod/techproject/notifylib.php');
 
 	$PAGE->requires->js('/mod/techproject/js/js.js');
+    $PAGE->requires->jquery();
+
     // fixes locale for all date printing.
     setLocale(LC_TIME, substr(current_language(), 0, 2));
 
@@ -29,6 +31,13 @@
     $view = optional_param('view', @$_SESSION['currentpage'], PARAM_CLEAN);   // viewed page id
     $nohtmleditorneeded = true;
     $editorfields = '';
+
+	if ($view == 'view_gantt'){
+	    $lang = current_language();
+	    $PAGE->requires->js('/mod/techproject/js/dhtmlxGantt/codebase/dhtmlxcommon.js', true);
+	    $PAGE->requires->js('/mod/techproject/js/dhtmlxGantt/sources/dhtmlxgantt.js', true);
+	    $PAGE->requires->js('/mod/techproject/js/dhtmlxGantt/sources/lang/'.$lang.'/'.$lang.'.js', true);
+	}
 
     $timenow = time();
     // get some useful stuff...
@@ -46,13 +55,6 @@
     
     require_login($course->id, false, $cm);
 
-    if (@$CFG->enableajax){
-        $PAGE->requires->yui2_lib('yui_yahoo');
-        $PAGE->requires->yui2_lib('yui_dom');
-        $PAGE->requires->yui2_lib('yui_event');
-        $PAGE->requires->yui2_lib('yui_dragdrop');
-        $PAGE->requires->yui2_lib('yui_connection');
-    }
     $context = context_module::instance($cm->id);
     $systemcontext = context_system::instance(0);
 
@@ -93,7 +95,6 @@
     $PAGE->set_focuscontrol('');
     $PAGE->set_cacheable(true);
     $PAGE->set_button(update_module_button($cm->id, $course->id, $strproject));
-    $PAGE->set_headingmenu(navmenu($course, $cm));
     $pagebuffer = $OUTPUT->header();
 
     $pagebuffer .= "<div align=\"right\">";
@@ -267,4 +268,3 @@
 
     echo $OUTPUT->footer($course);
 
-?>

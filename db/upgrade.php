@@ -1,4 +1,4 @@
-<?php  //$Id: upgrade.php,v 1.1 2012-07-05 21:18:53 vf Exp $
+<?php  //$Id: upgrade.php,v 1.1.1.1 2012-08-01 10:16:18 vf Exp $
 
 /**
 * This file keeps track of upgrades to 
@@ -30,14 +30,55 @@
 * will tell you what you need to do.
 */
 function xmldb_techproject_upgrade($oldversion=0) {
+    global $DB;
 
-    global $CFG, $THEME, $db;
+    $dbman = $DB->get_manager();
 
-    $result = true;
+	/// Moodle 1.9 => 2.0 conversion
 
-	/// Moodle 1.9 break
+    $table = new xmldb_table('techproject');
+    $field = new xmldb_field('intro', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    if (!$dbman->field_exists($table, $field)) {
 
-    return $result;
+    	$field = new xmldb_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null, 'name');
+        $dbman->rename_field($table, $field, 'intro', false);
+
+	    $field = new xmldb_field('introformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null, 'intro');
+	    if (!$dbman->field_exists($table, $field)) {
+	        $dbman->add_field($table, $field);
+	    }
+	
+	    $table = new xmldb_table('techproject_heading');
+	
+	    $field = new xmldb_field('abstractformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null, 'abstract');
+	    if (!$dbman->field_exists($table, $field)) {
+	        $dbman->add_field($table, $field);
+	    }
+	
+	    $field = new xmldb_field('rationaleformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null, 'rationale');
+	    if (!$dbman->field_exists($table, $field)) {
+	        $dbman->add_field($table, $field);
+	    }
+	
+	    $field = new xmldb_field('environmentformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null, 'environment');
+	    if (!$dbman->field_exists($table, $field)) {
+	        $dbman->add_field($table, $field);
+	    }
+	}
+
+    if ($oldversion < 2013100200) {
+    /// Define field accesskey to be added to techproject
+        $table = new xmldb_table('techproject');
+        $field = new xmldb_field('accesskey');
+        $field->set_attributes(XMLDB_TYPE_CHAR, '32', null, null, null, null, 'cssfilter');
+
+    /// Launch add field cssfilter
+    	if (!$dbman->field_exists($table, $field)) {
+        	$dbman->add_field($table, $field);
+        }
+	}
+
+    return true;
 }
 
 ?>
