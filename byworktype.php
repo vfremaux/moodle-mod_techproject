@@ -64,9 +64,9 @@
                  $worktypeicon = '';
                  $theWorktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
             } else {
-                 $worktypeicon = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/{$theWorktype->code}.gif\" title=\"{$theWorktype->description}\" style=\"background-color : #F0F0F0\" />";
+                 $worktypeicon = "<img src=\"".$OUTPUT->pix_url('/p/'.strtolower($theWorktype->code), 'techproject')."\" title=\"{$theWorktype->description}\" style=\"background-color : #F0F0F0\" />";
             }
-            echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theWorktype->label.'</span>', 'center', '100%', 'white', 4, 'worktypesbox');
+            echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theWorktype->label.'</span>', 'worktypesbox');
             echo "<div id=\"sub{$aWorktype}\">";
             foreach($sortedtasks[$aWorktype] as $aTask){
                 techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($sortedtasks[$aWorktype]), 'SHORT_WITHOUT_TYPE');

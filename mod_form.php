@@ -58,14 +58,15 @@ class mod_techproject_mod_form extends moodleform_mod {
     /// Adding the required "intro" field to hold the description of the instance
         $this->add_intro_editor(true, get_string('introtechproject', 'techproject'));
 
-        $mform->addElement('date_time_selector', 'projectstart', get_string('projectstart', 'techproject'), array('optional'=>true));
+        $startyear = date('Y', time());
+        $mform->addElement('date_time_selector', 'projectstart', get_string('projectstart', 'techproject'), array('optional' => true, 'startyear' => $startyear));
         $mform->setDefault('projectstart', time());
         // $mform->addHelpButton('projectstart', 'projectstart', 'techproject');
-        $mform->addElement('date_time_selector', 'projectend', get_string('projectend', 'techproject'), array('optional'=>true));
+        $mform->addElement('date_time_selector', 'projectend', get_string('projectend', 'techproject'), array('optional' => true, 'startyear' => $startyear));
         $mform->setDefault('projectend', time()+90*DAYSECS);
         // $mform->addHelpButton('projectend', 'projectend', 'techproject');
 
-        $mform->addElement('date_time_selector', 'assessmentstart', get_string('assessmentstart', 'techproject'), array('optional'=>true));
+        $mform->addElement('date_time_selector', 'assessmentstart', get_string('assessmentstart', 'techproject'), array('optional' => true, 'startyear' => $startyear));
         $mform->setDefault('assessmentstart', time()+75*DAYSECS);
         $mform->addHelpButton('assessmentstart', 'assessmentstart', 'techproject');
 
@@ -75,15 +76,21 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addElement('select', 'timeunit', get_string('timeunit', 'techproject'), $unitoptions); 
 
         $mform->addElement('text', 'costunit', get_string('costunit', 'techproject')); 
+        $mform->setType('costunit', PARAM_TEXT);
 
         $mform->addElement('select', 'allownotifications', get_string('allownotifications', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('allownotifications', 'allownotifications', 'techproject');
+        $mform->setType('allownotifications', PARAM_BOOL);
 
+		/*
         $mform->addElement('select', 'enablecvs', get_string('enablecvs', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('enablecvs', 'enablecvs', 'techproject');
+        $mform->setType('enablecvs', PARAM_BOOL);
+        */
 
         $mform->addElement('select', 'useriskcorrection', get_string('useriskcorrection', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('useriskcorrection', 'useriskcorrection', 'techproject');
+        $mform->setType('useriskcorrection', PARAM_BOOL);
 
         $mform->addElement('header', 'features', get_string('features', 'techproject'));
         $mform->addElement('checkbox', 'projectusesrequs', get_string('requirements', 'techproject')); 
@@ -93,15 +100,17 @@ class mod_techproject_mod_form extends moodleform_mod {
 
 		$mform->addElement('header', 'header2', get_string('access', 'techproject'));
 
-
         $mform->addElement('select', 'guestsallowed', get_string('guestsallowed', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('guestsallowed', 'guestsallowed', 'techproject');
+        $mform->setType('guestsallowed', PARAM_BOOL);
 
         $mform->addElement('select', 'guestscanuse', get_string('guestscanuse', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('guestscanuse', 'guestscanuse', 'techproject');
+        $mform->setType('guestscanuse', PARAM_BOOL);
 
         $mform->addElement('select', 'ungroupedsees', get_string('ungroupedsees', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('ungroupedsees', 'ungroupedsees', 'techproject');
+        $mform->setType('ungroupedsees', PARAM_BOOL);
 
         $mform->addElement('select', 'allowdeletewhenassigned', get_string('allowdeletewhenassigned', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('allowdeletewhenassigned', 'allowdeletewhenassigned', 'techproject');
@@ -111,11 +120,19 @@ class mod_techproject_mod_form extends moodleform_mod {
 		$mform->addElement('header', 'header2', get_string('grading', 'techproject'));
         $mform->addElement('select', 'teacherusescriteria', get_string('teacherusescriteria', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('teacherusescriteria', 'teacherusescriteria', 'techproject');
+        $mform->setType('teacherusescriteria', PARAM_BOOL);
+
         $mform->addElement('select', 'autogradingenabled', get_string('autogradingenabled', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('autogradingenabled', 'autogradingenabled', 'techproject');
+        $mform->setType('autogradingenabled', PARAM_BOOL);
 
         $mform->addElement('text', 'autogradingweight', get_string('autogradingweight', 'techproject')); 
         $mform->addHelpButton('autogradingweight', 'autogradingweight', 'techproject');
+        $mform->setType('autogradingweight', PARAM_NUMBER);
+
+        $mform->addElement('text', 'accesskey', get_string('accesskey', 'techproject')); 
+        $mform->addHelpButton('accesskey', 'accesskey', 'techproject');
+        $mform->setType('accesskey', PARAM_TEXT);
 
         $this->standard_grading_coursemodule_elements();
 

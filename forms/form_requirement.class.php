@@ -34,12 +34,17 @@ class Requirement_Form extends moodleform {
     	$currentGroup = 0 + groups_get_course_group($COURSE);
 
     	$mform->addElement('hidden', 'id');
+    	$mform->setType('id', PARAM_INT);
     	$mform->addElement('hidden', 'fatherid');
+    	$mform->setType('fatherid', PARAM_INT);
     	$mform->addElement('hidden', 'reqid');
+    	$mform->setType('reqid', PARAM_INT);
     	$mform->addElement('hidden', 'work');
+    	$mform->setType('work', PARAM_TEXT);
     	$mform->setDefault('work', $this->mode);
     	
     	$mform->addElement('text', 'abstract', get_string('requirementtitle', 'techproject'), array('size' => "100%"));
+    	$mform->setType('abstract', PARAM_CLEANHTML);
 
         $strengthes = techproject_get_options('strength', $this->project->id);
         $strengthoptions = array();

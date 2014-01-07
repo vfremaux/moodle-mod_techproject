@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" href="../codebase/default.css" type="text/css" media="screen" title="no title" charset="utf-8"><title>
+    dhtmlxgantt:event_onbeforecontextmenu    [DHX documentation]
+  </title></head>
+
+<body>
+<div class="dokuwiki">
+  
+  <div class="stylehead">
+
+    <div class="header">
+    <a class="logo" href="http://dhtmlx.com" title="DHTMLX Home Page"></a>
+    <span class="tittle-dhtmlx">DHTMLX Docs & Samples Explorer</span>
+
+    <div class="search-field">
+        <form action="/dhtmlx/docs/doku.php" accept-charset="utf-8" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" title="Search" /><button type="submit"></button><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>    </div>
+        <div class="buttons">
+                <a class="doc"></a>
+                <a title="DHTMLX Samples homepage" href="../samples.html" class="sample"/></a>
+        </div>
+     <!-- <div class="pagename">
+        [[<a href="#"  title="Backlinks">dhtmlxgantt:event_onbeforecontextmenu</a>]]
+      </div>
+      <div class="logo">
+        <a href="/dhtmlx/docs/doku.php"  name="dokuwiki__top" id="dokuwiki__top" accesskey="h" title="[H]">DHX documentation</a>      </div>
+
+      <div class="clearer"></div>-->
+        
+    </div>
+
+    
+<!--   <div class="bar" id="bar__top">
+      <div class="bar-left" id="bar__topleft">
+        <form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:event_onbeforecontextmenu" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>        <form class="button btn_revs" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="hidden" name="id" value="dhtmlxgantt:event_onbeforecontextmenu" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>      </div>
+
+      <div class="bar-right" id="bar__topright">
+        <form class="button btn_recent" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="recent" /><input type="hidden" name="id" value="dhtmlxgantt:event_onbeforecontextmenu" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>        <form action="/dhtmlx/docs/doku.php" accept-charset="utf-8" id="dw__search"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" title="Search" /><button type="submit"></button><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>&nbsp;
+      </div>
+
+      <div class="clearer"></div>
+    </div> -->
+
+<!--        <div class="breadcrumbs">
+      <span class="bchead">Trace:</span> <span class="bcsep">&raquo;</span> <span class="curid"><a href="/dhtmlx/docs/doku.php?id=dhtmlxgantt:event_onbeforecontextmenu"  class="breadcrumbs" title="dhtmlxgantt:event_onbeforecontextmenu">event_onbeforecontextmenu</a></span>    </div>
+    -->
+
+    
+  </div>
+  
+  
+  <div class="page">
+    <!-- wikipage start -->
+    
+<p>
+<div class='backlinks'><div class='backlink last_backlink'><img src="icons___file.gif"  class="media" alt="" /><a href="../index.html" class="wikilink1" title="start">Index</a></div><div class='arrow'></div><div class='backlink last_backlink'><a href="/dhtmlx/docs/doku.php?id=dhtmlxgantt:toc" class="media" title="dhtmlxgantt:toc"></a><a href=index.html class="wikilink1" title="dhtmlxgantt:toc">dhtmlxgantt</a></div><div class='arrow'></div><div class='backlink'><a href="dhtmlxgantt___event_handling.html" class="wikilink1" title="dhtmlxgantt:event_handling">Event Handling</a></div></div>
+
+</p>
+
+<h2><a name="onbeforecontextmenu" id="onbeforecontextmenu">onBeforeContextMenu</a></h2>
+<div class="level2">
+
+<p>
+
+onBeforeContextMenu event is fired  when user clicks a Tree item directly before the popup menu is shown. You should use this event to customize menu for a particular Tree item (for example, disable or enable some menu command).
+</p>
+
+<p>
+Two parameters are passed to the handler: 
+</p>
+<ul>
+<li class="level1"><div class="li"> menu - dhtmlXMenuObject.</div>
+</li>
+<li class="level1"><div class="li"> obj - either GanttTask or GanttProject object on which the menu pops-up.</div>
+</li>
+</ul>
+
+<p>
+
+You may return false from this handler to cancel the menu pop-up.
+</p>
+<pre class="code javascript">    ganttChartControl.<span class="me1">attachEvent</span><span class="br0">&#40;</span><span class="st0">&quot;onBeforeContextMenu&quot;</span><span class="sy0">,</span> <span class="kw2">function</span><span class="br0">&#40;</span>menu<span class="sy0">,</span>obj<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+        <span class="co1">// A sample of disabling menu for a particular task item:</span>
+        <span class="kw1">if</span> <span class="br0">&#40;</span>obj.<span class="me1">getId</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">==</span><span class="nu0">15</span><span class="br0">&#41;</span> <span class="kw1">return</span> <span class="kw2">false</span>;
+&nbsp;
+        <span class="kw1">if</span> <span class="br0">&#40;</span>obj.<span class="me1">isProject</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            <span class="co1">// Project menu</span>
+            menu.<span class="me1">setItemText</span><span class="br0">&#40;</span><span class="st0">&quot;m1&quot;</span><span class="sy0">,</span> <span class="st0">&quot;Project: &quot;</span> <span class="sy0">+</span> obj.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+            menu.<span class="me1">setUserData</span><span class="br0">&#40;</span><span class="st0">&quot;&quot;</span><span class="sy0">,</span><span class="st0">&quot;obj&quot;</span><span class="sy0">,</span><span class="br0">&#123;</span>type<span class="sy0">:</span><span class="st0">&quot;p&quot;</span><span class="sy0">,</span>o<span class="sy0">:</span>obj<span class="br0">&#125;</span><span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">&#40;</span>obj.<span class="me1">isTask</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+            <span class="co1">// Task menu</span>
+            menu.<span class="me1">setItemText</span><span class="br0">&#40;</span><span class="st0">&quot;m1&quot;</span><span class="sy0">,</span> <span class="st0">&quot;Task: &quot;</span> <span class="sy0">+</span> obj.<span class="me1">getName</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+            menu.<span class="me1">setUserData</span><span class="br0">&#40;</span><span class="st0">&quot;&quot;</span><span class="sy0">,</span><span class="st0">&quot;obj&quot;</span><span class="sy0">,</span><span class="br0">&#123;</span>type<span class="sy0">:</span><span class="st0">&quot;t&quot;</span><span class="sy0">,</span>o<span class="sy0">:</span>obj<span class="br0">&#125;</span><span class="br0">&#41;</span>;
+        <span class="br0">&#125;</span>
+    <span class="br0">&#125;</span><span class="br0">&#41;</span>;</pre>
+</div>
+<div class="secedit"><form class="button btn_secedit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="lines" value="84-" /><input type="hidden" name="rev" value="1282818710" /><input type="hidden" name="id" value="dhtmlxgantt:event_onbeforecontextmenu" /><input type="submit" value="Edit" class="button" title="onBeforeContextMenu" /></div></form></div>
+    <!-- wikipage stop -->
+  </div>
+
+  <div class="clearer">&nbsp;</div>
+
+  
+  <div class="stylefoot">
+
+    <div class="meta">
+      <div class="user">
+              </div>
+     <!-- <div class="doc">
+        dhtmlxgantt/event_onbeforecontextmenu.txt &middot; Last modified: 2010/08/26 13:31 (external edit)      </div>
+    </div>-->
+
+   
+    <!--<div class="bar" id="bar__bottom">-->
+      <!--<div class="bar-left" id="bar__bottomleft">-->
+        <!--<form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:event_onbeforecontextmenu" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>-->
+        <!--<form class="button btn_revs" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="hidden" name="id" value="dhtmlxgantt:event_onbeforecontextmenu" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>-->
+      <!--</div>-->
+      <!--<div class="bar-right" id="bar__bottomright">-->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!--<form class="button btn_index" method="get" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="index" /><input type="hidden" name="id" value="dhtmlxgantt:event_onbeforecontextmenu" /><input type="submit" value="Index" class="button" accesskey="x" title="Index [X]" /></div></form>-->
+        <!--<a class="nolink" href="#dokuwiki__top"><input type="button" class="button" value="Back to top" onclick="window.scrollTo(0, 0)" title="Back to top" /></a>&nbsp;-->
+      <!--</div>-->
+      <!--<div class="clearer"></div>-->
+    <!--</div>-->
+
+  </div>
+
+  
+
+</div>
+
+<div class="footerinc">
+
+
+</div>
+
+<div class="no"><img src="/dhtmlx/docs/lib/exe/indexer.php?id=dhtmlxgantt%3Aevent_onbeforecontextmenu&amp;1282819205" width="1" height="1" alt=""  /></div>
+     <div class="footer">
+        <div class="footer-logo"></div>
+        <div class="copyright">Copyright © 1998-2009 DHTMLX LTD.<br />All rights reserved.</div>
+        <form class="button btn_edit" method="post" action="/dhtmlx/docs/doku.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="hidden" name="id" value="dhtmlxgantt:event_onbeforecontextmenu" /><input type="submit" value="Edit this page" class="button" accesskey="e" title="Edit this page [E]" /></div></form>    	    </div>
+</body>
+</html>

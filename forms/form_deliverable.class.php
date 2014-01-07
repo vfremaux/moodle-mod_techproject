@@ -35,12 +35,17 @@ class Deliverable_Form extends moodleform {
     	$currentGroup = 0 + groups_get_course_group($COURSE);
 
     	$mform->addElement('hidden', 'id');
+    	$mform->setType('id', PARAM_INT);
     	$mform->addElement('hidden', 'fatherid');
+    	$mform->setType('fatherid', PARAM_INT);
     	$mform->addElement('hidden', 'delivid');
+    	$mform->setType('delivid', PARAM_INT);
     	$mform->addElement('hidden', 'work');
+    	$mform->setType('work', PARAM_TEXT);
     	$mform->setDefault('work', $this->mode);
     	
     	$mform->addElement('text', 'abstract', get_string('delivtitle', 'techproject'), array('size' => "100%"));
+    	$mform->setType('abstract', PARAM_CLEANHTML);
 
         $statusses = techproject_get_options('delivstatus', $this->project->id);
         $deliverystatusses = array();
@@ -89,6 +94,7 @@ class Deliverable_Form extends moodleform {
 	    }
 
         $mform->addElement('text', 'url', get_string('url','techproject'));
+    	$mform->setType('url', PARAM_URL);
         $mform->addElement('static', 'or', '', get_string('oruploadfile','techproject'));
         $mform->addElement('filemanager', 'localfile_filemanager', get_string('uploadfile', 'techproject'), null, $this->attachmentoptions);
 

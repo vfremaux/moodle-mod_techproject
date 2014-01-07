@@ -26,24 +26,30 @@ class Description_Form extends moodleform {
 		$this->editoroptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'context' => $modcontext);
     	
     	$mform->addElement('hidden', 'id'); // cmid
+    	$mform->setType('id', PARAM_INT);
     	$mform->addElement('hidden', 'headingid');
+    	$mform->setType('headingid', PARAM_INT);
     	$mform->addElement('hidden', 'work');
+    	$mform->setType('work', PARAM_TEXT);
     	$mform->setDefault('work', $this->mode);
     	
     	$mform->addElement('text', 'title', get_string('projecttitle', 'techproject'), array('size' => "100%"));
+    	$mform->setType('title', PARAM_CLEANHTML);
 
-    	$mform->addElement('editor', 'abstract_editor', get_string('abstract', 'techproject'), null,  $this->editoroptions);		    	
+    	$mform->addElement('editor', 'abstract_editor', get_string('abstract', 'techproject'));		    	
 		$mform->setType('abstract_editor', PARAM_RAW);
 
-    	$mform->addElement('editor', 'rationale_editor', get_string('rationale', 'techproject'), null,  $this->editoroptions);		    	
+    	$mform->addElement('editor', 'rationale_editor', get_string('rationale', 'techproject'));		    	
 		$mform->setType('rationale_editor', PARAM_RAW);
 
-    	$mform->addElement('editor', 'environment_editor', get_string('environment', 'techproject'), null,  $this->editoroptions);		    	
+    	$mform->addElement('editor', 'environment_editor', get_string('environment', 'techproject'));		    	
 		$mform->setType('environment_editor', PARAM_RAW);
 
     	$mform->addElement('text', 'organisation', get_string('organisation', 'techproject'), array('size' => "100%"));
+    	$mform->setType('organisation', PARAM_CLEANHTML);
 
     	$mform->addElement('text', 'department', get_string('department', 'techproject'), array('size' => "100%"));
+    	$mform->setType('department', PARAM_CLEANHTML);
 
 		$this->add_action_buttons(true);
     }

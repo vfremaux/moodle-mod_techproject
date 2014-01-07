@@ -195,4 +195,3 @@
     } else {
     	print_error('errorfatalscreen', 'techproject', $currentpage);
     }
-?>

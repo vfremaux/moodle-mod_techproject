@@ -68,6 +68,7 @@
 
 	echo $pagebuffer;
 	if ($mode == 'add'){
+		$specification = new StdClass();
 		$specification->fatherid = required_param('fatherid', PARAM_INT);
 		$spectitle = ($specification->fatherid) ? 'addsubspec' : 'addspec';
 		echo $OUTPUT->heading(get_string($spectitle, 'techproject'));
@@ -87,5 +88,3 @@
 
 	$mform->set_data($specification);
 	$mform->display();	
-		
-	

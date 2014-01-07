@@ -30,11 +30,11 @@ if ($work == 'add' || $work == 'update') {
 	echo $pagebuffer;
     echo '<center>';
 	echo $OUTPUT->heading(get_string('clearallmilestones','techproject')); 
-    echo $OUTPUT->box (get_string('clearwarning','techproject'), $align = 'center', $width = '80%', $color = '#FF3030', $padding = 5, $class = 'generalbox'); 
+    echo $OUTPUT->box(get_string('clearwarning','techproject'), 'generalbox'); 
     ?>
     <script type="text/javascript">
     function senddata(){
-        document.clearmilestoneform.work.value='doclearall';
+        document.clearmilestoneform.work.value = 'doclearall';
         document.clearmilestoneform.submit();
     }
     function cancel(){

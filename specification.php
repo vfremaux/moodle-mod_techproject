@@ -74,7 +74,6 @@ function cancel(){
 		include 'specifications.controller.php';
 	}
 	echo $pagebuffer;
-    $PAGE->requires->yui2_lib('yui_connection');
 ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -105,4 +104,3 @@ function sendgroupdata(){
 </form>
 <?php
 	}
-?>

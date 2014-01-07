@@ -268,7 +268,7 @@ table.scale_wehave{
 }
 .byassigneeheading {
     font-size: larger ; 
-    background-color: #525252 ; 
+    background-color: #BCBCBC ; 
     color: white ; 
     padding: 2px 
 }
@@ -382,7 +382,7 @@ table.scale_wehave{
 }
 
 .nodelevel0{
-    background: #fcfcfc url(pix/techprojectentityhead0.jpg) repeat-x top left;
+    background: #ffffff url(pix/techprojectentityhead0.jpg) repeat-x top left;
 }
 .nodelevel1{
     background: #fAfAfA url(pix/techprojectentityhead1.jpg) repeat-x top left;
@@ -395,6 +395,12 @@ table.scale_wehave{
 }
 .nodelevel4{
     background: #eAeAeA url(pix/techprojectentityhead4.jpg) repeat-x top left;
+}
+
+/** ensures larger page **/
+div#allpage,
+#page{
+/*    max-width:1024px; */
 }
 
 .validation-UNTRACKED{
