@@ -53,23 +53,23 @@
 
 /// check current group and change, for anyone who could
     if (!$groupmode = groupmode($course, $cm)){ // groups are being used ?
-    	$currentGroupId = 0;
+    	$currentgroupid = 0;
     } else {
         $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;  // Group change requested?
         if (isguestuser()){ // for guests, use session
             if ($changegroup >= 0){
                 $_SESSION['guestgroup'] = $changegroup;
             }
-            $currentGroupId = 0 + @$_SESSION['guestgroup'];
+            $currentgroupid = 0 + @$_SESSION['guestgroup'];
         } else { // for normal users, change current group
-            $currentGroupId = 0 + groups_get_course_group($course, true);
-            if (!groups_is_member($currentGroupId , $USER->id) && !is_siteadmin()) $USER->editmode = "off";
+            $currentgroupid = 0 + groups_get_course_group($course, true);
+            if (!groups_is_member($currentgroupid , $USER->id) && !is_siteadmin()) $USER->editmode = "off";
         }
     }
 
 /// get all information about the current project    
 
-    $xml = techproject_get_full_xml($project, $currentGroupId);
+    $xml = techproject_get_full_xml($project, $currentgroupid);
 
 /// invoke XSLT transformation for making the output document
 

@@ -20,7 +20,7 @@
 	}
 	
 	if ($data = $mform->get_data()){
-		$data->groupid = $currentGroupId;
+		$data->groupid = $currentgroupid;
 		$data->projectid = $project->id;	
 		$data->userid = $USER->id;
 		$data->modified = time();
@@ -36,17 +36,17 @@
 		if ($data->specid) {
 			$data->id = $data->specid; // id is course module id
 			$DB->update_record('techproject_specification', $data);
-            add_to_log($course->id, 'techproject', 'changespecification', "view.php?id=$cm->id&view=specifications&group={$currentGroupId}", 'update', $cm->id);
+            add_to_log($course->id, 'techproject', 'changespecification', "view.php?id=$cm->id&view=specifications&group={$currentgroupid}", 'update', $cm->id);
 
     		$spectoreq = optional_param_array('spectoreq', null, PARAM_INT);
     		if (count($spectoreq) > 0){
     		    // removes previous mapping
-    		    $DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'specid' => $data->id));
+    		    $DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'specid' => $data->id));
     		    // stores new mapping
         		foreach($spectoreq as $aRequ){
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
-        		    $amap->groupid = $currentGroupId;
+        		    $amap->groupid = $currentgroupid;
         		    $amap->reqid = $aRequ;
         		    $amap->specid = $data->id;
         		    $res = $DB->insert_record('techproject_spec_to_req', $amap);
@@ -54,13 +54,13 @@
         	}
 		} else {
 			$data->created = time();
-    		$data->ordering = techproject_tree_get_max_ordering($project->id, $currentGroupId, 'techproject_specification', true, $data->fatherid) + 1;
+    		$data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_specification', true, $data->fatherid) + 1;
 			unset($data->id); // id is course module id
 			$data->id = $DB->insert_record('techproject_specification', $data);
-        	add_to_log($course->id, 'techproject', 'addspecification', "view.php?id=$cm->id&view=specifications&group={$currentGroupId}", 'add', $cm->id);
+        	add_to_log($course->id, 'techproject', 'addspecification', "view.php?id=$cm->id&view=specifications&group={$currentgroupid}", 'add', $cm->id);
 
        		if( $project->allownotifications){
-       		    techproject_notify_new_specification($project, $cm->id, $data, $currentGroupId);
+       		    techproject_notify_new_specification($project, $cm->id, $data, $currentgroupid);
            	}
 		}
 		redirect($url);

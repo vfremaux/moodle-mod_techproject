@@ -20,7 +20,7 @@ $string['techproject:validate'] = 'Recetter';
 $string['techproject:viewpreproductionentities'] = 'Voir les entités de préproduction';
 $string['techproject:viewprojectcontrols'] = 'Voir les interfaces de contrôles du projet';
 
-$string['N.C.'] = 'N.C.';
+$string['nc'] = 'N.C.';
 $string['accesskey'] = 'Clef d\'accès au document de projet';
 $string['abandoned'] = 'Abandonnée';
 $string['abandoneddesc'] = 'Tâche abandonnée quelque soit l\'état';

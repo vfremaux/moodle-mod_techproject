@@ -8,7 +8,7 @@
 
         // delete related records
 		$DB->delete_records('techproject_spec_to_req', array('specid' => $specid));
-        add_to_log($course->id, 'techproject', 'changespecification', "view.php?id=$cm->id&amp;view=specifications&amp;group={$currentGroupId}", 'delete', $cm->id);
+        add_to_log($course->id, 'techproject', 'changespecification', "view.php?id=$cm->id&amp;view=specifications&amp;group={$currentgroupid}", 'delete', $cm->id);
 	}
 /** ********************** **/
 	elseif ($work == 'domove' || $work == 'docopy') {
@@ -47,7 +47,7 @@
 		    	break;
 		}
 		techproject_tree_copy_set($ids, 'techproject_specification', $table2, 'description,format,abstract,projectid,groupid,ordering', $autobind, $bindtable);
-        add_to_log($course->id, 'techproject', "change{$redir}", "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentGroupId}", 'copy/move', $cm->id);
+        add_to_log($course->id, 'techproject', "change{$redir}", "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentgroupid}", 'copy/move', $cm->id);
 		if ($work == 'domove'){
 		    // bounce to deleteitems
 		    $work = 'dodeleteitems';
@@ -92,10 +92,10 @@
 
     		$DB->delete_records('techproject_specification', array('id' => $anItem));
             // delete all related records
-    		$DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'specid' => $anItem));
-    		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'specid' => $anItem));
+    		$DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'specid' => $anItem));
+    		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'specid' => $anItem));
     	}
-        add_to_log($course->id, 'techproject', 'deletespecification', "view.php?id={$cm->id}&amp;view=specifications&amp;group={$currentGroupId}", 'deleteItems', $cm->id);
+        add_to_log($course->id, 'techproject', 'deletespecification', "view.php?id={$cm->id}&amp;view=specifications&amp;group={$currentgroupid}", 'deleteItems', $cm->id);
     	if (isset($withredirect) && $withredirect){
 		    redirect("{$CFG->wwwroot}/mod/techproject/view.php?id={$cm->id}&amp;view={$redir}s", get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
 		}
@@ -106,7 +106,7 @@
 		$DB->delete_records('techproject_specification', array('projectid' => $project->id));
 		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id));
 		$DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id));
-        add_to_log($course->id, 'techproject', 'changespecification', "view.php?id={$cm->id}&amp;view=specifications&amp;group={$currentGroupId}", 'clear', $cm->id);
+        add_to_log($course->id, 'techproject', 'changespecification', "view.php?id={$cm->id}&amp;view=specifications&amp;group={$currentgroupid}", 'clear', $cm->id);
 	}
 /** ********************** **/
 	elseif ($work == 'doexport') {
@@ -137,27 +137,27 @@
 	    $escaped = str_replace('>', '&gt;', $escaped);
 	    echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
 	    print_simple_box("<pre>$escaped</pre>");
-        add_to_log($course->id, 'techproject', 'readspecification', "view.php?id={$cm->id}&amp;view=specifications&amp;group={$currentGroupId}", 'export', $cm->id);
+        add_to_log($course->id, 'techproject', 'readspecification', "view.php?id={$cm->id}&amp;view=specifications&amp;group={$currentgroupid}", 'export', $cm->id);
         echo $OUTPUT->continue_button("view.php?view=specifications&amp;id=$cm->id");
         return;
 	}
 /** ********************** **/
 	elseif ($work == 'up') {
 		$specid = required_param('specid', PARAM_INT);
-		techproject_tree_up($project, $currentGroupId,$specid, 'techproject_specification');
+		techproject_tree_up($project, $currentgroupid,$specid, 'techproject_specification');
 	}
 /** ********************** **/
 	elseif ($work == 'down') {
 		$specid = required_param('specid', PARAM_INT);
-		techproject_tree_down($project, $currentGroupId,$specid, 'techproject_specification');
+		techproject_tree_down($project, $currentgroupid,$specid, 'techproject_specification');
 	}
 /** ********************** **/
 	elseif ($work == 'left') {
 		$specid = required_param('specid', PARAM_INT);
-		techproject_tree_left($project, $currentGroupId,$specid, 'techproject_specification');
+		techproject_tree_left($project, $currentgroupid,$specid, 'techproject_specification');
 	}
 /** ********************** **/
 	elseif ($work == 'right') {
 		$specid = required_param('specid', PARAM_INT);
-		techproject_tree_right($project, $currentGroupId,$specid, 'techproject_specification');
+		techproject_tree_right($project, $currentgroupid,$specid, 'techproject_specification');
 	}

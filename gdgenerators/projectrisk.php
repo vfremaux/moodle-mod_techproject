@@ -21,23 +21,23 @@ if (@$wasIncluded == 0){
     // check current group and change, for anyone who could
     $course = $DB->get_record('course', array('id' => $project->course));
 	if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // groups are being used ?
-		$currentGroupId = 0;
+		$currentgroupid = 0;
 	} else {
         $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;  // Group change requested?
         if (isguestuser()){ // for guests, use session
             if ($changegroup >= 0){
                 $_SESSION['guestgroup'] = $changegroup;
             }
-            $currentGroupId = 0 + @$_SESSION['guestgroup'];
+            $currentgroupid = 0 + @$_SESSION['guestgroup'];
         } else { // for normal users, change current group
-            $currentGroupId = 0 + get_and_set_current_group($course, $groupmode, $changegroup);    
+            $currentgroupid = 0 + get_and_set_current_group($course, $groupmode, $changegroup);    
         }
     }
 }
 $trace = 0;
 
 // get requirements information
-$requirements = $DB->get_records_select('techproject_requirement', "projectid = ? AND groupid = ? ", array($project->id, $currentGroupId));
+$requirements = $DB->get_records_select('techproject_requirement', "projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
 
 $heavyness['WEHAVE'] = 0;
 $heavyness[''] = 1;

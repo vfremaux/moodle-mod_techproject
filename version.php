@@ -18,10 +18,10 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$module->version  = 2013100200;  // The current module version (Date: YYYYMMDDXX)
-$module->requires = 2011120500;  // Requires this Moodle version
+$module->version  = 2014010600;  // The current module version (Date: YYYYMMDDXX)
+$module->requires = 2013111800;  // Requires this Moodle version
 $module->component = 'mod_techproject';   // Full name of the plugin (used for diagnostics)
 $module->cron     = 0;           // Period for cron to check this module (secs)
-$module->maturity = MATURITY_BETA;
-$module->release = '2.4.0 (Build 2013050900)';
+$module->maturity = MATURITY_RC;
+$module->release = '2.6.0 (Build 2014010600)';
 

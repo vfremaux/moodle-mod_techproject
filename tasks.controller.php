@@ -12,7 +12,7 @@
    	    $oldtask = $DB->get_record('techproject_task', array('id' => $taskid));
         // delete all related records
    		techproject_tree_delete($taskid, 'techproject_task');
-        add_to_log($course->id, 'techproject', 'changetask', "view.php?id={$cm->id}&amp;view=tasks&amp;group={$currentGroupId}", 'delete', $cm->id);
+        add_to_log($course->id, 'techproject', 'changetask', "view.php?id={$cm->id}&amp;view=tasks&amp;group={$currentgroupid}", 'delete', $cm->id);
         //reset indicators 
         $oldtask->done      = 0;
         $oldtask->planned   = 0;
@@ -29,9 +29,9 @@
    		    techproject_tree_propagate_up('techproject_task', 'spent', $oldtask->id, '+');
    		}
            // now can delete records
-   		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'taskid' => $taskid));
-   		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'master' => $taskid));
-   		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'slave' => $taskid));   
+   		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $taskid));
+   		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'master' => $taskid));
+   		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $taskid));   
 
 /************************ Mark as 100% done ************************/
 
@@ -111,7 +111,7 @@
    		    	break;
    		}
    		techproject_tree_copy_set($ids, 'techproject_task', $table2, 'description,format,abstract,projectid,groupid,ordering', $autobind, $bindtable);
-           add_to_log($course->id, 'techproject', 'change{$redir}', "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentGroupId}", 'copy/move', $cm->id);
+           add_to_log($course->id, 'techproject', 'change{$redir}', "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentgroupid}", 'copy/move', $cm->id);
    		if ($work == 'domove'){
    		    // bounce to deleteitems
    		    $work = 'dodeleteitems';
@@ -173,18 +173,18 @@
        		}
                // delete record for this item
        		$DB->delete_records('techproject_task', array('id' => $anItem));
-            add_to_log($course->id, 'techproject', 'changetask', "view.php?id={$cm->id}&amp;view=tasks&amp;group={$currentGroupId}", 'deleteItems', $cm->id);
+            add_to_log($course->id, 'techproject', 'changetask', "view.php?id={$cm->id}&amp;view=tasks&amp;group={$currentgroupid}", 'deleteItems', $cm->id);
 
                // delete all related records
-       		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'taskid' => $anItem));
-       		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'master' => $anItem));
-       		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'slave' => $anItem));
+       		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $anItem));
+       		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'master' => $anItem));
+       		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $anItem));
        		// must rebind child dependencies to father 
        		if ($oldtask->fatherid != 0 && $childs){
            		foreach($childs as $aChild){
            		    $aDependency->id        = 0;
            		    $aDependency->projectid = $project->id;
-           		    $aDependency->groupid   = $currentGroupId;
+           		    $aDependency->groupid   = $currentgroupid;
            		    $aDependency->master    = $oldtask->fatherid;
            		    $aDependency->slave     = $aChild->id;
            		    $DB->insert_record('techproject_task_dependency', $aDependency);
@@ -200,11 +200,11 @@
    	} elseif ($work == 'doclearall') {
            // delete all related records. POWERFUL AND DANGEROUS COMMAND.
            // deletes for the current group. 
-   		$DB->delete_records('techproject_task', array('projectid' => $project->id, 'groupid' => $currentGroupId));
-   		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentGroupId));
-   		$DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentGroupId));
-   		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId));
-           add_to_log($course->id, 'techproject', 'changetask', "view.php?id={$cm->id}&amp;view=tasks&amp;group={$currentGroupId}", 'clear', $cm->id);
+   		$DB->delete_records('techproject_task', array('projectid' => $project->id, 'groupid' => $currentgroupid));
+   		$DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid));
+   		$DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentgroupid));
+   		$DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid));
+           add_to_log($course->id, 'techproject', 'changetask', "view.php?id={$cm->id}&amp;view=tasks&amp;group={$currentgroupid}", 'clear', $cm->id);
    	} elseif ($work == 'doexport') {
    	    $ids = required_param('ids', PARAM_INT);
    	    $idlist = implode("','", $ids);
@@ -228,7 +228,7 @@
    	    $escaped = str_replace('>', '&gt;', $escaped);
    	    echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
    	    print_simple_box("<pre>$escaped</pre>");
-           add_to_log($course->id, 'techproject', 'readtask', "view.php?id={$cm->id}&amp;view=tasks&amp;group={$currentGroupId}", 'export', $cm->id);
+           add_to_log($course->id, 'techproject', 'readtask', "view.php?id={$cm->id}&amp;view=tasks&amp;group={$currentgroupid}", 'export', $cm->id);
            echo $OUTPUT->continue_button("view.php?view=tasks&amp;id=$cm->id");
            return;
 
@@ -236,19 +236,19 @@
 
    	} elseif ($work == 'up') {
    	    $taskid = required_param('taskid', PARAM_INT);
-   		techproject_tree_up($project, $currentGroupId, $taskid, 'techproject_task');
+   		techproject_tree_up($project, $currentgroupid, $taskid, 'techproject_task');
 
 /************************ Lowers down in levzel ***********************/
 
    	} elseif ($work == 'down') {
    	    $taskid = required_param('taskid', PARAM_INT);
-   		techproject_tree_down($project, $currentGroupId, $taskid, 'techproject_task');
+   		techproject_tree_down($project, $currentgroupid, $taskid, 'techproject_task');
 
 /************************ Raising one level up  *********************/
 
    	} elseif ($work == 'left') {
    	    $taskid = required_param('taskid', PARAM_INT);
-   		techproject_tree_left($project, $currentGroupId, $taskid, 'techproject_task');
+   		techproject_tree_left($project, $currentgroupid, $taskid, 'techproject_task');
    	    techproject_tree_propagate_up('techproject_task', 'done', $taskid, '~');
    	    techproject_tree_propagate_up('techproject_task', 'planned', $taskid, '+');
    	    techproject_tree_propagate_up('techproject_task', 'quoted', $taskid, '+');
@@ -259,7 +259,7 @@
 
    	} elseif ($work == 'right') {
    	    $taskid = required_param('taskid', PARAM_INT);
-   		techproject_tree_right($project, $currentGroupId, $taskid, 'techproject_task');
+   		techproject_tree_right($project, $currentgroupid, $taskid, 'techproject_task');
    	}
 
 ?>

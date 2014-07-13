@@ -23,7 +23,7 @@
     if (!groups_get_activity_groupmode($cm, $project->course)){
         $groupusers = get_users_by_capability($project->course);
     } else {
-        $groupusers = get_group_users($currentGroupId);
+        $groupusers = get_group_users($currentgroupid);
     }
     */
     //memorizes current page - typical session switch
@@ -57,7 +57,7 @@
           t.id = tts.taskid AND
           s.id = tts.specid AND
           t.projectid = {$project->id} AND
-          t.groupid = {$currentGroupId}
+          t.groupid = {$currentgroupid}
        GROUP BY
           t.id
        ORDER BY
@@ -82,7 +82,7 @@
             }
             if (($viewmode == 'onlyleaves' || $viewmode == 'onlyslaves') && techproject_count_subs('techproject_task', $aTask->id) != 0) continue;
             if ($viewmode == 'onlymasters' && $DB->count_records('techproject_task_dependency', array('slave' => $aTask->id)) != 0) continue;
-            techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($tasks), 'HEAD', 'SHORT_WITH_ASSIGNEE_ORDERED');
+            techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($tasks), 'HEAD', 'SHORT_WITH_ASSIGNEE_ORDERED');
         }
     }
     // get unassigned tasks
@@ -99,7 +99,7 @@
        WHERE
           tts.specid IS NULL AND
           t.projectid = {$project->id} AND
-          t.groupid = {$currentGroupId}
+          t.groupid = {$currentgroupid}
        GROUP BY
           t.id
        HAVING 
@@ -111,7 +111,7 @@
         foreach($unassignedtasks as $aTask){
             if (($viewmode == 'onlyleaves' || $viewmode == 'onlyslaves') && techproject_count_subs('techproject_task', $aTask->id) != 0) continue;
             if ($viewmode == 'onlymasters' && $DB->count_records('techproject_task_dependency', array('slave' => $aTask->id)) != 0) continue;
-            techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($unassignedtasks), 'SHORT', 'dithered', 'SHORT_WITHOUT_TYPE_NOEDIT');
+            techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($unassignedtasks), 'SHORT', 'dithered', 'SHORT_WITHOUT_TYPE_NOEDIT');
         }
     }
     if (($tasks || $unassignedtasks) && $USER->editmode == 'on' && has_capability('mod/techproject:changetasks', $context)){

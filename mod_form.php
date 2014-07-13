@@ -1,6 +1,18 @@
-<?php //$Id: mod_form.php,v 1.1.1.1 2012-08-01 10:16:14 vf Exp $
-
-include_once 'locallib.php';
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * This file defines the main newmodule configuration form
@@ -30,22 +42,22 @@ if (!defined('MOODLE_INTERNAL')) {
 }
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot.'/mod/techproject/locallib.php');
 
 class mod_techproject_mod_form extends moodleform_mod {
 
-    function definition() {
+    public function definition() {
 
         global $COURSE;
         $mform =& $this->_form;
 
-		$yesnooptions[0] = get_string('no');
-		$yesnooptions[1] = get_string('yes');
+        $yesnooptions[0] = get_string('no');
+        $yesnooptions[1] = get_string('yes');
 
-//-------------------------------------------------------------------------------
-    /// Adding the "general" fieldset, where all the common settings are showed
+        // Adding the "general" fieldset, where all the common settings are showed
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-    /// Adding the standard "name" field
+        // Adding the standard "name" field
         $mform->addElement('text', 'name', get_string('name'), array('size'=>'64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -55,16 +67,14 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-    /// Adding the required "intro" field to hold the description of the instance
+        // Adding the required "intro" field to hold the description of the instance
         $this->add_intro_editor(true, get_string('introtechproject', 'techproject'));
 
         $startyear = date('Y', time());
         $mform->addElement('date_time_selector', 'projectstart', get_string('projectstart', 'techproject'), array('optional' => true, 'startyear' => $startyear));
         $mform->setDefault('projectstart', time());
-        // $mform->addHelpButton('projectstart', 'projectstart', 'techproject');
         $mform->addElement('date_time_selector', 'projectend', get_string('projectend', 'techproject'), array('optional' => true, 'startyear' => $startyear));
         $mform->setDefault('projectend', time()+90*DAYSECS);
-        // $mform->addHelpButton('projectend', 'projectend', 'techproject');
 
         $mform->addElement('date_time_selector', 'assessmentstart', get_string('assessmentstart', 'techproject'), array('optional' => true, 'startyear' => $startyear));
         $mform->setDefault('assessmentstart', time()+75*DAYSECS);
@@ -82,7 +92,7 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addHelpButton('allownotifications', 'allownotifications', 'techproject');
         $mform->setType('allownotifications', PARAM_BOOL);
 
-		/*
+        /*
         $mform->addElement('select', 'enablecvs', get_string('enablecvs', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('enablecvs', 'enablecvs', 'techproject');
         $mform->setType('enablecvs', PARAM_BOOL);
@@ -98,7 +108,7 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addElement('checkbox', 'projectusesdelivs', get_string('deliverables', 'techproject')); 
         $mform->addElement('checkbox', 'projectusesvalidations', get_string('validations', 'techproject')); 
 
-		$mform->addElement('header', 'header2', get_string('access', 'techproject'));
+        $mform->addElement('header', 'header2', get_string('access', 'techproject'));
 
         $mform->addElement('select', 'guestsallowed', get_string('guestsallowed', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('guestsallowed', 'guestsallowed', 'techproject');
@@ -117,7 +127,7 @@ class mod_techproject_mod_form extends moodleform_mod {
 
         $mform->addElement('static', 'tudentscanchange', get_string('studentscanchange', 'techproject'), get_string('seecapabilitysettings', 'techproject')); 
 
-		$mform->addElement('header', 'header2', get_string('grading', 'techproject'));
+        $mform->addElement('header', 'header2', get_string('grading', 'techproject'));
         $mform->addElement('select', 'teacherusescriteria', get_string('teacherusescriteria', 'techproject'), $yesnooptions); 
         $mform->addHelpButton('teacherusescriteria', 'teacherusescriteria', 'techproject');
         $mform->setType('teacherusescriteria', PARAM_BOOL);
@@ -139,7 +149,6 @@ class mod_techproject_mod_form extends moodleform_mod {
         $this->standard_coursemodule_elements();
 
         $this->add_action_buttons();
-	}
+    }
 }
 
-?>

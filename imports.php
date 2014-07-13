@@ -1,4 +1,4 @@
-<?php // $Id: imports.php,v 1.1 2012-07-05 21:18:43 vf Exp $
+<?php // $Id: imports.php,v 1.1.1.1 2012-08-01 10:16:11 vf Exp $
 
     /**
     * Project : Technical Project Manager (IEEE like)
@@ -23,7 +23,7 @@
 	echo $pagebuffer;
 
     if ($work == 'doexportall'){
-        $xml = techproject_get_full_xml($project, $currentGroupId);
+        $xml = techproject_get_full_xml($project, $currentgroupid);
         echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
         $xml = str_replace('<', '&lt;', $xml);
         $xml = str_replace('>', '&gt;', $xml);
@@ -75,7 +75,7 @@
         $uploader->process_file_uploads($CFG->dataroot.'/tmp');
         $file = $uploader->get_new_filepath();
         $data = implode('', file($file));
-        techproject_import_entity($project->id, $id, $data, $entitytype, $currentGroupId);
+        techproject_import_entity($project->id, $id, $data, $entitytype, $currentgroupid);
     }
 /// write output view
     echo $OUTPUT->heading(get_string('importsexports', 'techproject'));

@@ -24,8 +24,8 @@
     if (!groups_get_activity_groupmode($cm, $project->course)){
         $groupusers = get_users_by_capability($context, 'mod/techproject:beassignedtasks', 'u.id, u.firstname, u.lastname, u.email, u.picture', 'u.lastname');
     } else {
-        if ($currentGroupId){
-            $groupusers = groups_get_members($currentGroupId);
+        if ($currentgroupid){
+            $groupusers = groups_get_members($currentgroupid);
         } else {
             // we could not rely on the legacy function
             $groupusers = techproject_get_users_not_in_group($project->course);
@@ -60,7 +60,7 @@
                   {techproject_task} as t
                WHERE
                   t.projectid = {$project->id} AND
-                  t.groupid = {$currentGroupId} AND
+                  t.groupid = {$currentgroupid} AND
                   t.assignee = {$aUser->id}
                GROUP BY
                   t.assignee
@@ -100,7 +100,7 @@
                   tts.taskid = t.id
                WHERE
                   t.projectid = {$project->id} AND
-                  t.groupid = {$currentGroupId} AND
+                  t.groupid = {$currentgroupid} AND
                   qu.domain = 'taskstatus' AND
                   qu.code = t.status AND
                   t.assignee = {$aUser->id}
@@ -126,7 +126,7 @@
     ?>
         <tr>
             <td class="level2">
-            <?php techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($tasks), true, 'SHORT_WITHOUT_ASSIGNEE_NOEDIT'); ?>
+            <?php techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($tasks), true, 'SHORT_WITHOUT_ASSIGNEE_NOEDIT'); ?>
             </td>
         </tr>
     <?php
@@ -146,7 +146,7 @@
           {techproject_task}
        WHERE
           projectid = {$project->id} AND
-          groupid = {$currentGroupId} AND
+          groupid = {$currentgroupid} AND
           assignee = 0
     ";
     $unassignedtasks = $DB->get_records_sql($query);

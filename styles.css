@@ -1,19 +1,20 @@
 .path-mod-techproject table.entity th.header{
-	background:none;
+    background:none;
 }
 
 .path-mod-techproject table.entity td{
-	padding:2px !important;
+    padding:2px !important;
 }
 
 .path-mod-techproject table.nodecaption{
-	margin-bottom:2px !important;
+    margin-bottom:2px !important;
+    width:100%;
 }
 
 .path-mod-techproject td.parmname,
 .path-mod-techproject td.parmvalue{
-	border:1px #E0E0E0 solid !important;
-	font-size: 1.1em !important;
+    border:1px #E0E0E0 solid !important;
+    font-size: 1.1em !important;
 }
 
 .path-mod-techproject .level0 { 
@@ -44,7 +45,7 @@
 } 
 #page-mod-techproject-view .level6 { 
     font-size: 9px;
-	color:#606060;
+    color:#606060;
 } 
 
 #page-mod-techproject-view .parmname{ 
@@ -165,35 +166,35 @@ span.scale_must{
 
 
 table.scale_outofreason{
-	background-color:#F57A7A;
+    background-color:#F57A7A;
 }
 
 table.scale_heavy{
-	background-color:#E8A295;
+    background-color:#E8A295;
 }
 
 table.scale_difficult{
-	background-color:#EBAA69;
+    background-color:#EBAA69;
 }
 
 table.scale_needswork{
-	background-color:#C4D5DF;
+    background-color:#C4D5DF;
 }
 
 table.scale_wecanhave{
-	background-color:#A5B6DC;
+    background-color:#A5B6DC;
 }
 
 table.scale_needsmoreinfo{
-	background-color:#BB6CB5;
+    background-color:#BB6CB5;
 }
 
 table.scale_impossible{
-	background-color:#282828;
-	color:white;
+    background-color:#282828;
+    color:white;
 }
 table.scale_wehave{
-	background-color:#66EA53;
+    background-color:#66EA53;
 }
 
 /* priorities */

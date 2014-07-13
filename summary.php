@@ -15,7 +15,7 @@
     */
 /// counting leaf requests
     if (has_capability('mod/techproject:viewpreproductionentities', $context)){
-        $requirements = $DB->get_records_select('techproject_requirement', "projectid = ? AND groupid = ? AND fatherid = 0 ", array($project->id, $currentGroupId) , '', 'id,abstract');
+        $requirements = $DB->get_records_select('techproject_requirement', "projectid = ? AND groupid = ? AND fatherid = 0 ", array($project->id, $currentgroupid) , '', 'id,abstract');
         $leafRequs = array();
         $leafRequList = '';
         if ($requirements){
@@ -27,7 +27,7 @@
         $countrequ = count($leafRequs);
 /// counting specifications
 
-        $specifications = $DB->get_records_select('techproject_specification', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", array($project->id, $currentGroupId), '', 'id,abstract');
+        $specifications = $DB->get_records_select('techproject_specification', "projectid = $project->id AND groupid = $currentgroupid AND fatherid = 0 ", array($project->id, $currentgroupid), '', 'id,abstract');
         $leafSpecs = array();
         $leafSpecList = '';
         if ($specifications){
@@ -40,7 +40,7 @@
     }
 /// counting tasks
 
-        $tasks = $DB->get_records_select('techproject_task', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", array($project->id, $currentGroupId), '', 'id,abstract');
+        $tasks = $DB->get_records_select('techproject_task', "projectid = $project->id AND groupid = $currentgroupid AND fatherid = 0 ", array($project->id, $currentgroupid), '', 'id,abstract');
         $leafTasks = array();
         $leafTaskList = '';
         if ($tasks){
@@ -52,7 +52,7 @@
         $counttask = count($leafTasks);
 /// counting deliverables
 
-        $deliverables = $DB->get_records_select('techproject_deliverable', "projectid = $project->id AND groupid = $currentGroupId AND fatherid = 0 ", array($project->id, $currentGroupId), '', 'id,abstract');
+        $deliverables = $DB->get_records_select('techproject_deliverable', "projectid = $project->id AND groupid = $currentgroupid AND fatherid = 0 ", array($project->id, $currentgroupid), '', 'id,abstract');
         $leafDelivs = array();
         $leafDelivList = '';
         if ($deliverables){
@@ -77,7 +77,7 @@
                  r.id = str.reqid
                WHERE
                  r.projectid = {$project->id} AND
-                 r.groupid = {$currentGroupId} AND
+                 r.groupid = {$currentgroupid} AND
                  r.id IN ('{$leafRequList}')
             ";
             $res = $DB->get_records_sql($query);
@@ -100,7 +100,7 @@
                  s.id = stt.specid
                WHERE
                  s.projectid = {$project->id} AND
-                 s.groupid = {$currentGroupId} AND
+                 s.groupid = {$currentgroupid} AND
                  s.id IN ('{$leafSpecList}')
             ";
             $res = $DB->get_records_sql($query);
@@ -110,12 +110,12 @@
             $coveredspec = $countspec - $res->uncovered;
         }
     }
-    $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentGroupId));
+    $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
     // if missing create one
     if (!$projectheading){
         $projectheading->id = 0;
         $projectheading->projectid = $project->id;
-        $projectheading->groupid = $currentGroupId;
+        $projectheading->groupid = $currentgroupid;
         $projectheading->title = '';
         $projectheading->abstract = '';
         $projectheading->rationale = '';
@@ -217,8 +217,8 @@
     }
     else{
         // getting all grades
-        $milestones = $DB->get_records_select('techproject_milestone', "projectid = ? AND groupid = ? ", array($project->id, $currentGroupId));
-        $grades = $DB->get_records_select('techproject_assessment', "projectid = ? AND groupid = ? GROUP BY itemid, criterion, itemclass", array($project->id, $currentGroupId));
+        $milestones = $DB->get_records_select('techproject_milestone', "projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
+        $grades = $DB->get_records_select('techproject_assessment', "projectid = ? AND groupid = ? GROUP BY itemid, criterion, itemclass", array($project->id, $currentgroupid));
         $freecriteria =  $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 1", array($project->id));
         $criteria = $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 0", array($project->id));
         $gradesByClass = array();

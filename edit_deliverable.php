@@ -20,7 +20,7 @@
 	}
 	
 	if ($data = $mform->get_data()){
-		$data->groupid = $currentGroupId;
+		$data->groupid = $currentgroupid;
 		$data->projectid = $project->id;	
 		$data->userid = $USER->id;
 		$data->modified = time();
@@ -37,18 +37,18 @@
 		if ($data->delivid) {
 			$data->id = $data->delivid; // id is course module id
 			$DB->update_record('techproject_deliverable', $data);
-            add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id=$cm->id&view=deliverables&group={$currentGroupId}", 'update', $cm->id);
+            add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id=$cm->id&view=deliverables&group={$currentgroupid}", 'update', $cm->id);
 
     		$tasktodeliv = optional_param_array('tasktodeliv', null, PARAM_INT);
     		if (count($tasktodeliv) > 0){
     		    // removes previous mapping
-    		    $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'delivid' => $data->id));
+    		    $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'delivid' => $data->id));
     		    // stores new mapping
         		foreach($tasktodeliv as $aTask){
         			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
-        		    $amap->groupid = $currentGroupId;
+        		    $amap->groupid = $currentgroupid;
         		    $amap->taskid = $aTask;
         		    $amap->delivid = $data->id;
         		    $res = $DB->insert_record('techproject_task_to_deliv', $amap);
@@ -56,13 +56,13 @@
         	}
 		} else {
 			$data->created = time();
-    		$data->ordering = techproject_tree_get_max_ordering($project->id, $currentGroupId, 'techproject_deliverable', true, $data->fatherid) + 1;
+    		$data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_deliverable', true, $data->fatherid) + 1;
 			unset($data->id); // id is course module id
 			$data->id = $DB->insert_record('techproject_deliverable', $data);
-        	add_to_log($course->id, 'techproject', 'adddeliv', "view.php?id=$cm->id&view=deliverables&group={$currentGroupId}", 'add', $cm->id);
+        	add_to_log($course->id, 'techproject', 'adddeliv', "view.php?id=$cm->id&view=deliverables&group={$currentgroupid}", 'add', $cm->id);
 
        		if( $project->allownotifications){
-       		    techproject_notify_new_deliverable($project, $cm->id, $data, $currentGroupId);
+       		    techproject_notify_new_deliverable($project, $cm->id, $data, $currentgroupid);
            	}
 		}
 		redirect($url);

@@ -1,6 +1,6 @@
 <?php // $Id: techproject.php,v 1.1.1.1 2012-08-01 10:16:29 vf Exp $ 
 
-$string['N.C.'] = 'N.C.';
+$string['nc'] = 'N.C.';
 $string['abandoned'] = 'Abandonado';
 $string['abandoneddesc'] = 'Abandonado cual sea el estado';
 $string['abstract'] = 'Resumen';

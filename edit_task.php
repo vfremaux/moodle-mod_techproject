@@ -22,7 +22,7 @@
 	}
 	
 	if ($data = $mform->get_data()){
-		$data->groupid = $currentGroupId;
+		$data->groupid = $currentgroupid;
 		$data->projectid = $project->id;	
 		$data->userid = $USER->id;
 		$data->modified = time();
@@ -39,18 +39,18 @@
 			$data->id = $data->taskid; // id is course module id
    			$oldAssigneeId = $DB->get_field('techproject_task', 'assignee', array('id' => $data->id));
 			$DB->update_record('techproject_task', $data);
-            add_to_log($course->id, 'techproject', 'changetask', "view.php?id=$cm->id&view=tasks&group={$currentGroupId}", 'update', $cm->id);
+            add_to_log($course->id, 'techproject', 'changetask', "view.php?id=$cm->id&view=tasks&group={$currentgroupid}", 'update', $cm->id);
 
     		$tasktospec = optional_param_array('taskospec', null, PARAM_INT);
     		if (count($tasktospec) > 0){
     		    // removes previous mapping
-    		    $DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'taskid' => $data->id));
+    		    $DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $data->id));
     		    // stores new mapping
         		foreach($tasktospec as $aSpec){
         			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
-        		    $amap->groupid = $currentGroupId;
+        		    $amap->groupid = $currentgroupid;
         		    $amap->specid = $aSpec;
         		    $amap->taskid = $data->id;
         		    $res = $DB->insert_record('techproject_task_to_spec', $amap);
@@ -61,13 +61,13 @@
     		$mapped = optional_param_array('tasktodeliv', null, PARAM_INT);
     		if (count($mapped) > 0){
     		    // removes previous mapping
-    		    $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'taskid' => $data->id));
+    		    $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $data->id));
     		    // stores new mapping
         		foreach($mapped as $mappedid){
         			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
-        		    $amap->groupid = $currentGroupId;
+        		    $amap->groupid = $currentgroupid;
         		    $amap->delivid = $mappedid;
         		    $amap->taskid = $data->id;
         		    $res = $DB->insert_record('techproject_task_to_deliv', $amap);
@@ -77,13 +77,13 @@
     		$mapped = optional_param_array('taskdependency', null, PARAM_INT);
     		if (count($mapped) > 0){
     		    // removes previous mapping
-    		    $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'slave' => $data->id));
+    		    $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $data->id));
     		    // stores new mapping
         		foreach($mapped as $mappedid){
         			$amap = new StdClass();
         		    $amap->id = 0;
         		    $amap->projectid = $project->id;
-        		    $amap->groupid = $currentGroupId;
+        		    $amap->groupid = $currentgroupid;
         		    $amap->master = $mappedid;
         		    $amap->slave = $data->id;
         		    $res = $DB->insert_record('techproject_task_dependency', $amap);
@@ -91,20 +91,20 @@
 
            		// if notifications allowed and previous assignee exists (and is not the new assignee) notify previous assignee
            		if( $project->allownotifications && !empty($oldAssigneeId) && $data->assignee != $oldAssigneeId){
-                    techproject_notify_task_unassign($project, $data, $oldAssigneeId, $currentGroupId);
+                    techproject_notify_task_unassign($project, $data, $oldAssigneeId, $currentgroupid);
                	}
         	}
 		} else {
 			$data->created = time();
-    		$data->ordering = techproject_tree_get_max_ordering($project->id, $currentGroupId, 'techproject_task', true, $data->fatherid) + 1;
+    		$data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_task', true, $data->fatherid) + 1;
 			unset($data->id); // id is course module id
 
 			$data->id = $DB->insert_record('techproject_task', $data);
 
-        	add_to_log($course->id, 'techproject', 'addtask', "view.php?id=$cm->id&view=tasks&group={$currentGroupId}", 'add', $cm->id);
+        	add_to_log($course->id, 'techproject', 'addtask', "view.php?id=$cm->id&view=tasks&group={$currentgroupid}", 'add', $cm->id);
 
        		if( $project->allownotifications){
-       		    techproject_notify_new_task($project, $cm->id, $data, $currentGroupId);
+       		    techproject_notify_new_task($project, $cm->id, $data, $currentgroupid);
            	}
 		}
 
@@ -113,7 +113,7 @@
    			$aDependency = new StdClass();
             $aDependency->id = 0;
    		    $aDependency->projectid = $project->id;
-   		    $aDependency->groupid = $currentGroupId;
+   		    $aDependency->groupid = $currentgroupid;
    		    $aDependency->slave = $data->fatherid;
    		    $aDependency->master = $data->id;
    		    if (!$DB->record_exists('techproject_task_dependency', array('projectid' => $project->id, 'slave' => $data->fatherid, 'master' => $data->id))){
@@ -131,7 +131,7 @@
 
    		// if notifications allowed and assignee set notify assignee
    		if( $project->allownotifications && !empty($data->assignee)){
-   		    techproject_notify_task_assign($project, $data, $currentGroupId);
+   		    techproject_notify_task_assign($project, $data, $currentgroupid);
        	}
 
 		redirect($url);

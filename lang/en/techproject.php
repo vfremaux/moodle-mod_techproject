@@ -21,7 +21,7 @@ $string['techproject:validate'] = 'Validate';
 $string['techproject:viewpreproductionentities'] = 'View preproduction entities';
 $string['techproject:viewprojectcontrols'] = 'View project control screens';
 
-$string['N.C.'] = 'N.C.';
+$string['nc'] = 'N.C.';
 $string['abandoned'] = 'Abandoned';
 $string['abandoneddesc'] = 'Task is over whatever completion level it has. Results are not used.';
 $string['abstract'] = 'Abstract';
