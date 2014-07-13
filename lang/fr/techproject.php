@@ -20,7 +20,7 @@ $string['techproject:validate'] = 'Recetter';
 $string['techproject:viewpreproductionentities'] = 'Voir les entités de préproduction';
 $string['techproject:viewprojectcontrols'] = 'Voir les interfaces de contrôles du projet';
 
-$string['N.C.'] = 'N.C.';
+$string['nc'] = 'N.C.';
 $string['accesskey'] = 'Clef d\'accès au document de projet';
 $string['abandoned'] = 'Abandonnée';
 $string['abandoneddesc'] = 'Tâche abandonnée quelque soit l\'état';
@@ -280,6 +280,7 @@ $string['nomilestones'] = 'Aucune étape';
 $string['nomilestones'] = 'Pas d\'étapes définies'; 
 $string['none'] = 'aucun';
 $string['noonetoassess'] = 'Aucun contributeur dans ce groupe'; 
+$string['noprojects'] = 'Aucun projet';
 $string['norequassigned'] = 'Aucun attendu assigné.';
 $string['norequirements'] = 'Aucun attendu';
 $string['noscale'] = 'Pas de barème (notation numérique)';

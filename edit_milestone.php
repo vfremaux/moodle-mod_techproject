@@ -20,7 +20,7 @@
 	}
 	
 	if ($data = $mform->get_data()){
-		$data->groupid = $currentGroupId;
+		$data->groupid = $currentgroupid;
 		$data->projectid = $project->id;	
 		$data->userid = $USER->id;
 		$data->modified = time();
@@ -37,17 +37,17 @@
 		if ($data->milestoneid) {
 			$data->id = $data->milestoneid; // id is course module id
 			$DB->update_record('techproject_milestone', $data);
-            add_to_log($course->id, 'techproject', 'changemilestone', "view.php?id=$cm->id&view=milestones&group={$currentGroupId}", 'update', $cm->id);
+            add_to_log($course->id, 'techproject', 'changemilestone', "view.php?id=$cm->id&view=milestones&group={$currentgroupid}", 'update', $cm->id);
 
 		} else {
 			$data->created = time();
-    		$data->ordering = techproject_tree_get_max_ordering($project->id, $currentGroupId, 'techproject_milestone', false) + 1;
+    		$data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_milestone', false) + 1;
 			unset($data->id); // id is course module id
 			$data->id = $DB->insert_record('techproject_milestone', $data);
-        	add_to_log($course->id, 'techproject', 'addmile', "view.php?id=$cm->id&view=milestones&group={$currentGroupId}", 'add', $cm->id);
+        	add_to_log($course->id, 'techproject', 'addmile', "view.php?id=$cm->id&view=milestones&group={$currentgroupid}", 'add', $cm->id);
 
        		if( $project->allownotifications){
-       		    techproject_notify_new_milestone($project, $cm->id, $data, $currentGroupId);
+       		    techproject_notify_new_milestone($project, $cm->id, $data, $currentgroupid);
            	}
 		}
 		redirect($url);

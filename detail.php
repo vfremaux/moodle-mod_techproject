@@ -62,7 +62,7 @@
     $objectId = $_SESSION['objectId'];
 
 /// making viewer
-    if (!$object = $DB->get_record('techproject_' . $objectClass, array('id' => $objectId, 'projectid' => $project->id, 'groupid' => $currentGroupId))){
+    if (!$object = $DB->get_record('techproject_' . $objectClass, array('id' => $objectId, 'projectid' => $project->id, 'groupid' => $currentgroupid))){
         echo '<center>';
         echo $OUTPUT->box(format_text(get_string('selectanobjectfirst', 'techproject'), FORMAT_HTML), 'center', '70%');
         echo '</center>';
@@ -77,7 +77,7 @@
           {techproject_{$objectClass}}
        WHERE
           projectid = {$project->id} AND
-          groupid = {$currentGroupId} AND
+          groupid = {$currentgroupid} AND
           fatherid = {$object->fatherid} AND
           ordering = {$previousordering}
     ";
@@ -89,7 +89,7 @@
           {techproject_{$objectClass}}
        WHERE
           projectid = {$project->id} AND
-          groupid = {$currentGroupId} AND
+          groupid = {$currentgroupid} AND
           fatherid = {$object->fatherid} AND
           ordering = {$nextordering}
     ";
@@ -303,7 +303,7 @@
         echo "<a class=\"browselink\" href=\"view.php?id={$cm->id}&amp;objectId={$object->fatherid}&amp;objectClass={$objectClass}\">".get_string('parent', 'techproject')."</a>";
     }
     $printfunction = "techproject_print_single_{$objectClass}";
-    $printfunction($object, $project, $currentGroupId, $cm->id, 0, $fullsingle = true);
+    $printfunction($object, $project, $currentgroupid, $cm->id, 0, $fullsingle = true);
     ?>
         </td>
         <td valign="top" width="20%">

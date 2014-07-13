@@ -19,7 +19,7 @@
     $mform = new Description_Form($url, $project, $work);
 
     if ($work == 'doexport'){
-    	    $heading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentGroupId));
+    	    $heading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
     	    $projects[$heading->projectid] = $heading;
     	    include_once "xmllib.php";
     	    $xml = recordstoxml($projects, 'project', '', true, null);
@@ -27,7 +27,7 @@
     	    $escaped = str_replace('>', '&gt;', $escaped);
     	    echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
     	    echo $OUTPUT->box("<pre>$escaped</pre>");
-            add_to_log($course->id, 'techproject', 'readdescription', "view.php?id={$cm->id}&amp;view=description&amp;group={$currentGroupId}", 'export', $cm->id);
+            add_to_log($course->id, 'techproject', 'readdescription', "view.php?id={$cm->id}&amp;view=description&amp;group={$currentgroupid}", 'export', $cm->id);
             echo $OUTPUT->continue_button("view.php?view=description&amp;id=$cm->id");
             return;
     }
@@ -52,7 +52,7 @@ if ($work == 'edit'){
 
         $heading->id = $heading->headingid;
         $heading->projectid = $project->id;
-        $heading->groupid = $currentGroupId;
+        $heading->groupid = $currentgroupid;
         $heading->title = $heading->title;
         $heading->abstract = $heading->abstract_editor['text'];
         $heading->rationale = $heading->rationale_editor['text'];
@@ -68,7 +68,7 @@ if ($work == 'edit'){
         redirect($url);
     }
 
-    $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentGroupId));
+    $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
 
 	// Start ouptuting here
 	echo $pagebuffer;
@@ -84,7 +84,7 @@ if ($work == 'edit'){
 } else {
 	// Start ouptuting here
 	echo $pagebuffer;
-    techproject_print_heading($project, $currentGroupId);
+    techproject_print_heading($project, $currentgroupid);
     echo "<center>";
     if ($USER->editmode == 'on') {
         echo "<br/><a href=\"view.php?work=edit&amp;id={$cm->id}\" >".get_string('editheading','techproject')."</a>";

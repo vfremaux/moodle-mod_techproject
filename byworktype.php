@@ -23,7 +23,7 @@
     if (!groups_get_activity_groupmode($cm, $project->course)){
         $groupusers = get_course_users($project->course);
     } else {
-        $groupusers = get_group_users($currentGroupId);
+        $groupusers = get_group_users($currentgroupid);
     }*/
     // get tasks by worktype
     $query = "
@@ -38,7 +38,7 @@
           qu.domain = 'worktype'
        WHERE
           t.projectid = {$project->id} AND
-          t.groupid = {$currentGroupId}
+          t.groupid = {$currentgroupid}
        ORDER BY
           qu.id ASC
     ";
@@ -69,7 +69,7 @@
             echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theWorktype->label.'</span>', 'worktypesbox');
             echo "<div id=\"sub{$aWorktype}\">";
             foreach($sortedtasks[$aWorktype] as $aTask){
-                techproject_print_single_task($aTask, $project, $currentGroupId, $cm->id, count($sortedtasks[$aWorktype]), 'SHORT_WITHOUT_TYPE');
+                techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aWorktype]), 'SHORT_WITHOUT_TYPE');
             }
             echo '</div>';
         }

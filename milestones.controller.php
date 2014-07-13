@@ -31,7 +31,7 @@
     	      milestoneid = $milestoneid
     	";
     	$DB->execute($query);
-        add_to_log($course->id, 'techproject', 'changemilestone', "view.php?id=$cm->id&view=milestone&group={$currentGroupId}", 'delete', $cm->id);
+        add_to_log($course->id, 'techproject', 'changemilestone', "view.php?id=$cm->id&view=milestone&group={$currentgroupid}", 'delete', $cm->id);
     } elseif ($work == 'doclearall') {
         // delete all records. POWERFUL AND DANGEROUS COMMAND.
 		$DB->delete_records('techproject_milestone', array('projectid' => $project->id));
@@ -44,7 +44,7 @@
     	      milestoneid = NULL
     	   WHERE
     	      projectid = {$project->id} AND
-    	      groupid = {$currentGroupId}
+    	      groupid = {$currentgroupid}
     	";
     	$DB->execute($query);
 
@@ -56,18 +56,18 @@
     	      milestoneid = NULL
     	   WHERE
     	      projectid = {$project->id} AND
-    	      groupid = {$currentGroupId}
+    	      groupid = {$currentgroupid}
     	";
     	$DB->execute($query);
-        add_to_log($course->id, 'techproject', 'changemilestones', "view.php?id=$cm->id&view=milestone&group={$currentGroupId}", 'clear', $cm->id);
+        add_to_log($course->id, 'techproject', 'changemilestones', "view.php?id=$cm->id&view=milestone&group={$currentgroupid}", 'clear', $cm->id);
 	} elseif ($work == 'up') {
         $milestoneid = required_param('milestoneid', PARAM_INT);
-    	techproject_tree_up($project, $currentGroupId,$milestoneid, 'techproject_milestone', 0);
+    	techproject_tree_up($project, $currentgroupid,$milestoneid, 'techproject_milestone', 0);
     } elseif ($work == 'down') {
         $milestoneid = required_param('milestoneid', PARAM_INT);
-    	techproject_tree_down($project, $currentGroupId,$milestoneid, 'techproject_milestone', 0);
+    	techproject_tree_down($project, $currentgroupid,$milestoneid, 'techproject_milestone', 0);
     } elseif ($work == 'sortbydate'){
-        $milestones = array_values($DB->get_records_select('techproject_milestone', "projectid = {$project->id} AND groupid = {$currentGroupId}"));
+        $milestones = array_values($DB->get_records_select('techproject_milestone', "projectid = {$project->id} AND groupid = {$currentgroupid}"));
 
         function sortByDate($a, $b){
             if ($a->deadline == $b->deadline) return 0;

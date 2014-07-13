@@ -24,14 +24,14 @@
 
 	if ($work == 'new') {
 		// close all unclosed
-		if ($unclosedrecords = $DB->get_records_select('techproject_valid_session', " projectid = '$project->id' AND groupid = $currentGroupId AND dateclosed = 0 ")){
+		if ($unclosedrecords = $DB->get_records_select('techproject_valid_session', " projectid = '$project->id' AND groupid = $currentgroupid AND dateclosed = 0 ")){
 			foreach($unclosedrecords as $unclosed){
 				$unclosed->dateclosed = time();
 				$DB->update_record('techproject_valid_session', $unclosed);
 			}
 		}
 		$validation = new StdClass;
-		$validation->groupid = $currentGroupId;
+		$validation->groupid = $currentgroupid;
 		$validation->projectid = $project->id;
 		$validation->createdby = $USER->id;
 		$validation->datecreated = time();
@@ -39,7 +39,7 @@
 
 		// pre add validation session record		
 		$validation->id = $DB->insert_record('techproject_valid_session', $validation);
-        add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=validations&amp;group={$currentGroupId}", 'create', $cm->id);
+        add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=validations&amp;group={$currentgroupid}", 'create', $cm->id);
 
 		$validation->untracked = 0;
 		$validation->refused = 0;
@@ -51,8 +51,8 @@
 
 		// check if follow up so we need to copy previous test results as start
 		if (optional_param('followup', false, PARAM_BOOL)){
-			$lastsessiondate = $DB->get_field_select('techproject_valid_session', 'MAX(datecreated)', " projectid = ? AND groupid = ? ", array($project->id, $currentGroupId));
-			$lastsession = $DB->get_record_select('techproject_valid_session', " datecreated = $lastsessiondate AND projectid = ? AND groupid = ? ", array($project->id, $currentGroupId));
+			$lastsessiondate = $DB->get_field_select('techproject_valid_session', 'MAX(datecreated)', " projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
+			$lastsession = $DB->get_record_select('techproject_valid_session', " datecreated = $lastsessiondate AND projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
 			// copy all states
 			if ($states = $DB->get_records('techproject_valid_state', array('validationsessionid' => $lastsession->id))){
 				foreach($states as $state){
@@ -69,9 +69,9 @@
 			}			
 		} else {
 			if (@$project->projectusesrequs){
-				$items = $DB->count_records_select('techproject_requirement', " projectid = ? AND groupid = ? ", array($project->id, $currentGroupId));
+				$items = $DB->count_records_select('techproject_requirement', " projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
 			} elseif (@$project->projectusesspecs) {
-				$items = $DB->count_records_select('techproject_specification', " projectid = ? AND groupid = ? ", array($project->id, $currentGroupId));
+				$items = $DB->count_records_select('techproject_specification', " projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
 			} else {
 				print_error('errornotpossible', 'techproject');
 			}
@@ -86,7 +86,7 @@
 		$validation->dateclosed = time();
 
 		$res = $DB->update_record('techproject_valid_session', $validation);
-        add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=validations&amp;group={$currentGroupId}", 'close', $cm->id);
+        add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=validations&amp;group={$currentgroupid}", 'close', $cm->id);
 	}
 	elseif ($work == 'dodelete') {
 		$validid = required_param('validid', PARAM_INT);
@@ -94,13 +94,13 @@
         // delete all related records
 		$DB->delete_records('techproject_valid_state', array('validationsessionid' => $validid));
 		$DB->delete_records('techproject_valid_session', array('id' => $validid));
-        add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentGroupId}", 'delete', $cm->id);
+        add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentgroupid}", 'delete', $cm->id);
 	}
 
 /// view
 
 	echo $pagebuffer;
-	techproject_print_validations($project, $currentGroupId, 0, $cm->id);
+	techproject_print_validations($project, $currentgroupid, 0, $cm->id);
 	$createvalidationstr = get_string('createvalidationsession', 'techproject');
 	$copyvalidationstr = get_string('copyvalidationsession', 'techproject');
 	if (has_capability('mod/techproject:managevalidations', context_module::instance($cm->id))){

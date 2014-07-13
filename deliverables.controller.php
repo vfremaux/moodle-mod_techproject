@@ -3,7 +3,7 @@
 /// Controller
 
 	if ($work == 'new') {
-		$deliverable->groupid = $currentGroupId;
+		$deliverable->groupid = $currentgroupid;
 		$deliverable->projectid = $project->id;
 		$deliverable->abstract = required_param('abstract', PARAM_TEXT);
 		$deliverable->description = required_param('description', PARAM_CLEANHTML);
@@ -16,9 +16,9 @@
 		$deliverable->lastuserid = $USER->id;
 
         if (!empty($deliverable->abstract)){
-            $deliverable->ordering = techproject_tree_get_max_ordering($project->id, $currentGroupId, 'techproject_deliverable', true, $deliverable->fatherid) + 1;
+            $deliverable->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_deliverable', true, $deliverable->fatherid) + 1;
 		    $returnid = $DB->insert_record('techproject_deliverable', $deliverable);
-            add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentGroupId}", 'add', $cm->id);
+            add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentgroupid}", 'add', $cm->id);
 		}
 
    		// if notifications allowed notify project managers
@@ -27,7 +27,7 @@
        		$status = $DB->get_record('techproject_qualifier', array('domain' => 'delivstatus', 'code' => $deliverable->status));
        		if (!$status) $status->label = "N.Q.";
        		$qualifiers[] = get_string('status', 'techproject').': '.$status->label;
-       		$projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentGroupId));
+       		$projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
        		$message = techproject_compile_mail_template('newentrynotify', array(
        		    'PROJECT' => $projectheading->title,
        		    'CLASS' => $class,
@@ -36,7 +36,7 @@
        		    'ENTRYABSTRACT' => stripslashes($deliverable->abstract),
        		    'ENTRYDESCRIPTION' => $deliverable->description,
        		    'QUALIFIERS' => implode('<br/>', $qualifiers),
-       		    'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$project->id}&view=deliverables&group={$currentGroupId}"
+       		    'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$project->id}&view=deliverables&group={$currentgroupid}"
        		), 'techproject');       		
        		$managers = get_users_by_capability($context, 'mod/techproject/manage', 'u.id, firstname, lastname, email, picture, mailformat');
        		if (!empty($managers)){
@@ -59,18 +59,18 @@
         $uploader->preprocess_files();
         $deliverable->localfile = $uploader->get_new_filename();
         if (!empty($deliverable->localfile)){
-            $uploader->save_files("{$course->id}/moddata/techproject/{$project->id}/".md5("techproject{$project->id}_{$currentGroupId}"));
+            $uploader->save_files("{$course->id}/moddata/techproject/{$project->id}/".md5("techproject{$project->id}_{$currentgroupid}"));
             $deliverable->url = '';
-            add_to_log($course->id, 'techproject', 'submit', "view.php?id={$cm->id}&amp;view=view_detail&amp;objectId={$deliverable->id}&amp;objectClass=deliverable&amp;group={$currentGroupId}", $project->id, $cm->id);
+            add_to_log($course->id, 'techproject', 'submit', "view.php?id={$cm->id}&amp;view=view_detail&amp;objectId={$deliverable->id}&amp;objectClass=deliverable&amp;group={$currentgroupid}", $project->id, $cm->id);
         }
 		if (!empty($deliverable->abstract)){
     		$res = $DB->update_record('techproject_deliverable', $deliverable );
-            add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentGroupId}", 'update', $cm->id);
+            add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentgroupid}", 'update', $cm->id);
     	}
 	} elseif ($work == 'dodelete') {
 		$delivid = required_param('delivid', PARAM_INT);
 		techproject_tree_delete($delivid, 'techproject_deliverable');
-        add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentGroupId}", 'delete', $cm->id);
+        add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentgroupid}", 'delete', $cm->id);
 	} elseif ($work == 'domove' || $work == 'docopy') {
 		$ids = required_param('ids', PARAM_INT);
 		$to = required_param('to', PARAM_ALPHA);
@@ -81,7 +81,7 @@
 		    case 'deliv' : { $table2 = 'techproject_deliverable'; $redir = 'deliverable'; } break;
 		}
 		techproject_tree_copy_set($ids, 'techproject_deliverable', $table2);
-        add_to_log($course->id, 'techproject', 'change{$redir}', "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentGroupId}", 'copy/move', $cm->id);
+        add_to_log($course->id, 'techproject', 'change{$redir}', "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentgroupid}", 'copy/move', $cm->id);
 		if ($work == 'domove'){
 		    // bounce to deleteitems
 		    $work = 'dodeleteitems';
@@ -110,7 +110,7 @@
             // delete all related records
     		$DB->delete_records('techproject_task_to_deliv', array('delivid' => $anItem));
     	}
-        add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverable&amp;group={$currentGroupId}", 'deleteItems', $cm->id);
+        add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverable&amp;group={$currentgroupid}", 'deleteItems', $cm->id);
     	if (isset($withredirect) && $withredirect){
 		    redirect("{$CFG->wwwroot}/mod/techproject/view.php?id={$cm->id}&amp;view={$redir}s", get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
 		}
@@ -135,20 +135,20 @@
 	    $escaped = str_replace('>', '&gt;', $escaped);
 	    echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
 	    print_simple_box("<pre>$escaped</pre>");
-        add_to_log($course->id, 'techproject', 'readdeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentGroupId}", 'export', $cm->id);
+        add_to_log($course->id, 'techproject', 'readdeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentgroupid}", 'export', $cm->id);
         echo $OUTPUT->continue_button("view.php?view=deliverables&amp;id=$cm->id");
         return;
 	} elseif ($work == 'up') {
 		$delivid = required_param('delivid', PARAM_INT);
-		techproject_tree_up($project, $currentGroupId,$delivid, 'techproject_deliverable');
+		techproject_tree_up($project, $currentgroupid,$delivid, 'techproject_deliverable');
 	} elseif ($work == 'down') {
 		$delivid = required_param('delivid', PARAM_INT);
-		techproject_tree_down($project, $currentGroupId,$delivid, 'techproject_deliverable');
+		techproject_tree_down($project, $currentgroupid,$delivid, 'techproject_deliverable');
 	} elseif ($work == 'left') {
 		$delivid = required_param('delivid', PARAM_INT);
-		techproject_tree_left($project, $currentGroupId,$delivid, 'techproject_deliverable');
+		techproject_tree_left($project, $currentgroupid,$delivid, 'techproject_deliverable');
 	} elseif ($work == 'right') {
 		$delivid = required_param('delivid', PARAM_INT);
-		techproject_tree_right($project, $currentGroupId,$delivid, 'techproject_deliverable');
+		techproject_tree_right($project, $currentgroupid,$delivid, 'techproject_deliverable');
 	}
 

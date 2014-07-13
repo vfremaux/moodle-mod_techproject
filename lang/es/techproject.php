@@ -1,6 +1,6 @@
 <?php // $Id: techproject.php,v 1.1.1.1 2012-08-01 10:16:29 vf Exp $ 
 
-$string['N.C.'] = 'N.C.';
+$string['nc'] = 'N.C.';
 $string['abandoned'] = 'Abandonado';
 $string['abandoneddesc'] = 'Abandonado cual sea el estado';
 $string['abstract'] = 'Resumen';
@@ -221,6 +221,7 @@ $string['nodelivassigned'] = 'No despachable asignado.';
 $string['nogroup'] = 'Fuera de grupo (proyecto par defaut)';
 $string['nomilestones'] = 'Ninguna etapa definida'; 
 $string['noonetoassess'] = 'No contribuidores en este grupo'; 
+$string['noprojects'] = 'No proyectos';
 $string['norequassigned'] = 'Ninguno atendido asignado.';
 $string['noscale'] = 'No escala (notaci&oacute;n numérica)';
 $string['nospecassigned'] = 'Ninguna specificaci&oacute;n asignada.';

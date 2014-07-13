@@ -6,7 +6,7 @@
 
         // delete all related records
 		$DB->delete_records('techproject_spec_to_req', array('reqid' => $requid));
-        add_to_log($course->id, 'techproject', 'changerequirement', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentGroupId}", 'delete', $cm->id);
+        add_to_log($course->id, 'techproject', 'changerequirement', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentgroupid}", 'delete', $cm->id);
 	}
 	elseif ($work == 'domove' || $work == 'docopy') {
 		$ids = required_param('ids', PARAM_INT);
@@ -37,7 +37,7 @@
 		    	error('Bad copy case', $CFG->wwwroot."/mod/techproject/view.php?id=$cm->id");
 		}
 		techproject_tree_copy_set($ids, 'techproject_requirement', $table2, 'description,format,abstract,projectid,groupid,ordering', $autobind, $bindtable);
-        add_to_log($course->id, 'techproject', "change{$redir}", "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentGroupId}", 'delete', $cm->id);
+        add_to_log($course->id, 'techproject', "change{$redir}", "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentgroupid}", 'delete', $cm->id);
 		if ($work == 'domove'){
 		    // bounce to deleteitems
 		    $work = 'dodeleteitems';
@@ -67,18 +67,18 @@
             // delete record for this item
     		$DB->delete_records('techproject_requirement', array('id' => $anItem));
             // delete all related records for this item
-    		$DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentGroupId, 'reqid' => $anItem));
+    		$DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'reqid' => $anItem));
     	}
-        add_to_log($course->id, 'techproject', 'deleterequirement', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentGroupId}", 'deleteItems', $cm->id);
+        add_to_log($course->id, 'techproject', 'deleterequirement', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentgroupid}", 'deleteItems', $cm->id);
     	if (isset($withredirect) && $withredirect){
 		    redirect("{$CFG->wwwroot}/mod/techproject/view.php?id={$cm->id}&amp;view={$redir}s", get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
 		}
 	}
 	elseif ($work == 'doclearall') {
         // delete all records. POWERFUL AND DANGEROUS COMMAND.
-		$DB->delete_records('techproject_requirement', array('projectid' => $project->id, 'groupid' => $currentGroupId));
-		$DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentGroupId));
-        add_to_log($course->id, 'techproject', 'changerequirement', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentGroupId}", 'clear', $cm->id);
+		$DB->delete_records('techproject_requirement', array('projectid' => $project->id, 'groupid' => $currentgroupid));
+		$DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentgroupid));
+        add_to_log($course->id, 'techproject', 'changerequirement', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentgroupid}", 'clear', $cm->id);
 	}
 	elseif ($work == 'doexport') {
 	    $ids = required_param('ids', PARAM_INT);
@@ -98,23 +98,23 @@
 	    $escaped = str_replace('>', '&gt;', $escaped);
 	    echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
 	    print_simple_box("<pre>$escaped</pre>");
-        add_to_log($course->id, 'techproject', 'changerequirement', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentGroupId}", 'export', $cm->id);
+        add_to_log($course->id, 'techproject', 'changerequirement', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentgroupid}", 'export', $cm->id);
         echo $OUTPUT->continue_button("view.php?view=requirements&amp;id=$cm->id");
         return;
 	}
 	elseif ($work == 'up') {
 		$requid = required_param('requid', PARAM_INT);
-		techproject_tree_up($project, $currentGroupId, $requid, 'techproject_requirement');
+		techproject_tree_up($project, $currentgroupid, $requid, 'techproject_requirement');
 	}
 	elseif ($work == 'down') {
 		$requid = required_param('requid', PARAM_INT);
-		techproject_tree_down($project, $currentGroupId, $requid, 'techproject_requirement');
+		techproject_tree_down($project, $currentgroupid, $requid, 'techproject_requirement');
 	}
 	elseif ($work == 'left') {
 		$requid = required_param('requid', PARAM_INT);
-		techproject_tree_left($project, $currentGroupId, $requid, 'techproject_requirement');
+		techproject_tree_left($project, $currentgroupid, $requid, 'techproject_requirement');
 	}
 	elseif ($work == 'right') {
 		$requid = required_param('requid', PARAM_INT);
-		techproject_tree_right($project, $currentGroupId, $requid, 'techproject_requirement');
+		techproject_tree_right($project, $currentgroupid, $requid, 'techproject_requirement');
 	}
