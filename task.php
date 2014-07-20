@@ -29,7 +29,7 @@
  */
 
 if ($work == 'add' || $work == 'update') {
-    include($CFG->diroot.'/mod/techproject/edit_task.php');
+    include($CFG->dirroot.'/mod/techproject/edit_task.php');
 /// Group operation form *********************************************************
 
 } elseif ($work == 'groupcmd') {
