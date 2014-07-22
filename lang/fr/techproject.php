@@ -280,6 +280,7 @@ $string['nomilestones'] = 'Aucune étape';
 $string['nomilestones'] = 'Pas d\'étapes définies'; 
 $string['none'] = 'aucun';
 $string['noonetoassess'] = 'Aucun contributeur dans ce groupe'; 
+$string['noprojects'] = 'Aucun projet';
 $string['norequassigned'] = 'Aucun attendu assigné.';
 $string['norequirements'] = 'Aucun attendu';
 $string['noscale'] = 'Pas de barème (notation numérique)';

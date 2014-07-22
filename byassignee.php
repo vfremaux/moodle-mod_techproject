@@ -24,7 +24,7 @@
     if (!groups_get_activity_groupmode($cm, $project->course)){
         $groupusers = get_users_by_capability($context, 'mod/techproject:beassignedtasks', 'u.id, u.firstname, u.lastname, u.email, u.picture', 'u.lastname');
     } else {
-        if ($currentgroupid){
+        if ($currentgroupid) {
             $groupusers = groups_get_members($currentgroupid);
         } else {
             // we could not rely on the legacy function
@@ -59,13 +59,13 @@
                FROM
                   {techproject_task} as t
                WHERE
-                  t.projectid = {$project->id} AND
-                  t.groupid = {$currentgroupid} AND
-                  t.assignee = {$aUser->id}
+                  t.projectid = ? AND
+                  t.groupid = ? AND
+                  t.assignee = ?
                GROUP BY
                   t.assignee
             ";
-            $res = $DB->get_record_sql($query);
+            $res = $DB->get_record_sql($query, array($project->id, $currentgroupid, $aUser->id));
             if ($res){
                 $over = ($res->planned) ? round((($res->spent - $res->planned) / $res->planned) * 100) : 0 ;
                 // calculates a local alarm for lateness
@@ -99,15 +99,15 @@
                ON
                   tts.taskid = t.id
                WHERE
-                  t.projectid = {$project->id} AND
-                  t.groupid = {$currentgroupid} AND
+                  t.projectid = ? AND
+                  t.groupid = ? AND
                   qu.domain = 'taskstatus' AND
                   qu.code = t.status AND
-                  t.assignee = {$aUser->id}
+                  t.assignee = ?
                GROUP BY
                   t.id
             ";
-            $tasks = $DB->get_records_sql($query);
+            $tasks = $DB->get_records_sql($query, array($project->id, $currentgroupid, $aUser->id));
             if (!isset($tasks) || count($tasks) == 0 || empty($tasks)){
     ?>
         <tr>
@@ -145,11 +145,11 @@
        FROM
           {techproject_task}
        WHERE
-          projectid = {$project->id} AND
-          groupid = {$currentgroupid} AND
+          projectid = ? AND
+          groupid = ? AND
           assignee = 0
     ";
-    $unassignedtasks = $DB->get_records_sql($query);
+    $unassignedtasks = $DB->get_records_sql($query, array($project->id, $currentgroupid));
     echo $OUTPUT->heading(get_string('unassignedtasks','techproject'));
     ?>
     <br/>

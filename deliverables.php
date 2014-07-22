@@ -13,18 +13,15 @@
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-
-/**
-* Requires and includes
-*/
 require_once($CFG->dirroot.'/lib/uploadlib.php');
 
-// Controller
+// Controller.
 if ($work == 'add' || $work == 'update') {
-     include($CFG->dirroot.'/mod/techproject/edit_deliverable.php');
-// Group operation form *********************************************************
+    include($CFG->dirroot.'/mod/techproject/edit_deliverable.php');
 
-} elseif ($work == "groupcmd") {
+// Group operation form.
+
+} elseif ($work == 'groupcmd') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
@@ -34,11 +31,11 @@ if ($work == 'add' || $work == 'update') {
     <?php echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3); ?>
     <script type="text/javascript">
     //<![CDATA[
-    function senddata(cmd){
+    function senddata(cmd) {
         document.forms['groupopform'].work.value="do" + cmd;
         document.forms['groupopform'].submit();
     }
-    function cancel(){
+    function cancel() {
         document.forms['groupopform'].submit();
     }
     //]]>
@@ -50,7 +47,7 @@ if ($work == 'add' || $work == 'update') {
         foreach ($ids as $anid) {
             echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
         }
-        if (($cmd == 'move')||($cmd == 'copy')) {
+        if (($cmd == 'move') || ($cmd == 'copy')) {
             echo get_string('to', 'techproject');
             if (@$project->projectusesrequs) $options['requs'] = get_string('requirements', 'techproject');
             if (@$project->projectusesspecs) $options['specs'] = get_string('specifications', 'techproject');
@@ -71,7 +68,7 @@ if ($work == 'add' || $work == 'update') {
 ?>
     <script type="text/javascript">
     //<![CDATA[
-    function sendgroupdata(){
+    function sendgroupdata() {
         document.forms['groupopform'].submit();
     }
     //]]>

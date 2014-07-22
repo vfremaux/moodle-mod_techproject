@@ -45,15 +45,18 @@ class Task_Form extends moodleform {
         $modcontext = context_module::instance($this->project->cmid);
 
         $maxfiles = 99;                // TODO: add some setting
-        $maxbytes = $COURSE->maxbytes; // TODO: add some setting    
+        $maxbytes = $COURSE->maxbytes; // TODO: add some setting
         $this->descriptionoptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'context' => $modcontext);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
+
         $mform->addElement('hidden', 'fatherid');
         $mform->setType('fatherid', PARAM_INT);
+
         $mform->addElement('hidden', 'taskid');
         $mform->setType('taskid', PARAM_INT);
+
         $mform->addElement('hidden', 'work');
         $mform->setType('work', PARAM_TEXT);
         $mform->setDefault('work', $this->mode);

@@ -453,3 +453,25 @@ div#allpage,
    border:#FAFAFA 2px solid;
    padding:1px;
 }
+
+.deliverable-undated {
+    color: #000080;
+    font-size:0.7em;
+}
+
+.deliverable-late {
+    color: #800000;
+    font-size:0.7em;
+}
+
+.deliverable-ontime {
+    color: #008000;
+    font-size:0.7em;
+}
+
+.entitynode {
+    border:1px solid #e0e0e0;
+    border-radius:10px;
+    -moz-border-radius:10px;
+    padding:3px;
+}

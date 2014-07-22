@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 require_once($CFG->libdir.'/formslib.php');
 
 class Deliverable_Form extends moodleform {
@@ -29,7 +28,7 @@ class Deliverable_Form extends moodleform {
 
         $this->mode = $mode;
         $this->project = $project;
-        if ($delivid){
+        if ($delivid) {
             $this->current = $DB->get_record('techproject_deliverable', array('id' => $delivid));
         }
         parent::__construct($action);
@@ -107,7 +106,7 @@ class Deliverable_Form extends moodleform {
             } elseif ($this->current->localfile) {
                 // TODO : using file API give access to locally stored file
             } else {
-                $mform->addElement('static', 'uploaded', print_string('notsubmittedyet','techproject'));
+                $mform->addElement('static', 'uploaded', get_string('notsubmittedyet','techproject'));
             }
         }
 

@@ -23,7 +23,9 @@
 *
 */
 
-/// Security
+require_once($CFG->dirroot.'/mod/techproject/forms/form_domain.class.php');
+
+// Security.
 
 if (!defined('MOODLE_INTERNAL')) {
     die("You cannot directly invoke this script");
@@ -40,14 +42,15 @@ if (!empty($action)) {
     $result = include_once('view_domain.controller.php');
 }
 
-if($result == -1){  
+if($result == -1) {
     // If controller already output the screen we might jump.
     return -1;
 }
 
 echo $pagebuffer;
 echo '<table width="100%" class="generaltable"><tr><td align="left">';
-// print the scopechanging 
+
+// Print the scopechanging.
 echo '<form name="changescopeform">';
 echo "<input type=\"hidden\" name=\"view\" value=\"domains_$domain\" />";
 echo "<input type=\"hidden\" name=\"id\" value=\"{$cm->id}\" />";
@@ -86,7 +89,7 @@ if (!empty($domainvalues)) {
 
         $deletestr = get_string('delete');
         $cmdicon = '<img src="'.$OUTPUT->pix_url('t/delete').'">';
-        $params = array('view' => 'domains_'.$domain, 'id' => $id, 'what' => 'delete', 'domainid' => $value->id);
+        $params = array('view' => 'domains_'.$domain, 'id' => $id, 'what' => 'dodelete', 'domainid' => $value->id);
         $cmdurl = new moodle_url('/mod/techproject/view.php', $params);
         $commands .= ' <a href="'.$cmdurl.'" title="'.$deletestr.'" >'.$cmdicon.'</a>';
 

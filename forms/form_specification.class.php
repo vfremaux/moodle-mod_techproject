@@ -28,8 +28,8 @@ class Specification_Form extends moodleform {
         
         $this->project = $project;
         $this->mode = $mode;
-        if ($specid){
-            $this->current = $DB->get_record('techproject_requirement', array('id' => $specid));
+        if ($specid) {
+            $this->current = $DB->get_record('techproject_specification', array('id' => $specid));
         }
         parent::__construct($action);
     }
@@ -84,7 +84,7 @@ class Specification_Form extends moodleform {
         $mform->addElement('select', 'complexity', get_string('complexity', 'techproject'), $complexityoptions);
         $mform->addHelpButton('complexity', 'complexity', 'techproject');
 
-        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null,  $this->descriptionoptions);                
+        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null,  $this->descriptionoptions);
 
         if ($this->project->projectusesrequs && $this->mode == 'update') {
             $requirements = techproject_get_tree_options('techproject_requirement', $this->project->id, $currentGroup);

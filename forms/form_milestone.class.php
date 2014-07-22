@@ -28,7 +28,7 @@ class Milestone_Form extends moodleform {
         $this->mode = $mode;
         $this->project = $project;
         if ($mileid) {
-            $this->current = $DB->get_record('techproject_task', array('id' => $mileid));
+            $this->current = $DB->get_record('techproject_milestone', array('id' => $mileid));
         }
         parent::__construct($action);
     }

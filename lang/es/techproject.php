@@ -221,6 +221,7 @@ $string['nodelivassigned'] = 'No despachable asignado.';
 $string['nogroup'] = 'Fuera de grupo (proyecto par defaut)';
 $string['nomilestones'] = 'Ninguna etapa definida'; 
 $string['noonetoassess'] = 'No contribuidores en este grupo'; 
+$string['noprojects'] = 'No proyectos';
 $string['norequassigned'] = 'Ninguno atendido asignado.';
 $string['noscale'] = 'No escala (notaci&oacute;n numérica)';
 $string['nospecassigned'] = 'Ninguna specificaci&oacute;n asignada.';

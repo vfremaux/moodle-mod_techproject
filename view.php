@@ -46,7 +46,7 @@ $view = optional_param('view', @$_SESSION['currentpage'], PARAM_CLEAN);   // vie
 $nohtmleditorneeded = true;
 $editorfields = '';
 
-if ($view == 'view_gantt'){
+if ($view == 'view_gantt') {
     $lang = current_language();
     $PAGE->requires->js('/mod/techproject/js/dhtmlxGantt/codebase/dhtmlxcommon.js', true);
     $PAGE->requires->js('/mod/techproject/js/dhtmlxGantt/sources/dhtmlxgantt.js', true);
@@ -77,11 +77,12 @@ $strproject  = get_string('modulename', 'techproject');
 $straction = (@$action) ? '-> '.get_string(@$action, 'techproject') : '';
 
 // get some session toggles if possible
-if (array_key_exists('editmode', $_GET) && !empty($_GET['editmode'])){
+if (array_key_exists('editmode', $_GET) && !empty($_GET['editmode'])) {
     $_SESSION['editmode'] = $_GET['editmode'];
 } else {
-    if (!array_key_exists('editmode', $_SESSION))
+    if (!array_key_exists('editmode', $_SESSION)) {
         $_SESSION['editmode'] = 'off';
+    }
 }
 $USER->editmode = $_SESSION['editmode'];
 
@@ -91,7 +92,7 @@ if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // groups are be
 } else {
     $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;  // Group change requested?
     if (isguestuser()){ // for guests, use session
-        if ($changegroup >= 0){
+        if ($changegroup >= 0) {
             $_SESSION['guestgroup'] = $changegroup;
         }
         $currentgroupid = 0 + @$_SESSION['guestgroup'];
@@ -102,7 +103,7 @@ if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // groups are be
 }
 
 // ...display header...
-$url = $CFG->wwwroot."/mod/techproject/view.php?id=$id";
+$url = new moodle_url('/mod/techproject/view.php', array('id' => $id));
 $PAGE->set_title(format_string($project->name));
 $PAGE->set_url($url);
 $PAGE->set_heading('');
@@ -120,8 +121,7 @@ if (has_capability('mod/techproject:gradeproject', $context)) {
     if (empty($action)) { // no action specified, either go straight to elements page else the admin page
         $action = 'teachersview';
     }
-}
-elseif (!isguestuser()) { // it's a student then
+} elseif (!isguestuser()) { // it's a student then
     if (!$cm->visible) {
         notice(get_string('activityiscurrentlyhidden'));
     }

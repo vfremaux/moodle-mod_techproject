@@ -1,4 +1,4 @@
-<?php  // $Id: lib.php,v 1.2 2012-08-12 22:01:33 vf Exp $
+<?php
 
 /**
  * Project : Technical Project Manager (IEEE like)
@@ -972,12 +972,22 @@ function techproject_pluginfile($course, $cm, $context, $filearea, $args, $force
 
     require_course_login($course, true, $cm);
 
-    $fileareas = array('intro', 'requirementdescription', 'specificationdescription', 'milestonedescription', 'taskdescription', 'deliverabledescription', 'abstract', 'rationale', 'environment');
-    $areastotables = array('requirementdescription' => 'techproject_requirement', 'specificationdescription' => 'techproject_specifciation', 'milestonedescription' => 'techproject_milestone', 'taskdescription' => 'techproject_task', 'deliverabledescription' => 'techproject_deliverable', 'abstract' => 'techproject_heading', 'rationale' => 'techproject_heading', 'environment' => 'techproject_heading');
+    $fileareas = array('intro', 'requirementdescription', 'specificationdescription', 'milestonedescription', 'taskdescription', 'deliverabledescription', 'deliverablelocalfile', 'abstract', 'rationale', 'environment');
+    $areastotables = array(
+        'requirementdescription' => 'techproject_requirement',
+        'specificationdescription' => 'techproject_specifciation',
+        'milestonedescription' => 'techproject_milestone',
+        'taskdescription' => 'techproject_task',
+        'deliverabledescription' => 'techproject_deliverable',
+        'deliverablelocalfile' => 'techproject_deliverable',
+        'abstract' => 'techproject_heading',
+        'rationale' => 'techproject_heading',
+        'environment' => 'techproject_heading'
+     );
     if (!in_array($filearea, $fileareas)) {
         return false;
     }
-    
+
     $relatedtable = $areastotables[$filearea];
 
     $entryid = (int)array_shift($args);

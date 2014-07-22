@@ -31,7 +31,7 @@
 // Controller.
 
 if ($work == 'add' || $work == 'update') {
-    include('edit_requirement.php');
+    include($CFG->dirroot.'/mod/techproject/edit_requirement.php');
 // Group operation form.
 } elseif ($work == 'groupcmd') {
     echo $pagebuffer;
