@@ -44,7 +44,7 @@ if ($work == 'new') {
                    email_to_user($manager, $USER, $course->shortname .' - '.get_string('notifynewdeliv', 'techproject'), html_to_text($message), $message);
                }
         }
-       }
+    }
 } elseif ($work == 'doupdate') {
     $deliverable->id = required_param('delivid', PARAM_INT);
     $deliverable->abstract = required_param('abstract', PARAM_TEXT);
@@ -69,34 +69,63 @@ if ($work == 'new') {
     }
 } elseif ($work == 'dodelete') {
     $delivid = required_param('delivid', PARAM_INT);
+    $oldRecord = $DB->get_record('techproject_deliverable', array('id' => $delivid));
     techproject_tree_delete($delivid, 'techproject_deliverable');
-    add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentgroupid}", 'delete', $cm->id);
+    // add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentgroupid}", 'delete', $cm->id);
+    $event = \mod_techproject\event\deliverable_deleted::create_from_deliverable($techproject, $context, $oldRecord, $currentgroupid);
+    $event->trigger();
+
 } elseif ($work == 'domove' || $work == 'docopy') {
-    $ids = required_param_array('ids', PARAM_INT);
+
+    $ids = required_param('ids', PARAM_INT);
     $to = required_param('to', PARAM_ALPHA);
-    switch($to){
-        case 'requs' : { $table2 = 'techproject_requirement'; $redir = 'requirement'; } break;
-        case 'specs' : { $table2 = 'techproject_specification'; $redir = 'specification'; } break;
-        case 'tasks' : { $table2 = 'techproject_task'; $redir = 'task'; } break;
-        case 'deliv' : { $table2 = 'techproject_deliverable'; $redir = 'deliverable'; } break;
+
+    switch ($to) {
+        case 'requs':
+            $table2 = 'techproject_requirement';
+            $redir = 'requirement';
+            break;
+
+        case 'specs':
+            $table2 = 'techproject_specification';
+            $redir = 'specification';
+            break;
+
+        case 'tasks': 
+            $table2 = 'techproject_task';
+            $redir = 'task';
+            break;
+
+        case 'deliv':
+            $table2 = 'techproject_deliverable';
+            $redir = 'deliverable';
+            break;
     }
     techproject_tree_copy_set($ids, 'techproject_deliverable', $table2);
-    add_to_log($course->id, 'techproject', 'change{$redir}', "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentgroupid}", 'copy/move', $cm->id);
-    if ($work == 'domove'){
+    // add_to_log($course->id, 'techproject', 'change{$redir}', "view.php?id={$cm->id}&amp;view={$redir}s&amp;group={$currentgroupid}", 'copy/move', $cm->id);
+    $event = \mod_techproject\event\deliverable_mutated::create_from_deliverable($techproject, $context, $olddeliverable, $currentgroupid, $redir);
+    $event->trigger();
+
+    if ($work == 'domove') {
         // bounce to deleteitems
         $work = 'dodeleteitems';
         $withredirect = 1;
     } else {
-        redirect("{$CFG->wwwroot}/mod/techproject/view.php?id={$cm->id}&amp;view={$redir}s", get_string('redirectingtoview', 'techproject') . get_string($redir, 'techproject'));
+        $redirecturl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => $redir.'s'));
+        redirect($redirecurl, get_string('redirectingtoview', 'techproject') . get_string($redir, 'techproject'));
     }
 }
+
 if ($work == 'dodeleteitems') {
-    $ids = required_param_array('ids', PARAM_INT);
-    foreach($ids as $anItem){
+
+    $ids = required_param('ids', PARAM_INT);
+
+    foreach ($ids as $anItem) {
         // save record for further cleanups and propagation
         $oldRecord = $DB->get_record('techproject_deliverable', array('id' => $anItem));
         $childs = $DB->get_records('techproject_deliverable', array('fatherid' => $anItem));
-        // update fatherid in childs 
+
+        // Update fatherid in childs.
         $query = "
             UPDATE
                 {techproject_deliverable}
@@ -107,37 +136,56 @@ if ($work == 'dodeleteitems') {
         ";
         $DB->execute($query);
         $DB->delete_records('techproject_deliverable', array('id' => $anItem));
-        // delete all related records
+
+        // Delete all related records.
+
         $DB->delete_records('techproject_task_to_deliv', array('delivid' => $anItem));
     }
-    add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverable&amp;group={$currentgroupid}", 'deleteItems', $cm->id);
-    if (isset($withredirect) && $withredirect){
-        redirect("{$CFG->wwwroot}/mod/techproject/view.php?id={$cm->id}&amp;view={$redir}s", get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
+
+    // add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id={$cm->id}&amp;view=deliverable&amp;group={$currentgroupid}", 'deleteItems', $cm->id);
+    $event = \mod_techproject\event\deliverable_deleted::create_from_deliverable($techproject, $context, $oldRecord, $currentgroupid);
+    $event->trigger();
+
+    if (isset($withredirect) && $withredirect) {
+        $redirecturl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => $redir.'s'));
+        redirect($redirecturl, get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
     }
+
 } elseif ($work == 'doclearall') {
-    // delete all records. POWERFUL AND DANGEROUS COMMAND.
+
+    // Delete all records. POWERFUL AND DANGEROUS COMMAND.
     $DB->delete_records('techproject_deliverable', array('projectid' => $project->id));
+    $event = \mod_techproject\event\deliverable_cleared::create_for_group($techproject, $context, $currentgroupid);
+    $event->trigger();
+
 } elseif ($work == 'doexport') {
-    $ids = required_param_array('ids', PARAM_INT);
+
+    $ids = required_param('ids', PARAM_INT);
     $idlist = implode("','", $ids);
+
     $select = "
-       id IN ('$idlist')
+        id IN ('$idlist')
     ";
+
     $deliverables = $DB->get_records_select('techproject_deliverable', $select);
     $delivstatusses = $DB->get_records_select('techproject_qualifier', " domain = 'delivstatus' AND projectid = $project->id ");
+
     if (empty($delivstatusses)) {
         $delivstatusses = $DB->get_records_select('techproject_qualifier', " domain = 'delivstatus' AND projectid = 0 ");
     }
+
     include "xmllib.php";
+
     $xmldelivstatusses = recordstoxml($delivstatusses, 'deliv_status_option', '', false, 'techproject');
     $xml = recordstoxml($deliverables, 'deliverable', $xmldelivstatusses, true, null);
     $escaped = str_replace('<', '&lt;', $xml);
     $escaped = str_replace('>', '&gt;', $escaped);
     echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
-    print_simple_box("<pre>$escaped</pre>");
-    add_to_log($course->id, 'techproject', 'readdeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentgroupid}", 'export', $cm->id);
+    echo $OUTPUT->simple_box("<pre>$escaped</pre>");
+    // add_to_log($course->id, 'techproject', 'readdeliverable', "view.php?id={$cm->id}&amp;view=deliverables&amp;group={$currentgroupid}", 'export', $cm->id);
     echo $OUTPUT->continue_button("view.php?view=deliverables&amp;id=$cm->id");
     return;
+
 } elseif ($work == 'up') {
     $delivid = required_param('delivid', PARAM_INT);
     techproject_tree_up($project, $currentgroupid,$delivid, 'techproject_deliverable');

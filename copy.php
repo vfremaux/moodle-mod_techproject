@@ -15,24 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* Project : Technical Project Manager (IEEE like)
-*
-* This screen gives access to copy operations.
-*
-* @package mod-techproject
-* @category mod
-* @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
-* @date 2008/03/03
-* @version phase1
-* @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
-* @license http://www.gnu.org/copyleft/gpl.html GNU Public License
-*/
+ * Project : Technical Project Manager (IEEE like)
+ *
+ * This screen gives access to copy operations.
+ *
+ * @package mod-techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
 
 if (!has_capability('mod/techproject:manage', $context)) {
     print_error(get_string('notateacher','techproject'));
     return;
 }
-// get groups, will be usefull at many locations.
+
+// Get groups, will be usefull at many locations.
 
 $groups = groups_get_all_groups($course->id);
 
@@ -47,37 +48,43 @@ if ($work == 'docopy') {
     }
 
     /**
-     * @return an array for all copied ids translations so foreign keys can be fixed
-     */
+      * @return an array for all copied ids translations so foreign keys can be fixed
+      */
     function unitCopy($project, $from, $to, $what, $detail = false) {
         $copied = array();
+
         foreach (array_keys($what) as $aDatatable) {
-            // skip unchecked entites for copying
+            // Skip unchecked entites for copying.
             if (!$what[$aDatatable]) {
                 continue;
             }
-            echo '<tr><td align="left">' . get_string('copying', 'techproject') . ' ' . get_string("{$aDatatable}s", 'techproject') . '...';
+
+            echo '<tr><td align="left">' . get_string('copying', 'techproject').' '.get_string("{$aDatatable}s", 'techproject') . '...';
             $DB->delete_records("techproject_$aDatatable", array('projectid' => $project->id, 'groupid' => $to));
-            if($records = $DB->get_records_select("techproject_$aDatatable", "projectid = ? AND groupid = ?", array($project->id, $from))){
+            if ($records = $DB->get_records_select("techproject_$aDatatable", "projectid = ? AND groupid = ?", array($project->id, $from))) {
+
                 // Copying each record into target recordset.
                 if ($detail) {
                     echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying '. count($records) . " from $aDatatable</span>";
                 }
-                foreach($records as $aRecord) {
+
+                foreach ($records as $aRecord) {
                     $id = $aRecord->id;
-                    if ($detail)
+                    if ($detail) {
                         echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying item : ['. $id . '] ' . @$aRecord->abstract . '</span>';
+                    }
                     $aRecord->id = 0;
                     $aRecord->groupid = $to;
                     protectTextRecords($aRecord, 'title,abstract,rationale,description,environement,organisation,department');
-                    // unassigns users from entites in copied entities (not relevant context)
+
+                    // Unassigns users from entites in copied entities (not relevant context).
                     if (isset($aRecord->assignee)) {
                         $aRecord->assignee = 0;
                     }
                     if (isset($aRecord->owner)) {
                         $aRecord->owner = 0;
                     }
-                    // if milestones are not copied, no way to keep milestone assignation
+                    // If milestones are not copied, no way to keep milestone assignation.
                     if (isset($aRecord->milestoneid) && $what['milestone'] == 0){
                         $aRecord->milestoneid = 0;
                     }
@@ -98,6 +105,7 @@ if ($work == 'docopy') {
      */
     function fixForeignKeys($project, $group, $table, $fKey, $translations, $recordSet) {
        global $CFG;
+
        $result = 1;
        $recordList = implode(',', $recordSet);
        foreach (array_keys($translations) as $unfixedValue) {
@@ -108,7 +116,7 @@ if ($work == 'docopy') {
                   $fKey = $translations[$unfixedValue]
                WHERE
                   projectid = {$project->id} AND
-                  $fKey = $unfixedValue AND
+                  $fKey = {$unfixedValue} AND
                   id IN ($recordList)
            ";
            $result = $result && $DB->execute($query);
@@ -131,11 +139,12 @@ if ($work == 'docopy') {
     $targets = explode(',', $to);
     echo $OUTPUT->box_start('center', '70%');
 
-    foreach($targets as $atarget) {
-        // do copy data
+    foreach ($targets as $atarget) {
+        // Do copy data.
         echo '<table width="100%">';
         $copied = unitCopy($project, $from, $atarget, $what, $detail);
-        // do fix some foreign keys
+
+        // Do fix some foreign keys.
         echo '<tr><td align="left">' . get_string('fixingforeignkeys', 'techproject') . '...</td><td align="right">';
         if (array_key_exists('spec_to_req', $copied) && count(array_values(@$copied['spec_to_req']))) {
             fixForeignKeys($project, $atarget, 'spec_to_req', 'specid', $copied['specification'], array_values($copied['spec_to_req']));
@@ -188,9 +197,9 @@ if ($work == 'what') {
         $errormessage = get_string('cannotselfcopy', 'techproject');
         $work = 'setup';
     } else {
-?>
-<center>
-<?php 
+
+echo '<center>';
+
 echo $OUTPUT->heading(get_string('copywhat', 'techproject'));
 $toArray = array();
 foreach ($to as $atarget) {
@@ -352,11 +361,11 @@ if ($work == 'confirm') {
     $copytasktospec = optional_param('tasktospec', 0, PARAM_INT);
     $copytasktotask = optional_param('tasktotask', 0, PARAM_INT);
     $copytasktodeliv = optional_param('tasktodeliv', 0, PARAM_INT);
-?>
-<center>
-<?php 
-echo $OUTPUT->heading(get_string('copyconfirm', 'techproject')); 
-echo $OUTPUT->box(get_string('copyadvice', 'techproject'), 'center');
+
+    echo '<center>';
+
+    echo $OUTPUT->heading(get_string('copyconfirm', 'techproject')); 
+    echo $OUTPUT->box(get_string('copyadvice', 'techproject'), 'center');
 ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -434,7 +443,7 @@ function senddata(){
         <select name="to[]" multiple="multiple" size="6" style="width : 80%">
 <?php
     echo "<option value=\"0\">".get_string('groupless', 'techproject')."</option>";
-    if (!empty($groups)){
+    if (!empty($groups)) {
         foreach ($groups as $aGroup) {
             echo "<option value=\"{$aGroup->id}\">{$aGroup->name}</option>";
         }
