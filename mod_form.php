@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * This file defines the main newmodule configuration form
  * It uses the standard core Moodle (>1.8) formslib. For
@@ -37,9 +39,6 @@
  *             See lib/weblib.php Constants and the format_text()
  *             function for more info
  */
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
-}
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/techproject/locallib.php');
@@ -103,44 +102,44 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->setType('useriskcorrection', PARAM_BOOL);
 
         $mform->addElement('header', 'features', get_string('features', 'techproject'));
-        $mform->addElement('checkbox', 'projectusesrequs', get_string('requirements', 'techproject')); 
-        $mform->addElement('checkbox', 'projectusesspecs', get_string('specifications', 'techproject')); 
-        $mform->addElement('checkbox', 'projectusesdelivs', get_string('deliverables', 'techproject')); 
-        $mform->addElement('checkbox', 'projectusesvalidations', get_string('validations', 'techproject')); 
+        $mform->addElement('checkbox', 'projectusesrequs', get_string('requirements', 'techproject'));
+        $mform->addElement('checkbox', 'projectusesspecs', get_string('specifications', 'techproject'));
+        $mform->addElement('checkbox', 'projectusesdelivs', get_string('deliverables', 'techproject'));
+        $mform->addElement('checkbox', 'projectusesvalidations', get_string('validations', 'techproject'));
 
         $mform->addElement('header', 'header2', get_string('access', 'techproject'));
 
-        $mform->addElement('select', 'guestsallowed', get_string('guestsallowed', 'techproject'), $yesnooptions); 
+        $mform->addElement('select', 'guestsallowed', get_string('guestsallowed', 'techproject'), $yesnooptions);
         $mform->addHelpButton('guestsallowed', 'guestsallowed', 'techproject');
         $mform->setType('guestsallowed', PARAM_BOOL);
 
-        $mform->addElement('select', 'guestscanuse', get_string('guestscanuse', 'techproject'), $yesnooptions); 
+        $mform->addElement('select', 'guestscanuse', get_string('guestscanuse', 'techproject'), $yesnooptions);
         $mform->addHelpButton('guestscanuse', 'guestscanuse', 'techproject');
         $mform->setType('guestscanuse', PARAM_BOOL);
 
-        $mform->addElement('select', 'ungroupedsees', get_string('ungroupedsees', 'techproject'), $yesnooptions); 
+        $mform->addElement('select', 'ungroupedsees', get_string('ungroupedsees', 'techproject'), $yesnooptions);
         $mform->addHelpButton('ungroupedsees', 'ungroupedsees', 'techproject');
         $mform->setType('ungroupedsees', PARAM_BOOL);
 
-        $mform->addElement('select', 'allowdeletewhenassigned', get_string('allowdeletewhenassigned', 'techproject'), $yesnooptions); 
+        $mform->addElement('select', 'allowdeletewhenassigned', get_string('allowdeletewhenassigned', 'techproject'), $yesnooptions);
         $mform->addHelpButton('allowdeletewhenassigned', 'allowdeletewhenassigned', 'techproject');
 
-        $mform->addElement('static', 'tudentscanchange', get_string('studentscanchange', 'techproject'), get_string('seecapabilitysettings', 'techproject')); 
+        $mform->addElement('static', 'tudentscanchange', get_string('studentscanchange', 'techproject'), get_string('seecapabilitysettings', 'techproject'));
 
         $mform->addElement('header', 'header2', get_string('grading', 'techproject'));
-        $mform->addElement('select', 'teacherusescriteria', get_string('teacherusescriteria', 'techproject'), $yesnooptions); 
+        $mform->addElement('select', 'teacherusescriteria', get_string('teacherusescriteria', 'techproject'), $yesnooptions);
         $mform->addHelpButton('teacherusescriteria', 'teacherusescriteria', 'techproject');
         $mform->setType('teacherusescriteria', PARAM_BOOL);
 
-        $mform->addElement('select', 'autogradingenabled', get_string('autogradingenabled', 'techproject'), $yesnooptions); 
+        $mform->addElement('select', 'autogradingenabled', get_string('autogradingenabled', 'techproject'), $yesnooptions);
         $mform->addHelpButton('autogradingenabled', 'autogradingenabled', 'techproject');
         $mform->setType('autogradingenabled', PARAM_BOOL);
 
-        $mform->addElement('text', 'autogradingweight', get_string('autogradingweight', 'techproject')); 
+        $mform->addElement('text', 'autogradingweight', get_string('autogradingweight', 'techproject'));
         $mform->addHelpButton('autogradingweight', 'autogradingweight', 'techproject');
         $mform->setType('autogradingweight', PARAM_NUMBER);
 
-        $mform->addElement('text', 'accesskey', get_string('accesskey', 'techproject')); 
+        $mform->addElement('text', 'accesskey', get_string('accesskey', 'techproject'));
         $mform->addHelpButton('accesskey', 'accesskey', 'techproject');
         $mform->setType('accesskey', PARAM_TEXT);
 

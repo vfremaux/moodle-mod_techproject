@@ -14,20 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Project : Technical Project Manager (IEEE like)
- *
  * Gant chart for the project.
  *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @date 2008/03/03
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-
-require_once('ganttlib.php');
+require_once($CFG->dirroot.'/mod/techproject/ganttlib.php');
 
 // we cannot use require_js because of the parameters
 
@@ -79,6 +78,6 @@ if ($unscheduledTasks) {
 </center>
 
 <?php
-if ($gantt){
-gantt_render('GantDiv');
+if ($gantt) {
+    gantt_render('GantDiv');
 }

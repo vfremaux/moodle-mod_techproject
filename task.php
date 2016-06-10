@@ -38,7 +38,7 @@ if ($work == 'add' || $work == 'update') {
     $cmd = required_param('cmd', PARAM_ALPHA);
 ?>
     <center>
-<?php 
+<?php
 echo $OUTPUT->heading(get_string('groupoperations', 'techproject'));
 echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3);
 if ($cmd == 'copy' || $cmd == 'move') {
@@ -61,7 +61,7 @@ if ($cmd == 'copy' || $cmd == 'move') {
     <input type="hidden" name="work" value="" />
 <?php
         foreach ($ids as $anid) {
-            echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
+            echo '<input type="hidden" name="ids[]" value="'.$anid.'" />'."\n";
         }
 
         // Special command post options.
@@ -103,7 +103,8 @@ if ($cmd == 'copy' || $cmd == 'move') {
     <input type="hidden" name="work" value="groupcmd" />
 <?php
         if ($USER->editmode == 'on' && has_capability('mod/techproject:changetasks', $context)) {
-            echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addroottask','techproject')."</a> ";
+            $viewurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0));
+            echo '<br/><a href="'.$viewurl.'">'.get_string('addroottask','techproject')."</a> ";
         }
         techproject_print_tasks($project, $currentgroupid, 0, $cm->id);
         if ($USER->editmode == 'on' && has_capability('mod/techproject:changetasks', $context)) {
@@ -121,4 +122,3 @@ if ($cmd == 'copy' || $cmd == 'move') {
     </form>
 <?php
 }
-?>

@@ -14,29 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Project : Technical Project Manager (IEEE like)
- *
- * This screen show tasks plan by assignee. Unassigned tasks are shown 
- * below assigned tasks
- *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @date 2008/03/03
  * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ *
+ * This screen show tasks plan by assignee. Unassigned tasks are shown 
+ * below assigned tasks
  */
-
-if (!defined('MOODLE_INTERNAL'))  die('You cannot use this script that way');
 
 echo $pagebuffer;
 
 $TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
 $haveAssignedTasks = false;
 if (!groups_get_activity_groupmode($cm, $project->course)){
-    $groupusers = get_users_by_capability($context, 'mod/techproject:beassignedtasks', 'u.id, u.firstname, u.lastname, u.email, u.picture', 'u.lastname');
+    $groupusers = get_users_by_capability($context, 'mod/techproject:beassignedtasks', 'u.id,'.get_all_user_name_fields(true, 'u').',u.email, u.picture', 'u.lastname');
 } else {
     if ($currentgroupid) {
         $groupusers = groups_get_members($currentgroupid);
@@ -90,7 +88,7 @@ if (!isset($groupusers) || count($groupusers) == 0 || empty($groupusers)) {
                 $lateclass = ($over > 0) ? 'toolate' : 'intime';
                 $workplan = get_string('assignedwork','techproject').' '.(0 + $res->planned).' '.$TIMEUNITS[$project->timeunit];
                 $realwork = get_string('realwork','techproject')." <span class=\"{$lateclass}\">".(0 + $res->spent).' '.$TIMEUNITS[$project->timeunit].'</span>';
-                $completion = ($res->count != 0) ? techproject_bar_graph_over($res->done / $res->count, $over, 100, 10) : techproject_bar_graph_over(-1, 0);
+                $completion = ($res->count != 0) ? $renderer->bar_graph_over($res->done / $res->count, $over, 100, 10) : $renderer->bar_graph_over(-1, 0);
                 echo "{$workplan} - {$realwork} {$completion} {$hurryup}";
             }
 ?>

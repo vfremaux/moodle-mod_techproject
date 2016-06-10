@@ -14,22 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
-*
-* @package    mod_techproject
-* @author     Valery Fremaux <valery@valeisti.fr>
-* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
-* @copyright  (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
-*
-*/
-
-require_once($CFG->dirroot.'/mod/techproject/forms/form_domain.class.php');
-
-// Security.
-
-if (!defined('MOODLE_INTERNAL')) {
-    die("You cannot directly invoke this script");
-}
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
 
 // Master controller.
 
@@ -39,27 +34,31 @@ $scope = optional_param('scope', 0, PARAM_INT);
 $domain = str_replace('domains_', '', $view);
 
 if (!empty($action)) {
-    $result = include_once('view_domain.controller.php');
+    $result = include_once($CFG->dirroot.'/mod/techproject/view_domain.controller.php');
 }
 
-if($result == -1) {
+if ($result == -1) {
     // If controller already output the screen we might jump.
     return -1;
 }
 
 echo $pagebuffer;
-echo '<table width="100%" class="generaltable"><tr><td align="left">';
-
-// Print the scopechanging.
+echo '<table width="100%" class="generaltable">';
+echo '<tr>';
+echo '<td align="left">';
+// print the scopechanging 
 echo '<form name="changescopeform">';
-echo "<input type=\"hidden\" name=\"view\" value=\"domains_$domain\" />";
-echo "<input type=\"hidden\" name=\"id\" value=\"{$cm->id}\" />";
+echo '<input type="hidden" name="view" value="domains_'.$domain.'" />';
+echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
 $scopeoptions[0] = get_string('sharedscope', 'techproject');
 $scopeoptions[$project->id] = get_string('projectscope', 'techproject');
 echo html_writer::select($scopeoptions, 'scope', $scope, array(), array('onchange' => 'forms[\'changescopeform\'].submit();'));
 echo '</from></td><td align="right">';
-echo "<a href=\"view.php?view=domains_{$domain}&amp;id={$id}&amp;what=add\" >".get_string('addvalue', 'techproject').'</a>';
-echo '</td></tr></table>';
+$addurl = new moodle_url('/mod/techproject/view.php', array('view' => 'domains_'.$domain, 'id' => $id, 'what' => 'add'));
+echo '<a href="'.$addurl.'">'.get_string('addvalue', 'techproject').'</a>';
+echo '</td>';
+echo '</tr>';
+echo '</table>';
 
 $domainvalues = techproject_get_domain($domain, null, 'all', $scope, 'code');
 
@@ -89,7 +88,7 @@ if (!empty($domainvalues)) {
 
         $deletestr = get_string('delete');
         $cmdicon = '<img src="'.$OUTPUT->pix_url('t/delete').'">';
-        $params = array('view' => 'domains_'.$domain, 'id' => $id, 'what' => 'dodelete', 'domainid' => $value->id);
+        $params = array('view' => 'domains_'.$domain, 'id' => $id, 'what' => 'delete', 'domainid' => $value->id);
         $cmdurl = new moodle_url('/mod/techproject/view.php', $params);
         $commands .= ' <a href="'.$cmdurl.'" title="'.$deletestr.'" >'.$cmdicon.'</a>';
 
@@ -98,5 +97,5 @@ if (!empty($domainvalues)) {
     }
     techproject_print_project_table($table);
 } else {
-    print("<p style=\"text-align: center; font-style: italic;\">".get_string('novaluesindomain', 'techproject').'</p>');
+    echo $OUTPUT->notification(get_string('novaluesindomain', 'techproject'));
 }

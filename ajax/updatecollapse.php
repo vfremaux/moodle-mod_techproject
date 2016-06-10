@@ -49,8 +49,12 @@ if (! $project = $DB->get_record('techproject', array('id' => $cm->instance))) {
 
 $group = 0 + groups_get_course_group($course, true);
 
+// Security.
+
 require_login($course->id, false, $cm);
+
 $context = context_module::instance($cm->id);
+
 if ($state) {
     $collapse = new StdClass();
     $collapse->userid = $USER->id;
@@ -63,8 +67,6 @@ if ($state) {
     $DB->delete_records('techproject_collapse', array('userid' => $USER->id, 'entryid' => $entryid, 'entity' => $entity));
 
     // Prepare for showing branch.
-    if ($CFG->enableajax) {
-        $printfuncname = "techproject_print_{$entity}";
-        $printfuncname($project, $group, $entryid, $cm->id);
-    }
+    $printfuncname = "techproject_print_{$entity}";
+    $printfuncname($project, $group, $entryid, $cm->id);
 }

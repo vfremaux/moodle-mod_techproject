@@ -1,4 +1,20 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  *
@@ -6,18 +22,18 @@
  *
  */
 
-require_once($CFG->dirroot."/mod/techproject/forms/form_task.class.php");
+require_once($CFG->dirroot.'/mod/techproject/forms/form_task.class.php');
 $PAGE->requires->js('/mod/techproject/js/js.js');
 
 $taskid = optional_param('taskid', '', PARAM_INT);
 
 $mode = ($taskid) ? 'update' : 'add' ;
 
-$url = new moodle_url('/mod/techproject/view.php#node'.$taskid, array('id' => $id));
+$url = new moodle_url('/mod/techproject/view.php', array('id' => $id)).'#node'.$taskid;
 $project->cm = $cm;
 $mform = new Task_Form($url, $project, $mode, $taskid);
 
-if ($mform->is_cancelled()){
+if ($mform->is_cancelled()) {
     redirect($url);
 }
 
@@ -30,23 +46,44 @@ if ($data = $mform->get_data()) {
     $data->description = $data->description_editor['text'];
     $data->lastuserid = $USER->id;
 
-    // editors pre save processing
+    if (!isset($data->quoted)) {
+        $data->quoted = 0;
+    }
+    if (!isset($data->spent)) {
+        $data->spent = 0;
+    }
+    if (!isset($data->risk)) {
+        $data->risk = 0;
+    }
+    if (!isset($data->milestoneid)) {
+        $data->milestoneid = 0;
+    }
+    if (!isset($data->taskstartenable)) {
+        $data->taskstartenable = 0;
+    }
+    if (!isset($data->taskendenable)) {
+        $data->taskendenable = 0;
+    }
+
+    // Editors pre save processing.
     $draftid_editor = file_get_submitted_draft_itemid('description_editor');
     $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'taskdescription', $data->id, array('subdirs' => true), $data->description);
     $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject', 'taskdescription', $data->id);
 
     if ($data->taskid) {
-        $data->id = $data->taskid; // id is course module id
+        // Id is course module id.
+        $data->id = $data->taskid;
         $oldAssigneeId = $DB->get_field('techproject_task', 'assignee', array('id' => $data->id));
         $DB->update_record('techproject_task', $data);
-        add_to_log($course->id, 'techproject', 'changetask', "view.php?id=$cm->id&view=tasks&group={$currentgroupid}", 'update', $cm->id);
+        $event = \mod_techproject\event\task_updated::create_from_task($project, $context, $data, $currentgroupid);
+        $event->trigger();
 
-        $tasktospec = optional_param_array('taskospec', null, PARAM_INT);
-        if (count($tasktospec) > 0){
-            // removes previous mapping
+        if (!empty($data->tasktospec)) {
+            // Removes previous mapping.
             $DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $data->id));
-            // stores new mapping
-            foreach ($tasktospec as $aSpec) {
+
+            // Stores new mapping.
+            foreach ($data->tasktospec as $aSpec) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
@@ -57,13 +94,12 @@ if ($data = $mform->get_data()) {
             }
         }
 
-        // todo a function ? 
-        $mapped = optional_param_array('tasktodeliv', null, PARAM_INT);
-        if (count($mapped) > 0){
-            // removes previous mapping
+        // Todo a function ?
+        if (!empty($data->tasktodeliv)) {
+            // Removes previous mapping.
             $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $data->id));
-            // stores new mapping
-            foreach ($mapped as $mappedid) {
+            // Stores new mapping.
+            foreach ($data->tasktodeliv as $mappedid) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
@@ -74,12 +110,11 @@ if ($data = $mform->get_data()) {
             }
         }
 
-        $mapped = optional_param_array('taskdependency', null, PARAM_INT);
-        if (count($mapped) > 0) {
+        if (!empty($data->taskdependency)) {
             // Removes previous mapping.
             $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $data->id));
             // Stores new mapping.
-            foreach ($mapped as $mappedid) {
+            foreach ($data->taskdependency as $mappedid) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
@@ -89,8 +124,14 @@ if ($data = $mform->get_data()) {
                 $res = $DB->insert_record('techproject_task_dependency', $amap);
             }
 
+            // If being reassigned, log this special event.
+            if (!empty($oldAssigneeId) && ($data->assignee != $oldAssigneeId)) {
+                $event = \mod_techproject\event\task_reassigned::create_from_task($project, $context, $data, $currentgroupid, $data->assignee);
+                $event->trigger();
+            }
+
             // If notifications allowed and previous assignee exists (and is not the new assignee) notify previous assignee.
-            if ($project->allownotifications && !empty($oldAssigneeId) && $data->assignee != $oldAssigneeId) {
+            if ($project->allownotifications && !empty($oldAssigneeId) && ($data->assignee != $oldAssigneeId)) {
                 techproject_notify_task_unassign($project, $data, $oldAssigneeId, $currentgroupid);
             }
         }
@@ -101,7 +142,8 @@ if ($data = $mform->get_data()) {
 
         $data->id = $DB->insert_record('techproject_task', $data);
 
-        add_to_log($course->id, 'techproject', 'addtask', "view.php?id=$cm->id&view=tasks&group={$currentgroupid}", 'add', $cm->id);
+        $event = \mod_techproject\event\task_created::create_from_task($project, $context, $data, $currentgroupid);
+        $event->trigger();
 
         if ($project->allownotifications) {
             techproject_notify_new_task($project, $cm->id, $data, $currentgroupid);
@@ -111,7 +153,7 @@ if ($data = $mform->get_data()) {
         }
     }
 
-    // if subtask, force dependency upon father
+    // If subtask, force dependency upon father.
     if ($data->fatherid != 0) {
         $aDependency = new StdClass();
         $aDependency->id = 0;
@@ -123,7 +165,8 @@ if ($data = $mform->get_data()) {
                $DB->insert_record('techproject_task_dependency', $aDependency);
            }
     }
-    // if subtask, calculate branch propagation
+
+    // If subtask, calculate branch propagation.
     if ($data->fatherid != 0) {
         techproject_tree_propagate_up('techproject_task', 'done', $data->id, '~');
         techproject_tree_propagate_up('techproject_task', 'planned', $data->id, '+');
@@ -152,12 +195,12 @@ if ($mode == 'add') {
 
     echo $OUTPUT->heading(get_string($tasktitle, 'techproject'));
 } else {
-    if(! $task = $DB->get_record('techproject_task', array('id' => $taskid))){
+    if (!$task = $DB->get_record('techproject_task', array('id' => $taskid))) {
         print_error('errortask','techproject');
     }
     $task->taskid = $task->id;
     $task->id = $cm->id;
-    
+
     echo $OUTPUT->heading(get_string('updatetask','techproject'));
 }
 

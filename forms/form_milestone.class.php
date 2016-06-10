@@ -14,6 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+
 require_once($CFG->libdir.'/formslib.php');
 
 class Milestone_Form extends moodleform {
@@ -33,11 +45,11 @@ class Milestone_Form extends moodleform {
         parent::__construct($action);
     }
 
-    public function definition(){
+    public function definition() {
         global $COURSE, $DB;
 
         $mform = $this->_form;
-        
+
         $currentGroup = 0 + groups_get_course_group($COURSE);
 
         $modcontext = context_module::instance($this->project->cmid);
@@ -57,7 +69,7 @@ class Milestone_Form extends moodleform {
         $mform->addElement('text', 'abstract', get_string('milestonetitle', 'techproject'), array('size' => "100%"));
         $mform->setType('abstract', PARAM_CLEANHTML);
 
-        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);                
+        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);
 
         $startyear = date('Y', time());
         $mform->addElement('date_time_selector', 'deadline', get_string('deadline', 'techproject'), array('optional' => true, 'startyear' => $startyear));
