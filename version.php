@@ -28,9 +28,9 @@
 defined('MOODLE_INTERNAL') || die;
 
 $plugin->version  = 2015101300;  // The current module version (Date: YYYYMMDDXX)
-$plugin->requires = 2015050500;  // Requires this Moodle version
+$plugin->requires = 2015111100;  // Requires this Moodle version
 $plugin->component = 'mod_techproject';   // Full name of the plugin (used for diagnostics)
 $plugin->cron     = 0;           // Period for cron to check this module (secs)
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '2.9.0 (Build 2015101300)';
+$plugin->release = '3.0.0 (Build 2015101300)';
 
