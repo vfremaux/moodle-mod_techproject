@@ -14,6 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+
 require_once($CFG->libdir.'/formslib.php');
 
 class Task_Form extends moodleform {
@@ -30,6 +42,9 @@ class Task_Form extends moodleform {
         $this->project = $project;
         if ($taskid){
             $this->current = $DB->get_record('techproject_task', array('id' => $taskid));
+        } else {
+            $this->current = new StdClass;
+            $this->current->id = 0;
         }
 
         parent::__construct($action);
@@ -64,7 +79,7 @@ class Task_Form extends moodleform {
         $mform->addElement('text', 'abstract', get_string('tasktitle', 'techproject'), array('size' => "100%"));
         $mform->setType('abstract', PARAM_CLEANHTML);
 
-        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);                
+        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);
 
         $milestones = $DB->get_records_select('techproject_milestone', "projectid = ? AND groupid = ? ", array($this->project->id, $currentGroup), 'ordering ASC', 'id, abstract, ordering');
         $milestonesoptions = array();
@@ -74,9 +89,9 @@ class Task_Form extends moodleform {
                 $milestonesoptions[$aMilestone->id] = $aMilestone->abstract;
             }
         }
-        $mform->addElement('select', 'milestone', get_string('milestone', 'techproject'), $milestonesoptions);
+        $mform->addElement('select', 'milestoneid', get_string('milestone', 'techproject'), $milestonesoptions);
         $mform->setType('milestone', PARAM_INT);
-        $mform->addHelpButton('milestone', 'task_to_miles', 'techproject');
+        $mform->addHelpButton('milestoneid', 'task_to_miles', 'techproject');
 
         $ownerstr = $USER->lastname . " " . $USER->firstname . " ";
         $ownerstr .= $OUTPUT->user_picture($USER); 
@@ -166,7 +181,7 @@ class Task_Form extends moodleform {
                 }
                 $uptasksoptions[$atask->id] = $atask->ordering.' - '.shorten_text($atask->abstract, 90);
             }
-            $select = &$mform->addElement('select', 'taskdependency[]', get_string('taskdependency', 'techproject'), $uptasksoptions, array('size' => 8));
+            $select = &$mform->addElement('select', 'taskdependency', get_string('taskdependency', 'techproject'), $uptasksoptions, array('size' => 8));
             $select->setMultiple(true);
         }
 
@@ -179,9 +194,9 @@ class Task_Form extends moodleform {
                     $specs[$aSpecification->id] = $aSpecification->ordering .' - '.shorten_text(format_string($aSpecification->abstract), 90);
                 }
             }
-            $select = &$mform->addElement('select', 'tasktospec[]', get_string('tasktospec', 'techproject'), $specs, array('size' => 8));
+            $select = &$mform->addElement('select', 'tasktospec', get_string('tasktospec', 'techproject'), $specs, array('size' => 8));
             $select->setMultiple(true);
-            $mform->addHelpButton('tasktospec[]', 'task_to_spec', 'techproject');
+            $mform->addHelpButton('tasktospec', 'task_to_spec', 'techproject');
         }
 
         if ($this->project->projectusesdelivs && $this->mode == 'update') {
@@ -193,9 +208,9 @@ class Task_Form extends moodleform {
                     $delivs[$aDeliverable->id] = $aDeliverable->ordering .' - '.shorten_text(format_string($aDeliverable->abstract), 90);
                 }
             }
-            $select = &$mform->addElement('select', 'tasktodeliv[]', get_string('tasktodeliv', 'techproject'), $delivs, array('size' => 8));
+            $select = &$mform->addElement('select', 'tasktodeliv', get_string('tasktodeliv', 'techproject'), $delivs, array('size' => 8));
             $select->setMultiple(true);
-            $mform->addHelpButton('tasktodeliv[]', 'task_to_deliv', 'techproject');
+            $mform->addHelpButton('tasktodeliv', 'task_to_deliv', 'techproject');
         }
 
         $this->add_action_buttons(true);

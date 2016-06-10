@@ -1,4 +1,4 @@
-<?php // $Id: techproject.php,v 1.2 2012-08-12 22:01:40 vf Exp $ 
+<?php
 
 $string['techproject:addinstance'] = 'Add a project';
 $string['techproject:beassignedtasks'] = 'Be assigned tasks';
@@ -100,6 +100,7 @@ $string['autogradingenabled'] = 'Enable autograding';
 $string['autogradingweight'] = 'Weight for the automated grading';
 $string['backtosessions'] = 'Back to session summary';
 $string['baddefaultqualifierseterror'] = 'Error : qualifier set is not compatible for restauration';
+$strring['badcopycase'] = 'Bad copy case';
 $string['beta'] = 'Beta';
 $string['betadesc'] = 'Beta testing unit. Use without guarantee'; 
 $string['blocked'] = 'Blocked';
@@ -135,6 +136,8 @@ $string['complete'] = 'Complete';
 $string['completedesc'] = 'All done. All\'s OK';
 $string['completionrate'] = 'Work completion rate';
 $string['complexity'] = 'Complexity';
+$string['configpreserveglobalqualifiers'] = 'Preserve global qualifiers';
+$string['configpreserveglobalqualifiers_desc'] = 'Preserve global qualifiers when restoring a techproject instance. If true, qualifiers having same identifiers will NOT be overwriten. Older values will be preserved. If uncheked, the last restore will force the new values.';
 $string['configuring'] = 'Configurating';
 $string['configuringdesc'] = 'Configuration and setup';
 $string['confirmdeletecriteria'] = 'Confirm deleting criteria';

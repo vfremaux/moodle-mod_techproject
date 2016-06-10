@@ -1,4 +1,20 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  *
@@ -10,10 +26,9 @@ require_once($CFG->dirroot.'/mod/techproject/forms/form_deliverable.class.php');
 
 $delivid = optional_param('delivid', '', PARAM_INT);
 
-$mode = ($delivid) ? 'update' : 'add';
+$mode = ($delivid) ? 'update' : 'add' ;
 
-$url = $CFG->wwwroot.'/mod/techproject/view.php?id='.$id.'#node'.$delivid;
-
+$url = new moodle_url('/mod/techproject/view.php', array('id' => $id)).'#node'.$delivid;
 $mform = new Deliverable_Form($url, $mode, $project, $delivid);
 
 if ($mform->is_cancelled()) {
@@ -28,6 +43,7 @@ if ($data = $mform->get_data()) {
     $data->descriptionformat = $data->description_editor['format'];
     $data->description = $data->description_editor['text'];
     $data->lastuserid = $USER->id;
+    $data->milestoneid = 0;
 
     // Editors pre save processing.
     $draftid_editor = file_get_submitted_draft_itemid('description_editor');
@@ -38,14 +54,14 @@ if ($data = $mform->get_data()) {
     if ($data->delivid) {
         $data->id = $data->delivid; // Id is course module id.
         $DB->update_record('techproject_deliverable', $data);
-        add_to_log($course->id, 'techproject', 'changedeliverable', "view.php?id=$cm->id&view=deliverables&group={$currentgroupid}", 'update', $cm->id);
+        $event = \mod_techproject\event\deliverable_updated::create_from_deliverable($project, $context, $data, $currentgroupid);
+        $event->trigger();
 
-        $tasktodeliv = optional_param_array('tasktodeliv', null, PARAM_INT);
-        if (count($tasktodeliv) > 0) {
+        if (!empty($data->tasktodeliv)) {
             // Removes previous mapping.
             $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'delivid' => $data->id));
-            // stores new mapping
-            foreach ($tasktodeliv as $aTask) {
+            // Stores new mapping.
+            foreach ($data->tasktodeliv as $aTask) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
@@ -60,7 +76,8 @@ if ($data = $mform->get_data()) {
         $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_deliverable', true, $data->fatherid) + 1;
         unset($data->id); // Id is course module id.
         $data->id = $DB->insert_record('techproject_deliverable', $data);
-        add_to_log($course->id, 'techproject', 'adddeliv', "view.php?id=$cm->id&view=deliverables&group={$currentgroupid}", 'add', $cm->id);
+        $event = \mod_techproject\event\deliverable_created::create_from_deliverable($project, $context, $data, $currentgroupid);
+        $event->trigger();
 
         if ($project->allownotifications) {
             techproject_notify_new_deliverable($project, $cm->id, $data, $currentgroupid);

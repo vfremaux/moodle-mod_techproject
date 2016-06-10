@@ -28,7 +28,6 @@
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-
 require_once('../../config.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->dirroot.'/mod/techproject/lib.php');
@@ -43,8 +42,6 @@ setLocale(LC_TIME, substr(current_language(), 0, 2));
 
 $id = required_param('id', PARAM_INT);   // module id
 $view = optional_param('view', @$_SESSION['currentpage'], PARAM_CLEAN);   // viewed page id
-$nohtmleditorneeded = true;
-$editorfields = '';
 
 if ($view == 'view_gantt') {
     $lang = current_language();
@@ -77,28 +74,30 @@ $strproject  = get_string('modulename', 'techproject');
 $straction = (@$action) ? '-> '.get_string(@$action, 'techproject') : '';
 
 // get some session toggles if possible
-if (array_key_exists('editmode', $_GET) && !empty($_GET['editmode'])) {
+if (array_key_exists('editmode', $_GET) && !empty($_GET['editmode'])){
     $_SESSION['editmode'] = $_GET['editmode'];
 } else {
-    if (!array_key_exists('editmode', $_SESSION)) {
+    if (!array_key_exists('editmode', $_SESSION))
         $_SESSION['editmode'] = 'off';
-    }
 }
 $USER->editmode = $_SESSION['editmode'];
 
 // check current group and change, for anyone who could
-if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // groups are being used ?
+if (!$groupmode = groups_get_activity_groupmode($cm, $course)) {
+    // groups are being used ?
     $currentgroupid = 0;
 } else {
     $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;  // Group change requested?
-    if (isguestuser()){ // for guests, use session
+    if (isguestuser()) { // for guests, use session
         if ($changegroup >= 0) {
             $_SESSION['guestgroup'] = $changegroup;
         }
         $currentgroupid = 0 + @$_SESSION['guestgroup'];
     } else { // for normal users, change current group
         $currentgroupid = 0 + groups_get_course_group($course, true);
-        if (!groups_is_member($currentgroupid , $USER->id) && !is_siteadmin($USER->id)) $USER->editmode = "off";
+        if (!groups_is_member($currentgroupid , $USER->id) && !is_siteadmin($USER->id)) {
+            $USER->editmode = "off";
+        }
     }
 }
 
@@ -110,12 +109,13 @@ $PAGE->set_heading('');
 $PAGE->set_focuscontrol('');
 $PAGE->set_cacheable(true);
 $PAGE->set_button(update_module_button($cm->id, $course->id, $strproject));
+$renderer = $PAGE->get_renderer('mod_techproject');
 
 $pagebuffer = $OUTPUT->header();
 
-$pagebuffer .= "<div align=\"right\">";
+$pagebuffer .= '<div align="right">';
 $pagebuffer .= techproject_edition_enable_button($cm, $course, $project, $USER->editmode);
-$pagebuffer .= "</div>";
+$pagebuffer .= '</div>';
 // ...and if necessary set default action
 if (has_capability('mod/techproject:gradeproject', $context)) {
     if (empty($action)) { // no action specified, either go straight to elements page else the admin page
@@ -123,9 +123,9 @@ if (has_capability('mod/techproject:gradeproject', $context)) {
     }
 } elseif (!isguestuser()) { // it's a student then
     if (!$cm->visible) {
-        notice(get_string('activityiscurrentlyhidden'));
+        echo $OUTPUT->notification(get_string('activityiscurrentlyhidden'));
     }
-    if ($groupmode == SEPARATEGROUPS && !$currentgroupid && !$project->ungroupedsees){
+    if ($groupmode == SEPARATEGROUPS && !$currentgroupid && !$project->ungroupedsees) {
         $action = 'notingroup';
     }
     if ($timenow < $project->projectstart) {
@@ -133,15 +133,14 @@ if (has_capability('mod/techproject:gradeproject', $context)) {
     } elseif (!@$action) {
         $action = 'studentsview';
     }
-} else { // it's a guest, just watch if possible!
+} else {
+    // It's a guest, just watch if possible!
     if ($project->guestsallowed){
         $action = 'guestview';
     } else {
         $action = 'notavailable';
     }
 }
-// ...log activity...
-add_to_log($course->id, 'techproject', 'view', "view.php?id=$cm->id", $project->id, $cm->id);
 
 // Pass useful values to javasctript.
 
@@ -212,7 +211,8 @@ if ($action == 'displayfinalgrade' ) {
 elseif ($action == 'guestview') {
 
     $demostr = '';
-    if (!$project->guestscanuse || $currentgroupid != 0){ // guest can sometimes edit group 0
+    if (!$project->guestscanuse || $currentgroupid != 0){
+        // guest can sometimes edit group 0
         $USER->editmode = 'off';
     } elseif ($project->guestscanuse && !$currentgroupid && $timenow < $project->projectend) { // guest could have edited but project is closed
         $demostr = '(' . get_string('demomodeclosedproject', 'techproject') . ') ' . $OUTPUT->help_icon('demomode', 'techproject', false);
@@ -259,9 +259,9 @@ elseif ($action == 'guestview') {
             $pagebuffer .= groups_print_activity_menu($cm, $url, true);
             $pagebuffer .= '</td>';
         }
-    }        
+    }
     $pagebuffer .= '</tr></table>';
-    if (empty($currentgroupid)){
+    if (empty($currentgroupid)) {
         $currentgroupid = 0;
     }
     include('techproject.php');
@@ -277,7 +277,7 @@ elseif ($action == 'guestview') {
 } elseif ($action == 'notingroup') {
     echo $pagebuffer;
     echo $OUTPUT->box(format_text(get_string('notingroup', 'techproject'), 'HTML'), 'center', '70%', '', 5, 'generalbox', 'intro');
-    echo $OUTPUT->continue_button($_SERVER["HTTP_REFERER"]);     
+    echo $OUTPUT->continue_button($_SERVER["HTTP_REFERER"]);
 
 /*************** no man's land **************************************/
 } else {

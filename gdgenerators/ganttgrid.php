@@ -1,8 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 // This generator may be included directly by an include call, or invoked
 // through an HTTP request.
-if (@$wasIncluded == 0){
-    require_once('../../../config.php');
+
+if (!defined('MOODLE_INTERNAL')) {
+    require('../../../config.php');
     $projectid = required_param('projectid', PARAM_INT);    // project id
     $s = optional_param('s', 0, PARAM_INT);    // start offset
     $w = optional_param('w', 600, PARAM_INT);    // graphic width
@@ -16,17 +32,19 @@ if (@$wasIncluded == 0){
     require_login($project->course);
     // check current group and change, for anyone who could
     $course = $DB->get_record('course', array('id' => $project->course));
-	if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // groups are being used ?
-		$currentgroupid = 0;
-	} else {
-        $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;  // Group change requested?
-        if (isguestuser()){ // for guests, use session
-            if ($changegroup >= 0){
+    if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // groups are being used ?
+        $currentgroupid = 0;
+    } else {
+        $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;
+        // Group change requested ?
+        if (isguestuser()) {
+            // For guests, use session.
+            if ($changegroup >= 0) {
                 $_SESSION['guestgroup'] = $changegroup;
             }
             $currentgroupid = 0 + @$_SESSION['guestgroup'];
         } else { // for normal users, change current group
-            $currentgroupid = 0 + get_and_set_current_group($course, $groupmode, $changegroup);    
+            $currentgroupid = 0 + get_and_set_current_group($course, $groupmode, $changegroup);
         }
     }
 }
@@ -66,15 +84,16 @@ if ($milestones){
         $milemarks[$milestonejd] = $aMilestone;
     }
 }
+
 /*
-*
-* This is the HTML Table non graphic output generation
-*
-*/
-if (@$outputType == 'HTML'){
-?>
-<h2>Debugging only</h2>
-<?php
+ *
+ * This is the HTML Table non graphic output generation
+ *
+ */
+if (@$outputType == 'HTML') {
+
+    echo '<h2>Debugging only</h2>';
+
     echo $outputType."<br>";
     echo "timeRangeEnd;    $timeRangeEnd<br/>";
     echo "zoomedTimeRange; $zoomedTimeRange<br/>";
@@ -100,10 +119,10 @@ if (@$outputType == 'HTML'){
     phpinfo();
 
 /*
-*
-* This is the GD generation alternative
-*
-*/
+ *
+ * This is the GD generation alternative
+ *
+ */
 } else {
     // Searching for font files
     $fontFile = $CFG->dirroot . "/mod/techproject/fonts/arial.ttf";
@@ -137,17 +156,17 @@ if (@$outputType == 'HTML'){
 
     // draw calendar grid for days
     // heading displays Gantt assignee section header with month names
-    if (@$outputType == 'HEADING'){
+    if (@$outputType == 'HEADING') {
         $startRange = 0;
         $color = $colors['white'];
         $toggle = true;
-        for($i = 0 ; $i < $daysInRange ; ){
+        for ($i = 0 ; $i < $daysInRange ; ) {
             $cal = cal_from_jd($jdStart + $i, CAL_GREGORIAN);
             $mdays = cal_days_in_month(CAL_GREGORIAN, $cal['month'], $cal['year']);    
             $daysToComplete = ($i == 0) ? $mdays - $cal['day'] + 1 : $mdays ;
             $range = min($startRange + $daysToComplete * $pixPerDay, $w);
             imagefilledrectangle($im, $startRange, 0, $range, 22, $color);
-            if ($range - $startRange > 40){
+            if ($range - $startRange > 40) {
                 imagestring($im, 2, 1 + $startRange, 3, mb_convert_encoding(get_string(strtolower(jdmonthname($jdStart + $i, 1)), 'techproject'), 'auto', 'utf8'), $colors['quiteblack']);
             }
             $toggle = !$toggle;
@@ -155,7 +174,7 @@ if (@$outputType == 'HTML'){
             $startRange = $range;
             $i += $daysToComplete;
         }
-        for ($i = 0; $i <= $daysInRange ; $i++){
+        for ($i = 0; $i <= $daysInRange ; $i++) {
             // prints special marks on calendar
             if ($jdStart + $i == $today){
                 imagefilledrectangle($im, $i * $pixPerDay, 0, ($i + 1) * $pixPerDay - 1, 22, $colors['lightblue']);
@@ -163,12 +182,12 @@ if (@$outputType == 'HTML'){
                 imagefilledrectangle($im, $i * $pixPerDay, 0, ($i + 1) * $pixPerDay - 1, 22, $colors['goldyellow']);
             }
         }
-    // heading displays Gantt task grid background
+    // Heading displays Gantt task grid background.
     } else {
         $startRange = 0;
         $color = $colors['white'];
         $toggle = true;
-        for($i = 0 ; $i < $daysInRange ; ){
+        for ($i = 0 ; $i < $daysInRange ; ) {
             $cal = cal_from_jd($jdStart + $i, CAL_GREGORIAN);
             $mdays = cal_days_in_month(CAL_GREGORIAN, $cal['month'], $cal['year']);    
             $daysToComplete = ($i == 0) ? $mdays - $cal['day'] + 1 : $mdays ;
@@ -179,11 +198,11 @@ if (@$outputType == 'HTML'){
             $startRange = $range;
             $i += $daysToComplete;
         }
-        for ($i = 0; $i <= $daysInRange ; $i++){
+        for ($i = 0; $i <= $daysInRange ; $i++) {
             // prints special marks on calendar
-            if ($jdStart + $i == $today){
+            if ($jdStart + $i == $today) {
                 imagefilledrectangle($im, $i * $pixPerDay, 0, ($i + 1) * $pixPerDay - 1, 0, $colors['lightblue']);
-            } elseif(isset($milemarks[$jdStart + $i])){
+            } elseif(isset($milemarks[$jdStart + $i])) {
                 imagefilledrectangle($im, $i * $pixPerDay, 0, ($i + 1) * $pixPerDay - 1, 0, $colors['goldyellow']);
             }
             // prints day line on calendar
@@ -200,4 +219,3 @@ if (@$outputType == 'HTML'){
     imagepng($im);
     imagedestroy($im);
 }
-?>

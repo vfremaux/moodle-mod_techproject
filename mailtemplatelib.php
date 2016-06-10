@@ -1,5 +1,7 @@
 <?php
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
 * This library is a third-party proposal for standardizing mail
 * message constitution for third party modules. It is actually used

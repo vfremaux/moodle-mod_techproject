@@ -61,7 +61,7 @@ if (!empty($editmode)) {
     }
     */
 
-/// Make menu
+// Make menu.
 
 $tabrequtitle = get_string('requirements', 'techproject');
 $tabrequlabel = (!has_capability('mod/techproject:changerequs', $context)) ? $tabrequtitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabrequtitle ;
@@ -75,17 +75,18 @@ $tabdelivtitle = get_string('deliverables', 'techproject');
 $tabdelivlabel = (!has_capability('mod/techproject:changedelivs', $context)) ? $tabdelivtitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabdelivtitle ;
 $tabvalidtitle = get_string('validations', 'techproject');
 $tabvalidlabel = (!has_capability('mod/techproject:validate', $context)) ? $tabvalidtitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabvalidtitle ;
-$tabrequlabel = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/req.gif\" height=\"14\" /> " . $tabrequlabel;
-$tabspeclabel = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/spec.gif\" height=\"14\" /> " . $tabspeclabel;
-$tabtasklabel = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/task.gif\" height=\"14\" /> " . $tabtasklabel;
-$tabdelivlabel = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/deliv.gif\" height=\"14\" /> " . $tabdelivlabel;
+$tabrequlabel = '<img src="'.$OUTPUT->pix_url('p/req', 'techproject').'" height="14" /> ' . $tabrequlabel;
+$tabspeclabel = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject').'" height="14" /> ' . $tabspeclabel;
+$tabtasklabel = '<img src="'.$OUTPUT->pix_url('p/req', 'techproject').'" height="14" /> ' . $tabtasklabel;
+$tabdelivlabel = '<img src="'.$OUTPUT->pix_url('p/deliv', 'techproject').'" height="14" /> ' . $tabdelivlabel;
 $tabs = array();
 $tabs[0][] = new tabobject('description', "view.php?id={$cm->id}&amp;view=description", get_string('description', 'techproject'));
-if(has_capability('mod/techproject:viewpreproductionentities', $context, $USER->id)){
-    if (@$project->projectusesrequs){
+
+if (has_capability('mod/techproject:viewpreproductionentities', $context, $USER->id)) {
+    if (@$project->projectusesrequs) {
         $tabs[0][] = new tabobject('requirements', "view.php?id={$cm->id}&amp;view=requirements", $tabrequlabel, $tabrequtitle);
     }
-    if (@$project->projectusesspecs){
+    if (@$project->projectusesspecs) {
         $tabs[0][] = new tabobject('specifications', "view.php?id={$cm->id}&amp;view=specifications", $tabspeclabel, $tabspectitle);
     }
 }

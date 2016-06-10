@@ -1,4 +1,21 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
+
 /**
 * Global Search Engine for Moodle
 *
@@ -12,15 +29,12 @@
 * document handling for techproject activity module
 */
 
-/**
-* requires and includes
-*/
-require_once("$CFG->dirroot/search/documents/document.php");
-require_once("$CFG->dirroot/mod/techproject/lib.php");
+require_once($CFG->dirroot.'/local/search/documents/document.php');
+require_once($CFG->dirroot.'/mod/techproject/lib.php');
 
 /**
-* constants for document definition
-*/
+ * constants for document definition
+ */
 define('X_SEARCH_TYPE_TECHPROJECT', 'techproject');
 
 /**
@@ -65,8 +79,10 @@ function techproject_make_link($techproject_id, $entry_id, $entry_type, $group_i
 *
 */
 function techproject_iterator() {
+    global $DB;
+
     $techprojects = $DB->get_records('techproject');
-    return $techprojects;    
+    return $techprojects;
 }
 
 /**
@@ -75,6 +91,8 @@ function techproject_iterator() {
 * @return an array of collected searchable documents
 */
 function techproject_get_content_for_index(&$techproject) {
+    global $DB;
+
     $documents = array();
     if (!$techproject) return $documents;
 
@@ -122,6 +140,8 @@ function techproject_get_content_for_index(&$techproject) {
 *
 */
 function techproject_single_document($id, $itemtype) {
+    global $DB;
+
     switch ($itemtype){
         case 'requirement':{
             $entry = $DB->get_record('techproject_requirement', array('id' => $id));
@@ -195,9 +215,10 @@ function techproject_db_names() {
 * @return an array of records
 */
 function techproject_get_entries($projectid, $type) {
-    global $CFG;
+    global $CFG, $DB;
+
     $query = "
-        SELECT 
+        SELECT
             e.id, 
             e.abstract, 
             e.description,
@@ -219,7 +240,8 @@ function techproject_get_entries($projectid, $type) {
 * @return an array of records that represent tasks
 */
 function techproject_get_tasks($projectid) {
-    global $CFG;
+    global $CFG, $DB;
+
     $query = "
         SELECT 
             t.id, 
@@ -250,6 +272,7 @@ function techproject_get_tasks($projectid) {
 *
 */
 function techproject_search_get_objectinfo($itemtype, $this_id, $context_id = null){
+    global $DB;
 
     if (!$entry = $DB->get_record("techproject_{$itemtype}", array('id' => $this_id))) return false;
     if (!$techproject = $DB->get_record('techproject', array('id' => $entry->projectid))) return false;
@@ -287,7 +310,8 @@ function techproject_search_get_objectinfo($itemtype, $this_id, $context_id = nu
 * @return true if access is allowed, false elsewhere
 */
 function techproject_check_text_access($path, $entry_type, $this_id, $user, $group_id, $context_id){
-    global $CFG;
+    global $CFG, $DB;
+
     include_once("{$CFG->dirroot}/{$path}/lib.php");
 
     // get the techproject object and all related stuff
@@ -328,10 +352,10 @@ function techproject_check_text_access($path, $entry_type, $this_id, $user, $gro
 */
 function techproject_link_post_processing($title){
     global $CFG;
+
     if ($CFG->block_search_utf8dir){
         return mb_convert_encoding($title, 'UTF-8', 'auto');
     }
     return mb_convert_encoding($title, 'auto', 'UTF-8');
 }
 
-?>

@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Project : Technical Project Manager (IEEE like)
- *
- * This screen gives access to copy operations.
- *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @date 2008/03/03
@@ -202,9 +200,11 @@ echo '<center>';
 
 echo $OUTPUT->heading(get_string('copywhat', 'techproject'));
 $toArray = array();
+
 foreach ($to as $atarget) {
     $toArray[] = $groups[$atarget]->name;
 }
+
 if ($from) {
     echo $OUTPUT->box($groups[$from]->name . ' &gt;&gt; ' . implode(',',$toArray), 'center');
 } else {
@@ -221,8 +221,9 @@ function cancel(){
     document.forms['copywhatform'].work.value='setup';
     document.forms['copywhatform'].submit();
 }
-function formControl(entity){
-    switch(entity){
+function formControl(entity) {
+    switch (entity) {
+
         case 'requs':
             if (!document.forms['copywhatform'].requs.checked == true) {
                 document.forms['copywhatform'].spectoreq.disabled = true;

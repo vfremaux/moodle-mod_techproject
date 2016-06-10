@@ -1,11 +1,23 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
- * Project : Technical Project Manager (IEEE like)
- *
- * Moodle API Library
- *
- * @package mod-techproject
+ * @package mod_techproject
  * @subpackage framework
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
@@ -14,26 +26,45 @@
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  */
 
-/**
-* Requires and includes
-*/
-if (file_exists($CFG->libdir.'/openlib.php')){
+if (file_exists($CFG->libdir.'/openlib.php')) {
     require_once($CFG->libdir.'/openlib.php');//openmod lib by rick chaides
 }
 
-require_once $CFG->dirroot.'/calendar/lib.php';
+require_once($CFG->dirroot.'/calendar/lib.php');
 
 /**
-* Given an object containing all the necessary data,
-* (defined by the form in mod.html) this function
-* will create a new instance and return the id number
-* of the new instance.
-* @param object $project the form object from which create an instance 
-* @return the new instance id
-*/
-function techproject_add_instance($project){
-	global $DB;
-	
+ * List of features supported in Techproject module
+ * @param string $feature FEATURE_xx constant for requested feature
+ * @return mixed True if module supports feature, false if not, null if doesn't know
+ */
+function techproject_supports($feature) {
+    switch($feature) {
+        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_OTHER;
+        case FEATURE_GROUPS:                  return true;
+        case FEATURE_GROUPINGS:               return true;
+        case FEATURE_GROUPMEMBERSONLY:        return true;
+        case FEATURE_MOD_INTRO:               return true;
+        case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
+        case FEATURE_GRADE_HAS_GRADE:         return true;
+        case FEATURE_GRADE_OUTCOMES:          return false;
+        case FEATURE_BACKUP_MOODLE2:          return true;
+        case FEATURE_SHOW_DESCRIPTION:        return true;
+
+        default: return null;
+    }
+}
+
+/**
+ * Given an object containing all the necessary data,
+ * (defined by the form in mod.html) this function
+ * will create a new instance and return the id number
+ * of the new instance.
+ * @param object $project the form object from which create an instance 
+ * @return the new instance id
+ */
+function techproject_add_instance($project) {
+    global $DB;
+
     $project->timecreated = time();
     $project->timemodified = time();
 
@@ -61,24 +92,24 @@ function techproject_add_instance($project){
 }
 
 /**
-* some consistency check over dates
-* returns true if the dates are valid, false otherwise
-* @param object $project a form object to be checked for dates
-* @return true if dates are OK
-*/
+ * some consistency check over dates
+ * returns true if the dates are valid, false otherwise
+ * @param object $project a form object to be checked for dates
+ * @return true if dates are OK
+ */
 function techproject_check_dates($project) {
     // but enforce non-empty or non negative projet period.
     return ($project->projectstart < $project->projectend);           
 }
 
 /**
-* Given an object containing all the necessary data, 
-* (defined by the form in mod.html) this function 
-* will update an existing instance with new data.
-* @uses $CFG
-* @param object $project the form object from which update an instance
-*/
-function techproject_update_instance($project){
+ * Given an object containing all the necessary data, 
+ * (defined by the form in mod.html) this function 
+ * will update an existing instance with new data.
+ * @uses $CFG
+ * @param object $project the form object from which update an instance
+ */
+function techproject_update_instance($project) {
     global $CFG, $DB;
 
     $project->timemodified = time();
@@ -104,26 +135,26 @@ function techproject_update_instance($project){
         $moduleid = $DB->get_field('modules', 'id', array('name' => 'techproject'));
         foreach ($dates as $type => $date) {
             if ($event = $DB->get_record('event', array('modulename' => 'techproject', 'instance' => $project->id, 'eventtype' => $type))) {
-                $event->name        = get_string($type.'event','techproject', $project->name);
+                $event->name = get_string($type.'event','techproject', $project->name);
                 $event->description = $project->intro;
                 $event->eventtype   = $type;
-                $event->timestart   = $date;
-                update_event($event);
-            } 
-            else if ($date) {
+                $event->timestart = $date;
+                $eventobj = calendar_event::load($event->id);
+                $eventobj->update($event);
+            }  elseif ($date) {
                 $event = new StdClass;
-                $event->name        = get_string($type.'event','techproject', $project->name);
+                $event->name = get_string($type.'event','techproject', $project->name);
                 $event->description = $project->intro;
-                $event->courseid    = $project->course;
-                $event->groupid     = 0;
-                $event->userid      = 0;
-                $event->modulename  = 'techproject';
-                $event->instance    = $project->instance;
-                $event->eventtype   = $type;
-                $event->timestart   = $date;
+                $event->courseid = $project->course;
+                $event->groupid = 0;
+                $event->userid = 0;
+                $event->modulename = 'techproject';
+                $event->instance = $project->instance;
+                $event->eventtype = $type;
+                $event->timestart = $date;
                 $event->timeduration = 0;
-                $event->visible     = $DB->get_field('course_modules', 'visible', array('module' => $moduleid, 'instance' => $project->id)); 
-                add_event($event);
+                $event->visible = $DB->get_field('course_modules', 'visible', array('module' => $moduleid, 'instance' => $project->id)); 
+                calendar_event::create($event);
             }
         }
     }
@@ -131,15 +162,15 @@ function techproject_update_instance($project){
 }
 
 /**
-* Given an ID of an instance of this module,
-* this function will permanently delete the instance
-* and any data that depends on it.
-* @param integer $id the instance id to delete
-* @return true if successfully deleted
-*/
-function techproject_delete_instance($id){
-	global $DB;
-	
+ * Given an ID of an instance of this module,
+ * this function will permanently delete the instance
+ * and any data that depends on it.
+ * @param integer $id the instance id to delete
+ * @return true if successfully deleted
+ */
+function techproject_delete_instance($id) {
+    global $DB;
+
     if (! $project = $DB->get_record('techproject', array('id' => $id))) {
         return false;
     }
@@ -168,9 +199,10 @@ function techproject_delete_instance($id){
     $DB->delete_records('techproject_assessment', array('projectid' => $project->id));
     $DB->delete_records('techproject_criterion', array('projectid' => $project->id));
 
-	/* Delete any event associate with the project */
+    // Delete any event associate with the project.
     $DB->delete_records('event', array('modulename' => 'techproject', 'instance' => $project->id));
-	/* Delete the instance itself */
+
+    // Delete the instance itself.
     if (! $DB->delete_records('techproject', array('id' => $project->id))) {
         $result = false;
     }
@@ -181,28 +213,28 @@ function techproject_delete_instance($id){
 }
 
 /**
-* gives back an object for student detailed reports
-* @param object $course the current course
-* @param object $user the current user
-* @param object $mod the current course module
-* @param object $project the current project
-*/
-function techproject_user_complete($course, $user, $mod, $project){
+ * gives back an object for student detailed reports
+ * @param object $course the current course
+ * @param object $user the current user
+ * @param object $mod the current course module
+ * @param object $project the current project
+ */
+function techproject_user_complete($course, $user, $mod, $project) {
     return NULL;
 }
 
 /**
-* gives back an object for student abstract reports
-* @uses $CFG
-* @param object $course the current course
-* @param object $user the current user
-* @param object $mod the current course module
-* @param object $project the current project
-*/
-function techproject_user_outline($course, $user, $mod, $project){
+ * gives back an object for student abstract reports
+ * @uses $CFG
+ * @param object $course the current course
+ * @param object $user the current user
+ * @param object $mod the current course module
+ * @param object $project the current project
+ */
+function techproject_user_outline($course, $user, $mod, $project) {
     global $CFG, $DB;
 
-    if ($project = $DB->get_record('techproject', array('id' => $project->id))){
+    if ($project = $DB->get_record('techproject', array('id' => $project->id))) {
         // counting assigned tasks
         $assignedtasks = $DB->count_records('techproject_task', array('projectid' => $project->id, 'assignee' => $user->id));
         $select = "projectid = {$project->id} AND assignee = $user->id AND done < 100";
@@ -221,10 +253,11 @@ function techproject_user_outline($course, $user, $mod, $project){
                 (owner = $user->id OR
                 assignee = $user->id)
         ";
-        if ($lastrecord = $DB->get_record_sql($sql))
+        if ($lastrecord = $DB->get_record_sql($sql)) {
             $outline->time = $lastrecord->modified;
-        else
+        } else {
             $outline->time = $project->timemodified;
+        }
         return $outline;
     }
     return NULL;
@@ -259,7 +292,7 @@ function techproject_reset_course_form_definition(&$mform) {
     global $COURSE, $DB;
 
     $mform->addElement('header', 'teachprojectheader', get_string('modulenameplural', 'techproject'));
-    if(!$techprojects = $DB->get_records('techproject', array('course' => $COURSE->id))){
+    if (!$techprojects = $DB->get_records('techproject', array('course' => $COURSE->id))) {
         return;
     }
 
@@ -271,20 +304,20 @@ function techproject_reset_course_form_definition(&$mform) {
 }
 
 /**
-* This function is used by the remove_course_userdata function in moodlelib.
-* If this function exists, remove_course_userdata will execute it.
-* This function will remove all posts from the specified forum.
-* @uses $CFG
-* @param object $data the reset options
-* @param boolean $showfeedback if true, ask the function to be verbose
-*/
+ * This function is used by the remove_course_userdata function in moodlelib.
+ * If this function exists, remove_course_userdata will execute it.
+ * This function will remove all posts from the specified forum.
+ * @uses $CFG
+ * @param object $data the reset options
+ * @param boolean $showfeedback if true, ask the function to be verbose
+ */
 function techproject_reset_userdata($data) {
     global $CFG, $DB;
 
     $status = array();
     $componentstr = get_string('modulenameplural', 'magtest');
     $strreset = get_string('reset');
-    if ($data->reset_techproject_grades or $data->reset_techproject_criteria or $data->reset_techproject_groups){
+    if ($data->reset_techproject_grades or $data->reset_techproject_criteria or $data->reset_techproject_groups) {
         $sql = "
             DELETE FROM
                 {techproject_assessment}
@@ -296,12 +329,12 @@ function techproject_reset_userdata($data) {
              WHERE 
                 c.course={$data->courseid} )
          ";
-        if ($DB->execute($sql)){
+        if ($DB->execute($sql)) {
             $status[] = array('component' => $componentstr, 'item' => get_string('resetting_grades','techproject'), 'error' => false);
         }
     }
 
-    if ($data->reset_techproject_criteria){
+    if ($data->reset_techproject_criteria) {
         $sql = "
             DELETE FROM
                 {techproject_criterion}
@@ -313,12 +346,12 @@ function techproject_reset_userdata($data) {
              WHERE 
                 c.course={$data->courseid} )
          ";
-        if($DB->execute($sql)){
+        if ($DB->execute($sql)) {
             $status[] = array('component' => $componentstr, 'item' => get_string('resetting_criteria','techproject'), 'error' => false);
         }
     }
 
-    if ($data->reset_techproject_groups){
+    if ($data->reset_techproject_groups) {
         $subsql = "
                 WHERE
                     projectid IN ( SELECT 
@@ -340,10 +373,10 @@ function techproject_reset_userdata($data) {
                               'deliverable',
                               'heading');
 
-        if ($data->reset_techproject_milestones){
+        if ($data->reset_techproject_milestones) {
             $deletetables[] = 'milestone';
         }
-        foreach($deletetables as $atable){
+        foreach ($deletetables as $atable) {
             $sql = "
                 DELETE FROM
                     {techproject_{$atable}}
@@ -355,7 +388,7 @@ function techproject_reset_userdata($data) {
         $status[] = array('component' => $componentstr, 'item' => get_string('resetting_groupprojects','techproject'), 'error' => false);
     }
 
-    if ($data->reset_techproject_group0){
+    if ($data->reset_techproject_group0) {
         $subsql = "
                 WHERE
                     projectid IN ( SELECT 
@@ -377,10 +410,10 @@ function techproject_reset_userdata($data) {
                               'deliverable',
                               'heading');
 
-        if ($data->reset_techproject_milestones){
+        if ($data->reset_techproject_milestones) {
             $deletetables[] = 'milestone';
         }
-        foreach($deletetables as $atable){
+        foreach ($deletetables as $atable) {
             $sql = "
                 DELETE FROM
                     {techproject_{$atable}}
@@ -393,13 +426,11 @@ function techproject_reset_userdata($data) {
     return $status;
 }
 
-
 /**
 * performs what needs to be done in asynchronous mode
 */
-function techproject_cron(){
+function techproject_cron() {
     // TODO : may cleanup some old group rubish ??
-
 }
 
 /**
@@ -408,12 +439,12 @@ function techproject_cron(){
 
 
 /**
-* get the "grade" entries for this user and add the first and last names (of project owner, 
-* better to get name of teacher...
-* ...but not available in assessment record...)
-* @param object $course the current course
-* @param int $timestart the time from which to log
-*/
+ * get the "grade" entries for this user and add the first and last names (of project owner, 
+ * better to get name of teacher...
+ * ...but not available in assessment record...)
+ * @param object $course the current course
+ * @param int $timestart the time from which to log
+ */
 function techproject_get_grade_logs($course, $timestart) {
     global $CFG, $USER, $DB;
 
@@ -452,12 +483,12 @@ function techproject_get_grade_logs($course, $timestart) {
 }
 
 /*
-* get the log entries by a particular change in entities, 
-* @uses $CFG
-* @param object $course the current course
-* @param int $timestart the time from which to log
-* @param string $changekey the key of the event type to be considered
-*/
+ * get the log entries by a particular change in entities, 
+ * @uses $CFG
+ * @param object $course the current course
+ * @param int $timestart the time from which to log
+ * @param string $changekey the key of the event type to be considered
+ */
 function techproject_get_entitychange_logs($course, $timestart, $changekey) {
     global $CFG, $DB;
 
@@ -487,11 +518,11 @@ function techproject_get_entitychange_logs($course, $timestart, $changekey) {
 }
 
 /**
-* get the "submit" entries and add the first and last names...
-* @uses $CFG
-* @param object $course
-* @param int $timestart
-*/
+ * get the "submit" entries and add the first and last names...
+ * @uses $CFG
+ * @param object $course
+ * @param int $timestart
+ */
 function techproject_get_submit_logs($course, $timestart) {
     global $CFG, $DB;
 
@@ -521,45 +552,47 @@ function techproject_get_submit_logs($course, $timestart) {
 }
 
 /**
-* Given a list of logs, assumed to be those since the last login
-* this function prints a short list of changes related to this module
-* If isteacher is true then perhaps additional information is printed.
-* This function is called from course/lib.php: print_recent_activity()
-* @uses $CFG
-* @param object $course
-* @param boolean $isteacher
-* @param int $timestart
-*/
-function techproject_print_recent_activity($course, $isteacher, $timestart){
+ * Given a list of logs, assumed to be those since the last login
+ * this function prints a short list of changes related to this module
+ * If isteacher is true then perhaps additional information is printed.
+ * This function is called from course/lib.php: print_recent_activity()
+ * @uses $CFG
+ * @param object $course
+ * @param boolean $isteacher
+ * @param int $timestart
+ */
+function techproject_print_recent_activity($course, $isteacher, $timestart) {
     global $CFG;
 
-    // have a look for what has changed in requ
+    // Have a look for what has changed in requ.
     $changerequcontent = false;
-    if (!$isteacher) { // teachers only need to see project
+    if (!$isteacher) {
+        // Teachers only need to see project.
         if ($logs = techproject_get_entitychange_logs($course, $timestart, 'changerequ')) {
             // got some, see if any belong to a visible module
             foreach ($logs as $log) {
-                // Create a temp valid module structure (only need courseid, moduleid)
+                // Create a temp valid module structure (only need courseid, moduleid).
                 $tempmod = new StdClass;
                 $tempmod->course = $course->id;
                 $tempmod->id = $log->projectid;
-                //Obtain the visible property from the instance
+                // Obtain the visible property from the instance.
                 if (instance_is_visible('techproject',$tempmod)) {
                     $changerequcontent = true;
                     break;
                     }
                 }
-            // if we got some "live" ones then output them
+            // If we got some "live" ones then output them.
             if ($changerequcontent) {
                 print_headline(get_string('projectchangedrequ', 'techproject').":");
                 foreach ($logs as $log) {
-                    //Create a temp valid module structure (only need courseid, moduleid)
-                	$tempmod = new StdClass;
+                    // Create a temp valid module structure (only need courseid, moduleid).
+                    $tempmod = new StdClass;
                     $tempmod->course = $course->id;
                     $tempmod->id = $log->projectid;
                     //Obtain the visible property from the instance
                     if (instance_is_visible('techproject',$tempmod)) {
-                        if (!has_capability('mod/techproject:gradeproject', $context, $log->userid)) {  // don't break anonymous rule
+                        if (!has_capability('mod/techproject:gradeproject', $context, $log->userid)) {
+                            // Don't break anonymous rule.
                             $log->firstname = $course->student;
                             $log->lastname = '';
                         }
@@ -575,27 +608,30 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
     $changespeccontent = false;
     if (!$isteacher) { // teachers only need to see project
         if ($logs = techproject_get_entitychange_logs($course, $timestart, 'changespec')) {
-            // got some, see if any belong to a visible module
+            // Got some, see if any belong to a visible module.
             foreach ($logs as $log) {
-                // Create a temp valid module structure (only need courseid, moduleid)
+                // Create a temp valid module structure (only need courseid, moduleid).
                 $tempmod->course = $course->id;
                 $tempmod->id = $log->projectid;
-                //Obtain the visible property from the instance
+                // Obtain the visible property from the instance.
                 if (instance_is_visible('techproject',$tempmod)) {
                     $changespeccontent = true;
                     break;
                     }
                 }
-            // if we got some "live" ones then output them
+            // If we got some "live" ones then output them.
             if ($changespeccontent) {
                 print_headline(get_string('projectchangedspec', 'techproject').":");
+
                 foreach ($logs as $log) {
-                    //Create a temp valid module structure (only need courseid, moduleid)
+                    // Create a temp valid module structure (only need courseid, moduleid).
                     $tempmod->course = $course->id;
                     $tempmod->id = $log->projectid;
-                    //Obtain the visible property from the instance
+
+                    // Obtain the visible property from the instance.
                     if (instance_is_visible('techproject',$tempmod)) {
-                        if (!isteacher($course->id, $log->userid)) {  // don't break anonymous rule
+                        if (!isteacher($course->id, $log->userid)) {
+                            // Don't break anonymous rule.
                             $log->firstname = $course->student;
                             $log->lastname = '';
                         }
@@ -607,31 +643,33 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
         }
     }
 
-    // have a look for what has changed in tasks
+    // Have a look for what has changed in tasks.
     $changetaskcontent = false;
-    if (!$isteacher) { // teachers only need to see project
+    if (!$isteacher) {
+        // Teachers only need to see project.
         if ($logs = techproject_get_entitychange_logs($course, $timestart, 'changetask')) {
-            // got some, see if any belong to a visible module
+            // Got some, see if any belong to a visible module.
             foreach ($logs as $log) {
-                // Create a temp valid module structure (only need courseid, moduleid)
+                // Create a temp valid module structure (only need courseid, moduleid).
                 $tempmod->course = $course->id;
                 $tempmod->id = $log->projectid;
-                //Obtain the visible property from the instance
+                // Obtain the visible property from the instance.
                 if (instance_is_visible('techproject',$tempmod)) {
                     $changetaskcontent = true;
                     break;
-                    }
                 }
-            // if we got some "live" ones then output them
+            }
+            // If we got some "live" ones then output them.
             if ($changetaskcontent) {
                 print_headline(get_string('projectchangedtask', 'techproject').":");
                 foreach ($logs as $log) {
-                    //Create a temp valid module structure (only need courseid, moduleid)
+                    // Create a temp valid module structure (only need courseid, moduleid)
                     $tempmod->course = $course->id;
                     $tempmod->id = $log->projectid;
                     //Obtain the visible property from the instance
                     if (instance_is_visible('techproject',$tempmod)) {
-                        if (!isteacher($course->id, $log->userid)) {  // don't break anonymous rule
+                        if (!isteacher($course->id, $log->userid)) {  
+                            // Don't break anonymous rule.
                             $log->firstname = $course->student;
                             $log->lastname = '';
                         }
@@ -643,7 +681,7 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
         }
     }
 
-    // have a look for what has changed in milestones
+    // Have a look for what has changed in milestones.
     $changemilescontent = false;
     if (!$isteacher) { // teachers only need to see project
         if ($logs = techproject_get_entitychange_logs($course, $timestart, 'changemilestone')) {
@@ -656,9 +694,9 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
                 if (instance_is_visible('techproject',$tempmod)) {
                     $changemilescontent = true;
                     break;
-                    }
                 }
-            // if we got some "live" ones then output them
+            }
+            // If we got some "live" ones then output them.
             if ($changemilescontent) {
                 print_headline(get_string('projectchangedmilestone', 'techproject').":");
                 foreach ($logs as $log) {
@@ -667,7 +705,8 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
                     $tempmod->id = $log->projectid;
                     //Obtain the visible property from the instance
                     if (instance_is_visible('techproject',$tempmod)) {
-                        if (!isteacher($course->id, $log->userid)) {  // don't break anonymous rule
+                        if (!isteacher($course->id, $log->userid)) { 
+                            // Don't break anonymous rule.
                             $log->firstname = $course->student;
                             $log->lastname = '';
                         }
@@ -679,31 +718,33 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
         }
     }
 
-    // have a look for what has changed in milestones
+    // Have a look for what has changed in milestones.
     $changedelivcontent = false;
-    if (!$isteacher) { // teachers only need to see project
+    if (!$isteacher) {
+        // Teachers only need to see project.
         if ($logs = techproject_get_entitychange_logs($course, $timestart, 'changedeliverable')) {
-            // got some, see if any belong to a visible module
+            // Got some, see if any belong to a visible module.
             foreach ($logs as $log) {
-                // Create a temp valid module structure (only need courseid, moduleid)
+                // Create a temp valid module structure (only need courseid, moduleid).
                 $tempmod->course = $course->id;
                 $tempmod->id = $log->projectid;
                 //Obtain the visible property from the instance
                 if (instance_is_visible('techproject',$tempmod)) {
                     $changedelivcontent = true;
                     break;
-                    }
                 }
-            // if we got some "live" ones then output them
+            }
+            // If we got some "live" ones then output them.
             if ($changedelivcontent) {
                 print_headline(get_string('projectchangeddeliverable', 'techproject').":");
                 foreach ($logs as $log) {
-                    //Create a temp valid module structure (only need courseid, moduleid)
+                    // Create a temp valid module structure (only need courseid, moduleid)
                     $tempmod->course = $course->id;
                     $tempmod->id = $log->projectid;
-                    //Obtain the visible property from the instance
+                    // Obtain the visible property from the instance
                     if (instance_is_visible('techproject',$tempmod)) {
-                        if (!isteacher($course->id, $log->userid)) {  // don't break anonymous rule
+                        if (!isteacher($course->id, $log->userid)) {
+                            // Don't break anonymous rule.
                             $log->firstname = $course->student;
                             $log->lastname = '';
                         }
@@ -715,21 +756,21 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
         }
     }
 
-    // have a look for new gradings for this user (grade)
+    // Have a look for new gradings for this user (grade).
     $gradecontent = false;
     if ($logs = techproject_get_grade_logs($course, $timestart)) {
-        // got some, see if any belong to a visible module
+        // Got some, see if any belong to a visible module.
         foreach ($logs as $log) {
-            // Create a temp valid module structure (only need courseid, moduleid)
+            // Create a temp valid module structure (only need courseid, moduleid).
             $tempmod->course = $course->id;
             $tempmod->id = $log->projectid;
-            //Obtain the visible property from the instance
+            // Obtain the visible property from the instance.
             if (instance_is_visible('techproject',$tempmod)) {
                 $gradecontent = true;
                 break;
-                }
             }
-        // if we got some "live" ones then output them
+        }
+        // If we got some "live" ones then output them.
         if ($gradecontent) {
             print_headline(get_string('projectfeedback', 'techproject').":");
             foreach ($logs as $log) {
@@ -747,29 +788,29 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
         }
     }
 
-    // have a look for new project (only show to teachers) (submit)
+    // Have a look for new project (only show to teachers) (submit).
     $submitcontent = false;
     if ($isteacher) {
         if ($logs = techproject_get_submit_logs($course, $timestart)) {
-            // got some, see if any belong to a visible module
+            // Got some, see if any belong to a visible module.
             foreach ($logs as $log) {
-                // Create a temp valid module structure (only need courseid, moduleid)
+                // Create a temp valid module structure (only need courseid, moduleid).
                 $tempmod->course = $course->id;
                 $tempmod->id = $log->projectid;
-                //Obtain the visible property from the instance
+                // Obtain the visible property from the instance.
                 if (instance_is_visible('techproject',$tempmod)) {
                     $submitcontent = true;
                     break;
-                    }
                 }
-            // if we got some "live" ones then output them
+            }
+            // If we got some "live" ones then output them.
             if ($submitcontent) {
                 print_headline(get_string('projectproject', 'techproject').":");
                 foreach ($logs as $log) {
-                    //Create a temp valid module structure (only need courseid, moduleid)
+                    // Create a temp valid module structure (only need courseid, moduleid).
                     $tempmod->course = $course->id;
                     $tempmod->id = $log->projectid;
-                    //Obtain the visible property from the instance
+                    // Obtain the visible property from the instance.
                     if (instance_is_visible('techproject',$tempmod)) {
                         print_recent_activity_note($log->time, $log, $isteacher, $log->name,
                                                    $CFG->wwwroot.'/mod/techproject/'.$log->url);
@@ -797,15 +838,16 @@ function techproject_print_recent_activity($course, $isteacher, $timestart){
 function techproject_grades($cmid) {
     global $CFG, $DB;
 
-    if (!$module = $DB->get_record('course_modules', array('id' => $cmid))){
+    if (!$module = $DB->get_record('course_modules', array('id' => $cmid))) {
         return NULL;
     }    
 
-    if (!$project = $DB->get_record('techproject', array('id' => $module->instance))){
+    if (!$project = $DB->get_record('techproject', array('id' => $module->instance))) {
         return NULL;
     }
 
-    if ($project->grade == 0) { // No grading
+    if ($project->grade == 0) {
+        // No grading
         return NULL;
     }
 
@@ -825,17 +867,17 @@ function techproject_grades($cmid) {
     // echo $query ;
     $grades = $DB->get_records_sql($query);
     if ($grades){
-        if ($project->grade > 0 ){ // Grading numerically
+        if ($project->grade > 0 ) {
+            // Grading numerically.
             $finalgrades = array();
-            foreach($grades as $aGrade){
+            foreach ($grades as $aGrade) {
                 $finalgrades[$aGrade->userid] = @$finalgrades[$aGrade->userid] + $aGrade->grade * $aGrade->weight;
                 $totalweights[$aGrade->userid] = @$totalweights[$aGrade->userid] + $aGrade->weight;
             }
-            foreach(array_keys($finalgrades) as $aUserId){
-                if($totalweights[$aGrade->userid] != 0){
+            foreach (array_keys($finalgrades) as $aUserId) {
+                if ($totalweights[$aGrade->userid] != 0) {
                     $final[$aUserId] = round($finalgrades[$aUserId] / $totalweights[$aGrade->userid]);
-                }
-                else{
+                } else {
                     $final[$aUserId] = 0;
                 }
             }
@@ -853,8 +895,8 @@ function techproject_grades($cmid) {
                 }
                 $maxgrade = $scale->name;
 
-                foreach(array_keys($finalgrades) as $aUserId){
-                    if($totalweights[$aGrade->userid] != 0){
+                foreach (array_keys($finalgrades) as $aUserId) {
+                    if ($totalweights[$aGrade->userid] != 0) {
                         $final[$userId] = round($finalgrades[$aUserId] / $totalweights[$aGrade->userid]);
                     } else {
                         $final[$userId] = 0;
@@ -872,14 +914,14 @@ function techproject_grades($cmid) {
 /**
  *
  **/
-function techproject_scale_used_anywhere($scaleid){
+function techproject_scale_used_anywhere($scaleid) {
     global $DB;
 
     if ($scaleid and $DB->record_exists('techproject', array('grade' => -$scaleid))) {
         return true;
     } else {
         return false;
-    }	
+    }
 }
 
 /**
@@ -902,26 +944,26 @@ function techproject_get_participants($moduleid) {
     $usersdelivs = $DB->get_records('techproject_deliverable', array('projectid' => $moduleid), '', 'userid,userid');
     $usersmiles = $DB->get_records('techproject_milestone', array('projectid' => $moduleid), '', 'userid,userid');
 
-    $allusers = array();    
-    if(!empty($usersreqs)){
+    $allusers = array();
+    if (!empty($usersreqs)) {
         $allusers = array_keys($usersreqs);
     }
-    if(!empty($usersspecs)){
+    if (!empty($usersspecs)) {
         $allusers = array_merge($allusers, array_keys($usersspecs));
     }
-    if(!empty($userstasks)){
+    if (!empty($userstasks)) {
         $allusers = array_merge($allusers, array_keys($userstasks));
     }
-    if(!empty($userstasksassigned)){
+    if (!empty($userstasksassigned)) {
         $allusers = array_merge($allusers, array_keys($userstasksassigned));
     }
-    if(!empty($userstasksowned)){
+    if (!empty($userstasksowned)) {
         $allusers = array_merge($allusers, array_keys($userstasksowned));
     }
-    if(!empty($userstasksdelivs)){
+    if (!empty($userstasksdelivs)) {
         $allusers = array_merge($allusers, array_keys($userstasksdelivs));
     }
-    if(!empty($userstasksmiles)){
+    if (!empty($userstasksmiles)) {
         $allusers = array_merge($allusers, array_keys($userstasksmiles));
     }
     $userlist = implode("','", $allusers);
@@ -939,7 +981,7 @@ function techproject_get_participants($moduleid) {
  * @return mixed
  **/
 function techproject_scale_used($cmid, $scaleid) {
-	global $DB;
+    global $DB;
 
     $return = false;
 
@@ -972,22 +1014,12 @@ function techproject_pluginfile($course, $cm, $context, $filearea, $args, $force
 
     require_course_login($course, true, $cm);
 
-    $fileareas = array('intro', 'requirementdescription', 'specificationdescription', 'milestonedescription', 'taskdescription', 'deliverabledescription', 'deliverablelocalfile', 'abstract', 'rationale', 'environment');
-    $areastotables = array(
-        'requirementdescription' => 'techproject_requirement',
-        'specificationdescription' => 'techproject_specifciation',
-        'milestonedescription' => 'techproject_milestone',
-        'taskdescription' => 'techproject_task',
-        'deliverabledescription' => 'techproject_deliverable',
-        'deliverablelocalfile' => 'techproject_deliverable',
-        'abstract' => 'techproject_heading',
-        'rationale' => 'techproject_heading',
-        'environment' => 'techproject_heading'
-     );
+    $fileareas = array('intro', 'requirementdescription', 'specificationdescription', 'milestonedescription', 'taskdescription', 'deliverabledescription', 'abstract', 'rationale', 'environment');
+    $areastotables = array('requirementdescription' => 'techproject_requirement', 'specificationdescription' => 'techproject_specifciation', 'milestonedescription' => 'techproject_milestone', 'taskdescription' => 'techproject_task', 'deliverabledescription' => 'techproject_deliverable', 'abstract' => 'techproject_heading', 'rationale' => 'techproject_heading', 'environment' => 'techproject_heading');
     if (!in_array($filearea, $fileareas)) {
         return false;
     }
-
+    
     $relatedtable = $areastotables[$filearea];
 
     $entryid = (int)array_shift($args);
@@ -1017,10 +1049,30 @@ function techproject_pluginfile($course, $cm, $context, $filearea, $args, $force
         }
     }
     
-    if ((!isloggedin() || isguestuser()) && !$project->guestsallowed){
+    if ((!isloggedin() || isguestuser()) && !$project->guestsallowed) {
         return false;
     }
 
     // finally send the file
     send_stored_file($file, 0, 0, true); // download MUST be forced - security!
+}
+
+/**
+ * This function allows the tool_dbcleaner to register integrity checks
+ */
+function techproject_dbcleaner_add_keys() {
+    $keys = array(
+        array('techproject', 'course', 'course', 'id', ''),
+        array('techproject_heading', 'projectid', 'techproject', 'id', ''),
+        array('techproject_requirement', 'projectid', 'techproject', 'id', ''),
+        array('techproject_specification', 'projectid', 'techproject', 'id', ''),
+        array('techproject_task', 'projectid', 'techproject', 'id', ''),
+        array('techproject_milestone', 'projectid', 'techproject', 'id', ''),
+        array('techproject_deliverable', 'projectid', 'techproject', 'id', ''),
+        array('techproject_assessment', 'projectid', 'techproject', 'id', ''),
+        array('techproject_criterion', 'projectid', 'techproject', 'id', ''),
+        array('techproject_spec_to_req', 'projectid', 'techproject', 'id', ''),
+    );
+
+    return $keys;
 }

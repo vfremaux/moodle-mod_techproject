@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Project : Technical Project Manager (IEEE like)
- *
  * This is a screen for assessing students
  *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @date 2008/03/03
@@ -60,11 +60,13 @@ if (!has_capability('mod/techproject:gradeproject', $context)) {
     return;
 }
 
+echo $pagebuffer;
+
 echo $OUTPUT->heading(get_string('assessment'));
 
 // Checks if assessments can occur.
 if (!groups_get_activity_groupmode($cm, $project->course)) {
-    $groupStudents = get_users_by_capability($context, 'mod/techproject:canbeevaluated', 'id,firstname,lastname,email,picture', 'lastname');
+    $groupStudents = get_users_by_capability($context, 'mod/techproject:canbeevaluated', 'u.id,'.get_all_user_name_fields(true, 'u').',email,picture', 'u.lastname');
 } else {
     $groupmembers = groups_get_members($currentgroupid);
     foreach ($groupmembers as $amember) {
@@ -150,7 +152,7 @@ if ($work == 'dosave') {
                 itemclass = ?
             ";
             $sqlparams = array($project->id, $aStudent->id, $assessment->itemid, $assessment->itemclass);
-            if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, $sqlparams) {
+            if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, $sqlparams)) {
                 $assessment->id = $oldrecord->id;
                 $DB->update_record('techproject_assessment', $assessment);
                 $event = \mod_techproject\event\grade_updated::create_from_assessment($techproject, $context, $assessment, $aStudent->id);
@@ -217,7 +219,7 @@ if ($work == 'dosave') {
                 itemclass = 'free' AND
                 itemid = 0 AND 
                 criterion = ?
-            "
+            ";
             $sqlparams = array($project->id, $aStudent->id, $assessment->criterion);
             if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, $sqlparams)) {
                 $assessment->id = $oldrecord->id;

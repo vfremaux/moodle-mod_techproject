@@ -1,22 +1,35 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
- * Project : Technical Project Manager (IEEE like)
- *
- * Specification operations.
- *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
- * @author Valery Fremaux (France) (valery.fremaux@club-internet.fr)
- * @date 2009/02/01
- * @version phase2
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
 /**
- * Notifies all project managers of a new specification being entered
- *
- */
+* Notifies all project managers of a new specification being entered
+*
+*/
 function techproject_notify_new_specification(&$project, $cmid, &$specification, $currentgroupid){
     global $USER, $COURSE, $CFG, $DB;
 
@@ -50,7 +63,7 @@ function techproject_notify_new_specification(&$project, $cmid, &$specification,
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=specifications&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id, firstname, lastname, email, picture, mailformat');
+    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id,'.get_all_user_name_fields(true, 'u').',email, picture, mailformat');
     if (!empty($managers)) {
        foreach ($managers as $manager) {
            techproject_complete_user($manager);
@@ -60,17 +73,17 @@ function techproject_notify_new_specification(&$project, $cmid, &$specification,
 }
 
 /**
- * Notifies all project managers of a new requirement being entered
- *
- *
- */
-function techproject_notify_new_requirement(&$project, $cmid, &$requirement, $currentgroupid) {
+* Notifies all project managers of a new requirement being entered
+*
+*
+*/
+function techproject_notify_new_requirement(&$project, $cmid, &$requirement, $currentgroupid){
     global $USER, $COURSE, $CFG, $DB;
 
     techproject_complete_user($USER);
 
     $class = get_string('requirement', 'techproject');
-    if (!$strength = $DB->get_record('techproject_qualifier', array('code' => $requirement->strength, 'domain' => 'strength', 'projectid' => $project->id))) {
+    if (!$strength = $DB->get_record('techproject_qualifier', array('code' => $requirement->strength, 'domain' => 'strength', 'projectid' => $project->id))){
         $strength = $DB->get_record('techproject_qualifier', array('code' => $requirement->strength, 'domain' => 'strength', 'projectid' => 0));
     }
     if (!$strength) $strength->label = "N.Q.";
@@ -87,13 +100,13 @@ function techproject_notify_new_requirement(&$project, $cmid, &$requirement, $cu
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=requirements&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id, firstname, lastname, email, picture, mailformat');
+    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id,'.get_all_user_name_fields(true, 'u').',email, picture, mailformat');
 
     if (!empty($managers)) {
-        foreach ($managers as $manager) {
-            techproject_complete_user($manager);
-            email_to_user($manager, $USER, $COURSE->shortname .' - '.get_string('notifynewrequ', 'techproject'), html_to_text($message), $message);
-        }
+       foreach ($managers as $manager) {
+           techproject_complete_user($manager);
+           email_to_user($manager, $USER, $COURSE->shortname .' - '.get_string('notifynewrequ', 'techproject'), html_to_text($message), $message);
+       }
     }
 }
 
@@ -101,33 +114,27 @@ function techproject_notify_new_requirement(&$project, $cmid, &$requirement, $cu
  * Notifies all project managers of a new task being entered
  *
  */
-function techproject_notify_new_task(&$project, $cmid, &$task, $currentgroupid) {
+function techproject_notify_new_task(&$project, $cmid, &$task, $currentgroupid){
     global $USER, $COURSE, $CFG, $DB;
-
+    
     $class = get_string('task', 'techproject');
-    if (!$worktype = $DB->get_record('techproject_qualifier', array('code' => $task->worktype, 'domain' => 'worktype', 'projectid' => $project->id))) {
+    if (!$worktype = $DB->get_record('techproject_qualifier', array('code' => $task->worktype, 'domain' => 'worktype', 'projectid' => $project->id))){
         $worktype = $DB->get_record('techproject_qualifier', array('code' => $task->worktype, 'domain' => 'worktype', 'projectid' => 0));
     }
-    if (!empty($task->assignee)) {
+    if (!empty($task->assignee)){
         $assignee = fullname($DB->get_record('user', array('id' => $task->assignee)));
     } else {
         $assignee = get_string('unassigned', 'techproject');
     }
     $status = $DB->get_record('techproject_qualifier', array('code' => $task->status, 'domain' => 'taskstatus'));
     $planned = $task->planned;
-    if (!$risk = $DB->get_record('techproject_qualifier', array('code' => $task->risk, 'domain' => 'risk', 'projectid' => $project->id))) {
+    if (!$risk = $DB->get_record('techproject_qualifier', array('code' => $task->risk, 'domain' => 'risk', 'projectid' => $project->id))){
         $risk = $DB->get_record('techproject_qualifier', array('code' => $task->risk, 'domain' => 'risk', 'projectid' => 0));
     }
 
-    if (!$worktype) {
-        $worktype->label = "N.Q.";
-    }
-    if (!$status) {
-        $status->label = "N.Q.";
-    }
-    if (!$risk) {
-        $risk->label = "N.Q.";
-    }
+    if (!$worktype) $worktype->label = "N.Q.";
+    if (!$status) $status->label = "N.Q.";
+    if (!$risk) $risk->label = "N.Q.";
 
     $qualifiers[] = get_string('worktype', 'techproject').': '.$worktype->label;
     $qualifiers[] = get_string('assignee', 'techproject').': '.$assignee;
@@ -146,51 +153,12 @@ function techproject_notify_new_task(&$project, $cmid, &$task, $currentgroupid) 
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=tasks&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id, firstname, lastname, email, picture, mailformat');
+    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id, '.get_all_user_name_fields(true, 'u').',email, picture, mailformat');
     if (!empty($managers)) {
-        foreach($managers as $manager){
-            techproject_complete_user($manager);
-            email_to_user($manager, $USER, $COURSE->shortname .' - '.get_string('notifynewtask', 'techproject'), html_to_text($message), $message);
-        }
-    }
-}
-
-/**
- * Notifies all project managers of a new task being entered
- *
- */
-function techproject_notify_new_deliverable(&$project, $cmid, &$deliv, $currentgroupid) {
-    global $USER, $COURSE, $CFG, $DB;
-
-    $class = get_string('deliverable', 'techproject');
-    if (!$status = $DB->get_record('techproject_qualifier', array('code' => $deliv->status, 'domain' => 'delivstatus', 'projectid' => $project->id))) {
-        $status = $DB->get_record('techproject_qualifier', array('code' => $deliv->status, 'domain' => 'delivstatus', 'projectid' => 0));
-    }
-
-    if (!$status) {
-        $status->label = "N.Q.";
-    }
-
-    $qualifiers[] = get_string('status', 'techproject').': '.$status->label;
-
-    $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
-    $message = techproject_compile_mail_template('newentrynotify', array(
-        'PROJECT' => $projectheading->title,
-        'CLASS' => $class,
-        'USER' => fullname($USER),
-        'ENTRYNODE' => implode(".", techproject_tree_get_upper_branch('techproject_deliverable', $deliv->id, true, true)),
-        'ENTRYABSTRACT' => $deliv->abstract,
-        'ENTRYDESCRIPTION' => format_string($deliv->description),
-        'QUALIFIERS' => implode('<br/>', $qualifiers),
-        'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=deliv&group={$currentgroupid}"
-    ), 'techproject');
-    $context = context_module::instance($cmid);
-    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id, firstname, lastname, email, picture, mailformat');
-    if (!empty($managers)) {
-        foreach($managers as $manager){
-            techproject_complete_user($manager);
-            email_to_user($manager, $USER, $COURSE->shortname .' - '.get_string('notifynewdeliv', 'techproject'), html_to_text($message), $message);
-        }
+       foreach ($managers as $manager) {
+        techproject_complete_user($manager);
+           email_to_user($manager, $USER, $COURSE->shortname .' - '.get_string('notifynewtask', 'techproject'), html_to_text($message), $message);
+       }
     }
 }
 
@@ -199,7 +167,7 @@ function techproject_notify_new_deliverable(&$project, $cmid, &$deliv, $currentg
 * Notifies all project managers of a new task being entered
 *
 */
-function techproject_notify_new_milestone(&$project, $cmid, &$milestone, $currentgroupid){
+function techproject_notify_new_milestone(&$project, $cmid, &$milestone, $currentgroupid) {
     global $USER, $COURSE, $CFG, $DB;
 
     techproject_complete_user($USER);
@@ -220,31 +188,31 @@ function techproject_notify_new_milestone(&$project, $cmid, &$milestone, $curren
     ), 'techproject');
 
     $context = context_module::instance($cmid);
-    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id, firstname, lastname, email, picture, mailformat');
+    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id,'.get_all_user_name_fields(true, 'u').',email, picture, mailformat');
     if (!empty($managers)){
-        foreach($managers as $manager) {
-            techproject_complete_user($manager);
-            email_to_user ($manager, $USER, $COURSE->shortname .' - '.get_string('notifynewmile', 'techproject'), html_to_text($message), $message);
-        }
+           foreach($managers as $manager){
+               techproject_complete_user($manager);
+               email_to_user ($manager, $USER, $COURSE->shortname .' - '.get_string('notifynewmile', 'techproject'), html_to_text($message), $message);
+           }
     }
 }
 
 /**
- * Notifies an assignee when loosing a task monitoring
- *
- */
-function techproject_notify_task_unassign(&$project, &$task, $oldassigneeid, $currentgroupid) {
-    global $USER, $COURSE, $DB;
+* Notifies an assignee when loosing a task monitoring
+*
+*/
+function techproject_notify_task_unassign(&$project, &$task, $oldassigneeid, $currentgroupid){
+    global $USER, $COURSE, $DB;    
 
     techproject_complete_user($USER);
 
     $oldAssignee = $DB->get_record('user', array('id' => $oldassigneeid));
 
-    if (!$owner = $DB->get_record('user', array('id' => $task->owner))) {
+    if (!$owner = $DB->get_record('user', array('id' => $task->owner))){
         $owner = $USER;
     }
-    if (!$worktype = $DB->get_record('techproject_qualifier', array('code' => $task->worktype, 'domain' => 'worktype', 'projectid' => $project->id))) {
-        if (!$worktype = $DB->get_record('techproject_qualifier', array('code' => $task->worktype, 'domain' => 'worktype', 'projectid' => 0))) {
+    if (!$worktype = $DB->get_record('techproject_qualifier', array('code' => $task->worktype, 'domain' => 'worktype', 'projectid' => $project->id))){
+        if (!$worktype = $DB->get_record('techproject_qualifier', array('code' => $task->worktype, 'domain' => 'worktype', 'projectid' => 0))){
             $worktype->label = get_string('unqualified', 'techproject');
         }
     }
@@ -263,11 +231,11 @@ function techproject_notify_task_unassign(&$project, &$task, $oldassigneeid, $cu
 
 
 /**
-* Notifies an assignee when getting assigned
-*
-*/
-function techproject_notify_task_assign(&$project, &$task, $currentgroupid){
-    global $COURSE, $USER, $DB;
+ * Notifies an assignee when getting assigned
+ *
+ */
+function techproject_notify_task_assign(&$project, &$task, $currentgroupid) {
+    global $COURSE, $USER, $DB;    
 
     techproject_complete_user($USER);
 

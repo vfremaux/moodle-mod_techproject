@@ -14,23 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
-* Project : Technical Project Manager (IEEE like)
-*
-* This screen show tasks plan grouped by worktype.
-*
-* @package mod-techproject
-* @category mod
-* @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
-* @date 2008/03/03
-* @version phase1
-* @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
-* @license http://www.gnu.org/copyleft/gpl.html GNU Public License
-*/
+defined('MOODLE_INTERNAL') || die();
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('You cannot use this script that way');
-}
+/**
+ * @package mod-techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ *
+ * This screen show tasks plan grouped by worktype.
+ */
 
 echo $pagebuffer;
 

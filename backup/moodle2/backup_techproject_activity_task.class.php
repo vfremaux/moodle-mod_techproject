@@ -16,16 +16,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod
- * @subpackage vodeclic
- * @copyright 2010 onwards Valery Fremaux {@link }
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_techproject
+ * @category   mod
+ * @copyright  2010 onwards Valery Fremaux {@link }
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/vodeclic/backup/moodle2/backup_vodeclic_settingslib.php'); // Because it exists (must)
-require_once($CFG->dirroot . '/mod/vodeclic/backup/moodle2/backup_vodeclic_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot.'/mod/techproject/backup/moodle2/backup_techproject_settingslib.php'); // Because it exists (must)
+require_once($CFG->dirroot.'/mod/techproject/backup/moodle2/backup_techproject_stepslib.php'); // Because it exists (must)
 
 /**
  * vodeclic backup task that provides all the settings and steps to perform one

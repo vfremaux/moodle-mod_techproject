@@ -14,6 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+
 require_once($CFG->libdir.'/formslib.php');
 
 class Deliverable_Form extends moodleform {
@@ -30,6 +42,9 @@ class Deliverable_Form extends moodleform {
         $this->project = $project;
         if ($delivid) {
             $this->current = $DB->get_record('techproject_deliverable', array('id' => $delivid));
+        } else {
+            $this->current = new StdClass;
+            $this->current->id = 0;
         }
         parent::__construct($action);
     }
@@ -114,6 +129,18 @@ class Deliverable_Form extends moodleform {
         $mform->setType('url', PARAM_URL);
         $mform->addElement('static', 'or', '', get_string('oruploadfile','techproject'));
         $mform->addElement('filemanager', 'localfile_filemanager', get_string('uploadfile', 'techproject'), null, $this->attachmentoptions);
+
+        $tasks = techproject_get_tree_options('techproject_task', $this->project->id, $currentGroup);
+        $selection = $DB->get_records_select_menu('techproject_task_to_deliv', "delivid = ? ", array($this->current->id), 'taskid, delivid');
+        $tks = array();
+        if (!empty($tasks)) {
+            foreach ($tasks as $aTask) {
+                $tks[$aTask->id] = $aTask->ordering .' - '.shorten_text(format_string($aTask->abstract), 90);
+            }
+        }
+        $select = &$mform->addElement('select', 'tasktodeliv', get_string('tasktodeliv', 'techproject'), $tks, array('size' => 8));
+        $select->setMultiple(true);
+        $mform->addHelpButton('tasktodeliv', 'task_to_deliv', 'techproject');
 
          $this->add_action_buttons(true);
     }

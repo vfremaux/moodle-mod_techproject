@@ -14,19 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
 
 /**
-*
-* Defines form to add a new project
-*
-* @package    block-prf-catalogue
-* @subpackage classes
-* @author     Emeline Daude <daude.emeline@gmail.com>
-* @reviewer   Valery Fremaux <valery.fremaux@club-internet.fr>
-* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
-* @copyright  (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
-*
-*/
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
 
 require_once($CFG->libdir.'/formslib.php');
 
