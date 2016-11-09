@@ -162,40 +162,6 @@ function techproject_notify_new_task(&$project, $cmid, &$task, $currentgroupid){
     }
 }
 
-/**
- * Notifies all project managers of a new task being entered
- *
- */
-function techproject_notify_new_deliverable(&$project, $cmid, &$deliv, $currentgroupid) {
-    global $USER, $COURSE, $CFG, $DB;
-
-    $class = get_string('deliverable', 'techproject');
-
-    // TODO fetch deliv qualifiers
-    $qualifiers = '';
-
-    $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
-
-    $message = techproject_compile_mail_template('newentrynotify', array(
-        'PROJECT' => $projectheading->title,
-        'CLASS' => $class,
-        'USER' => fullname($USER),
-        'ENTRYNODE' => implode(".", techproject_tree_get_upper_branch('techproject_deliverable', $deliv->id, true, true)),
-        'ENTRYABSTRACT' => format_string($deliv->abstract),
-        'ENTRYDESCRIPTION' => format_text($deliv->description),
-        'QUALIFIERS' => implode('<br/>', $qualifiers),
-        'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=delivs&group={$currentgroupid}"
-    ), 'techproject');
-    $context = context_module::instance($cmid);
-    $managers = get_users_by_capability($context, 'mod/techproject:manage', 'u.id, '.get_all_user_name_fields(true, 'u').',email, picture, mailformat');
-    if (!empty($managers)) {
-        foreach ($managers as $manager) {
-            techproject_complete_user($manager);
-            email_to_user($manager, $USER, $COURSE->shortname .' - '.get_string('notifynewdeliverable', 'techproject'), html_to_text($message), $message);
-        }
-    }
-}
-
 
 /**
 * Notifies all project managers of a new task being entered

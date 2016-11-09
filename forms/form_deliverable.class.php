@@ -57,7 +57,7 @@ class Deliverable_Form extends moodleform {
         $modcontext = context_module::instance($this->project->cmid);
 
         $maxfiles = 99;                // TODO: add some setting
-        $maxbytes = $COURSE->maxbytes; // TODO: add some setting
+        $maxbytes = $COURSE->maxbytes; // TODO: add some setting    
         $this->descriptionoptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'context' => $modcontext);
         $this->attachmentoptions = array('subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes);
 
@@ -128,7 +128,6 @@ class Deliverable_Form extends moodleform {
         $mform->addElement('text', 'url', get_string('url','techproject'));
         $mform->setType('url', PARAM_URL);
         $mform->addElement('static', 'or', '', get_string('oruploadfile','techproject'));
-
         $mform->addElement('filemanager', 'localfile_filemanager', get_string('uploadfile', 'techproject'), null, $this->attachmentoptions);
 
         $tasks = techproject_get_tree_options('techproject_task', $this->project->id, $currentGroup);
@@ -151,9 +150,9 @@ class Deliverable_Form extends moodleform {
         $context = context_module::instance($this->project->cmid);
 
         $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-        $currenttext = file_prepare_draft_area($draftid_editor, $context->id, 'mod_techproject', 'description_editor', @$defaults->delivid, array('subdirs' => true), $defaults->description);
-        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject', 'deliverabledescription', @$defaults->delivid);
-        $defaults = file_prepare_standard_filemanager($defaults, 'localfile', $this->attachmentoptions, $context, 'mod_techproject', 'deliverablelocalfile', @$defaults->delivid);
+        $currenttext = file_prepare_draft_area($draftid_editor, $context->id, 'mod_techproject', 'description_editor', $defaults->id, array('subdirs' => true), $defaults->description);
+        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject', 'deliverabledescription', $defaults->id);
+        $defaults = file_prepare_standard_filemanager($defaults, 'localfile', $this->attachmentoptions, $context, 'mod_techproject', 'deliverablelocalfile', $defaults->id);
         $defaults->description = array('text' => $currenttext, 'format' => $defaults->descriptionformat, 'itemid' => $draftid_editor);
 
         parent::set_data($defaults);
