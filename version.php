@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *  Code fragment to define the version of project
+ * Version details.
  *
- * @package mod_techproject
- * @subpackage framework
- * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
+ * @package     mod_techproject
+ * @category    mod
+ * @author      Valery Fremaux <valery.fremaux@gmail.com>
+ * @copyright   2007 onwards Valery Fremaux (http://www.mylearningfactory.com)
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2015101300;  // The current module version (Date: YYYYMMDDXX)
-$plugin->requires = 2014111000;  // Requires this Moodle version
-$plugin->component = 'mod_techproject';   // Full name of the plugin (used for diagnostics)
-$plugin->cron     = 0;           // Period for cron to check this module (secs)
+$plugin->version  = 2015101300;  // The current module version (Date: YYYYMMDDXX).
+$plugin->requires = 2014111000;  // Requires this Moodle version.
+$plugin->component = 'mod_techproject';   // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
 $plugin->release = '2.8.0 (Build 2015101300)';
 
+// Non moodle attributes.
+$plugin->codeincrement = '2.8.0000';
