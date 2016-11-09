@@ -48,8 +48,6 @@ if ($data = $mform->get_data()) {
     // Editors pre save processing.
     $draftid_editor = file_get_submitted_draft_itemid('description_editor');
     $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'deliverabledescription', $data->id, array('subdirs' => true), $data->description);
-    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject', 'deliverabledescription', $data->id);
-    $data = file_postupdate_standard_filemanager($data, 'localfile', $mform->attachmentoptions, $context, 'mod_techproject', 'deliverablelocalfile', $data->id);
 
     if ($data->delivid) {
         $data->id = $data->delivid; // Id is course module id.
@@ -86,6 +84,10 @@ if ($data = $mform->get_data()) {
             techproject_tree_updateordering($data->fatherid, 'techproject_deliverable', true);
         }
     }
+
+    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject', 'deliverabledescription', $data->id);
+    $data = file_postupdate_standard_filemanager($data, 'localfile', $mform->attachmentoptions, $context, 'mod_techproject', 'deliverablelocalfile', $data->id);
+
     redirect($url);
 }
 

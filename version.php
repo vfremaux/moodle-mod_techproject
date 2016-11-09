@@ -34,3 +34,5 @@ $plugin->cron     = 0;           // Period for cron to check this module (secs)
 $plugin->maturity = MATURITY_RC;
 $plugin->release = '2.7.0 (Build 2015101300)';
 
+// Non moodle attributes
+$plugin->codeincrement = '2.7.0000';

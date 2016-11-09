@@ -1165,12 +1165,11 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
         $hidedeliv = '';
     }
     if ($deliverable->localfile) {
-        // $localfile = "{$project->course}/moddata/techproject/{$project->id}/".md5("techproject{$project->id}_{$group}")."/{$deliverable->localfile}";
-        $files = $fs->get_area_files($context->id, 'mod_techproject', 'deliverable', $deliverable->id, false);
+        $files = $fs->get_area_files($context->id, 'mod_techproject', 'deliverablelocalfile', $deliverable->id, "itemid, filepath, filename", false);
         if ($files) {
             $storedfile = array_pop($files);
-            $localfileurl = moodle_url::make_pluginfile_url($context->id, 'mod_techproject', 'deliverable', $deliverable->id, $storedfile->get_filepath(), $storedfile->get_filename());
-            $abstract = '<a href="'.$localfileurl.'" target="_blank">'.$deliverable->abstract.'</a>';
+            $localfileurl = moodle_url::make_pluginfile_url($context->id, 'mod_techproject', 'deliverablelocalfile', $deliverable->id, $storedfile->get_filepath(), $storedfile->get_filename());
+            $abstract = format_string($deliverable->abstract).' <a href="'.$localfileurl.'" target="_blank"><img src="'.$OUTPUT->pix_url('f/archive-64').'" /></a>';
         } else {
             $abstract = format_string($deliverable->abstract);
         }

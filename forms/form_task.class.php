@@ -103,7 +103,7 @@ class Task_Form extends moodleform {
 
         $assignees = techproject_get_group_users($this->project->course, $this->project->cm, $currentGroup);
         if ($assignees) {
-            $assignoptions = array();
+            $assignoptions = array('0' => get_string('unassigned', 'techproject'));
             foreach ($assignees as $anAssignee) {
                 $assignoptions[$anAssignee->id] = $anAssignee->lastname . ' ' . $anAssignee->firstname;
             }

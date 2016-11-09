@@ -1014,42 +1014,64 @@ function techproject_pluginfile($course, $cm, $context, $filearea, $args, $force
 
     require_course_login($course, true, $cm);
 
-    $fileareas = array('intro', 'requirementdescription', 'specificationdescription', 'milestonedescription', 'taskdescription', 'deliverabledescription', 'abstract', 'rationale', 'environment');
-    $areastotables = array('requirementdescription' => 'techproject_requirement', 'specificationdescription' => 'techproject_specifciation', 'milestonedescription' => 'techproject_milestone', 'taskdescription' => 'techproject_task', 'deliverabledescription' => 'techproject_deliverable', 'abstract' => 'techproject_heading', 'rationale' => 'techproject_heading', 'environment' => 'techproject_heading');
+    $fileareas = array('intro', 'requirementdescription', 'specificationdescription', 'milestonedescription', 'taskdescription', 'deliverabledescription', 'deliverablelocalfile', 'abstract', 'rationale', 'environment');
+    $areastotables = array(
+        'requirementdescription' => 'techproject_requirement',
+        'specificationdescription' => 'techproject_specifciation',
+        'milestonedescription' => 'techproject_milestone',
+        'taskdescription' => 'techproject_task',
+        'deliverabledescription' => 'techproject_deliverable',
+        'deliverablelocalfile' => 'techproject_deliverable',
+        'abstract' => 'techproject_heading',
+        'rationale' => 'techproject_heading',
+        'environment' => 'techproject_heading'
+    );
+
     if (!in_array($filearea, $fileareas)) {
+        debug_trace("bad filearea $filearea ");
         return false;
     }
-    
+
     $relatedtable = $areastotables[$filearea];
 
     $entryid = (int)array_shift($args);
 
     if (!$project = $DB->get_record('techproject', array('id' => $cm->instance))) {
+        debug_trace("bad project $cm->instance ");
         return false;
     }
 
     $fs = get_file_storage();
     $relativepath = implode('/', $args);
     $fullpath = "/$context->id/mod_techproject/$filearea/$entryid/$relativepath";
+
     if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+        if ($file && $file->is_directory()) {
+            debug_trace("$fullpath is dir");
+        } else {
+            debug_trace("bad fileref $fullpath");
+        }
         return false;
     }
-    
+
     $entry = $DB->get_record($relatedtable, array('id' => $entryid));
 
     // Make sure groups allow this user to see this file
     if ($entry->groupid > 0 and $groupmode = groups_get_activity_groupmode($cm, $course)) {   // Groups are being used
         if (!groups_group_exists($entry->groupid)) { // Can't find group
+            debug_trace("bad group $entry->groupid ");
             return false;                           // Be safe and don't send it to anyone
         }
 
         if (!groups_is_member($entry->groupid) and !has_capability('moodle/site:accessallgroups', $context)) {
             // do not send posts from other groups when in SEPARATEGROUPS or VISIBLEGROUPS
+            debug_trace("group capability lock $entry->groupid ");
             return false;
         }
     }
     
     if ((!isloggedin() || isguestuser()) && !$project->guestsallowed) {
+        debug_trace("guest trap ");
         return false;
     }
 
