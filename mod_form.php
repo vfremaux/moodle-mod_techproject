@@ -66,8 +66,7 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-        // Adding the required "intro" field to hold the description of the instance
-        $this->add_intro_editor(true, get_string('introtechproject', 'techproject'));
+        $this->standard_intro_elements();
 
         $startyear = date('Y', time());
         $mform->addElement('date_time_selector', 'projectstart', get_string('projectstart', 'techproject'), array('optional' => true, 'startyear' => $startyear));
