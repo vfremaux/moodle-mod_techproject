@@ -1,11 +1,26 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  *
  *
  *
  */
-
 require_once($CFG->dirroot.'/mod/techproject/forms/form_specification.class.php');
 
 $specid = optional_param('specid', '', PARAM_INT);
@@ -28,7 +43,7 @@ if ($data = $mform->get_data()) {
     $data->description = $data->description_editor['text'];
     $data->lastuserid = $USER->id;
 
-    // editors pre save processing
+    // Editors pre save processing.
     $draftid_editor = file_get_submitted_draft_itemid('description_editor');
     $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'specificationdescription', $data->id, array('subdirs' => true), $data->description);
     $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject', 'specificationdescription', $data->id);
@@ -36,14 +51,14 @@ if ($data = $mform->get_data()) {
     if ($data->specid) {
         $data->id = $data->specid; // id is course module id
         $DB->update_record('techproject_specification', $data);
-        add_to_log($course->id, 'techproject', 'changespecification', "view.php?id=$cm->id&view=specifications&group={$currentgroupid}", 'update', $cm->id);
+        $event = \mod_techproject\event\specification_updated::create_from_specification($project, $context, $data, $currentgroupid);
+        $event->trigger();
 
-        $spectoreq = optional_param_array('spectoreq', null, PARAM_INT);
-        if (count($spectoreq) > 0) {
-            // removes previous mapping
+        if (!empty($data->spectoreq)) {
+            // Removes previous mapping.
             $DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'specid' => $data->id));
             // stores new mapping
-            foreach ($spectoreq as $aRequ) {
+            foreach ($data->spectoreq as $aRequ) {
                 $amap->id = 0;
                 $amap->projectid = $project->id;
                 $amap->groupid = $currentgroupid;
@@ -57,7 +72,8 @@ if ($data = $mform->get_data()) {
         $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_specification', true, $data->fatherid) + 1;
         unset($data->id); // id is course module id
         $data->id = $DB->insert_record('techproject_specification', $data);
-        add_to_log($course->id, 'techproject', 'addspecification', "view.php?id=$cm->id&view=specifications&group={$currentgroupid}", 'add', $cm->id);
+        $event = \mod_techproject\event\specification_created::create_from_specification($project, $context, $data, $currentgroupid);
+        $event->trigger();
 
         if ($project->allownotifications) {
             techproject_notify_new_specification($project, $cm->id, $data, $currentgroupid);
@@ -85,7 +101,7 @@ if ($mode == 'add') {
     }
     $specification->specid = $specification->id;
     $specification->id = $cm->id;
-    
+
     echo $OUTPUT->heading(get_string('updatespec','techproject'));
 }
 

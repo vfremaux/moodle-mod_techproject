@@ -1,9 +1,23 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
- * Project : Technical Project Manager (IEEE like)
- *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
@@ -19,7 +33,7 @@ if (!has_capability('mod/techproject:viewprojectcontrols', $context) && !has_cap
     return;
 }
 
-// perform local use cases
+// perform local use cases.
 
 /******************************* exports as XML a full project description **************************/
 
@@ -27,12 +41,12 @@ include_once($CFG->libdir.'/uploadlib.php');
 
 echo $pagebuffer;
 
-if ($work == 'doexportall'){
+if ($work == 'doexportall') {
     $xml = techproject_get_full_xml($project, $currentgroupid);
     echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
     $xml = str_replace('<', '&lt;', $xml);
     $xml = str_replace('>', '&gt;', $xml);
-    echo $OUPTUT->box("<pre>$xml</pre>");
+    echo $OUTPUT->box("<pre>$xml</pre>");
     echo $OUTPUT->continue_button("view.php?id={$cm->id}");    
     return;
 }
@@ -47,7 +61,7 @@ if ($work == 'loadxsl') {
     }
 }
 /************************************ clears an existing XSL sheet *******************************/
-if ($work == 'clearxsl'){
+if ($work == 'clearxsl') {
     include_once "filesystemlib.php";
     $xslsheetname = $DB->get_field('techproject', 'xslfilter', array('id' => $project->id));    
     filesystem_delete_file("{$course->id}/moddata/techproject/{$project->id}/$xslsheetname");
@@ -55,12 +69,12 @@ if ($work == 'clearxsl'){
     $project->xslfilter = '';
 }
 /************************************ clears an existing XSL sheet *******************************/
-if ($work == 'loadcss'){
+if ($work == 'loadcss') {
     $uploader = new upload_manager('cssfilter', false, false, $course->id, true, 0, true);
     $uploader->preprocess_files();
     $project->cssfilter = $uploader->get_new_filename();
     $DB->update_record('techproject', $project);
-    if (!empty($project->cssfilter)){
+    if (!empty($project->cssfilter)) {
         $uploader->save_files("{$course->id}/moddata/techproject/{$project->id}");
     }
 }
@@ -73,8 +87,8 @@ if ($work == 'clearcss'){
     $project->cssfilter = '';
 }
 
-if ($work == 'importdata'){
-	$entitytype = required_param('entitytype', PARAM_ALPHA);
+if ($work == 'importdata') {
+    $entitytype = required_param('entitytype', PARAM_ALPHA);
     $uploader = new upload_manager('entityfile', true, false, $course->id, false, 0, false);
     $uploader->preprocess_files();
     $uploader->process_file_uploads($CFG->dataroot.'/tmp');
@@ -86,16 +100,16 @@ if ($work == 'importdata'){
 echo $OUTPUT->heading(get_string('importsexports', 'techproject'));
 echo $OUTPUT->heading(get_string('imports', 'techproject'), '3');
 echo $OUTPUT->box_start();
-?>    
+?>
 <form name="importdata" method="post" enctype="multipart/form-data" style="display:block">
 <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
 <input type="hidden" name="view" value="teacher_load" />
 <input type="hidden" name="work" value="importdata" />
 <select name="entitytype" />
-	<option value="requs"><?php print_string('requirements', 'techproject') ?></option>
-	<option value="specs"><?php print_string('specifications', 'techproject') ?></option>
-	<option value="tasks"><?php print_string('tasks', 'techproject') ?></option>
-	<option value="deliv"><?php print_string('deliverables', 'techproject') ?></option>
+    <option value="requs"><?php print_string('requirements', 'techproject') ?></option>
+    <option value="specs"><?php print_string('specifications', 'techproject') ?></option>
+    <option value="tasks"><?php print_string('tasks', 'techproject') ?></option>
+    <option value="deliv"><?php print_string('deliverables', 'techproject') ?></option>
 </select>
 <?php echo $OUTPUT->help_icon('importdata', 'techproject') ?>
 <input type="file" name="entityfile" />
@@ -109,7 +123,7 @@ echo $OUTPUT->box_start();
 <ul>
 <li><a href="?work=doexportall&amp;id=<?php p($cm->id) ?>"><?php print_string('exportallforcurrentgroup', 'techproject') ?></a></li>
 <?php
-if (has_capability('mod/techproject:manage', $context)){
+if (has_capability('mod/techproject:manage', $context)) {
 ?>
 <li><a href="Javascript:document.forms['export'].submit()"><?php print_string('loadcustomxslsheet', 'techproject') ?></a>
 <form name="export" method="post" enctype="multipart/form-data" style="display:inline">
@@ -117,11 +131,10 @@ if (has_capability('mod/techproject:manage', $context)){
 <input type="hidden" name="view" value="teacher_load" />
 <input type="hidden" name="work" value="loadxsl" />
 <?php
-    if (@$project->xslfilter){
+    if (@$project->xslfilter) {
         echo '('.get_string('xslloaded', 'techproject').": {$project->xslfilter}) ";
-    }
-    else{
-        echo '('.get_string('xslloaded', 'techproject').': '.get_string('default', 'techproject').') ';
+    } else {
+        echo '('.get_string('xslloaded', 'techproject').': '.get_string('default', 'techproject').')';
     }
 ?>
 <input type="file" name="xslfilter" />
@@ -132,7 +145,7 @@ if (has_capability('mod/techproject:manage', $context)){
 }
 ?>
 <?php
-if (has_capability('mod/techproject:manage', $context)){
+if (has_capability('mod/techproject:manage', $context)) {
 ?>
 <li><a href="Javascript:document.forms['exportcss'].submit()"><?php print_string('loadcustomcsssheet', 'techproject') ?></a>
 <form name="exportcss" method="post" enctype="multipart/form-data" style="display:inline">
@@ -140,10 +153,9 @@ if (has_capability('mod/techproject:manage', $context)){
 <input type="hidden" name="view" value="teacher_load" />
 <input type="hidden" name="work" value="loadcss" />
 <?php
-    if (@$project->cssfilter){
+    if (@$project->cssfilter) {
         echo '('.get_string('cssloaded', 'techproject').": {$project->cssfilter}) ";
-    }
-    else{
+    } else {
         echo '('.get_string('cssloaded', 'techproject').': '.get_string('default', 'techproject').') ';
     }
 ?>

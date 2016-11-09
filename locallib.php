@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Project : Technical Project Manager (IEEE like)
- *
- * Library of extra functions
- *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @date 2008/03/03
@@ -73,18 +71,19 @@ function techproject_edition_enable_button($cm, $course, $project, $editmode) {
         }
     }
 
+    $projecturl = new moodle_url('/mod/techproject/view.php');
     if ($editmode == 'on') {
-        $str = '<form method="get" style="display : inline" action="view.php">';
+        $str = '<form method="get" style="display : inline" action="'.$projecturl.'">';
         $str.= '<input type="hidden" name="editmode" value="off" />';
         $str .= '<input type="hidden" name="id" value="'.$cm->id.'" />';
         $str .= '<input type="submit" value="'.get_string('disableedit', 'techproject').'" />';
         $str .= '</form>';
     } else {
-        $str = "<form method=\"get\"  style=\"display : inline\" action=\"view.php\">";
-        $str.= "<input type=\"hidden\" name=\"editmode\" value=\"on\" />";
-        $str .= "<input type=\"hidden\" name=\"id\" value=\"{$cm->id}\" />";
-        $str .= "<input type=\"submit\" value=\"" .  get_string('enableedit', 'techproject') . "\" />";
-        $str .= "</form>";
+        $str = '<form method="get"  style="display : inline" action="'.$projecturl.'">';
+        $str.= '<input type="hidden" name="editmode" value="on" />';
+        $str .= '<input type="hidden" name="id" value="'.$cm->id.'" />';
+        $str .= '<input type="submit" value="'. get_string('enableedit', 'techproject') . '" />';
+        $str .= '</form>';
     }
     return $str;
 }
@@ -202,7 +201,7 @@ function techproject_phase($project, $style='') {
  * @param numspec the propagated autonumbering prefix
  * @param cmid the module id (for urls)
  */
-function techproject_print_specifications($project, $group, $fatherid, $cmid) {
+function techproject_print_specifications($project, $group, $fatherid, $cmid, $propagated = null) {
     global $CFG, $USER, $DB, $OUTPUT;
     static $level = 0;
     static $startuplevelchecked = false;
@@ -210,10 +209,10 @@ function techproject_print_specifications($project, $group, $fatherid, $cmid) {
     techproject_check_startup_level('specification', $fatherid, $level, $startuplevelchecked);
 
     $query = "
-        SELECT 
+        SELECT DISTINCT
             s.*,
             c.collapsed
-        FROM 
+        FROM
             {techproject_specification} s
         LEFT JOIN
             {techproject_collapse} c
@@ -234,16 +233,31 @@ function techproject_print_specifications($project, $group, $fatherid, $cmid) {
     if ($specifications = $DB->get_records_sql($query)) {
         $i = 1;
         foreach ($specifications as $specification) {
-            echo "<div class=\"entitynode nodelevel{$level}\">";
+            echo '<div class="entitynode nodelevel'.$level.'">';
             $level++;
+            $propagatedroot = $propagated;
+            if ($propagated == null) {
+                $propagatedroot = new StdClass();
+            }
             techproject_print_single_specification($specification, $project, $group, $cmid, count($specifications));
-            $expansion = (!$specification->collapsed) ? '' : "style=\"visbility:hidden; display:none\" " ;
-            $visibility = ($specification->collapsed) ? 'display: none' : 'display: block' ; 
-            echo "<div id=\"sub{$specification->id}\" style=\"$visibility\" >";
-            techproject_print_specifications($project, $group, $specification->id, $cmid);
-            echo "</div>";
+
+            if ($specification->collapsed) {
+                $propagatedroot->collapsed = true; // give signal for lower branch
+                $visibility = 'display: none';
+                $expansion = '';
+            } else {
+                $propagatedroot->collapsed = false; // give signal for lower branch
+                $visibility = 'display: block';
+                $expansion = 'style="visbility:hidden; display:none" ';
+            }
+
+            echo '<div id="sub'.$specification->id.'" class="treenode" style="'.$visibility.'" >';
+            if (!@$propagated->collapsed) {
+                techproject_print_specifications($project, $group, $specification->id, $cmid);
+            }
+            echo '</div>';
             $level--;
-            echo "</div>";
+            echo '</div>';
         }
     } else {
         if ($level == 0) {
@@ -264,15 +278,15 @@ function techproject_print_specifications($project, $group, $fatherid, $cmid) {
  * @param fullsingle true if prints a single isolated element
  */
 function techproject_print_single_specification($specification, $project, $group, $cmid, $setSize, $fullsingle = false) {
-    global $CFG, $USER, $SESSION, $DB, $OUTPUT;
+    global $CFG, $USER, $SESSION, $DB, $OUTPUT, $PAGE;
 
+    $renderer = $PAGE->get_renderer('mod_techproject');
     $context = context_module::instance($cmid);
     $canedit = $USER->editmode == 'on' && has_capability('mod/techproject:changespecs', $context);
     $numspec = implode('.', techproject_tree_get_upper_branch('techproject_specification', $specification->id, true, true));
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_specification', $specification->id) > 0) {
-            $ajax = $CFG->enableajax;
-            $hidesub = "<a href=\"javascript:toggle('{$specification->id}','sub{$specification->id}', $ajax, '$CFG->wwwroot');\"><img name=\"img{$specification->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
+            $hidesub = "<a href=\"javascript:toggle('{$specification->id}','sub{$specification->id}', true, '$CFG->wwwroot');\"><img name=\"img{$specification->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
         } else {
             $hidesub = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/empty.gif\" />";
         }
@@ -301,7 +315,7 @@ function techproject_print_single_specification($specification, $project, $group
             tts.specid = $specification->id
     ";
     $res = $DB->get_record_sql($query);
-    $completion = ($res->total != 0) ? techproject_bar_graph_over($res->completion / $res->total, 0) : techproject_bar_graph_over(-1, 0);
+    $completion = ($res->total != 0) ? $renderer->bar_graph_over($res->completion / $res->total, 0) : $renderer->bar_graph_over(-1, 0);
     $checkbox = ($canedit)? "<input type=\"checkbox\" id=\"sel{$specification->id}\" name=\"ids[]\" value=\"{$specification->id}\" /> " : '' ;
     $priorityoption = techproject_get_option_by_key('priority', $project->id, $specification->priority);
     $severityoption = techproject_get_option_by_key('severity', $project->id, $specification->severity);
@@ -335,16 +349,18 @@ function techproject_print_single_specification($specification, $project, $group
         $description = close_unclosed_tags(shorten_text(format_text($description, $specification->descriptionformat), 800));
     } else {
         $initialDisplay = 'block';
-        $description = format_string(format_text($description, $specification->descriptionformat));
+        $description = format_text($description, $specification->descriptionformat);
     }
     $desc = "<div id='{$numspec}' class='entitycontent' style='display: {$initialDisplay};'>{$parms}".$description;
     if (!$fullsingle) {
-        $desc .= "<br/><a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id={$cmid}&amp;view=view_detail&amp;objectId={$specification->id}&amp;objectClass=specification\" >".get_string('seedetail','techproject')."</a></p>"; 
+        $params = array('id' => $cmid, 'view' => 'view_detail', 'objectId' => $specification->id, 'objectClass' => 'specification');
+        $detailurl = new moodle_url('/mod/techproject/view.php', $params);
+        $desc .= '<br/><a href="'.$detailurl.'" >'.get_string('seedetail','techproject').'</a></p>'; 
     }
     $desc .= '</div>';
 
     $table = new html_table();
-    $table->class = 'entity';  
+    $table->class = 'entity';
     $table->head  = array ($head);
     $table->cellpadding = 1;
     $table->cellspacing = 1;
@@ -355,28 +371,29 @@ function techproject_print_single_specification($specification, $project, $group
 
     if ($canedit) {
         $link = array();
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=add&amp;fatherid={$specification->id}&amp;view=specifications'>
-                 <img src='".$OUTPUT->pix_url('/p/newnode', 'techproject')."' alt=\"".get_string('addsubspec', 'techproject')."\" /></a>";
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=update&amp;specid={$specification->id}&amp;view=specifications'>
-                 <img src='".$OUTPUT->pix_url('/t/edit')."' title=\"".get_string('update')."\" /></a>";
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=dodelete&amp;specid={$specification->id}&amp;view=specifications'>
-                 <img src='".$OUTPUT->pix_url('/t/delete')."' title=\"".get_string('delete')."\" /></a>";
-        $templateicon = ($specification->id == @$SESSION->techproject->spectemplateid) ? "{$CFG->wwwroot}/mod/techproject/pix/p/activetemplate.gif" : "{$CFG->wwwroot}/mod/techproject/pix/p/marktemplate.gif" ;
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=domarkastemplate&amp;specid={$specification->id}&amp;view=specifications#node{$specification->id}'>
-                 <img src='$templateicon' title=\"".get_string('markastemplate', 'techproject')."\" /></a>";
-        if ($specification->ordering > 1)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=up&amp;specid={$specification->id}&amp;view=specifications#node{$specification->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/up')."' title=\"".get_string('up', 'techproject')."\" /></a>";
-        if ($specification->ordering < $setSize)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=down&amp;specid={$specification->id}&amp;view=specifications#node{$specification->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/down')."' title=\"".get_string('down', 'techproject')."\" /></a>";
-        if ($specification->fatherid != 0)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=left&amp;specid={$specification->id}&amp;view=specifications#node{$specification->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/left')."' title=\"".get_string('left', 'techproject')."\" /></a>";
-        if ($specification->ordering > 1)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=right&amp;specid={$specification->id}&amp;view=specifications#node{$specification->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/right')."' title=\"".get_string('right', 'techproject')."\" /></a>";
-        $table->data[] = array($indent . implode (' ' , $link));
+        $params = array('id' => $cmid, 'work' => 'add', 'fatherid' => $specification->id, 'view' => 'specifications');
+        $addsuburl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$addsuburl.'">
+                 <img src="'.$OUTPUT->pix_url('/p/newnode', 'techproject').'" alt="'.get_string('addsubspec', 'techproject').'" /></a>';
+
+        $params = array('id' => $cmid, 'work' => 'update', 'specid' => $specification->id, 'view' => 'specifications');
+        $updateurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$updateurl.'">
+                 <img src="'.$OUTPUT->pix_url('/t/edit').'" title="'.get_string('update').'" /></a>';
+
+        $params = array('id' => $cmid, 'work' => 'dodelete', 'specid' => $specification->id, 'view' => 'specifications');
+        $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$deleteurl.'">
+                 <img src="'.$OUTPUT->pix_url('/t/delete').'" title="'.get_string('delete').'" /></a>';
+
+        $params = array('id' => $cmid, 'work' => 'domarkastemplate', 'specid' => $specification->id, 'view' => 'specifications');
+        $templateurl = new moodle_url('/mod/techproject/view.php', $params);
+        $templateicon = ($specification->id == @$SESSION->techproject->spectemplateid) ? $OUTPUT->pix_url('p/activetemplate', 'techproject') : $OUTPUT->pix_url('p/marktemplate', 'techproject');
+        $link[] = '<a href="'.$templateurl.'#node'.$specification->id.'">
+                 <img src="'.$templateicon.'" title="'.get_string('markastemplate', 'techproject').'" /></a>';
+
+        techproject_add_entity_tree_controls($cmid, 'specification', 'spec', $specification, $setSize, $link);
+        $table->data[] = array($indent . implode (' ', $link));
         $table->rowclass[] = 'controls';
     }
 
@@ -396,7 +413,7 @@ function techproject_print_single_specification($specification, $project, $group
  * @uses $CFG
  * @uses $USER
  */
-function techproject_print_requirements($project, $group, $fatherid, $cmid) {
+function techproject_print_requirements($project, $group, $fatherid, $cmid, $propagated = null) {
     global $CFG, $USER, $DB, $OUTPUT;
     static $level = 0;
     static $startuplevelchecked = false;
@@ -404,7 +421,7 @@ function techproject_print_requirements($project, $group, $fatherid, $cmid) {
     techproject_check_startup_level('requirement', $fatherid, $level, $startuplevelchecked);
 
     $query = "
-        SELECT 
+        SELECT DISTINCT
             r.*,
             COUNT(str.specid) as specifs,
             c.collapsed
@@ -432,16 +449,28 @@ function techproject_print_requirements($project, $group, $fatherid, $cmid) {
     if ($requirements = $DB->get_records_sql($query)) {
         $i = 1;
         foreach ($requirements as $requirement) {
-            echo "<div class=\"entitynode nodelevel{$level}\">";
+            echo '<div class="entitynode nodelevel'.$level.'">';
             $level++;
+            $propagatedroot = $propagated;
+            if ($propagated == null) {
+                $propagatedroot = new StdClass();
+            }
             techproject_print_single_requirement($requirement, $project, $group, $cmid, count($requirements));
 
-            $visibility = ($requirement->collapsed) ? 'display: none' : 'display: block' ; 
-            echo "<div id=\"sub{$requirement->id}\" class=\"treenode\" style=\"$visibility\" >";
-            techproject_print_requirements($project, $group, $requirement->id, $cmid);
-            echo "</div>";
+            if ($requirement->collapsed) {
+                $propagatedroot->collapsed = true; // give signal for lower branch
+                $visibility = 'display: none';
+            } else {
+                $propagatedroot->collapsed = false; // give signal for lower branch
+                $visibility = 'display: block';
+            }
+            echo '<div id="sub'.$requirement->id.'" class="treenode" style="'.$visibility.'\" >';
+            if (!@$propagated->collapsed) {
+                techproject_print_requirements($project, $group, $requirement->id, $cmid, $propagatedroot);
+            }
+            echo '</div>';
             $level--;
-            echo "</div>";
+            echo '</div>';
         }
     } else {
         if ($level == 0) {
@@ -462,15 +491,15 @@ function techproject_print_requirements($project, $group, $fatherid, $cmid) {
  * @param fullsingle true if prints a single isolated element
  */
 function techproject_print_single_requirement($requirement, $project, $group, $cmid, $setSize, $fullsingle = false) {
-    global $CFG, $USER, $DB, $OUTPUT;
+    global $CFG, $USER, $DB, $OUTPUT, $PAGE;
 
+    $renderer = $PAGE->get_renderer('mod_techproject');
     $context = context_module::instance($cmid);
     $canedit = $USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context);
     $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_requirement', $requirement->id, true, true));
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_requirement', $requirement->id) > 0) {
-            $ajax = $CFG->enableajax;
-            $hidesub = "<a href=\"javascript:toggle('{$requirement->id}','sub{$requirement->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$requirement->id}\" src=\"".$OUTPUT->pix_url('/p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
+            $hidesub = "<a href=\"javascript:toggle('{$requirement->id}','sub{$requirement->id}', 1, '$CFG->wwwroot');\"><img name=\"img{$requirement->id}\" src=\"".$OUTPUT->pix_url('/p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
         } else {
             $hidesub = "<img src=\"".$OUTPUT->pix_url('/p/empty', 'techproject')."\" />";
         }
@@ -495,7 +524,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
           r.groupid = {$group}
     ";
     $res = $DB->get_record_sql($query);
-    $completion = ($res->total != 0) ? techproject_bar_graph_over($res->completion / $res->total, 0) : techproject_bar_graph_over(-1, 0);
+    $completion = ($res->total != 0) ? $renderer->bar_graph_over($res->completion / $res->total, 0) : $renderer->bar_graph_over(-1, 0);
 
     $requlevel = count(explode('.', $numrequ)) - 1;
     $indent = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $requlevel);
@@ -503,7 +532,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
     // assigned by subrequs count
     $reqList = str_replace(",", "','", techproject_get_subtree_list('techproject_requirement', $requirement->id));
     $speccount = techproject_print_entitycount('techproject_requirement', 'techproject_spec_to_req', $project->id, $group, 'req', 'spec', $requirement->id, $reqList);
-    $checkbox = ($canedit) ? "<input type=\"checkbox\" id=\"sel{$requirement->id}\" name=\"ids[]\" value=\"{$requirement->id}\" /> " : '';
+    $checkbox = ($canedit) ? '<input type="checkbox" id="sel'.$requirement->id.'" name="ids[]" value="'.$requirement->id.'" /> ' : '';
 
     $strengthoption = techproject_get_option_by_key('strength', $project->id, $requirement->strength);
     $strengthsignal = '';
@@ -519,11 +548,17 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
 
     if (!$fullsingle) {
         $hideicon = (!empty($requirement->description)) ? 'hide' : 'hide_shadow' ;
-        $hidedesc = "<a href=\"javascript:toggle_show('{$numrequ}','{$numrequ}', '$CFG->wwwroot');\"><img name=\"eye{$numrequ}\" src=\"".$OUTPUT->pix_url("/p/{$hideicon}", 'techproject')."\" alt=\"collapse\" /></a>";
+        $hidedesc = "<a href=\"javascript:toggle_show('{$numrequ}','{$numrequ}', '$CFG->wwwroot');\"><img name=\"eye{$numrequ}\" src=\"".$OUTPUT->pix_url("p/{$hideicon}", 'techproject')."\" alt=\"collapse\" /></a>";
     } else {
         $hidedesc = '';
     }
-    $head = "<table width='100%' class=\"nodecaption $heavynessclass\"><tr><td align='left' width='70%'><span class=\"level{$requlevel}\">{$checkbox}{$indent}{$hidesub} <a name=\"node{$requirement->id}\"></a>R{$numrequ} - ".format_string($requirement->abstract)."</span></td><td align='right' width='30%'>{$strengthsignal} {$speccount} {$completion} {$hidedesc}</td></tr></table>";
+    $head = '<table width="100%" class="nodecaption '.$heavynessclass.'">';
+    $head .= '<tr>';
+    $head .= '<td align="left" width="70%">';
+    $head .= '<span class="level'.$requlevel.'">'.$checkbox.$indent.$hidesub.' <a name="node'.$requirement->id.'"></a>R'.$numrequ.' - '.format_string($requirement->abstract).'</span>';
+    $head .= '</td><td align="right" width="30%">';
+    $head .= $strengthsignal.' '.$speccount.' '.$completion.' '.$hidedesc;
+    $head .= '</td></tr></table>';
 
     unset($innertable);
     $innertable = new html_table();
@@ -540,11 +575,13 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
         $description = close_unclosed_tags(shorten_text(format_text($description, $requirement->descriptionformat), 800));
     } else {
         $initialDisplay = 'block';
-        $description = format_string(format_text($description, $requirement->descriptionformat));
+        $description = format_text($description, $requirement->descriptionformat);
     }
     $desc = "<div id='{$numrequ}' class='entitycontent' style='display: {$initialDisplay};'>{$parms}".$description;
     if (!$fullsingle) {
-        $desc .= "<br/><a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id={$cmid}&amp;view=view_detail&amp;objectId={$requirement->id}&amp;objectClass=requirement\" >".get_string('seedetail','techproject')."</a>"; 
+        $params = array('id' => $cmid, 'view' => 'view_detail', 'objectId' => $requirement->id, 'objectClass' => 'requirement');
+        $detailurl = new moodle_url('/mod/techproject/view.php', $params);
+        $desc .= '<br/><a href="'.$detailurl.'" >'.get_string('seedetail','techproject').'</a>'; 
     }
     $desc .='</div>';
 
@@ -560,24 +597,23 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
 
     if ($canedit) {
         $link = array();
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=add&amp;fatherid={$requirement->id}&amp;view=requirements'>
-                 <img src='".$OUTPUT->pix_url('/p/newnode', 'techproject')."' alt=\"".get_string('addsubrequ', 'techproject')."\" /></a>";
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=update&amp;requid={$requirement->id}&amp;view=requirements'>
-                 <img src='".$OUTPUT->pix_url('/t/edit')."' alt=\"".get_string('update')."\" /></a>";
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=dodelete&amp;requid={$requirement->id}&amp;view=requirements'>
-                 <img src='".$OUTPUT->pix_url('/t/delete')."' alt=\"".get_string('delete')."\" /></a>";
-        if ($requirement->ordering > 1)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=up&amp;requid={$requirement->id}&amp;view=requirements#node{$requirement->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/up')."' alt=\"".get_string('up', 'techproject')."\" /></a>";
-        if ($requirement->ordering < $setSize)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=down&amp;requid={$requirement->id}&amp;view=requirements#node{$requirement->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/down')."' alt=\"".get_string('down', 'techproject')."\" /></a>";
-        if ($requirement->fatherid != 0)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=left&amp;requid={$requirement->id}&amp;view=requirements#node{$requirement->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/left')."' alt=\"".get_string('left', 'techproject')."\" /></a>";
-        if ($requirement->ordering > 1)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=right&amp;requid={$requirement->id}&amp;view=requirements#node{$requirement->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/right')."' alt=\"".get_string('right', 'techproject')."\" /></a>";
+
+        $params = array('id' => $cmid, 'work' => 'add', 'fatherid' => $requirement->id, 'view' => 'requirements');
+        $addsuburl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$addsuburl.'">
+                 <img src="'.$OUTPUT->pix_url('/p/newnode', 'techproject').'" alt="'.get_string('addsubrequ', 'techproject').'" /></a>';
+
+        $params = array('id' => $cmid, 'work' => 'update', 'requid' => $requirement->id, 'view' => 'requirements');
+        $updateurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$updateurl.'">
+                 <img src="'.$OUTPUT->pix_url('/t/edit').'" alt="'.get_string('update').'" /></a>';
+
+        $params = array('id' => $cmid, 'work' => 'dodelete', 'requid' => $requirement->id, 'view' => 'requirements');
+        $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$deleteurl.'">
+                 <img src="'.$OUTPUT->pix_url('/t/delete').'" alt="'.get_string('delete').'" /></a>';
+
+        techproject_add_entity_tree_controls($cmid, 'requirement', 'requ', $requirement, $setSize, $link);
         $table->data[] = array($indent . implode(' ', $link));
         $table->rowclass[] = 'controls';
     }
@@ -596,16 +632,16 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
  * @param numtask the propagated autonumbering prefix
  * @param cmid the module id (for urls)
  */
-function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated=null) {
+function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated = null) {
     global $CFG, $USER, $DB, $OUTPUT;
     static $level = 0;
     static $startuplevelchecked = false;
 
     techproject_check_startup_level('task', $fatherid, $level, $startuplevelchecked);
-    
+
     // get current level task nodes
     $query = "
-        SELECT 
+        SELECT DISTINCT
             t.*,
             m.abstract as milestoneabstract,
             c.collapsed
@@ -630,7 +666,7 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
     ";
     if ($tasks = $DB->get_records_sql($query)) {
         foreach ($tasks as $task) {
-            echo "<div class=\"entitynode nodelevel{$level}\">";
+            echo '<div class="entitynode nodelevel'.$level.'">';
             $level++;
             $propagatedroot = $propagated;
             if ($propagated == null || !isset($propagated->milestoneid) && $task->milestoneid) {
@@ -642,13 +678,13 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
                $task->milestoneabstract = $propagated->milestoneabstract;
                $task->milestoneforced = 1;
             }
-            if (!@$propagated->collapsed || !$CFG->enableajax) {
+            if (!@$propagated->collapsed) {
                 techproject_print_single_task($task, $project, $group, $cmid, count($tasks), false, '');
             }
 
             if ($task->collapsed) $propagatedroot->collapsed = true; // give signal for lower branch
-            $visibility = ($task->collapsed) ? 'display: none' : 'display: block' ; 
-            echo "<div id=\"sub{$task->id}\" style=\"$visibility\" >";
+            $visibility = ($task->collapsed) ? 'display: none' : 'display: block';
+            echo '<div id="sub'.$task->id.'" class="treenode" style="'.$visibility.'" >';
             techproject_print_tasks($project, $group, $task->id, $cmid, $propagatedroot);
             echo "</div>";
             $level--;
@@ -678,49 +714,51 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
  * // TODO clean up $fullsingle and $style commands
  */
 function techproject_print_single_task($task, $project, $group, $cmid, $setSize, $fullsingle = false, $style='') {
-    global $CFG, $USER, $SESSION, $DB, $OUTPUT;
+    global $CFG, $USER, $SESSION, $DB, $OUTPUT, $PAGE;
 
+    $renderer = $PAGE->get_renderer('mod_techproject');
     $TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
     $context = context_module::instance($cmid);
     $canedit = ($USER->editmode == 'on') && has_capability('mod/techproject:changetasks', $context) && !preg_match("/NOEDIT/", $style);
     if (!has_capability('mod/techproject:changenotownedtasks', $context)) {
-        if ($task->owner != $USER->id) $canedit = false;
+        if ($task->owner != $USER->id) {
+            $canedit = false;
+        }
     }
     $hasMasters = $DB->count_records('techproject_task_dependency', array('slave' => $task->id));
     $hasSlaves = $DB->count_records('techproject_task_dependency', array('master' => $task->id));
-    $taskDependency = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/task_alone.gif\" title=\"".get_string('taskalone','techproject')."\" />";
+    $taskDependency = '<img src="'.$OUTPUT->pix_url('p/task_alone', 'techproject').'" title="'.get_string('taskalone', 'techproject').'" />';
     if ($hasSlaves && $hasMasters) {
-        $taskDependency = "<img src=\"".$OUTPUT->pix_url('/p/task_middle', 'techproject')."\" title=\"".get_string('taskmiddle','techproject')."\" />";
-    } else if ($hasMasters) {
-        $taskDependency = "<img src=\"".$OUTPUT->pix_url('/p/task_end', 'techproject')."\" title=\"".get_string('taskend','techproject')."\" />";
-    } else if ($hasSlaves) {
-        $taskDependency = "<img src=\"".$OUTPUT->pix_url('/p/task_start', 'techproject')."\" title=\"".get_string('taskstart','techproject')."\" />";
+        $taskDependency = '<img src="'.$OUTPUT->pix_url('/p/task_middle', 'techproject').'" title="'.get_string('taskmiddle', 'techproject').'" />';
+    } elseif ($hasMasters) {
+        $taskDependency = "<img src=\"".$OUTPUT->pix_url('/p/task_end', 'techproject')."\" title=\"".get_string('taskend', 'techproject').'" />';
+    } elseif ($hasSlaves) {
+        $taskDependency = '<img src="'.$OUTPUT->pix_url('/p/task_start', 'techproject').'" title="'.get_string('taskstart', 'techproject').'" />';
     }
 
     $numtask = implode('.', techproject_tree_get_upper_branch('techproject_task', $task->id, true, true));
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_task', $task->id) > 0) {
-            $ajax = $CFG->enableajax;
-            $hidesub = "<a href=\"javascript:toggle('{$task->id}','sub{$task->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$task->id}\" src=\"".$OUTPUT->pix_url('/p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
+            $hidesub = "<a href=\"javascript:toggle('{$task->id}','sub{$task->id}', 1, '$CFG->wwwroot');\"><img name=\"img{$task->id}\" src=\"".$OUTPUT->pix_url('/p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
         } else {
-            $hidesub = "<img src=\"".$OUTPUT->pix_url('/p/empty', 'techproject')."\" />";
+            $hidesub = '<img src="'.$OUTPUT->pix_url('/p/empty', 'techproject').'" />';
         }
     } else {
        $hidesub = '';
     }
 
     $tasklevel = count(explode('.', $numtask)) - 1;
-    $indent = (!$fullsingle) ? str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $tasklevel) : '' ;
+    $indent = (!$fullsingle) ? str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $tasklevel) : '';
 
     $taskcount = techproject_print_entitycount('techproject_task', 'techproject_task_to_spec', $project->id, $group, 'task', 'spec', $task->id);
     $delivcount = techproject_print_entitycount('techproject_task', 'techproject_task_to_deliv', $project->id, $group, 'task', 'deliv', $task->id);
-    $checkbox = ($canedit) ? "<input type=\"checkbox\" id=\"sel{$task->id}\" name=\"ids[]\" value=\"{$task->id}\" /> " : '' ;
+    $checkbox = ($canedit) ? '<input type="checkbox" id="sel'.$task->id.'" name="ids[]" value="'.$task->id.'" /> ' : '';
 
     $over = ($task->planned && $task->planned < $task->used) ? floor((($task->used - $task->planned) / $task->planned) * 60) : 0 ;
     $barwidth = ($task->planned) ? 60 : 0 ; // unplanned tasks should not provide progress bar
-    $completion = techproject_bar_graph_over($task->done, $over, $barwidth, 5);
+    $completion = $renderer->bar_graph_over($task->done, $over, $barwidth, 5);
     $milestonepix = (isset($task->milestoneforced)) ? 'milestoneforced' : 'milestone' ; 
-    $milestone = ($task->milestoneid) ? "<img src=\"".$OUTPUT->pix_url("/p/{$milestonepix}", 'techproject')."\" title=\"".format_string(@$task->milestoneabstract)."\" />" : '';
+    $milestone = ($task->milestoneid) ? '<img src="'.$OUTPUT->pix_url('/p/'.$milestonepix, 'techproject').'" title="'.format_string(@$task->milestoneabstract).'" />' : '';
     if (!$fullsingle || $fullsingle === 'HEAD') {
         $hideicon = (!empty($task->description)) ? 'hide' : 'hide_shadow' ;
         $hidetask = "<a href=\"javascript:toggle_show('{$numtask}','{$numtask}', '{$CFG->wwwroot}');\"><img name=\"eye{$numtask}\" src=\"".$OUTPUT->pix_url("/p/{$hideicon}", 'techproject')."\" alt=\"collapse\" /></a>";
@@ -732,13 +770,15 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
     $timeduestr = '';
     if (!preg_match('/SHORT_WITHOUT_ASSIGNEE/', $style) && $task->assignee) {
         $assignee = $DB->get_record('user', array('id' => $task->assignee));
-        $assigneestr = "<span class=\"taskassignee\">({$assignee->lastname} {$assignee->firstname})</span>";
+        $assigneestr = '<span class="taskassignee">('.$assignee->lastname.' '.$assignee->firstname.')</span>';
         if ($task->taskendenable) {
             $tasklate = ($task->taskend < time()) ? 'toolate' : 'futuretime' ;
-            $timeduestr = "<span class=\"$tasklate timedue\">[".userdate($task->taskend)."]</span>";
+            $timeduestr = '<span class="'.$tasklate.' timedue">['.userdate($task->taskend).']</span>';
         } 
     } else {
-       $headdetaillink = "<a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id={$cmid}&amp;view=view_detail&amp;objectId={$task->id}&amp;objectClass=task\" ><img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/hide.gif\" title=\"".get_string('detail', 'techproject')."\" /></a>";
+        $params = array('id' => $cmid, 'view' => 'view_detail', 'objectId' => $task->id, 'objectClass' => 'task');
+        $detailurl = new moodle_url('/mod/techproject/view.php', $params);
+        $headdetaillink = '<a href="'.$detailurl.'" ><img src="'.$OUTPUT->pix_url('p/hide', 'techproject').'" title="'.get_string('detail', 'techproject').'" /></a>';
     }
 
     $worktypeicon = '';
@@ -751,10 +791,11 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
     $orderCell = '';
     if (preg_match('/SHORT_WITH_ASSIGNEE_ORDERED/', $style)) {
         static $order;
-        if (!isset($order)) 
+        if (!isset($order)) {
             $order = 1;
-        else 
+        } else {
             $order++;
+        }
         $priorityDesc = techproject_get_option_by_key('priority', $project->id, $task->priority);
         $orderCell = "<td class=\"ordercell_{$priorityDesc->label}\" width=\"3%\" align=\"center\" title=\"{$priorityDesc->description}\">{$order}</td>";
     }
@@ -763,7 +804,7 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
 
     $statusoption = techproject_get_option_by_key('taskstatus', $project->id, $task->status);
 
-    //affichage de la task
+    // Affichage de la task.
     $innertable = new html_table();
     $innertable->width = '100%';
     $innertable->style = array('parmname', 'parmvalue');
@@ -773,12 +814,12 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
     $innertable->data[] = array(get_string('costrate','techproject'), $task->costrate);
     $planned = $task->planned . ' ' . $TIMEUNITS[$project->timeunit];
     if (@$project->useriskcorrection) {
-        $planned .= "<span class=\"riskshifted\">(".($task->planned * (1 + ($task->risk / 100))) . ' ' . $TIMEUNITS[$project->timeunit].")</span>";
+        $planned .= '<span class="riskshifted">('.($task->planned * (1 + ($task->risk / 100))) . ' ' . $TIMEUNITS[$project->timeunit].')</span>';
     }
     $innertable->data[] = array(get_string('costplanned','techproject'), $planned);
     $quote = $task->quoted . ' ' . $project->costunit;
     if ($project->useriskcorrection) {
-        $quote .= "<span class=\"riskshifted\">(".($task->quoted * (1 + ($task->risk / 100))) . ' ' . $project->costunit.")</span>";
+        $quote .= '<span class="riskshifted">('.($task->quoted * (1 + ($task->risk / 100))) . ' ' . $project->costunit.')</span>';
     }
     $innertable->data[] = array(get_string('quoted','techproject'), $quote);
     $innertable->data[] = array(get_string('risk','techproject'), $task->risk);
@@ -795,16 +836,18 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
         $description = close_unclosed_tags(shorten_text(format_text($description, $task->descriptionformat), 800));
     } else {
         $initialDisplay = 'block';
-        $description = format_string(format_text($description, $task->descriptionformat));
+        $description = format_text($description, $task->descriptionformat);
     }
     $desc = "<div id='{$numtask}' class='entitycontent' style='display: {$initialDisplay};'>{$parms}".$description;
     if (!$fullsingle || $fullsingle === 'SHORT' || $fullsingle === 'SHORT_WITHOUT_TYPE') {
-        $desc .= "<br/><a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id={$cmid}&amp;view=view_detail&amp;objectId={$task->id}&amp;objectClass=task\" >".get_string('seedetail','techproject')."</a></p>"; 
+        $params = array('id' => $cmid, 'view' => 'view_detail', 'objectId' => $task->id, 'objectClass' => 'task');
+        $detailurl = new moodle_url('/mod/techproject/view.php', $params);
+        $desc .= '<br/><a href="'.$detailurl.'" >'.get_string('seedetail','techproject')."</a></p>"; 
     }
     $desc .= "</div>";
 
     $table = new html_table();
-    $table->class = 'entity';  
+    $table->class = 'entity';
     $table->head  = array ($head);
     $table->cellspacing = 1;
     $table->cellpadding = 1;
@@ -815,27 +858,29 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
 
     if ($canedit) {
         $link = array();
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=add&amp;fatherid={$task->id}&amp;view=tasks'>
-                 <img src='".$OUTPUT->pix_url('/p/newnode', 'techproject')."' title=\"".get_string('addsubtask', 'techproject')."\" /></a>";
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=update&amp;taskid={$task->id}&amp;view=tasks'>
-                 <img src='".$OUTPUT->pix_url('/t/edit')."' title=\"".get_string('updatetask', 'techproject')."\" /></a>";
+
+        $params = array('id' => $cmid, 'work' => 'add', 'fatherid' => $task->id, 'view' => 'tasks');
+        $editurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$editurl.'">
+                 <img src="'.$OUTPUT->pix_url('/p/newnode', 'techproject').'" title="'.get_string('addsubtask', 'techproject').'" /></a>';
+
+        $params = array('id' => $cmid, 'work' => 'update', 'taskid' => $task->id, 'view' => 'tasks');
+        $updateurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$updateurl.'">
+                 <img src="'.$OUTPUT->pix_url('/t/edit').'" title="'.get_string('updatetask', 'techproject').'" /></a>';
+
         $templateicon = ($task->id == @$SESSION->techproject->tasktemplateid) ? $OUTPUT->pix_url('/p/activetemplate', 'techproject') : $OUTPUT->pix_url('/p/marktemplate', 'techproject') ;
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=domarkastemplate&amp;taskid={$task->id}&amp;view=tasks#node{$task->id}'>
-                 <img src='$templateicon' title=\"".get_string('markastemplate', 'techproject')."\" /></a>";
-        $link[] = "<a href='view.php?id={$cmid}&amp;work=dodelete&amp;taskid={$task->id}&amp;view=tasks'>
-                 <img src='".$OUTPUT->pix_url('/t/delete')."' title=\"".get_string('deletetask', 'techproject')."\" /></a>";
-        if ($task->ordering > 1)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=up&amp;taskid={$task->id}&amp;view=tasks#node{$task->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/up')."' title=\"".get_string('up', 'techproject')."\" /></a>";
-        if ($task->ordering < $setSize)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=down&amp;taskid={$task->id}&amp;view=tasks#node{$task->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/down')."' title=\"".get_string('down', 'techproject')."\" /></a>";
-        if ($task->fatherid != 0)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=left&amp;taskid={$task->id}&amp;view=tasks#node{$task->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/left')."' title=\"".get_string('left', 'techproject')."\" /></a>";
-        if ($task->ordering > 1)
-            $link[] = "<a href='view.php?id={$cmid}&amp;work=right&amp;taskid={$task->id}&amp;view=tasks#node{$task->id}'>
-                 <img src='".$OUTPUT->pix_url('/t/right')."' title=\"".get_string('right', 'techproject')."\" /></a>";
+        $params = array('id' => $cmid, 'work' => 'domarkastemplate', 'taskid' => $task->id, 'view' => 'tasks');
+        $markurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$markurl.'#node'.$task->id.'">
+                 <img src="'.$templateicon.'" title="'.get_string('markastemplate', 'techproject').'" /></a>';
+ 
+        $params = array('id' => $cmid, 'work' => 'dodelete', 'taskid' => $task->id, 'view' => 'tasks');
+        $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$deleteurl.'">
+                 <img src="'.$OUTPUT->pix_url('/t/delete').'" title="'.get_string('deletetask', 'techproject').'" /></a>';
+
+        techproject_add_entity_tree_controls($cmid, 'task', 'task', $task, $setSize, $link);
         $table->data[] = array($indent . implode(' ', $link));
         $table->rowclass[] = 'controls';
     }
@@ -854,9 +899,10 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
  * @param cmid the module id (for urls)
  */
 function techproject_print_milestones($project, $group, $numstage, $cmid) {
-    global $CFG, $USER, $DB, $OUTPUT;
+    global $CFG, $USER, $DB, $OUTPUT, $PAGE;
 
-    $TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
+    $renderer = $PAGE->get_renderer('mod_techproject');
+    $TIMEUNITS = array(get_string('unset','techproject'), get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
     $context = context_module::instance($cmid);
     $canedit = $USER->editmode == 'on' && has_capability('mod/techproject:changemiles', $context);
 
@@ -896,13 +942,13 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
                    milestoneid = $milestone->id
             ";
             $toptasks = $DB->get_record_sql($query);
-            $milestone->done = ($toptasks->count != 0) ? round($toptasks->done / $toptasks->count, 1) : 0 ;
-            $over = ($toptasks->planned && $toptasks->planned < $toptasks->used) ? floor((($toptasks->used - $toptasks->planned) / $toptasks->planned) * 60) : 0 ;
-            $completion = techproject_bar_graph_over($milestone->done, $over, 60, 5);
+            $milestone->done = ($toptasks->count != 0) ? round($toptasks->done / $toptasks->count, 1) : 0;
+            $over = ($toptasks->planned && $toptasks->planned < $toptasks->used) ? floor((($toptasks->used - $toptasks->planned) / $toptasks->planned) * 60) : 0;
+            $completion = $renderer->bar_graph_over($milestone->done, $over, 60, 5);
 
-            //printing milestone
-            $passed = ($milestone->deadline < usertime(time())) ? 'passedtime' : 'futuretime' ;
-            $milestonedeadline = ($milestone->deadlineenable) ? "(<span class='{$passed}'>" . userdate($milestone->deadline) . '</span>)': '' ;
+            // Printing milestone.
+            $passed = ($milestone->deadline < usertime(time())) ? 'passedtime' : 'futuretime';
+            $milestonedeadline = ($milestone->deadlineenable) ? "(<span class='{$passed}'>" . userdate($milestone->deadline) . '</span>)': '';
             $checkbox = ($canedit) ? "<input type=\"checkbox\" name=\"ids[]\" value=\"{$milestone->id}\" />" : '' ;
             $taskcount = "<img src=\"".$OUTPUT->pix_url('/p/task', 'techproject')."\" />[".$taskCount."]";
             $deliverablecount = " <img src=\"".$OUTPUT->pix_url('/p/deliv', 'techproject')."\" />[".$delivCount."]";
@@ -935,17 +981,28 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
 
             if ($canedit) {
                 $link = array();
-                $link[] = "<a href='view.php?id={$cmid}&amp;work=update&amp;milestoneid={$milestone->id}&amp;view=milestones'>
-                         <img src='".$OUTPUT->pix_url('/t/edit')."' alt=\"".get_string('update')."\" /></a>";
-                if ($toptasks->count == 0 || $project->allowdeletewhenassigned)
-                    $link[] = "<a href='view.php?id=$cmid&amp;work=dodelete&amp;milestoneid={$milestone->id}&amp;view=milestones'>
-                         <img src='".$OUTPUT->pix_url('/t/delete')."' alt=\"".get_string('delete')."\" /></a>";
-                if ($i > 1)
-                    $link[] = "<a href='view.php?id={$cmid}&amp;work=up&amp;milestoneid={$milestone->id}&amp;view=milestones'>
-                         <img src='".$OUTPUT->pix_url('/t/up')."' alt=\"".get_string('up', 'techproject')."\" /></a>";
-                if ($i < count($milestones))
-                    $link[] = "<a href='view.php?id={$cmid}&amp;work=down&amp;milestoneid={$milestone->id}&amp;view=milestones'>
-                         <img src='".$OUTPUT->pix_url('/t/down')."' alt=\"".get_string('down', 'techproject')."\" /></a>";
+                $params = array('id' => $cmid, 'work' => 'update', 'milestoneid' => $milestone->id, 'view' => 'milestones');
+                $updateurl = new moodle_url('/mod/techproject/view.php', $params);
+                $link[] = '<a href="'.$updateurl.'">
+                         <img src="'.$OUTPUT->pix_url('/t/edit').'" alt="'.get_string('update').'" /></a>';
+                if ($toptasks->count == 0 || $project->allowdeletewhenassigned) {
+                    $params = array('id' => $cmid, 'work' => 'dodelete', 'milestoneid' => $milestone->id, 'view' => 'milestones');
+                    $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
+                    $link[] = '<a href="'.$deleteurl.'">
+                         <img src="'.$OUTPUT->pix_url('/t/delete').'" alt="'.get_string('delete').'" /></a>';
+                }
+                if ($i > 1) {
+                    $params = array('id' => $cmid, 'work' => 'up', 'milestoneid' => $milestone->id, 'view' => 'milestones');
+                    $upurl = new moodle_url('/mod/techproject/view.php', $params);
+                    $link[] = '<a href="'.$upurl.'">
+                         <img src="'.$OUTPUT->pix_url('/t/up').'" alt="'.get_string('up', 'techproject').'" /></a>';
+                }
+                if ($i < count($milestones)) {
+                    $params = array('id' => $cmid, 'work' => 'down', 'milestoneid' => $milestone->id, 'view' => 'milestones');
+                    $downurl = new moodle_url('/mod/techproject/view.php', $params);
+                    $link[] = '<a href="'.$downurl.'">
+                         <img src="'.$OUTPUT->pix_url('/t/down').'" alt="'.get_string('down', 'techproject').'" /></a>';
+                }
                 $table->data[] = array(implode(' ', $link));
             }
 
@@ -975,11 +1032,10 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
  */
 function techproject_print_deliverables($project, $group, $fatherid, $cmid, $propagated = null) {
     global $CFG, $USER, $DB, $OUTPUT;
-
     static $level = 0;
     static $startuplevelchecked = false;
 
-    techproject_check_startup_level('deliverable', $fatherid, $level, $startuplevelchecked);
+    techproject_check_startup_level('deliverable', $fatherid, $level, $startuplevelchecked);    
 
     $query = "
         SELECT
@@ -1009,7 +1065,7 @@ function techproject_print_deliverables($project, $group, $fatherid, $cmid, $pro
     if ($deliverables = $DB->get_records_sql($query)) {
         foreach ($deliverables as $deliverable) {
             $level++;
-            echo "<div class=\"entitynode nodelevel{$level}\">";
+            echo '<div class="entitynode nodelevel'.$level.'">';
             $propagatedroot = $propagated;
             if (!$propagated || (!isset($propagated->milestoneid) && $deliverable->milestoneid)) {
                 if (is_null($propagatedroot)) $propagatedroot = new StdClass();
@@ -1048,28 +1104,19 @@ function techproject_print_deliverables($project, $group, $fatherid, $cmid, $pro
  * @param fullsingle true if prints a single isolated element
  */
 function techproject_print_single_deliverable($deliverable, $project, $group, $cmid, $setSize, $fullsingle = false) {
-    global $CFG, $USER, $DB, $OUTPUT;
-    static $fs;
-    static $MILESTONES = array();
+    global $CFG, $USER, $DB, $OUTPUT, $PAGE;
 
-    // Cache some milestones.
-    if ($deliverable->milestoneid && !array_key_exists($deliverable->milestoneid, $MILESTONES)) {
-        $MILESTONES[$deliverable->milestoneid] = $DB->get_record('techproject_milestone', array('id' => $deliverable->milestoneid), 'id,deadline,deadlineenable');
-    }
+    $fs = get_file_storage();
 
-    if (empty($fs)) {
-        $fs = get_file_storage();
-    }
-
+    $renderer = $PAGE->get_renderer('mod_techproject');
     $context = context_module::instance($cmid);
     $canedit = $USER->editmode == 'on' && has_capability('mod/techproject:changedelivs', $context);
     $numdeliv = implode('.', techproject_tree_get_upper_branch('techproject_deliverable', $deliverable->id, true, true));
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_deliverable', $deliverable->id) > 0) {
-            $ajax = $CFG->enableajax;
-            $hidesub = "<a href=\"javascript:toggle('{$deliverable->id}','sub{$deliverable->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$deliverable->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
+            $hidesub = "<a href=\"javascript:toggle('{$deliverable->id}','sub{$deliverable->id}', 1, '$CFG->wwwroot');\"><img name=\"img{$deliverable->id}\" src=\"".$OUTPUT->pix_url('p/switch_minus', 'techproject').'" alt="collapse" /></a>';
         } else {
-            $hidesub = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/empty.gif\" />";
+            $hidesub = '<img src="'.$OUTPUT->pix_url('p/empty', 'techproject').'" />';
         }
     } else {
        $hidesub = '';
@@ -1101,51 +1148,40 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
          if ($res->count != 0) {
             $deliverable->done = ($res->count != 0) ? round($res->done / $res->count, 1) : 0;
             $over = ($res->planned && $res->planned < $res->used) ? floor((($res->used - $res->planned) / $res->planned) * 60) : 0;
-            $completion = techproject_bar_graph_over($deliverable->done, $over, 60, 5);
+            $completion = $renderer->bar_graph_over($deliverable->done, $over, 60, 5);
         }
     }
 
-    $milestonepix = (isset($deliverable->milestoneforced)) ? 'milestoneforced' : 'milestone' ; 
-    $milestone = ($deliverable->milestoneid) ? "<img src=\"".$OUTPUT->pix_url("/p/{$milestonepix}", 'techproject')."\" title=\"".@$deliverable->milestoneabstract."\" />" : '';
+    $milestonepix = (isset($deliverable->milestoneforced)) ? 'milestoneforced' : 'milestone';
+    $milestone = ($deliverable->milestoneid) ? '<img src="'.$OUTPUT->pix_url("p/{$milestonepix}", 'techproject').'" title="'.@$deliverable->milestoneabstract.'" />' : '';
 
     $taskcount = techproject_print_entitycount('techproject_deliverable', 'techproject_task_to_deliv', $project->id, $group, 'deliv', 'task', $deliverable->id);
-    $checkbox = ($canedit) ? "<input type=\"checkbox\" name=\"ids[]\" value=\"{$deliverable->id}\" />" : '';
+    $checkbox = ($canedit) ? '<input type="checkbox" name="ids[]" value="'.$deliverable->id.'" />' : '';
 
     if (!$fullsingle) {
         $hideicon = (!empty($deliverable->description)) ? 'hide' : 'hide_shadow';
-        $hidedeliv = "<a href=\"javascript:toggle_show('{$numdeliv}','{$numdeliv}', '$CFG->wwwroot');\"><img name=\"eye{$numdeliv}\" src=\"".$OUTPUT->pix_url("/p/{$hideicon}", 'techproject')."\" alt=\"collapse\" /></a>";
+        $hidedeliv = "<a href=\"javascript:toggle_show('{$numdeliv}','{$numdeliv}', '$CFG->wwwroot');\"><img name=\"eye{$numdeliv}\" src=\"".$OUTPUT->pix_url("/p/{$hideicon}", 'techproject').'" alt="collapse" /></a>';
     } else {
         $hidedeliv = '';
     }
-    
-    $delivered = false;
-    if (!$fs->is_area_empty($context->id, 'mod_techproject', 'deliverablelocalfile', $deliverable->id)) {
-        $files = $fs->get_area_files($context->id, 'mod_techproject', 'deliverablelocalfile', $deliverable->id);
-        $file = array_pop($files);
-        $delivurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
-        $abstract = "<a href=\"{$delivurl}\" target=\"_blank\">{$deliverable->abstract}</a>";
-        $delivered = true;
+    if ($deliverable->localfile) {
+        $files = $fs->get_area_files($context->id, 'mod_techproject', 'deliverablelocalfile', $deliverable->id, "itemid, filepath, filename", false);
+        if ($files) {
+            $storedfile = array_pop($files);
+            $localfileurl = moodle_url::make_pluginfile_url($context->id, 'mod_techproject', 'deliverablelocalfile', $deliverable->id, $storedfile->get_filepath(), $storedfile->get_filename());
+            $abstract = format_string($deliverable->abstract).' <a href="'.$localfileurl.'" target="_blank"><img src="'.$OUTPUT->pix_url('f/archive-64').'" /></a>';
+        } else {
+            $abstract = format_string($deliverable->abstract);
+        }
     } elseif ($deliverable->url) {
-        $abstract = "<a href=\"{$deliverable->url}\" target=\"_blank\">{$deliverable->abstract}</a>";
-        $delivered = true;
+        $abstract = '<a href="'.$deliverable->url.'" target="_blank">'.$deliverable->abstract.'</a>';
     } else {
        $abstract = format_string($deliverable->abstract);
     }
-    
-    // Calculate lateness and date style if delivered
-    if ($delivered) {
-        $dateclass = 'deliverable-undated';
-        if ($deliverable->milestoneid && $MILESTONES[$deliverable->milestoneid]->deadlineenable) {
-            $lateness = $MILESTONES[$deliverable->milestoneid]->deadline - $deliverable->modified;
-            $dateclass = ($lateness < 0) ? 'deliverable-late' : 'deliverable-ontime' ;
-        }
-    
-        $abstract .= ' <span class="date '.$dateclass.'">('.userdate($deliverable->modified).')</span>';
-    }
-
     $head = "<table width='100%' class=\"nodecaption\"><tr><td align='left' width='70%'><b>{$checkbox} {$indent}<span class=\"level{$delivlevel}\">{$hidesub} <a name=\"node{$deliverable->id}\"></a>D{$numdeliv} - {$abstract}</span></b></td><td align='right' width='30%'>{$taskcount} {$completion} {$milestone} {$hidedeliv}</td></tr></table>";
 
     $statusoption = techproject_get_option_by_key('delivstatus', $project->id, $deliverable->status);
+
 
     unset($innertable);
     $innertable = new html_table();
@@ -1162,11 +1198,12 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
         $description = close_unclosed_tags(shorten_text(format_text($description, $deliverable->descriptionformat), 800));
     } else {
         $initialDisplay = 'block';
-        $description = format_string(format_text($description, $deliverable->descriptionformat));
+        $description = format_text($description, $deliverable->descriptionformat);
     }
     $desc = "<div id='{$numdeliv}' class='entitycontent' style='display: {$initialDisplay};'>{$parms}".$description;
     if (!$fullsingle) {
-        $desc .= "<br/><a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id={$cmid}&amp;view=view_detail&amp;objectId={$deliverable->id}&amp;objectClass=deliverable\" >".get_string('seedetail','techproject')."</a></div>"; 
+        $detailurl = new moodle_url('/mod/techproject/view.php', array('id' => $cmid, 'view' => 'view_detail', 'objectId' => $deliverable->id, 'objectClass' => 'deliverable'));
+        $desc .= '<br/><a href="'.$detailurl.'" >'.get_string('seedetail','techproject')."</a></div>"; 
     }
     $desc .= "</div>";
 
@@ -1182,33 +1219,25 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
 
     if ($canedit) {
         $link = array();
-        $link[] = "<a href=\"view.php?id={$cmid}&amp;work=add&amp;fatherid={$deliverable->id}&amp;view=deliverables\">
-                 <img src=\"".$OUTPUT->pix_url('/p/newnode', 'techproject')."\" alt=\"".get_string('addsubdeliv', 'techproject')."\" /></a>";
-        $link[] = "<a href=\"view.php?id={$cmid}&amp;work=update&amp;delivid={$deliverable->id}&amp;view=deliverables\">
-                 <img src=\"".$OUTPUT->pix_url('/t/edit')."\" alt=\"".get_string('update')."\" /></a>";
-        $link[] = "<a href=\"view.php?id={$cmid}&amp;work=dodelete&amp;delivid={$deliverable->id}&amp;view=deliverables\">
-                 <img src=\"".$OUTPUT->pix_url('/t/delete')."\" alt=\"".get_string('delete')."\" /></a>";
-        if ($deliverable->ordering > 1) {
-            $link[] = "<a href=\"view.php?id={$cmid}&amp;work=up&amp;delivid={$deliverable->id}&amp;view=deliverables#node{$deliverable->id}\">
-                 <img src=\"".$OUTPUT->pix_url('/t/up')."\" alt=\"".get_string('up', 'techproject')."\" /></a>";
-        }
-        if ($deliverable->ordering < $setSize) {
-            $link[] = "<a href=\"view.php?id={$cmid}&amp;work=down&amp;delivid={$deliverable->id}&amp;view=deliverables#node{$deliverable->id}\">
-                 <img src=\"".$OUTPUT->pix_url('/t/down')."\" alt=\"".get_string('down', 'techproject')."\" /></a>";
-        }
-        if ($deliverable->fatherid != 0) {
-            $link[] = "<a href=\"view.php?id={$cmid}&amp;work=left&amp;delivid={$deliverable->id}&amp;view=deliverables#node{$deliverable->id}\">
-                 <img src=\"".$OUTPUT->pix_url('/t/left')."\" alt=\"".get_string('left', 'techproject')."\" /></a>";
-        }
-        if ($deliverable->ordering > 1) {
-            $link[] = "<a href=\"view.php?id={$cmid}&amp;work=right&amp;delivid={$deliverable->id}&amp;view=deliverables#node{$deliverable->id}\">
-                 <img src=\"".$OUTPUT->pix_url('/t/right')."\" alt=\"".get_string('right', 'techproject')."\" /></a>";
-        }
+        $params = array('id' => $cmid, 'work' => 'add', 'fatherid' => $deliverable->id, 'view' => 'deliverables');
+        $addsuburl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$addsuburl.'">
+                 <img src="'.$OUTPUT->pix_url('/p/newnode', 'techproject').'" alt="'.get_string('addsubdeliv', 'techproject').'" /></a>';
+        $params = array('id' => $cmid, 'work' => 'update', 'delivid' => $deliverable->id, 'view' => 'deliverables');
+        $updateurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$updateurl.'">
+                 <img src="'.$OUTPUT->pix_url('/t/edit').'" alt="'.get_string('update').'" /></a>';
+        $params = array('id' => $cmid, 'work' => 'dodelete', 'delivid' => $deliverable->id, 'view' => 'deliverables');
+        $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$deleteurl.'">
+                 <img src="'.$OUTPUT->pix_url('/t/delete').'" alt="'.get_string('delete').'" /></a>';
+
+        techproject_add_entity_tree_controls($cmid, 'deliverable', 'deliv', $deliverable, $setSize, $link);
         $table->data[] = array($indent . implode (' ' , $link));
         $table->rowclass[] = 'controls';
     }
-
-    $table->style = 'generaltable';
+    
+    $table->style = "generaltable";
     techproject_print_project_table($table);
     unset($table);
 }
@@ -1334,37 +1363,6 @@ function techproject_get_option_by_key($domain, $projectid, $value) {
 }
 
 /**
- * prints a graphical bargraph with overhead signalling
- * @param value the current value claculated against the regular width of the bargraph
- * @param over the value of the overhead, in the width based scaling
- * @param width the physical width of the bargraph (in pixels)
- * @param height the physical height of the bargraph (in pixels)
- * @param maxover the overhead width limit. Will produce an alternate overhead rendering if over is over.
- *
- */
-function techproject_bar_graph_over($value, $over, $width = 50, $height = 4, $maxover = 60) {
-    global $CFG, $OUTPUT;
-
-    if ($value == -1) {
-        return '<img src="'.$OUTPUT->pix_url('p/graypixel', 'techproject').'" title="'.get_string('nc','techproject')."\" width=\"{$width}\" height=\"{$height}\" />";
-    }
-    $done = floor($width * $value / 100);
-    $todo = floor($width * ( 1 - $value / 100));
-    $bargraph = '<img src="'.$OUTPUT->pix_url('p/greenpixel', 'techproject')."\" title=\"{$value}%\" width=\"{$done}\" height=\"{$height}\" />";
-    $bargraph .= '<img src="'.$OUTPUT->pix_url('p/bluepixel', 'techproject')."\" title=\"{$value}%\" width=\"{$todo}\" height=\"{$height}\" />";
-    if ($over) {
-        $displayOver = (round($over/$width*100))."%";
-        if ($over < $maxover) {
-            $bargraph .= '<img src="'.$OUTPUT->pix_url('p/redpixel', 'techproject')."\" title=\"".get_string('overdone','techproject').':'.$displayOver."\" width=\"{$over}\" height=\"{$height}\" />";
-        } else {
-            $bargraph .= '<img src="'.$OUTPUT->pix_url('p/maxover', 'techproject')."\" title=\"".get_string('overoverdone','techproject').':'.$displayOver."\" height=\"{$height}\" width=\"{$width}\" />";
-        }
-    }
-    return $bargraph;
-}
-
-
-/**
  * checks for some circularities in the dependencies
  * @param int $taskid the current task
  * @param int $masterid the master task to be checked for
@@ -1443,7 +1441,7 @@ function techproject_print_entitycount($table1, $table2, $projectid, $groupid, $
         $res->subs += 0;
     }
     if ($res->subs > 0 || $subcount > 0) {
-        $output = '<img src="'.$OUTPUT->pix_url('p/'.$relwhat, 'techproejct')."\" title=\"".get_string('bounditems', 'techproject', $relwhat)."\" />(".$res->subs.") {$subcount}";
+        $output = '<img src="'.$OUTPUT->pix_url('p/'.$relwhat, 'techproject')."\" title=\"".get_string('bounditems', 'techproject', $relwhat)."\" />(".$res->subs.") {$subcount}";
     } else {
         $output = '';
     }
@@ -1472,6 +1470,7 @@ function techproject_print_group_commands($additional = '') {
     echo html_writer::select($optionList, 'cmd', '', array('' => get_string('choosewhat', 'techproject')), array('onchange' => 'sendgroupdata()'));
     echo '</p>';
 }
+
 /**
  * Print a nicely formatted table. Hack from the original print_table from weblib.php
  *
@@ -1651,11 +1650,11 @@ function techproject_autograde($project, $groupid) {
             $coveredReqs++;
         }
     }
-    $requRate = ($effectiveRequirementsCount) ? $coveredReqs / $effectiveRequirementsCount : 0 ;
+    $requRate = ($effectiveRequirementsCount) ? $coveredReqs / $effectiveRequirementsCount : 0;
     echo '<br/><b>'.get_string('requirementsrate', 'techproject').' :</b> '.$coveredReqs.' '.get_string('over', 'techproject').' '.$effectiveRequirementsCount.' : '.sprintf("%.02f", $requRate);
-    // now we know how many requirements are really covered directly or indirectly
+    // now we know how many requirements are really covered directly or indirectly.
 
-    // step 2 : get deliverables to cover as an Id list
+    // step 2 : get deliverables to cover as an Id list.
     $rootDeliverables = $DB->get_records_select('techproject_deliverable', "projectid = ? AND groupid = ? AND fatherid = 0", array($project->id, $group));
     $effectiveDeliverables = array();
     foreach ($rootDeliverables as $aRoot) {
@@ -1702,17 +1701,19 @@ function techproject_autograde($project, $groupid) {
         echo '<br/><b>'.get_string('completionrate', 'techproject').' :</b> '.$done;
     }
 
-    // step 4 : calculating variance (balance) of task assignation between members
+    // Step 4 : calculating variance (balance) of task assignation between members.
     if ($rootTasks) {
         $leafTasks = array();
-        // get leaves
+        // Get leaves.
         foreach ($rootTasks as $aTask) {
             $leafTasks = array_merge($leafTasks, techproject_count_leaves('techproject_task', $aTask->id, true));
         }
-        // collecting and accumulating charge planned
-        // get student list
+        /*
+         * collecting and accumulating charge planned
+         * get student list
+         */
         if (!groups_get_activity_groupmode($cm, $course)) {
-            $groupStudents = get_users_by_capability($coursecontext, 'mod/techproject:canbeevaluated', 'u.id; u.firstname, u.lastname, u.mail, u.picture', 'u.lastname');
+            $groupStudents = get_users_by_capability($coursecontext, 'mod/techproject:canbeevaluated', 'u.id,'.get_all_user_name_fields(true, 'u').',u.mail, u.picture', 'u.lastname');
         } else {
             $groupmembers = get_group_members($groupid);
             $groupStudents = array();
@@ -1725,15 +1726,17 @@ function techproject_autograde($project, $groupid) {
             }
         }
 
-        // intitializes charge table
+        // Intitializes charge table.
         foreach ($groupStudents as $aStudent) {
             $memberCharge[$aStudent->id] = 0;
         }
-        // getting real charge
+
+        // Getting real charge.
         foreach ($leafTasks as $aLeaf) {
             $memberCharge[$aLeaf->assignee] = @$memberCharge[$aLeaf->assignee] + $aLeaf->planned;
         }
-        // calculating charge mean and variance
+
+        // Calculating charge mean and variance.
         $totalCharge = array_sum(array_values($memberCharge));
         $assigneeCount = count(array_keys($memberCharge));
         $meanCharge = ($assigneeCount == 0) ? 0 : $totalCharge / $assigneeCount ;
@@ -1760,7 +1763,7 @@ function techproject_autograde($project, $groupid) {
  */
 function techproject_get_users_not_in_group($courseid) {
     $coursecontext = context_course::instance($courseid);
-    $users = get_users_by_capability($coursecontext, 'mod/techproject:beassignedtasks', 'u.id, firstname,lastname,picture,email', 'lastname');
+    $users = get_users_by_capability($coursecontext, 'mod/techproject:beassignedtasks', 'u.id,'.get_all_user_name_fields(true, 'u').',picture,email', 'lastname');
     if ($users) {
         if ($groups = groups_get_all_groups($courseid)) {
             foreach ($groups as $aGroup) {
@@ -1792,17 +1795,16 @@ function techproject_get_group_users($courseid, $cm, $groupid) {
     $course = $DB->get_record('course', array('id' => $courseid));
     if (!groups_get_activity_groupmode($cm, $course)) {
         $coursecontext = context_course::instance($courseid);
-        $users = get_users_by_capability($coursecontext, 'mod/techproject:beassignedtasks', 'u.id, firstname,lastname,picture,email', 'lastname');
+        $users = get_users_by_capability($coursecontext, 'mod/techproject:beassignedtasks', 'u.id,'.get_all_user_name_fields(true, 'u').',picture,email', 'lastname');
         // $users = get_course_users($courseid);
     } else {
         if ($groupid) {
             $users = groups_get_members($groupid);
-        }
-        else{
+        } else {
             // we could not rely on the legacy function
             $users = techproject_get_users_not_in_group($courseid);
         }
-        if($users) {
+        if ($users) {
             $context = context_module::instance($cm->id);
 
             // equ of array_filter, but needs variable parameter so we cound not use it.
@@ -1929,29 +1931,29 @@ function close_unclosed_tags($text, $taglist='p,b,i,li') {
  * @param string $closetag what to close with
  */
 function closeUnclosed($string, $opentag, $closetag) {
-  $count = 0;
-  $opensizetags = 0;
-  $closedsizetags = 0;
-  for($i = 0; $i <= strlen($string); $i++) {
-    $pos = strpos($string, $opentag, $count);
-    if(!($pos === false)) {
-      $opensizetags++;
-      $count = ($pos += 1);
+    $count = 0;
+    $opensizetags = 0;
+    $closedsizetags = 0;
+    for ($i = 0; $i <= strlen($string); $i++) {
+        $pos = strpos($string, $opentag, $count);
+        if (!($pos === false)) {
+            $opensizetags++;
+            $count = ($pos += 1);
+        }
     }
-  }
-  $count = 0;
-  for ($i = 0; $i <= strlen($string); $i++) {
-    $pos = strpos($string, $closetag, $count);
-    if (!($pos === false)) {
-      $closedsizetags++;
-      $count = ($pos += 1);
+    $count = 0;
+    for ($i = 0; $i <= strlen($string); $i++) {
+        $pos = strpos($string, $closetag, $count);
+        if (!($pos === false)) {
+            $closedsizetags++;
+            $count = ($pos += 1);
+        }
     }
-  }
-  while ($closedsizetags < $opensizetags) {
-    $string .= "$closetag\n";
-    $closedsizetags++;
-  }
-  return $string;
+    while ($closedsizetags < $opensizetags) {
+        $string .= "$closetag\n";
+        $closedsizetags++;
+    }
+    return $string;
 }
 
 /**
@@ -2010,14 +2012,17 @@ function techproject_print_validations($project, $groupid, $fatherid, $cmid) {
             $validationsessions[$sessid]->states = $DB->get_records('techproject_valid_state', array('validationsessionid' => $session->id), '', 'reqid,status,comment');
             $validationcaption = '&lt;'.userdate($session->datecreated).'&gt;';
             if (has_capability('mod/techproject:managevalidations', context_module::instance($cmid))) {
-                $validationcaption .= " <a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id=$cmid&view=validations&work=dodelete&validid={$sessid}\">$deletestr</a>";
+                $viewurl = new moodle_url('/mod/techproject/view.php', array('id' => $cmid, 'view' => 'validations', 'work' => 'dodelete', 'validid' => $sessid));
+                $validationcaption .= ' <a href="'.$viewurl.'">'.$deletestr.'</a>';
             }
             if ($session->dateclosed == 0) {
                 if (has_capability('mod/techproject:managevalidations', context_module::instance($cmid))) {
-                    $validationcaption .= " <a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id=$cmid&view=validations&work=close&validid={$sessid}\">$closestr</a>";
+                    $viewurl = new moodle_url('/mod/techproject/view.php', array('id' => $cmid, 'view' => 'validations', 'work' => 'close', 'validid' => $sessid));
+                    $validationcaption .= ' <a href="'.$viewurl.'">'.$closestr.'</a>';
                 }
                 if (has_capability('mod/techproject:validate', context_module::instance($cmid))) {
-                    $validationcaption .= " <a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id=$cmid&view=validation&validid={$sessid}\">$updatestr</a>";
+                    $viewurl = new moodle_url('/mod/techproject/view.php', array('id' => $cmid, 'view' => 'validation', 'validid' => $sessid));
+                    $validationcaption .= ' <a href="'.$viewurl.'">'.$updatestr.'</a>';
                 }
             }
             $validationcaptions .= "<td>$validationcaption</td>";
@@ -2059,15 +2064,15 @@ function techproject_print_validations($project, $groupid, $fatherid, $cmid) {
         if ($entities = $DB->get_records_sql($query)) {
             $i = 1;
             foreach ($entities as $entity) {
-                echo "<div class=\"nodelevel{$level}\">";
+                echo '<div class="nodelevel'.$level.'">';
                 $level++;
                 techproject_print_single_entity_validation($validationsessions, $entity, $project, $groupid, $cmid, count($entities), $entityname);
                 $visibility = ($entity->collapsed) ? 'display: none' : 'display: block' ; 
-                echo "<div id=\"sub{$entity->id}\" class=\"treenode\" style=\"$visibility\" >";
+                echo '<div id="sub'.$entity->id.'" class="treenode" style="'.$visibility.'" >';
                 techproject_print_validations($project, $groupid, $entity->id, $cmid);
-                echo "</div>";
+                echo '</div>';
                 $level--;
-                echo "</div>";
+                echo '</div>';
             }
         } else {
             if ($level == 0) {
@@ -2103,8 +2108,7 @@ function techproject_print_single_entity_validation(&$validationsessions, &$enti
     $canedit = has_capability('mod/techproject:validate', $context);
     $numrec = implode('.', techproject_tree_get_upper_branch('techproject_'.$entityname, $entity->id, true, true));
     if (techproject_count_subs('techproject_'.$entityname, $entity->id) > 0) {
-        $ajax = $CFG->enableajax;
-        $hidesub = "<a href=\"javascript:toggle('{$entity->id}','sub{$entity->id}', '$ajax', '$CFG->wwwroot');\"><img name=\"img{$entity->id}\" src=\"".$OUTPUT->pix_url('p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
+        $hidesub = "<a href=\"javascript:toggle('{$entity->id}','sub{$entity->id}', 1, '$CFG->wwwroot');\"><img name=\"img{$entity->id}\" src=\"".$OUTPUT->pix_url('p/switch_minus', 'techproject')."\" alt=\"collapse\" /></a>";
     } else {
         $hidesub = '<img src="'.$OUTPUT->pix_url('p/empty', 'techproject').'" />';
     }
@@ -2187,16 +2191,16 @@ function techproject_print_validation_states_form($validsessid, &$project, $grou
         echo "<form name=\"statesform\" action=\"#\" method=\"POST\" >";
         $i = 1;
         foreach ($states as $state) {
-            echo "<div class=\"nodelevel{$level}\">";
+            echo '<div class="nodelevel'.$level.'">';
             $level++;
             techproject_print_single_validation_form($state, $entityname);
 
-            $visibility = ($state->collapsed) ? 'display: none' : 'display: block' ; 
-            echo "<div id=\"sub{$state->reqid}\" class=\"treenode\" style=\"$visibility\" >";
+            $visibility = ($state->collapsed) ? 'display: none' : 'display: block';
+            echo '<div id="sub'.$state->reqid.'" class="treenode" style="'.$visibility.'" >';
             techproject_print_validation_states_form($validsessid, $project, $groupid, $state->reqid, $cmid);
-            echo "</div>";
+            echo '</div>';
             $level--;
-            echo "</div>";
+            echo '</div>';
         }
 
         if ($level == 0) {
@@ -2243,13 +2247,12 @@ function techproject_print_single_validation_form($state, $entityname) {
     echo '</td>';
     echo '</tr>';
     echo '</table>';
-
 }
 
 /**
-* check milestone constraints
-*
-*/
+ * check milestone constraints
+ *
+ */
 function milestone_checkConstraints($project, $milestone) {
     global $CFG, $DB;
 
@@ -2275,7 +2278,7 @@ function milestone_checkConstraints($project, $milestone) {
           milestoneid
     ";
     $latestTask = $DB->get_record_sql($query);
-    if($latestTask && $milestone->deadline < $latestTask->latest) {
+    if ($latestTask && $milestone->deadline < $latestTask->latest) {
         $control['milestonedeadline'] = get_string('assignedtaskendsafter','techproject') . '<br/>' . userdate($latestTask->latest);
     }
     return $control;
@@ -2288,51 +2291,57 @@ function milestone_checkConstraints($project, $milestone) {
  */
 
 /**
-* a form constraint checking function
-* @param object $project the surrounding project cntext
-* @param object $task form object to be checked
-* @return a control hash array telling error statuses
-*/
+ * a form constraint checking function
+ * @param object $project the surrounding project cntext
+ * @param object $task form object to be checked
+ * @return a control hash array telling error statuses
+ */
 function task_checkConstraints($project, $task) {
-    $control = NULL;
+    global $DB;
+
+    $control = null;
     switch($project->timeunit) {
         case HOURS : $plannedtime = 3600 ; break ;
         case HALFDAY : $plannedtime = 3600 * 12 ; break ;
         case DAY : $plannedtime = 3600 * 24 ; break ;
         default : $plannedtime = 0;
     }
-    // checking too soon task
+    // Checking too soon task.
     if ($task->taskstartenable && $task->taskstart < $project->projectstart) {
         $control['taskstartdate'] = get_string('tasktoosoon','techproject') . '<br/>' . userdate($project->projectstart);
     }
-    // task too late (planned to milestone)
-    if($task->taskstartenable && $task->milestoneid) {
+
+    // Task too late (planned to milestone).
+    if ($task->taskstartenable && $task->milestoneid) {
         $milestone = $DB->get_record('techproject_milestone', array('projectid' => $project->id, 'id' => $task->milestoneid));
         if ($milestone->deadlineenable && ($task->taskstart + $plannedtime > $milestone->deadline)) {
             $control['taskstartdate'] = get_string('taskstartsaftermilestone','techproject') . '<br/>' . userdate($milestone->deadline);
         }
     }
-    // task too late (absolute)
-    elseif($task->taskstartenable && ($task->taskstart + $plannedtime > $project->projectend)) {
+
+    // Task too late (absolute).
+    elseif ($task->taskstartenable && ($task->taskstart + $plannedtime > $project->projectend)) {
         $control['taskstartdate'] = get_string('tasktoolate','techproject') . '<br/>' . userdate($project->projectend);
     }
-    // checking too late end
-    elseif($task->taskendenable && $task->milestoneid) {
+
+    // Checking too late end.
+    elseif ($task->taskendenable && $task->milestoneid) {
         $milestone = $DB->get_record('techproject_milestone', array('projectid' => $project->id, 'id' => $task->milestoneid));
         if ($milestone->deadlineenable && ($task->taskend > $milestone->deadline)) {
             $control['taskenddate'] = get_string('taskfinishesaftermilestone','techproject') . '<br/>' . userdate($milestone->deadline);
         }
     }
-    // checking too late end
-    elseif($task->taskendenable && $task->taskend > $project->projectend) {
+    // Checking too late end.
+    elseif ($task->taskendenable && $task->taskend > $project->projectend) {
         $control['taskenddate'] = get_string('taskfinishestoolate','techproject') . '<br/>' . userdate($project->projectend);
     }
-    // checking switched end and start
-    elseif($task->taskendenable && $task->taskstartenable && $task->taskend <= $task->taskstart) {
+
+    // Checking switched end and start.
+    elseif ($task->taskendenable && $task->taskstartenable && $task->taskend <= $task->taskstart) {
         $control['taskenddate'] = get_string('taskfinishesbeforeitstarts','techproject');
     }
-    // checking unfeseabletask
-    elseif($task->taskendenable && $task->taskstartenable && $task->taskend < $task->taskstart + $plannedtime) {
+    // Checking unfeseabletask.
+    elseif ($task->taskendenable && $task->taskstartenable && $task->taskend < $task->taskstart + $plannedtime) {
         $control['taskenddate'] = get_string('tasktooshort','techproject') . '<br/> >> ' . userdate($task->taskstart + $plannedtime);
     }
     return $control;
@@ -2346,6 +2355,7 @@ function techproject_check_startup_level($entity, $fatherid, &$level, &$startupl
             $level = 0;
         } else {
             $level = 1;
+            $rec = new StdClass();
             $rec->fatherid = $fatherid;
             while ($rec->fatherid) {
                 $rec = $DB->get_record('techproject_'.$entity, array('id' => $rec->fatherid), 'id, fatherid');
@@ -2356,10 +2366,10 @@ function techproject_check_startup_level($entity, $fatherid, &$level, &$startupl
     }
 }
 
-function techproject_print_localfile($deliverable, $cmid, $type=NULL, $align="left") {
+function techproject_print_localfile($deliverable, $cmid, $type = null, $align = 'left') {
     global $CFG, $DB, $OUTPUT;
 
-    if (!$context = get_context_instance(CONTEXT_MODULE, $cmid)) {
+    if (!$context = context_module::instance($cmid)) {
         return '';
     }
 
@@ -2368,7 +2378,7 @@ function techproject_print_localfile($deliverable, $cmid, $type=NULL, $align="le
     $imagereturn = '';
     $output = '';
 
-    if ($files = $fs->get_area_files($context->id, 'mod_techproject', 'localfile', $deliverable->id, "timemodified", false)) {
+    if ($files = $fs->get_area_files($context->id, 'mod_techproject', 'localfile', $deliverable->id, 'timemodified', false)) {
         foreach ($files as $file) {
             $filename = $file->get_filename();
             $mimetype = $file->get_mimetype();
@@ -2376,20 +2386,20 @@ function techproject_print_localfile($deliverable, $cmid, $type=NULL, $align="le
             $path = file_encode_url($CFG->wwwroot.'/pluginfile.php', '/'.$context->id.'/mod_techproject/localfile/'.$deliverable->id.'/'.$filename);
 
             if ($type == 'html') {
-                $output .= "<a href=\"$path\">$iconimage</a> ";
-                $output .= "<a href=\"$path\">".s($filename)."</a>";
-                $output .= "<br />";
+                $output .= '<a href="'.$path.'">'.$iconimage.'</a> ';
+                $output .= '<a href="'.$path.'">'.s($filename).'</a>';
+                $output .= '<br />';
 
-            } else if ($type == 'text') {
+            } elseif ($type == 'text') {
                 $output .= "$strattachment ".s($filename).":\n$path\n";
 
             } else {
                 if (in_array($mimetype, array('image/gif', 'image/jpeg', 'image/png'))) {
                     // Image attachments don't get printed as links
-                    $imagereturn .= "<br /><img src=\"$path\" alt=\"\" />";
+                    $imagereturn .= '<br /><img src="'.$path.'" alt="" />';
                 } else {
-                    $output .= "<a href=\"$path\">$iconimage</a> ";
-                    $output .= format_text("<a href=\"$path\">".s($filename)."</a>", FORMAT_HTML, array('context'=>$context));
+                    $output .= '<a href="'.$path.'">'.$iconimage.'</a> ';
+                    $output .= format_text('<a href="'.$path.'">'.s($filename).'</a>', FORMAT_HTML, array('context' => $context));
                     $output .= '<br />';
                 }
             }
@@ -2419,4 +2429,52 @@ function techproject_complete_user(&$user) {
     foreach ($USERCOMPS[$user->id] AS $var => $value) {
         $user->$var = $value;
     }
+}
+
+/**
+ * Adds controls for tree movement. uses a trick to avoid navigator abusive
+ * caching by sending time with request.
+ */
+function techproject_add_entity_tree_controls($cmid, $entityname, $shortentityname, $entity, $setsize, &$link) {
+    global $OUTPUT;
+
+    if ($entity->ordering > 1) {
+        $params = array('id' => $cmid, 'work' => 'up', $shortentityname.'id' => $entity->id, 'view' => $entityname.'s', 't' => time());
+        $upurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$upurl.'#node'.$entity->id.'">
+             <img src="'.$OUTPUT->pix_url('/t/up').'" alt="'.get_string('up', 'techproject').'" /></a>';
+    }
+    if ($entity->ordering < $setsize) {
+        $params = array('id' => $cmid, 'work' => 'down', $shortentityname.'id' => $entity->id, 'view' => $entityname.'s', 't' => time());
+        $downurl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$downurl.'#node'.$entity->id.'">
+             <img src="'.$OUTPUT->pix_url('/t/down').'" alt="'.get_string('down', 'techproject').'" /></a>';
+    }
+    if ($entity->fatherid != 0) {
+        $params = array('id' => $cmid, 'work' => 'left', $shortentityname.'id' => $entity->id, 'view' => $entityname.'s', 't' => time());
+        $lefturl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$lefturl.'#node'.$entity->id.'">
+             <img src="'.$OUTPUT->pix_url('/t/left').'" alt="'.get_string('left', 'techproject').'" /></a>';
+    }
+    if ($entity->ordering > 1) {
+        $params = array('id' => $cmid, 'work' => 'right', $shortentityname.'id' => $entity->id, 'view' => $entityname.'s', 't' => time());
+        $righturl = new moodle_url('/mod/techproject/view.php', $params);
+        $link[] = '<a href="'.$righturl.'#node'.$entity->id.'">
+             <img src="'.$OUTPUT->pix_url('/t/right').'" alt="'.get_string('right', 'techproject').'" /></a>';
+    }
+}
+
+function techproject_detail_make_sub_table($objectClass, $object, $cmid) {
+    global $DB;
+
+    // Make link tables.
+    $res = $DB->get_records("techproject_{$objectClass}", array('fatherid' => $object->id));
+    $linkTable = array();
+    if ($res) {
+        foreach ($res as $aNode) {
+            $numrequ = implode('.', techproject_tree_get_upper_branch("techproject_{$objectClass}", $aNode->id, true, true));
+            $linkTable[] = "<a class=\"browselink\" href=\"view.php?id={$cmid}&amp;objectId={$aNode->id}&amp;objectClass={$objectClass}\">{$numrequ} {$aNode->abstract}</a>";
+        }
+    }
+    return $linkTable;
 }

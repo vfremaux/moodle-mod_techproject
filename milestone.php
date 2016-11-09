@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Project : Technical Project Manager (IEEE like)
- *
- * Milestone operations.
- *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @date 2008/03/03

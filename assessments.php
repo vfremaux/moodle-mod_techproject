@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Project : Technical Project Manager (IEEE like)
- *
  * This is a screen for assessing students
  *
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @date 2008/03/03
@@ -29,14 +29,14 @@
  */
 
 /**
-* A small utility function for making scale menus
-*
-* @param object $project
-* @param int $id
-* @param string $selected
-* @param boolean $return if return is true, returns the HTML flow as a string, prints it otherwise
-*/
-function make_grading_menu($project, $id, $selected = '', $return = false){
+ * A small utility function for making scale menus
+ *
+ * @param object $project
+ * @param int $id
+ * @param string $selected
+ * @param boolean $return if return is true, returns the HTML flow as a string, prints it otherwise
+ */
+function make_grading_menu($project, $id, $selected = '', $return = false) {
     if ($project->grade > 0) {
         for ($i = 0 ; $i <= $project->grade ; $i++) {
             $scalegrades[$i] = $i;
@@ -59,10 +59,14 @@ if (!has_capability('mod/techproject:gradeproject', $context)) {
     print_error(get_string('notateacher','techproject'));
     return;
 }
+
+echo $pagebuffer;
+
 echo $OUTPUT->heading(get_string('assessment'));
+
 // Checks if assessments can occur.
 if (!groups_get_activity_groupmode($cm, $project->course)) {
-    $groupStudents = get_users_by_capability($context, 'mod/techproject:canbeevaluated', 'id,firstname,lastname,email,picture', 'lastname');
+    $groupStudents = get_users_by_capability($context, 'mod/techproject:canbeevaluated', 'u.id,'.get_all_user_name_fields(true, 'u').',email,picture', 'u.lastname');
 } else {
     $groupmembers = groups_get_members($currentgroupid);
     foreach ($groupmembers as $amember) {
@@ -72,6 +76,7 @@ if (!groups_get_activity_groupmode($cm, $project->course)) {
         $groupStudents[] = clone($amember);
     }
 }
+
 if (!isset($groupStudents) || count($groupStudents) == 0 || empty($groupStudents)) {
     echo $OUTPUT->box(get_string('noonetoassess', 'techproject'), 'center', '70%');
     return;
@@ -87,6 +92,7 @@ if (!isset($groupStudents) || count($groupStudents) == 0 || empty($groupStudents
    echo $OUTPUT->box_start('center', '80%');
    echo '<center><i>'.get_string('evaluatingforusers', 'techproject') .' : </i> '. implode(',', $studentListArray) . '</center><br/>';
 }
+
 if ($work == 'regrade') {
     $autograde = techproject_autograde($project, $currentgroupid);
     if ($project->grade > 0) {
@@ -108,9 +114,11 @@ if ($work == 'regrade') {
         }
     }
 }
+
 echo $OUTPUT->box_end();
 
 // Do what needed.
+
 if ($work == 'dosave') {
     // Getting candidate keys for grading.
     $parmKeys = array_keys($_POST);
@@ -144,10 +152,12 @@ if ($work == 'dosave') {
                 itemclass = ?
             ";
             $sqlparams = array($project->id, $aStudent->id, $assessment->itemid, $assessment->itemclass);
-            if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, $sqlparams) {
+            if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, $sqlparams)) {
                 $assessment->id = $oldrecord->id;
                 $DB->update_record('techproject_assessment', $assessment);
-                add_to_log($course->id, 'techproject', 'grade', "view.php?id={$cm->id}&view=view_summary&group={$currentgroupid}", $project->id, $cm->id, $aStudent->id);
+                $event = \mod_techproject\event\grade_updated::create_from_assessment($techproject, $context, $assessment, $aStudent->id);
+                $event->trigger();
+                // add_to_log($course->id, 'techproject', 'grade', "view.php?id={$cm->id}&view=view_summary&group={$currentgroupid}", $project->id, $cm->id, $aStudent->id);
             } else {
                 $DB->insert_record('techproject_assessment', $assessment);
             }
@@ -209,7 +219,7 @@ if ($work == 'dosave') {
                 itemclass = 'free' AND
                 itemid = 0 AND 
                 criterion = ?
-            "
+            ";
             $sqlparams = array($project->id, $aStudent->id, $assessment->criterion);
             if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, $sqlparams)) {
                 $assessment->id = $oldrecord->id;
@@ -218,13 +228,15 @@ if ($work == 'dosave') {
                 $DB->insert_record('techproject_assessment', $assessment);
             }
         }
-        add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary&group={$currentgroupid}", $project->id, $cm->id, $aStudent->id);
+        // add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary&group={$currentgroupid}", $project->id, $cm->id, $aStudent->id);
+        $event = \mod_techproject\event\grade_updated::create_from_assessment($techproject, $context, $assessment, $aStudent->id);
+        $event->trigger();
     }
 } elseif ($work == 'doerase') {
     foreach ($groupStudents as $aStudent) {
         $DB->delete_records('techproject_assessment', array('projectid' => $project->id, 'userid' => $aStudent->id));
-        add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary&group={$currentgroupid}", 'erase', $cm->id, $aStudent->id);
-        add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary&group={$currentgroupid}", 'erase', $cm->id);
+        $event = \mod_techproject\event\grade_erased::create_from_assessment($techproject, $context, $assessment, $aStudent->id);
+        $event->trigger();
     }
 }
 if ($project->teacherusescriteria) {

@@ -1,4 +1,20 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
 * A general library for XML related things.
@@ -29,30 +45,29 @@ if (!function_exists('recordstoxml')){
     */
     function recordstoxml(&$array, $baseelement, $subrecords = '', $withheader=true, $translate=false, $stylesheet = ''){
         global $strings;
-        
+
         $baseelement = strtolower($baseelement); // calibrates the base name
         $xml = ($withheader) ? "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\n{$stylesheet}\n<rootnode>\n" : '' ;
         $xml .= "<{$baseelement}s>\n";
-    
+
         $ix = 1;
-        if (!empty($array)){
-            foreach($array as $key => $element){
-                if (is_object($element)){
+        if (!empty($array)) {
+            foreach ($array as $key => $element) {
+                if (is_object($element)) {
                     $fields = get_object_vars($element);
                     $xml .= "\t<{$baseelement} id=\"$key\">\n";
                             $xml .= "\t\t<ix>$ix</ix>\n";
-                    foreach($fields as $fieldname => $fieldvalue){
-                    	$translation = $fieldvalue;
-                    	if (is_string($fieldvalue)){
-                        	// $translation = get_string($fieldvalue, $translate);
+                    foreach ($fields as $fieldname => $fieldvalue) {
+                        $translation = $fieldvalue;
+                        if (is_string($fieldvalue)) {
+                            // $translation = get_string($fieldvalue, $translate);
                         }
-                        if ($translate && !preg_match('/\[\['.preg_quote($fieldvalue).'\]\]/', $translation)){
+                        if ($translate && !preg_match('/\[\['.preg_quote($fieldvalue).'\]\]/', $translation)) {
                             $fieldvalue = $translation;
                         }
-                        if (preg_match("/<|>/", $fieldvalue)){
+                        if (preg_match("/<|>/", $fieldvalue)) {
                             $xml .= "\t\t<{$fieldname}><![CDATA[ ".str_replace("& ", "&amp; ", $fieldvalue)." ]]></{$fieldname}>\n";
-                        }
-                        else{
+                        } else {
                             $xml .= "\t\t<{$fieldname}>".str_replace("& ", "&amp; ", $fieldvalue)."</{$fieldname}>\n";
                         }
                     }
@@ -69,5 +84,3 @@ if (!function_exists('recordstoxml')){
         return $xml;
     }
 }
-
-?>

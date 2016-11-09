@@ -1,4 +1,4 @@
-<?php // $Id: techproject.php,v 1.3 2012-08-12 22:01:40 vf Exp $ 
+<?php
 
 $string['techproject:addinstance'] = 'Ajouter un projet';
 $string['techproject:beassignedtasks'] = 'Etre assigné à des tâches';
@@ -19,6 +19,39 @@ $string['techproject:posttodelivs'] = 'Poster des livrables';
 $string['techproject:validate'] = 'Recetter';
 $string['techproject:viewpreproductionentities'] = 'Voir les entités de préproduction';
 $string['techproject:viewprojectcontrols'] = 'Voir les interfaces de contrôles du projet';
+
+$string['event_tasks_cleared'] = 'Toutes les tâches supprimées';
+$string['event_tasks_mutated'] = 'Certaines tâches déplacées/copiées';
+$string['event_task_created'] = 'Tâche ajoutée';
+$string['event_task_updated'] = 'Tâche mise à jour';
+$string['event_task_deleted'] = 'Tâche supprimée';
+$string['event_task_reassigned'] = 'Tâche réattribuée';
+
+$string['event_requs_cleared'] = 'Toutes les exigences supprimées';
+$string['event_requs_mutated'] = 'Certaines exigences déplacées/copiées';
+$string['event_requ_created'] = 'Exigence ajoutée';
+$string['event_requ_updated'] = 'Exigence mise à jour';
+$string['event_requ_deleted'] = 'Exigence supprimée';
+
+$string['event_specs_cleared'] = 'Toutes les spécifications supprimées';
+$string['event_specs_mutated'] = 'Certaines spécifications déplacées/copiées';
+$string['event_spec_created'] = 'Spécification ajoutée';
+$string['event_spec_updated'] = 'Spécification mise à jour';
+$string['event_spec_deleted'] = 'Spécification supprimée';
+
+$string['event_miles_cleared'] = 'Toutes les étapes supprimées';
+$string['event_miles_mutated'] = 'Certaines étapes déplacées/copiées';
+$string['event_mile_created'] = 'Nouvelle étape créée';
+$string['event_mile_updated'] = 'Etape modifiée';
+$string['event_mile_deleted'] = 'Etape supprimée';
+
+$string['event_delivs_cleared'] = 'Tous les livrables supprimés';
+$string['event_delivs_mutated'] = 'Certains livrables déplacés/copiés';
+$string['event_deliv_created'] = 'Nouveau livrable créé';
+$string['event_deliv_updated'] = 'Livrable mis à jour';
+$string['event_deliv_deleted'] = 'Livrable supprimé';
+
+$string['event_grade_updated'] = 'Evaluation mise à jour';
 
 $string['nc'] = 'N.C.';
 $string['accesskey'] = 'Clef d\'accès au document de projet';
@@ -101,6 +134,8 @@ $string['complete'] = 'Terminée';
 $string['completedesc'] = 'Terminée.';
 $string['completionrate'] = 'Taux de réalisation';
 $string['complexity'] = 'Complexité';
+$string['configpreserveglobalqualifiers'] = 'Préserver les qualificateurs globaux';
+$string['configpreserveglobalqualifiers_desc'] = 'Cette option permet de préserver les valeurs des qualificateurs globaux du projet technique. Si elle est cochée, la restauration d\'un projet technique n\'écrasera pas les valeurs des qualifiers globaux. Les nouvelles valeurs non répertoriées sont néanmoins ajoutées. Si non coché, la restauration force les valeurs des qualificateurs globaux.';
 $string['configuring'] = 'Configuration';
 $string['configuringdesc'] = 'Configurations et paramétrages';
 $string['confirmdeletecriteria'] = 'Suppression de critère';

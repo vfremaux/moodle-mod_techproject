@@ -454,24 +454,14 @@ div#allpage,
    padding:1px;
 }
 
-.deliverable-undated {
-    color: #000080;
-    font-size:0.7em;
+.techproject-entity-detail * {
+    white-space:normal;
 }
 
-.deliverable-late {
-    color: #800000;
-    font-size:0.7em;
+.techproject-assignee-task {
+    padding-bottom:20px;
 }
 
-.deliverable-ontime {
-    color: #008000;
-    font-size:0.7em;
-}
-
-.entitynode {
-    border:1px solid #e0e0e0;
-    border-radius:10px;
-    -moz-border-radius:10px;
-    padding:3px;
+img.techproject-bargraph {
+    height:14px;
 }

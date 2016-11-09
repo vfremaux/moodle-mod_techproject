@@ -1,4 +1,4 @@
-<?php // $Id: techproject.php,v 1.2 2012-08-12 22:01:40 vf Exp $ 
+<?php
 
 $string['techproject:addinstance'] = 'Add a project';
 $string['techproject:beassignedtasks'] = 'Be assigned tasks';
@@ -20,6 +20,38 @@ $string['techproject:posttodelivs'] = 'Post to deliverables';
 $string['techproject:validate'] = 'Validate';
 $string['techproject:viewpreproductionentities'] = 'View preproduction entities';
 $string['techproject:viewprojectcontrols'] = 'View project control screens';
+
+$string['event_tasks_cleared'] = 'All tasks cleared';
+$string['event_tasks_mutated'] = 'Some tasks mutated';
+$string['event_task_created'] = 'New task';
+$string['event_task_updated'] = 'Task updated';
+$string['event_task_deleted'] = 'Task updated';
+
+$string['event_requs_cleared'] = 'All requirements cleared';
+$string['event_requs_mutated'] = 'Some requirements mutated';
+$string['event_requ_created'] = 'New requirement';
+$string['event_requ_updated'] = 'Task updated';
+$string['event_requ_deleted'] = 'Task updated';
+
+$string['event_specs_cleared'] = 'All specifications cleared';
+$string['event_specs_mutated'] = 'some specifications mutated';
+$string['event_spec_created'] = 'New specification';
+$string['event_spec_updated'] = 'Specification updated';
+$string['event_spec_deleted'] = 'Specification updated';
+
+$string['event_miles_cleared'] = 'All milestones cleared';
+$string['event_miles_mutated'] = 'Some milestones mutated';
+$string['event_mile_created'] = 'New milestone';
+$string['event_mile_updated'] = 'Milestone updated';
+$string['event_mile_deleted'] = 'Milestone updated';
+
+$string['event_delivs_cleared'] = 'All deliverables cleared';
+$string['event_delivs_mutated'] = 'Some deliverables mutated';
+$string['event_deliv_created'] = 'New deliverable';
+$string['event_deliv_updated'] = 'Deliverable updated';
+$string['event_deliv_deleted'] = 'Deliverable updated';
+
+$string['event_grade_updated'] = 'Grade updated';
 
 $string['nc'] = 'N.C.';
 $string['abandoned'] = 'Abandoned';
@@ -68,6 +100,7 @@ $string['autogradingenabled'] = 'Enable autograding';
 $string['autogradingweight'] = 'Weight for the automated grading';
 $string['backtosessions'] = 'Back to session summary';
 $string['baddefaultqualifierseterror'] = 'Error : qualifier set is not compatible for restauration';
+$strring['badcopycase'] = 'Bad copy case';
 $string['beta'] = 'Beta';
 $string['betadesc'] = 'Beta testing unit. Use without guarantee'; 
 $string['blocked'] = 'Blocked';
@@ -103,6 +136,8 @@ $string['complete'] = 'Complete';
 $string['completedesc'] = 'All done. All\'s OK';
 $string['completionrate'] = 'Work completion rate';
 $string['complexity'] = 'Complexity';
+$string['configpreserveglobalqualifiers'] = 'Preserve global qualifiers';
+$string['configpreserveglobalqualifiers_desc'] = 'Preserve global qualifiers when restoring a techproject instance. If true, qualifiers having same identifiers will NOT be overwriten. Older values will be preserved. If uncheked, the last restore will force the new values.';
 $string['configuring'] = 'Configurating';
 $string['configuringdesc'] = 'Configuration and setup';
 $string['confirmdeletecriteria'] = 'Confirm deleting criteria';
@@ -343,6 +378,7 @@ $string['phaseover'] = 'Project is closed';
 $string['phasestart'] = 'Project has not kicked off';
 $string['planned'] = 'Planned';
 $string['planneddesc'] = 'Task is not started but registered'; 
+$string['pluginname'] = 'Technical Project';
 $string['pluginadministration'] = 'Project parameters';
 $string['plus'] = 'EXTRA';
 $string['plusdesc'] = 'Well, something that was\'nt expected at all, but so nice !!'; 

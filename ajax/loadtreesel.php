@@ -29,6 +29,8 @@ if (!$course = $DB->get_record('course', array('id' => $id))) {
 
 $cm = get_coursemodule_from_instance('techproject', $projectid, $id);
 
+// Security.
+
 require_login($course, $cm);
 
 $parent = 0;

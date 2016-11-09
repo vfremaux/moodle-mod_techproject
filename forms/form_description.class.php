@@ -14,6 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+
 require_once($CFG->libdir.'/formslib.php');
 
 class Description_Form extends moodleform {
@@ -50,13 +62,13 @@ class Description_Form extends moodleform {
         $mform->addElement('text', 'title', get_string('projecttitle', 'techproject'), array('size' => "100%"));
         $mform->setType('title', PARAM_CLEANHTML);
 
-        $mform->addElement('editor', 'abstract_editor', get_string('abstract', 'techproject'));
+        $mform->addElement('editor', 'abstract_editor', get_string('abstract', 'techproject'), null, $this->editoroptions);
         $mform->setType('abstract_editor', PARAM_RAW);
 
-        $mform->addElement('editor', 'rationale_editor', get_string('rationale', 'techproject'));
+        $mform->addElement('editor', 'rationale_editor', get_string('rationale', 'techproject'), null, $this->editoroptions);
         $mform->setType('rationale_editor', PARAM_RAW);
 
-        $mform->addElement('editor', 'environment_editor', get_string('environment', 'techproject'));
+        $mform->addElement('editor', 'environment_editor', get_string('environment', 'techproject'), null, $this->editoroptions);
         $mform->setType('environment_editor', PARAM_RAW);
 
         $mform->addElement('text', 'organisation', get_string('organisation', 'techproject'), array('size' => "100%"));

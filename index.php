@@ -41,8 +41,9 @@ if (!$course = $DB->get_record('course', array('id' => $id))) {
 
 require_login($course->id);
 
-add_to_log($course->id, 'techproject', 'view all', "index.php?id=$course->id", "");
-
+$event = \mod_techproject\event\course_module_instance_list_viewed::create(array('context' => $context));
+$event->add_record_snapshot('course', $course);
+$event->trigger();
 
 // Get all required strings.
 
@@ -52,7 +53,8 @@ $strproject  = get_string('modulename', 'techproject');
 // Print the header.
 
 if ($course->category) {
-    $navigation = "<a href=\"../../course/view.php?id={$course->id}\">$course->shortname</a> ->";
+    $courseurl = new moodle_url('course/view.php', array('id' => $course->id));
+    $navigation = '<a href="'.$courseurl.'">'.$course->shortname.'</a> ->';
 }
 
 $PAGE->set_title("$course->shortname: $strprojects");
@@ -66,7 +68,7 @@ echo $OUTPUT->header();
 // Get all the appropriate data.
 
 if (! $projects = get_all_instances_in_course('techproject', $course)) {
-    echo $OUTPUT->notification(get_string('noprojects', 'techproject'), "../../course/view.php?id=$course->id");
+    echo $OUTPUT->notification(get_string('noprojects', 'techproject'), new moodle_url('/course/view.php', array('id' => $course->id)));
     die;
 }
 
@@ -94,16 +96,16 @@ if ($course->format == 'weeks') {
 foreach ($projects as $project) {
     if (!$project->visible) {
         //Show dimmed if the mod is hidden
-        $link = "<a class=\"dimmed\" href=\"view.php?id=$project->coursemodule\">".format_string($project->name,true)."</a>";
+        $link = "<a class=\"dimmed\" href=\"view.php?id=$project->coursemodule\">".format_string($project->name,true).'</a>';
     } else {
         //Show normal if the mod is visible
-        $link = "<a href=\"view.php?id={$project->coursemodule}\">".format_string($project->name,true)."</a>";
+        $link = "<a href=\"view.php?id={$project->coursemodule}\">".format_string($project->name,true).'</a>';
     }
 
     if ($project->projectend > $timenow) {
         $due = userdate($project->projectend);
     } else {
-        $due = "<font color=\"red\">".userdate($project->projectend)."</font>";
+        $due = "<font color=\"red\">".userdate($project->projectend).'</font>';
     }
 
     if ($course->format == 'weeks' or $course->format == 'topics') {
@@ -112,11 +114,29 @@ foreach ($projects as $project) {
         } else {
             // It's a student, show their mean or maximum grade.
             if ($project->usemaxgrade) {
-                $grade = $DB->get_record_sql("SELECT MAX(grade) as grade FROM {techproject_grades}
-                        WHERE projectid = $project->id AND userid = $USER->id GROUP BY userid");
+                $sql = "
+                    SELECT
+                        MAX(grade) AS grade
+                    FROM
+                        {techproject_grades}
+                    WHERE
+                        projectid = $project->id AND 
+                        userid = $USER->id 
+                    GROUP BY
+                        userid
+                ";
+                $grade = $DB->get_record_sql($sql);
             } else {
-                $grade = $DB->get_record_sql("SELECT AVG(grade) as grade FROM {techproject_grades}
-                        WHERE projectid = $project->id AND userid = $USER->id GROUP BY userid");
+                $sql = "
+                    SELECT 
+                        AVG(grade) AS grade 
+                    FROM 
+                        {techproject_grades}
+                    WHERE 
+                        projectid = $project->id AND 
+                        userid = $USER->id GROUP BY userid
+                ";
+                $grade = $DB->get_record_sql($sql);
             }
             if ($grade) {
                 // Grades are stored as percentages.
@@ -138,4 +158,3 @@ echo html_writer::table($table);
 // Finish the page.
 
 echo $OUTPUT->footer($course);
-
