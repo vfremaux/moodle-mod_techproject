@@ -758,7 +758,8 @@ $string['deliv_status_help'] = '
 
 <li><b>TEST</b> : The deliverable is passing the test procedures.</li>
 
-<li><b>PACKAGING</b> : The deliverable object is being completed with accessory content such as documentation, sample data, demonstrators and tutorials.</li>
+<li><b>PACKAGING</b> : The deliverable object is being completed with accessory content such as documentation, sample data,
+demonstrators and tutorials.</li>
 
 <li><b>REVIEW</b> : The deliverable content is being examined by reviewers.</li>
 
@@ -867,7 +868,8 @@ $string['importdata_help'] = '
 <p>The CSV file has to provide mandatory information:</p>
 <ul>
 <li><b>"id" :</b> record identifier. An arbitrary identification, whatever the format, pursuant it is an unique code.</li>
-<li><b>"parent" :</b> identifies a look backwards dependancy using the primary identifiers. The file thus must be ordered following the branch developement. Values for parent can be:
+<li><b>"parent" :</b> identifies a look backwards dependancy using the primary identifiers. The file thus must be ordered
+following the branch developement. Values for parent can be:
 <ul>
 <li>0 : Root level entry</li>
 <li>A primary identifier ("id" column) : parent reference.</li>
@@ -1069,8 +1071,8 @@ single specification entry.</p>
 
 <p>This selector allows mapping the current task to multiple specification entries.</p>
 
-<p>By mapping such entities, you will allow some indicators being propagated through the project data model, allowing, as an example,
-to display the completion rate of some specifications based on task completion analysis.</p>
+<p>By mapping such entities, you will allow some indicators being propagated through the project data model,
+allowing, as an example, to display the completion rate of some specifications based on task completion analysis.</p>
 ';
 
 $string['teacherusescriteria_help'] = '
@@ -1079,15 +1081,16 @@ teacher defined criteria set.</p>
 
 <p>Teachers will setup the criteria with a relevant panel in the "teacher\'s tools" section.</p>
 
-<p>Criteria can be modified event after assessments started. Deleting a criterion will delete previous grades for this criterion for all assessed workspaces.</p>
+<p>Criteria can be modified event after assessments started. Deleting a criterion will delete previous
+grades for this criterion for all assessed workspaces.</p>
 ';
 
 $string['ungroupedsees_help'] = '
-<p>If this capability is enabled, and visibility is somehow liberam (no groups or visible groups) 
-ungroup members (non teachers) can view the defaut project content and change data 
+<p>If this capability is enabled, and visibility is somehow liberam (no groups or visible groups)
+ungroup members (non teachers) can view the defaut project content and change data
 if they own the relevant capabilities.</p>
-<p>If enabled, and visibility policy is rather liberal, ungrouped students should be able to 
-watch the project content, but would not be allowed to change anything in it.
+<p>If enabled, and visibility policy is rather liberal, ungrouped students should be able to
+watch the project content, but would not be allowed to change anything in it.</p>
 <p>If enabled and groups are separated, unegrouped users are given an error message.</p>
 ';
 
@@ -1098,11 +1101,12 @@ grade.</p>
 
 $string['unspecifiedtasks_help'] = '
 <p>Priority is given to the specification, whuch stands for a more pregannt project component to do before others. Tasks that have no assignation to
-any specification cannot resolve their priority. They remain within an "unassigned set".
+any specification cannot resolve their priority. They remain within an "unassigned set".</p>
 '; 
 
 $string['newentrynotify_tpl'] = '
 <h2>Project : <%%PROJECT%%></h2>
+
 <p><b>A new description has been added :</b>
 
 <b>Description Class :</b> <%%CLASS%%><br>
@@ -1115,7 +1119,7 @@ $string['newentrynotify_tpl'] = '
 
 <p><b>Description : </b>
 <br/>
-<%%ENTRYDESCRIPTION%%>
+<%%ENTRYDESCRIPTION%%></p>
 <hr/>
 
 <p><a href="<%%ENTRYLINK%%>">See this entry in its context</a></p>
@@ -1125,11 +1129,11 @@ $string['newtasknotify'] = '
 <h2>Project : <%%PROJECT%%></h2>
 <p><b><%%OWNER%%>, owner of the task:</b>
 
-<p><%%TASKNODE%%> <%%TASKABSTRACT%%><br>
-<b>Worktype:</b> <%%WORKTYPE%%><br>
-<b>Completion: </b><%%DONE%%>%<br>
+<p><%%TASKNODE%%> <%%TASKABSTRACT%%><br/>
+<b>Worktype:</b> <%%WORKTYPE%%><br/>
+<b>Completion: </b><%%DONE%%>%<br/></p>
 
-<p><b>Assigned you a job.</b>
+<p><b>Assigned you a job.</b></p>
 
 <p><b>Description: </b>
 <hr/>
@@ -1141,9 +1145,9 @@ $string['takreleasenotify'] = '
 <h2>Project : <%%PROJECT%%></h2>
 <p><b><%%OWNER%%>, owner of the task:</b>
 
-<p><%%TASKNODE%%> <%%TASKABSTRACT%%><br>
-<b>Worktype :</b> <%%WORKTYPE%%><br>
-<b>Completion: </b><%%DONE%%><br>
+<p><%%TASKNODE%%> <%%TASKABSTRACT%%><br/>
+<b>Worktype :</b><%%WORKTYPE%%><br/>
+<b>Completion: </b><%%DONE%%><br/></p>
 
-<p><b>has released you from this job.</b>
+<p><b>has released you from this job.</b></p>
 ';
