@@ -8,13 +8,6 @@
     <licenseversion>v3</licenseversion>
   </library>
   <library>
-    <location>extralib</location>
-    <name>Extra libs to override some check rules</name>
-    <license>GPL</license>
-    <version>v3</version>
-    <licenseversion>v3</licenseversion>
-  </library>
-  <library>
     <location>js</location>
     <name>Extra js add ons</name>
     <license>GPL</license>
