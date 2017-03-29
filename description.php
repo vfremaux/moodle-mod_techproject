@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Prints a desciption of the project (heading).
  *
@@ -27,6 +25,7 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once('forms/form_description.class.php');
 
@@ -45,7 +44,7 @@ if ($work == 'doexport') {
         return;
 }
 
-// Header editing form ********************************************************
+// Header editing form ********************************************************.
 
 if ($work == 'edit') {
 
@@ -56,13 +55,20 @@ if ($work == 'edit') {
     if ($heading = $mform->get_data()) {
 
         $abstract_draftid_editor = file_get_submitted_draft_itemid('abstract_editor');
-        $heading->abstract_editor['text'] = file_save_draft_area_files($abstract_draftid_editor, $context->id, 'mod_techproject', 'abstract', $heading->id, array('subdirs' => true), $heading->abstract_editor['text']);
+        $heading->abstract_editor['text'] = file_save_draft_area_files($abstract_draftid_editor, $context->id, 'mod_techproject',
+                                                                       'abstract', $heading->id, array('subdirs' => true),
+                                                                       $heading->abstract_editor['text']);
 
         $rationale_draftid_editor = file_get_submitted_draft_itemid('rationale_editor');
-        $heading->rationale_editor['text'] = file_save_draft_area_files($rationale_draftid_editor, $context->id, 'mod_techproject', 'rationale', $heading->id, array('subdirs' => true), $heading->rationale_editor['text']);
+        $heading->rationale_editor['text'] = file_save_draft_area_files($rationale_draftid_editor, $context->id, 'mod_techproject',
+                                                                        'rationale', $heading->id, array('subdirs' => true),
+                                                                        $heading->rationale_editor['text']);
 
         $environment_draftid_editor = file_get_submitted_draft_itemid('environment_editor');
-        $heading->environment_editor['text'] = file_save_draft_area_files($environment_draftid_editor, $context->id, 'mod_techproject', 'environment', $heading->id, array('subdirs' => true), $heading->environment_editor['text']);
+        $heading->environment_editor['text'] = file_save_draft_area_files($environment_draftid_editor, $context->id,
+                                                                          'mod_techproject', 'environment', $heading->id,
+                                                                          array('subdirs' => true),
+                                                                          $heading->environment_editor['text']);
 
         $heading->id = $heading->headingid;
         $heading->projectid = $project->id;
@@ -74,9 +80,12 @@ if ($work == 'edit') {
         $heading->organisation = $heading->organisation;
         $heading->department = $heading->department;
 
-        $heading = file_postupdate_standard_editor($heading, 'abstract', $mform->editoroptions, $context, 'mod_techproject', 'abstract', $heading->id);
-        $heading = file_postupdate_standard_editor($heading, 'rationale', $mform->editoroptions, $context, 'mod_techproject', 'rationale', $heading->id);
-        $heading = file_postupdate_standard_editor($heading, 'environment', $mform->editoroptions, $context, 'mod_techproject', 'environment', $heading->id);
+        $heading = file_postupdate_standard_editor($heading, 'abstract', $mform->editoroptions, $context, 'mod_techproject',
+                                                   'abstract', $heading->id);
+        $heading = file_postupdate_standard_editor($heading, 'rationale', $mform->editoroptions, $context, 'mod_techproject',
+                                                   'rationale', $heading->id);
+        $heading = file_postupdate_standard_editor($heading, 'environment', $mform->editoroptions, $context, 'mod_techproject',
+                                                   'environment', $heading->id);
 
         $DB->update_record('techproject_heading', $heading);
         redirect($url);
@@ -101,13 +110,17 @@ if ($work == 'edit') {
     techproject_print_heading($project, $currentgroupid);
     echo "<center>";
     if ($USER->editmode == 'on') {
-        echo "<br/><a href=\"view.php?work=edit&amp;id={$cm->id}\" >".get_string('editheading','techproject')."</a>";
-        echo " - <a href=\"view.php?work=doexport&amp;id={$cm->id}\" >".get_string('exportheadingtoXML','techproject')."</a>";
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('work' => 'edit', 'id' => $cm->id));
+        echo '<br/><a href="'.$linkurl.'" >'.get_string('editheading', 'techproject').'</a>';
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('work' => 'doexport', 'id' => $cm->id));
+        echo ' - <a href="'.$linkurl.'" >'.get_string('exportheadingtoXML','techproject').'</a>';
     }
-    echo "<br/><a href=\"xmlview.php?id={$cm->id}\" target=\"_blank\">".get_string('gettheprojectfulldocument','techproject')."</a>";
+    $linkurl = new moodle_url('/mod/techproject/xmlview.php', array('id' => $cm->id));
+    echo '<br/><a href="'.$linkurl.'" target="_blank">'.get_string('gettheprojectfulldocument', 'techproject').'</a>';
     if (!empty($project->accesskey)) {
         $encodedkey = urlencode($project->accesskey);
-        echo '<br/>'.get_string('sharethisdocument','techproject', "{$CFG->wwwroot}/mod/techproject/xmlview.php?accesskey={$encodedkey}&id={$cm->id}");
+        $docurl = new moodle_url('/mod/techproject/xmlview.php', array('accesskey' => $encodedkey, 'id' => $cm->id));
+        echo '<br/>'.get_string('sharethisdocument','techproject', $docurl);
     }
-    echo "</center>";
+    echo '</center>';
 }

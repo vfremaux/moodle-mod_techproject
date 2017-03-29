@@ -29,21 +29,21 @@ require('../../config.php');
 require_once($CFG->dirroot.'/mod/techproject/lib.php');
 require_once($CFG->dirroot.'/mod/techproject/locallib.php');
 
-// fixes locale for all date printing.
+// Fixes locale for all date printing.
 
 setLocale(LC_TIME, substr(current_language(), 0, 2));
 
-// get context information
+// Get context information.
 
-$id = required_param('id', PARAM_INT);   // module id
-$view = optional_param('view', '', PARAM_CLEAN);   // viewed page id
+$id = required_param('id', PARAM_INT);   // Module id.
+$view = optional_param('view', '', PARAM_CLEAN);   // Viewed page id.
 $accesskey = optional_param('accesskey', '', PARAM_TEXT);
 
 $timenow = time();
 
-// get some useful stuff...
+// Get some useful stuff.
 
-if (! $cm = $DB->get_record('course_modules', array("id" => $id))) {
+if (! $cm = $DB->get_record('course_modules', array('id' => $id))) {
     print_error('invalidcoursemodule');
 }
 if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
@@ -64,13 +64,14 @@ if (empty($project->accesskey) || $accesskey != $project->accesskey) {
 $context = context_module::instance($cm->id);
 
 // Check current group and change, for anyone who could.
-if (!$groupmode = groupmode($course, $cm)) {
+if (!$groupmode = groups_get_activity_groupmode($cm)) {
     // Are groups are being used ?
     $currentgroupid = 0;
 } else {
     $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;
     // Group change requested ?
-    if (isguestuser()){ // for guests, use session
+    if (isguestuser()) {
+        // For guests, use session.
         if ($changegroup >= 0) {
             $_SESSION['guestgroup'] = $changegroup;
         }
@@ -90,40 +91,25 @@ $xml = techproject_get_full_xml($project, $currentgroupid);
 
 // Invoke XSLT transformation for making the output document.
 
-if (phpversion() >= 5.0) {
-    $xsl = new XSLTProcessor();
-    $doc = new DOMDocument();
-    $xsl_sheet = $project->xslfilter;
-    $doc->load($xsl_sheet);
-    $xsl->importStyleSheet($doc);
-    $doc->loadXML($xml);
-    if (is_object($doc)) {
-        $html = $xsl->transformToXML($doc);
-    } else {
-        $formattedxml = htmlentities($xml, ENT_QUOTES, 'UTF-8');
-        $formattedxmllines = explode("\n", $formattedxml);
-        $html = "XML Generation Error";
-        $html .="<hr/><pre>";
-        $i = 1;
-        foreach ($formattedxmllines as $line) {
-            $html .= $i . " " . $line."\n";
-            $i++;
-        }
-        $html .="</pre><hr/>";
-    }
+$xsl = new XSLTProcessor();
+$doc = new DOMDocument();
+$xslsheet = techproject_get_internal_file($project, 'xsl');
+$doc->load($xslsheet);
+$xsl->importStyleSheet($doc);
+$doc->loadXML($xml);
+if (is_object($doc)) {
+    $html = $xsl->transformToXML($doc);
 } else {
-    /*
-    $arguments = array(
-         '/_xml' => $xml,
-    );
-    $procesor = xslt_create();
-    if ($html = xslt_process($processor, "arg:/_xml", $project->xslfilter, null, $arguments)){
+    $formattedxml = htmlentities($xml, ENT_QUOTES, 'UTF-8');
+    $formattedxmllines = explode("\n", $formattedxml);
+    $html = 'XML Generation Error';
+    $html .= '<hr/><pre>';
+    $i = 1;
+    foreach ($formattedxmllines as $line) {
+        $html .= $i . " " . $line."\n";
+        $i++;
     }
-    else{
-       $html = xslt_error($processor);
-    }
-    */
-    echo $OUTPUT->notification("Php 4 implementation of XSL processing code has not been experimented.");
+    $html .="</pre><hr/>";
 }
 
 // Deliver the document.

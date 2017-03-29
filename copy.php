@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
@@ -25,6 +23,7 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 if (!has_capability('mod/techproject:manage', $context)) {
     print_error(get_string('notateacher','techproject'));
@@ -36,11 +35,11 @@ if (!has_capability('mod/techproject:manage', $context)) {
 $groups = groups_get_all_groups($course->id);
 
 if ($work == 'docopy') {
-    function protectTextRecords(&$aRecord, $fieldList) {
+    function techproject_protect_text_records(&$rec, $fieldList) {
         $fields = explode(",", $fieldList);
         foreach ($fields as $aField) {
-            if (isset($aRecord->$aField)) {
-                $aRecord->$aField = str_replace("'", "\\'", $aRecord->$aField);
+            if (isset($rec->$aField)) {
+                $rec->$aField = str_replace("'", "\\'", $rec->$aField);
             }
         }
     }
@@ -48,46 +47,46 @@ if ($work == 'docopy') {
     /**
       * @return an array for all copied ids translations so foreign keys can be fixed
       */
-    function unitCopy($project, $from, $to, $what, $detail = false) {
+    function techproject_unit_copy($project, $from, $to, $what, $detail = false) {
         $copied = array();
 
-        foreach (array_keys($what) as $aDatatable) {
+        foreach (array_keys($what) as $entitytable) {
             // Skip unchecked entites for copying.
-            if (!$what[$aDatatable]) {
+            if (!$what[$entitytable]) {
                 continue;
             }
 
-            echo '<tr><td align="left">' . get_string('copying', 'techproject').' '.get_string("{$aDatatable}s", 'techproject') . '...';
-            $DB->delete_records("techproject_$aDatatable", array('projectid' => $project->id, 'groupid' => $to));
-            if ($records = $DB->get_records_select("techproject_$aDatatable", "projectid = ? AND groupid = ?", array($project->id, $from))) {
+            echo '<tr><td align="left">' . get_string('copying', 'techproject').' '.get_string("{$entitytable}s", 'techproject') . '...';
+            $DB->delete_records("techproject_$entitytable", array('projectid' => $project->id, 'groupid' => $to));
+            if ($records = $DB->get_records_select("techproject_$entitytable", "projectid = ? AND groupid = ?", array($project->id, $from))) {
 
                 // Copying each record into target recordset.
                 if ($detail) {
-                    echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying '. count($records) . " from $aDatatable</span>";
+                    echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying '. count($records) . " from $entitytable</span>";
                 }
 
-                foreach ($records as $aRecord) {
-                    $id = $aRecord->id;
+                foreach ($records as $rec) {
+                    $id = $rec->id;
                     if ($detail) {
-                        echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying item : ['. $id . '] ' . @$aRecord->abstract . '</span>';
+                        echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying item : ['. $id . '] ' . @$rec->abstract . '</span>';
                     }
-                    $aRecord->id = 0;
-                    $aRecord->groupid = $to;
-                    protectTextRecords($aRecord, 'title,abstract,rationale,description,environement,organisation,department');
+                    $rec->id = 0;
+                    $rec->groupid = $to;
+                    techproject_protect_text_records($rec, 'title,abstract,rationale,description,environement,organisation,department');
 
                     // Unassigns users from entites in copied entities (not relevant context).
-                    if (isset($aRecord->assignee)) {
-                        $aRecord->assignee = 0;
+                    if (isset($rec->assignee)) {
+                        $rec->assignee = 0;
                     }
-                    if (isset($aRecord->owner)) {
-                        $aRecord->owner = 0;
+                    if (isset($rec->owner)) {
+                        $rec->owner = 0;
                     }
                     // If milestones are not copied, no way to keep milestone assignation.
-                    if (isset($aRecord->milestoneid) && $what['milestone'] == 0){
-                        $aRecord->milestoneid = 0;
+                    if (isset($rec->milestoneid) && $what['milestone'] == 0){
+                        $rec->milestoneid = 0;
                     }
-                    $insertedid = $DB->insert_record("techproject_$aDatatable", $aRecord);
-                    $copied[$aDatatable][$id] = $insertedid;
+                    $insertedid = $DB->insert_record("techproject_$entitytable", $rec);
+                    $copied[$entitytable][$id] = $insertedid;
                 }
             }
             echo '</td><td align="right"><span class="technicals">' . get_string('done', 'techproject') . '</span></td></tr>';
@@ -101,7 +100,7 @@ if ($work == 'docopy') {
      * table.
      * @return true if no errors.
      */
-    function fixForeignKeys($project, $group, $table, $fKey, $translations, $recordSet) {
+    function techproject_fix_foreign_keys($project, $group, $table, $fKey, $translations, $recordSet) {
        global $CFG;
 
        $result = 1;
@@ -140,41 +139,41 @@ if ($work == 'docopy') {
     foreach ($targets as $atarget) {
         // Do copy data.
         echo '<table width="100%">';
-        $copied = unitCopy($project, $from, $atarget, $what, $detail);
+        $copied = techproject_unit_copy($project, $from, $atarget, $what, $detail);
 
         // Do fix some foreign keys.
-        echo '<tr><td align="left">' . get_string('fixingforeignkeys', 'techproject') . '...</td><td align="right">';
+        echo '<tr><td align="left">'.get_string('fixingforeignkeys', 'techproject').'...</td><td align="right">';
         if (array_key_exists('spec_to_req', $copied) && count(array_values(@$copied['spec_to_req']))) {
-            fixForeignKeys($project, $atarget, 'spec_to_req', 'specid', $copied['specification'], array_values($copied['spec_to_req']));
-            fixForeignKeys($project, $atarget, 'spec_to_req', 'reqid', $copied['requirement'], array_values($copied['spec_to_req']));
+            techproject_fix_foreign_keys($project, $atarget, 'spec_to_req', 'specid', $copied['specification'], array_values($copied['spec_to_req']));
+            techproject_fix_foreign_keys($project, $atarget, 'spec_to_req', 'reqid', $copied['requirement'], array_values($copied['spec_to_req']));
         }
         if (array_key_exists('task_to_spec', $copied) && count(array_values(@$copied['task_to_spec']))) {
-            fixForeignKeys($project, $atarget, 'task_to_spec', 'taskid', $copied['task'], array_values($copied['task_to_spec']));
-            fixForeignKeys($project, $atarget, 'task_to_spec', 'specid', $copied['specification'], array_values($copied['task_to_spec']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_to_spec', 'taskid', $copied['task'], array_values($copied['task_to_spec']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_to_spec', 'specid', $copied['specification'], array_values($copied['task_to_spec']));
         }
         if (array_key_exists('task_to_deliv', $copied) && count(array_values(@$copied['task_to_deliv']))){
-            fixForeignKeys($project, $atarget, 'task_to_deliv', 'taskid', $copied['task'], array_values($copied['task_to_deliv']));
-            fixForeignKeys($project, $atarget, 'task_to_deliv', 'delivid', $copied['deliverable'], array_values($copied['task_to_deliv']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_to_deliv', 'taskid', $copied['task'], array_values($copied['task_to_deliv']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_to_deliv', 'delivid', $copied['deliverable'], array_values($copied['task_to_deliv']));
         }
         if (array_key_exists('task_dependency', $copied) && count(array_values(@$copied['task_dependency']))){
-            fixForeignKeys($project, $atarget, 'task_dependency', 'master', $copied['task'], array_values($copied['task_dependency']));
-            fixForeignKeys($project, $atarget, 'task_dependency', 'slave', $copied['task'], array_values($copied['task_dependency']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_dependency', 'master', $copied['task'], array_values($copied['task_dependency']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_dependency', 'slave', $copied['task'], array_values($copied['task_dependency']));
         }
         if (array_key_exists('milestone', $copied) && array_key_exists('task', $copied) && count(array_values(@$copied['task'])) && count(array_values(@$copied['milestone']))){
-            fixForeignKeys($project, $atarget, 'task', 'milestoneid', $copied['milestone'], array_values($copied['task']));
+            techproject_fix_foreign_keys($project, $atarget, 'task', 'milestoneid', $copied['milestone'], array_values($copied['task']));
         }
         if (array_key_exists('milestone', $copied) && array_key_exists('deliverable', $copied) && count(array_values(@$copied['deliverable'])) && count(array_values(@$copied['milestone']))){
-            fixForeignKeys($project, $atarget, 'deliverable', 'milestoneid', $copied['milestone'], array_values($copied['deliverable']));
+            techproject_fix_foreign_keys($project, $atarget, 'deliverable', 'milestoneid', $copied['milestone'], array_values($copied['deliverable']));
         }
         // fixing fatherid values
         if(array_key_exists('specification', $copied))
-            fixForeignKeys($project, $atarget, 'specification', 'fatherid', $copied['specification'], array_values($copied['specification']));
+            techproject_fix_foreign_keys($project, $atarget, 'specification', 'fatherid', $copied['specification'], array_values($copied['specification']));
         if(array_key_exists('requirement', $copied))
-            fixForeignKeys($project, $atarget, 'requirement', 'fatherid', $copied['requirement'], array_values($copied['requirement']));
+            techproject_fix_foreign_keys($project, $atarget, 'requirement', 'fatherid', $copied['requirement'], array_values($copied['requirement']));
         if(array_key_exists('task', $copied))
-            fixForeignKeys($project, $atarget, 'task', 'fatherid', $copied['task'], array_values($copied['task']));
+            techproject_fix_foreign_keys($project, $atarget, 'task', 'fatherid', $copied['task'], array_values($copied['task']));
         if(array_key_exists('deliverable', $copied))
-            fixForeignKeys($project, $atarget, 'deliverable', 'fatherid', $copied['deliverable'], array_values($copied['deliverable']));
+            techproject_fix_foreign_keys($project, $atarget, 'deliverable', 'fatherid', $copied['deliverable'], array_values($copied['deliverable']));
         // must delete all grades in copied group
         $DB->delete_records('techproject_assessment', array('projectid' => $project->id, 'groupid' => $atarget));
         echo '<span class="technicals">' . get_string('done', 'techproject') . '</td></tr>';
@@ -183,7 +182,7 @@ if ($work == 'docopy') {
     echo $OUTPUT->box_end();
 }
 
-/// Setup project copy operations by defining source and destinations 
+// Setup project copy operations by defining source and destinations.
 
 echo $pagebuffer;
 
@@ -199,16 +198,16 @@ if ($work == 'what') {
 echo '<center>';
 
 echo $OUTPUT->heading(get_string('copywhat', 'techproject'));
-$toArray = array();
+$toarr = array();
 
 foreach ($to as $atarget) {
-    $toArray[] = $groups[$atarget]->name;
+    $toarr[] = $groups[$atarget]->name;
 }
 
 if ($from) {
-    echo $OUTPUT->box($groups[$from]->name . ' &gt;&gt; ' . implode(',',$toArray), 'center');
+    echo $OUTPUT->box($groups[$from]->name . ' &gt;&gt; ' . implode(',',$toarr), 'center');
 } else {
-    echo $OUTPUT->box(get_string('groupless', 'techproject') . ' &gt;&gt; ' . implode(',',$toArray), 'center');
+    echo $OUTPUT->box(get_string('groupless', 'techproject') . ' &gt;&gt; ' . implode(',',$toarr), 'center');
 }
 ?>
 <script type="text/javascript">

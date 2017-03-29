@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod-techproject
  * @category mod
@@ -25,6 +23,8 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot.'/lib/uploadlib.php');
 
 // Controller.
@@ -33,7 +33,7 @@ if ($work == 'add' || $work == 'update') {
 
 // Group operation form *********************************************************.
 
-} elseif ($work == 'groupcmd') {
+} else if ($work == 'groupcmd') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
@@ -61,8 +61,12 @@ if ($work == 'add' || $work == 'update') {
         }
         if (($cmd == 'move') || ($cmd == 'copy')) {
             echo get_string('to', 'techproject');
-            if (@$project->projectusesrequs) $options['requs'] = get_string('requirements', 'techproject');
-            if (@$project->projectusesspecs) $options['specs'] = get_string('specifications', 'techproject');
+            if (@$project->projectusesrequs) {
+                $options['requs'] = get_string('requirements', 'techproject');
+            }
+            if (@$project->projectusesspecs) {
+                $options['specs'] = get_string('specifications', 'techproject');
+            }
             $options['tasks'] = get_string('tasks', 'techproject');
             echo html_writer::select($options, 'to', '', 'choose');
         }
@@ -89,12 +93,14 @@ if ($work == 'add' || $work == 'update') {
     <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
     <input type="hidden" name="work" value="groupcmd" />
 <?php
+    $params = array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0);
+    $linkurl = new moodle_url('/mod/techproject/view.php', $params);
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changedelivs', $context)) {
-        echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('adddeliv','techproject')."</a>&nbsp; ";
+        echo '<br/><a href="'.$linkurl.'">'.get_string('adddeliv', 'techproject')."</a>&nbsp; ";
     }
     techproject_print_deliverables($project, $currentgroupid, 0, $cm->id);
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changedelivs', $context)) {
-        echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('adddeliv','techproject')."</a>&nbsp; ";
+        echo '<br/><a href="'.$linkurl.'">'.get_string('adddeliv', 'techproject')."</a>&nbsp; ";
         techproject_print_group_commands();
     }
 ?>

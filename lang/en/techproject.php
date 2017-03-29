@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 $string['techproject:addinstance'] = 'Add a project';
 $string['techproject:beassignedtasks'] = 'Be assigned tasks';
@@ -206,6 +220,7 @@ $string['enableedit'] = 'Enable editing';
 $string['endofproject'] = 'Project has ended';
 $string['entities'] = 'Main entities';
 $string['environment'] = 'Environment';
+$string['entitytype'] = 'Entity';
 $string['errordeliverable'] = 'Error in deliverables';
 $string['errorfatalaction'] = 'Fatal Error: Unknown Action: {$a}';
 $string['errormilestone'] = 'Error in milestones';
@@ -296,17 +311,17 @@ $string['lightdesc'] = 'High';
 $string['load'] = 'Project Import/Export';
 $string['loadcustomcsssheet'] = 'Load custom CSS';
 $string['loadcustomxslsheet'] = 'Load the XSL filter ';
-$string['makedocument'] = 'Produire le document ';
+$string['makedocument'] = 'Produce the output document';
 $string['mandatory'] = 'Mandatory';
-$string['mandatorydesc'] = 'We cannot imagine the project without.'; 
+$string['mandatorydesc'] = 'We cannot imagine the project without.';
 $string['markasdoneselected'] = 'Mark as done (100%%)';
 $string['markastemplate'] = 'Mark as template';
 $string['mastertasks'] = 'Master tasks';
 $string['mean'] = 'Mean';
 $string['mediatizing'] = 'Mediatizing';
-$string['mediatizingdesc'] = 'Illustrating and mediatizing contents'; 
+$string['mediatizingdesc'] = 'Illustrating and mediatizing contents';
 $string['medium'] = 'Medium';
-$string['mediumdesc'] = 'Not a lot of work, but needs putting hands back in the mud'; 
+$string['mediumdesc'] = 'Not a lot of work, but needs putting hands back in the mud';
 $string['milestone'] = 'Milestone';
 $string['milestones'] = 'Milestones';
 $string['milestonetitle'] = 'Milestone name';
@@ -315,14 +330,14 @@ $string['modulename'] = 'Technical Project';
 $string['modulenameplural'] = 'Technical Projects';
 $string['moveselected'] = 'Move selected items';
 $string['must'] = 'MUST';
-$string['mustdesc'] = 'It must imperatively be there. No way !!'; 
+$string['mustdesc'] = 'It must imperatively be there. No way !!';
 $string['mygroupsadvice'] = 'My groups';
 $string['needsmoreinfodesc'] = 'Needs more information to evaluate';
 $string['needsworkdesc'] = 'Needs work to provide';
 $string['newvalueformfor'] = 'New value for {$a}';
 $string['next'] = 'Next';
 $string['noassignee'] = 'No assignee';
-$string['noassignees'] = 'No assignee'; 
+$string['noassignees'] = 'No assignee';
 $string['nodelivassigned'] = 'No deliverable assigned.';
 $string['nodeliverables'] = 'No deliverable';
 $string['nogroup'] = 'Out of group (default)';
@@ -330,7 +345,7 @@ $string['nomilestone'] = 'No assigned milestone';
 $string['nomilestones'] = 'No milestone';
 $string['none'] = 'None';
 $string['nonedesc'] = 'None';
-$string['noonetoassess'] = 'No students here in this group. No assessment to distribute. ';
+$string['noonetoassess'] = 'No students here in this group. No assessment to distribute.';
 $string['noprojects'] = 'There are no projects';
 $string['norequassigned'] = 'No requirement assigned.';
 $string['norequirements'] = 'No requirement';
@@ -348,17 +363,17 @@ $string['notifynewspec'] = 'New project specification';
 $string['notifynewtask'] = 'New task entered';
 $string['notifyreleasedtask'] = 'Task unassigned';
 $string['notimplementedyet'] = 'Not available in this release';
-$string['notingroup'] = 'The settings of this module do not allow an ungrouped student to use the project material. Please contact your teacher for group assignation. ';
+$string['notingroup'] = 'The settings of this module do not allow an ungrouped student to use the project material. Please contact your teacher for group assignation.';
 $string['notprioritary'] = 'Not prioritary';
-$string['notprioritarydesc'] = 'Can be done after other works, but will help'; 
+$string['notprioritarydesc'] = 'Can be done after other works, but will help';
 $string['notsubmittedyet'] = 'Not submitted yet.';
 $string['novalidationsession'] = 'No validation session';
 $string['novaluesindomain'] = 'No values apply in this domain. Global shared values apply as a default. If you add a value here, all the shared values will be overriden.';
 $string['obsolete'] = 'Obsolete';
-$string['obsoletedesc'] = 'This package or resource is or may be obsolete'; 
+$string['obsoletedesc'] = 'This package or resource is or may be obsolete';
 $string['of'] = ' of ';
 $string['optional'] = 'Optional';
-$string['optionaldesc'] = 'there is other way to do it, but less practical or efficient.'; 
+$string['optionaldesc'] = 'there is other way to do it, but less practical or efficient.';
 $string['organisation'] = 'Organisation';
 $string['oruploadfile'] = 'or upload some file';
 $string['other'] = 'Other';
@@ -377,15 +392,15 @@ $string['phaseend'] = 'Project is about to end';
 $string['phaseover'] = 'Project is closed';
 $string['phasestart'] = 'Project has not kicked off';
 $string['planned'] = 'Planned';
-$string['planneddesc'] = 'Task is not started but registered'; 
+$string['planneddesc'] = 'Task is not started but registered';
 $string['pluginname'] = 'Technical Project';
 $string['pluginadministration'] = 'Project parameters';
 $string['plus'] = 'EXTRA';
-$string['plusdesc'] = 'Well, something that was\'nt expected at all, but so nice !!'; 
+$string['plusdesc'] = 'Well, something that was\'nt expected at all, but so nice !!';
 $string['preparingrestore'] = 'Preparing restore';
 $string['previous'] = 'Previous';
 $string['prioritary'] = 'Prioritary';
-$string['prioritarydesc'] = 'Prioritary, after urgent work has been done.'; 
+$string['prioritarydesc'] = 'Prioritary, after urgent work has been done.';
 $string['priority'] = 'Priority';
 $string['project'] = 'Project';
 $string['projectchangeddeliverable'] = 'Changes in deliverables';
@@ -401,11 +416,11 @@ $string['projectis'] = 'Project is:';
 $string['projectisover'] = 'Project is over. You cannot edit any more !!';
 $string['projectproject'] = 'Projects activity';
 $string['projectscope'] = 'Local qualifiers for the project';
-$string['projectstart'] = 'Project start ';
+$string['projectstart'] = 'Project start';
 $string['projectstartevent'] = 'Project {$a} starts';
 $string['projecttitle'] = 'Project title';
 $string['qualifiers'] = 'Qualifiers';
-$string['quoted'] = 'Estimated cost ';
+$string['quoted'] = 'Estimated cost';
 $string['quoting'] = 'Quoting/Evaluating';
 $string['quotingdesc'] = 'Quoting / Evaluating';
 $string['rationale'] = 'Rationale';
@@ -441,18 +456,18 @@ $string['save'] = 'Save';
 $string['savechanges'] = 'Save changes';
 $string['scale'] = 'Scale';
 $string['scheduled'] = 'Scheduled';
-$string['scheduleddesc'] = 'Task has been scheduled for a known date, but is not started'; 
+$string['scheduleddesc'] = 'Task has been scheduled for a known date, but is not started';
 $string['seecapabilitysettings'] = 'See roles and capabilities settings';
 $string['seedetail'] = 'See detail';
 $string['selectall'] = 'Select all';
 $string['selectanobjectfirst'] = 'Select an object first';
 $string['severity'] = 'Severity';
-$string['sharedocumentwithexterns'] = 'URL for sharing with non registered users: $a'; 
+$string['sharedocumentwithexterns'] = 'URL for sharing with non registered users: $a';
 $string['sharedscope'] = 'Global qualifers (shared as default)';
 $string['sharethisdocument'] = 'Share this document to external people giving the following url :</br> {$a}';
 $string['should'] = 'SHOULD';
-$string['shoulddesc'] = 'We would very like you have it, but it\'s still negociable'; 
-$string['showdetails'] = 'Show details ';
+$string['shoulddesc'] = 'We would very like you have it, but it\'s still negociable';
+$string['showdetails'] = 'Show details';
 $string['simple'] = 'Simple';
 $string['simpledesc'] = 'A little work, but easy to do';
 $string['singularentries'] = 'Effective entries';
@@ -471,18 +486,18 @@ $string['spectitle'] = 'Specification title';
 $string['spectoreq'] = 'Assigned requirements';
 $string['spent'] = 'Cost spent';
 $string['stable'] = 'Stable';
-$string['stabledesc'] = 'Stable package, production enabled'; 
+$string['stabledesc'] = 'Stable package, production enabled';
 $string['started'] = 'Started';
-$string['starteddesc'] = 'We are working on the beast'; 
-$string['status'] = 'Status ';
-$string['strength'] = 'Strength ';
-$string['studentscanchange'] = 'Students can change... ';
+$string['starteddesc'] = 'We are working on the beast';
+$string['status'] = 'Status';
+$string['strength'] = 'Strength';
+$string['studentscanchange'] = 'Students can change...';
 $string['sublinks'] = 'Dependencies';
 $string['summary'] = 'Summary';
 $string['summaryforproject'] = 'Summary for project:';
 $string['task'] = 'Task';
 $string['task_dependencys'] = 'cross-tasks dependencies';
-$string['task_to_deliv'] = 'Deliverable to tasks assignations ';
+$string['task_to_deliv'] = 'Deliverable to tasks assignations';
 $string['task_to_delivs'] = 'assignation of deliverables to tasks';
 $string['task_to_miles'] = 'Task to milestone mapping';
 $string['task_to_spec'] = 'Tasks to specifications assignations';
@@ -490,7 +505,7 @@ $string['task_to_specs'] = 'assignations of tasks to specifications';
 $string['task_to_task'] = 'Task interdependencies';
 $string['taskalone'] = 'Standalone task';
 $string['taskcircularitypost'] = ' could not be registered : circularity constraint.';
-$string['taskcircularitypre'] = 'The dependency for task ';
+$string['taskcircularitypre'] = 'The dependency for task';
 $string['taskdependency'] = 'Depends on';
 $string['taskend'] = 'Slave task';
 $string['taskenddate'] = 'Task end date';
@@ -520,7 +535,7 @@ $string['teacherusescriteria'] = 'Teacher uses criteria';
 $string['techproject'] = 'Technical project';
 $string['techproject_help'] = 'Technical project';
 $string['testing'] = 'Testing';
-$string['testingdesc'] = 'Package is finished but still being tested.'; 
+$string['testingdesc'] = 'Package is finished but still being tested.';
 $string['thedelivs'] = 'The deliverables';
 $string['themiles'] = 'The milestones';
 $string['therequs'] = 'The requirements';
@@ -534,24 +549,24 @@ $string['todo'] = 'todo';
 $string['toenhance'] = 'To enhance';
 $string['totalcost'] = 'Total time spent ';
 $string['totaldeliv'] = 'Deliverables (all)';
-$string['totalplanned'] = 'Total time planned ';
-$string['totalquote'] = 'Total quote ';
+$string['totalplanned'] = 'Total time planned';
+$string['totalquote'] = 'Total quote';
 $string['totalrequ'] = 'Requirements (all)';
 $string['totalspec'] = 'Specifications (all)';
 $string['totaltask'] = 'Tasks (all)';
-$string['totaltime'] = 'Total time spent ';
+$string['totaltime'] = 'Total time spent';
 $string['tuning'] = 'Tuning/Setup';
 $string['tuningdesc'] = 'Tuning and configuration operations';
 $string['unassigned'] = 'Unassigned';
-$string['unassigneddesc'] = 'Unspecified deliverable'; 
+$string['unassigneddesc'] = 'Unspecified deliverable';
 $string['unassignedtasks'] = 'Unassigned tasks';
 $string['uncovered'] = 'Uncovered';
-$string['ungroupedsees'] = 'Ungrouped student\'s access'; 
+$string['ungroupedsees'] = 'Ungrouped student\'s access';
 $string['unqualified'] = 'N.C.';
 $string['unscheduledtasks'] = 'Unscheduled tasks';
 $string['unselectall'] = 'Unselect all';
 $string['unset'] = 'unset';
-$string['unspecifiedtasks'] = 'Unspecified tasks'; 
+$string['unspecifiedtasks'] = 'Unspecified tasks';
 $string['untracked'] = 'Untracked';
 $string['untypedtasks'] = 'Untyped tasks';
 $string['up'] = 'Raise ';
@@ -564,9 +579,9 @@ $string['updatespec'] = 'Change a specification';
 $string['updatetask'] = 'Change a task';
 $string['updatevalidation'] = 'Update validation session';
 $string['uploadfile'] = 'Upload a file';
-$string['upto'] = 'To: ';
+$string['upto'] = 'To:';
 $string['urgent'] = 'Urgent';
-$string['urgentdesc'] = 'Urgent'; 
+$string['urgentdesc'] = 'Urgent';
 $string['url'] = 'Url';
 $string['used'] = 'Time used';
 $string['useful'] = 'Useful';
@@ -583,22 +598,24 @@ $string['views'] = 'Views';
 $string['wecanhavedesc'] = 'We already have something alike, or can purchase easily';
 $string['wehavedesc'] = 'We already have similar thing';
 $string['weight'] = 'Weight';
-$string['what'] = 'What ? ';
+$string['what'] = 'What?';
 $string['will'] = 'WILL';
-$string['willdesc'] = 'We expect seriously it will be there.'; 
+$string['willdesc'] = 'We expect seriously it will be there.';
 $string['wished'] = 'MAY';
-$string['wisheddesc'] = 'Not strictely necessary, but it would be nice you could have it'; 
+$string['wisheddesc'] = 'Not strictely necessary, but it would be nice you could have it';
 $string['withchosennodes'] = 'with selected nodes... ';
 $string['worktype'] = 'Worktype';
 $string['writing'] = 'Writing';
-$string['writingdesc'] = 'Writing contents'; 
+$string['writingdesc'] = 'Writing contents';
 $string['xmlexport'] = 'XML Export';
 $string['xmlexportselected'] = 'Export selected items to XML...';
-$string['xslloaded'] = 'Loaded XSL ';
+$string['xslloaded'] = 'Loaded XSL';
 $ztring['errorbadsessionid'] = 'Bad validation session ID';
 $string['showcost'] = 'Show cost quotes';
 $string['showrisk'] = 'Show risk evaluation';
 $string['hideall'] = 'Hide all';
+$string['xslfile'] = 'XSL Transform';
+$string['cssfile'] = 'CSS';
 
 $string['january'] = 'January';
 $string['february'] = 'February';
@@ -1083,3 +1100,50 @@ $string['unspecifiedtasks_help'] = '
 <p>Priority is given to the specification, whuch stands for a more pregannt project component to do before others. Tasks that have no assignation to
 any specification cannot resolve their priority. They remain within an "unassigned set".
 '; 
+
+$string['newentrynotify_tpl'] = '
+<h2>Project : <%%PROJECT%%></h2>
+<p><b>A new description has been added :</b>
+
+<b>Description Class :</b> <%%CLASS%%><br>
+<b>By :</b> <%%USER%%><br>
+
+<p><%%ENTRYNODE%%> <%%ENTRYABSTRACT%%><br>
+<hr/>
+<%%QUALIFIERS%%>
+<hr/>
+
+<p><b>Description : </b>
+<br/>
+<%%ENTRYDESCRIPTION%%>
+<hr/>
+
+<p><a href="<%%ENTRYLINK%%>">See this entry in its context</a></p>
+';
+
+$string['newtasknotify'] = '
+<h2>Project : <%%PROJECT%%></h2>
+<p><b><%%OWNER%%>, owner of the task:</b>
+
+<p><%%TASKNODE%%> <%%TASKABSTRACT%%><br>
+<b>Worktype:</b> <%%WORKTYPE%%><br>
+<b>Completion: </b><%%DONE%%>%<br>
+
+<p><b>Assigned you a job.</b>
+
+<p><b>Description: </b>
+<hr/>
+<%%TASKDESCRIPTION%%>
+<hr/>
+';
+
+$string['takreleasenotify'] = '
+<h2>Project : <%%PROJECT%%></h2>
+<p><b><%%OWNER%%>, owner of the task:</b>
+
+<p><%%TASKNODE%%> <%%TASKABSTRACT%%><br>
+<b>Worktype :</b> <%%WORKTYPE%%><br>
+<b>Completion: </b><%%DONE%%><br>
+
+<p><b>has released you from this job.</b>
+';

@@ -14,20 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- *
- *
- *
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/mod/techproject/forms/form_task.class.php');
 $PAGE->requires->js('/mod/techproject/js/js.js');
 
 $taskid = optional_param('taskid', '', PARAM_INT);
 
-$mode = ($taskid) ? 'update' : 'add' ;
+$mode = ($taskid) ? 'update' : 'add';
 
 $url = new moodle_url('/mod/techproject/view.php', array('id' => $id)).'#node'.$taskid;
 $project->cm = $cm;
@@ -67,8 +70,10 @@ if ($data = $mform->get_data()) {
 
     // Editors pre save processing.
     $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-    $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'taskdescription', $data->id, array('subdirs' => true), $data->description);
-    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject', 'taskdescription', $data->id);
+    $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'taskdescription',
+                                                    $data->id, array('subdirs' => true), $data->description);
+    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject',
+                                            'taskdescription', $data->id);
 
     if ($data->taskid) {
         // Id is course module id.
@@ -80,15 +85,16 @@ if ($data = $mform->get_data()) {
 
         if (!empty($data->tasktospec)) {
             // Removes previous mapping.
-            $DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $data->id));
+            $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $data->id);
+            $DB->delete_records('techproject_task_to_spec', $params);
 
             // Stores new mapping.
-            foreach ($data->tasktospec as $aSpec) {
+            foreach ($data->tasktospec as $aspec) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
                 $amap->groupid = $currentgroupid;
-                $amap->specid = $aSpec;
+                $amap->specid = $aspec;
                 $amap->taskid = $data->id;
                 $res = $DB->insert_record('techproject_task_to_spec', $amap);
             }
@@ -97,7 +103,8 @@ if ($data = $mform->get_data()) {
         // Todo a function ?
         if (!empty($data->tasktodeliv)) {
             // Removes previous mapping.
-            $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $data->id));
+            $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $data->id);
+            $DB->delete_records('techproject_task_to_deliv', $params);
             // Stores new mapping.
             foreach ($data->tasktodeliv as $mappedid) {
                 $amap = new StdClass();
@@ -112,7 +119,8 @@ if ($data = $mform->get_data()) {
 
         if (!empty($data->taskdependency)) {
             // Removes previous mapping.
-            $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $data->id));
+            $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $data->id);
+            $DB->delete_records('techproject_task_dependency', $params);
             // Stores new mapping.
             foreach ($data->taskdependency as $mappedid) {
                 $amap = new StdClass();
@@ -131,14 +139,15 @@ if ($data = $mform->get_data()) {
             }
 
             // If notifications allowed and previous assignee exists (and is not the new assignee) notify previous assignee.
-            if ($project->allownotifications && !empty($oldAssigneeId) && ($data->assignee != $oldAssigneeId)) {
+            if ($project->allownotifications && !empty($oldAssigneeId) &&
+                    ($data->assignee != $oldAssigneeId)) {
                 techproject_notify_task_unassign($project, $data, $oldAssigneeId, $currentgroupid);
             }
         }
     } else {
         $data->created = time();
         $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_task', true, $data->fatherid) + 1;
-        unset($data->id); // id is course module id
+        unset($data->id); // Id is course module id.
 
         $data->id = $DB->insert_record('techproject_task', $data);
 
@@ -155,14 +164,15 @@ if ($data = $mform->get_data()) {
 
     // If subtask, force dependency upon father.
     if ($data->fatherid != 0) {
-        $aDependency = new StdClass();
-        $aDependency->id = 0;
-        $aDependency->projectid = $project->id;
-        $aDependency->groupid = $currentgroupid;
-        $aDependency->slave = $data->fatherid;
-        $aDependency->master = $data->id;
-        if (!$DB->record_exists('techproject_task_dependency', array('projectid' => $project->id, 'slave' => $data->fatherid, 'master' => $data->id))){
-               $DB->insert_record('techproject_task_dependency', $aDependency);
+        $adependency = new StdClass();
+        $adependency->id = 0;
+        $adependency->projectid = $project->id;
+        $adependency->groupid = $currentgroupid;
+        $adependency->slave = $data->fatherid;
+        $adependency->master = $data->id;
+        $params = array('projectid' => $project->id, 'slave' => $data->fatherid, 'master' => $data->id));
+        if (!$DB->record_exists('techproject_task_dependency', $params) {
+               $DB->insert_record('techproject_task_dependency', $adependency);
            }
     }
 
@@ -184,6 +194,7 @@ if ($data = $mform->get_data()) {
 }
 
 echo $pagebuffer;
+
 if ($mode == 'add') {
     $task = new StdClass();
     $task->fatherid = required_param('fatherid', PARAM_INT);
@@ -196,12 +207,12 @@ if ($mode == 'add') {
     echo $OUTPUT->heading(get_string($tasktitle, 'techproject'));
 } else {
     if (!$task = $DB->get_record('techproject_task', array('id' => $taskid))) {
-        print_error('errortask','techproject');
+        print_error('errortask', 'techproject');
     }
     $task->taskid = $task->id;
     $task->id = $cm->id;
 
-    echo $OUTPUT->heading(get_string('updatetask','techproject'));
+    echo $OUTPUT->heading(get_string('updatetask', 'techproject'));
 }
 
 $mform->set_data($task);

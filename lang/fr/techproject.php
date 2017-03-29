@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 $string['techproject:addinstance'] = 'Ajouter un projet';
 $string['techproject:beassignedtasks'] = 'Etre assigné à des tâches';
@@ -931,3 +945,49 @@ $string['weight_help'] = '
 <p>Le poids permet d\'équilibrer les influences des différents critères. Les critères sont équilibrés de façon "barycentrique" : la somme de l\'ensemble des valeurs de poids du jeu de critère vaut pour 100% de la note de référence.</p>
 ';
 
+$string['newentrynotify_tpl'] = '
+<h2>Projet : <%%PROJECT%%></h2>
+<p><b>une nouvelle entrée a été ajoutée :</b>
+
+<b>Classe :</b> <%%CLASS%%><br>
+<b>Par :</b> <%%USER%%><br>
+
+<p><%%ENTRYNODE%%> <%%ENTRYABSTRACT%%><br>
+<hr/>
+<%%QUALIFIERS%%>
+<hr/>
+
+<p><b>Description : </b>
+<br/>
+<%%ENTRYDESCRIPTION%%>
+<hr/>
+
+<p><a href="<%%ENTRYLINK%%>">Voir cette entrée dans le contexte</a></p>
+';
+
+$string['newtasknotify_tpl'] = '
+<h2>Projet : <%%PROJECT%%></h2>
+<p><b><%%OWNER%%>, le propriétaire de la tâche :</b>
+
+<p><%%TASKNODE%%> <%%TASKABSTRACT%%><br>
+<b>Type :</b> <%%WORKTYPE%%><br>
+<b>Réalisation : </b><%%DONE%%>%<br>
+
+<p><b>Vous a attribué cette tâche.</b>
+
+<p><b>Description : </b>
+<hr/>
+<%%TASKDESCRIPTION%%>
+<hr/>
+';
+
+$string['taskreleasenotify_tpl'] = '
+<h2>Projet : <%%PROJECT%%></h2>
+<p><b><%%OWNER%%>, le propriétaire de la tâche :</b>
+
+<p><%%TASKNODE%%> <%%TASKABSTRACT%%><br>
+<b>Type :</b> <%%WORKTYPE%%><br>
+<b>Réalisation : </b><%%DONE%%><br>
+
+<p><b>Vous a désassigné cette tâche.</b>
+';

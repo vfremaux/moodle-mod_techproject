@@ -30,9 +30,9 @@ require_once($CFG->libdir.'/formslib.php');
 
 class Description_Form extends moodleform {
 
-    var $project;
-    var $mode;
-    var $editoroptions;
+    protected $project;
+    protected $mode;
+    protected $editoroptions;
 
     public function __construct($action, &$project, $mode) {
         $this->project = $project;
@@ -80,7 +80,7 @@ class Description_Form extends moodleform {
         $this->add_action_buttons(true);
     }
 
-    function set_data($defaults) {
+    public function set_data($defaults) {
 
         $context = context_module::instance($this->project->cmid);
 

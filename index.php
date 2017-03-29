@@ -33,7 +33,7 @@ require_once($CFG->dirroot.'/mod/techproject/locallib.php');
 
 // Get context information.
 
-$id = required_param('id', PARAM_INT);   // course id
+$id = required_param('id', PARAM_INT);   // Course id.
 
 if (!$course = $DB->get_record('course', array('id' => $id))) {
     error("Course ID is incorrect");
@@ -68,7 +68,8 @@ echo $OUTPUT->header();
 // Get all the appropriate data.
 
 if (! $projects = get_all_instances_in_course('techproject', $course)) {
-    echo $OUTPUT->notification(get_string('noprojects', 'techproject'), new moodle_url('/course/view.php', array('id' => $course->id)));
+    $returnurl = new moodle_url('/course/view.php', array('id' => $course->id));
+    echo $OUTPUT->notification(get_string('noprojects', 'techproject'), $returnurl);
     die;
 }
 
@@ -85,7 +86,7 @@ $table = new stdClass;
 if ($course->format == 'weeks') {
     $table->head  = array ($strweek, $strname, $strgrade, $strprojectend);
     $table->align = array ('center', 'left', 'center', 'center');
-} elseif ($course->format == 'topics') {
+} else if ($course->format == 'topics') {
     $table->head  = array ($strtopic, $strname, $strgrade, $strprojectend);
     $table->align = array ('center', 'left', 'center', 'center');
 } else {

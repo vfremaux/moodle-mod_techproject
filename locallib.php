@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
@@ -25,6 +23,7 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/mod/techproject/treelib.php');
 require_once($CFG->dirroot.'/mod/techproject/mailtemplatelib.php');
@@ -64,7 +63,7 @@ function techproject_edition_enable_button($cm, $course, $project, $editmode) {
             return '';
         }
         if (!isguestuser() && !groups_is_member($currentgroupid) && ($groupmode != NOGROUPS)) {
-            return ;
+            return;
         }
         if (isguestuser() && ($currentgroupid || !$project->guestscanuse)) {
             return '';
@@ -113,8 +112,8 @@ function techproject_print_assignement_info($project, $return = false) {
     $dates = array(
         'projectstart' => $project->projectstart,
         'projectend' => $project->projectend,
-        'assessmentstart' => $project->assessmentstart
-    );
+        'assessmentstart' => $project->assessmentstart);
+
     foreach ($dates as $type => $date) {
         if ($date) {
             $strdifference = format_time($date - time());
@@ -141,12 +140,12 @@ function techproject_print_assignement_info($project, $return = false) {
  * @param style not used 
  * @return a printable representation of the current project phase 
  */
-function techproject_phase($project, $style='') {
+function techproject_phase($project, $style = '') {
     global $CFG, $SESSION, $DB, $COURSE;
 
     $time = time();
     $course = $DB->get_record('course', array('id' => $project->course));
-    $currentgroupid = 0 + groups_get_course_group($COURSE); // ensures compatibility 1.8 
+    $currentgroupid = 0 + groups_get_course_group($COURSE);
 
     // Getting all timed info.
     $query = "
@@ -157,21 +156,21 @@ function techproject_phase($project, $style='') {
       FROM
         {techproject_milestone} as m
       WHERE
-        projectid = $project->id AND
-        groupid = $currentgroupid AND
+        projectid = ? AND
+        groupid = ? AND
         deadlineenable = 1
     ";
-    $dated = $DB->get_records_sql($query);
-    $aDated = new StdClass;
-    $aDated->id = 'projectstart';
-    $aDated->phasedate = $project->projectstart;
-    $aDated->ordering = 0;
-    $dated[] = $aDated;
-    $aDated = new StdClass;
-    $aDated->id = 'projectend';
-    $aDated->phasedate = $project->projectend;
-    $aDated->ordering = count($dated) + 1;
-    $dated[] = $aDated;
+    $dated = $DB->get_records_sql($query, array($project->id, $currentgroupid));
+    $adated = new StdClass;
+    $adated->id = 'projectstart';
+    $adated->phasedate = $project->projectstart;
+    $adated->ordering = 0;
+    $dated[] = $adated;
+    $adated = new StdClass;
+    $adated->id = 'projectend';
+    $adated->phasedate = $project->projectend;
+    $adated->ordering = count($dated) + 1;
+    $dated[] = $adated;
     function sortbydate($a, $b) {
         if ($a->phasedate == $b->phasedate) {
             return 0;
@@ -181,12 +180,12 @@ function techproject_phase($project, $style='') {
     usort($dated, "sortbydate");
 
     $i = 0;
-    while($time > $dated[$i]->phasedate && $i < count($dated) - 1) {
+    while ($time > $dated[$i]->phasedate && $i < count($dated) - 1) {
         $i++;
     }
     if ($dated[$i]->id == 'projectstart') {
         return get_string('phasestart', 'techproject');
-    } elseif ($dated[$i]->id == 'projectend') {
+    } else if ($dated[$i]->id == 'projectend') {
         return get_string('phaseend', 'techproject');
     } else {
        return "M{$dated[$i]->ordering} : {$dated[$i]->abstract} (<font color=\"green\">".format_time($dated[$i]->phasedate - $time)."</font>)";
@@ -219,18 +218,23 @@ function techproject_print_specifications($project, $group, $fatherid, $cmid, $p
         ON
             s.id = c.entryid AND
             c.entity = 'specifications' AND
-            c.userid = $USER->id
+            c.userid = ?
         WHERE 
-            s.groupid = {$group} and 
-            s.projectid = {$project->id} AND 
-            s.fatherid = {$fatherid}
+            s.groupid = ? AND
+            s.projectid = ? AND
+            s.fatherid = ?
         GROUP BY
             s.id
-        ORDER BY 
+        ORDER BY
             s.ordering
     ";
 
-    if ($specifications = $DB->get_records_sql($query)) {
+    $params = array($USER->id,
+                    $group,
+                    $project->id,
+                    $fatherid);
+
+    if ($specifications = $DB->get_records_sql($query, $params)) {
         $i = 1;
         foreach ($specifications as $specification) {
             echo '<div class="entitynode nodelevel'.$level.'">';
@@ -242,11 +246,11 @@ function techproject_print_specifications($project, $group, $fatherid, $cmid, $p
             techproject_print_single_specification($specification, $project, $group, $cmid, count($specifications));
 
             if ($specification->collapsed) {
-                $propagatedroot->collapsed = true; // give signal for lower branch
+                $propagatedroot->collapsed = true; // Give signal for lower branch.
                 $visibility = 'display: none';
                 $expansion = '';
             } else {
-                $propagatedroot->collapsed = false; // give signal for lower branch
+                $propagatedroot->collapsed = false; // Give signal for lower branch.
                 $visibility = 'display: block';
                 $expansion = 'style="visbility:hidden; display:none" ';
             }
@@ -277,7 +281,7 @@ function techproject_print_specifications($project, $group, $fatherid, $cmid, $p
  * @param setSize the size of the set of objects we are printing an item of
  * @param fullsingle true if prints a single isolated element
  */
-function techproject_print_single_specification($specification, $project, $group, $cmid, $setSize, $fullsingle = false) {
+function techproject_print_single_specification($specification, $project, $group, $cmid, $setsize, $fullsingle = false) {
     global $CFG, $USER, $SESSION, $DB, $OUTPUT, $PAGE;
 
     $renderer = $PAGE->get_renderer('mod_techproject');
@@ -286,9 +290,9 @@ function techproject_print_single_specification($specification, $project, $group
     $numspec = implode('.', techproject_tree_get_upper_branch('techproject_specification', $specification->id, true, true));
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_specification', $specification->id) > 0) {
-            $hidesub = "<a href=\"javascript:toggle('{$specification->id}','sub{$specification->id}', true, '$CFG->wwwroot');\"><img name=\"img{$specification->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
+            $hidesub = "<a href=\"javascript:toggle('{$specification->id}','sub{$specification->id}', true);\"><img name=\"img{$specification->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
         } else {
-            $hidesub = "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/empty.gif\" />";
+            $hidesub = '<img src="'.$OUTPUT->pix_url('/p/empty', 'techproject').'" />';
         }
     } else {
        $hidesub = '';
@@ -331,7 +335,12 @@ function techproject_print_single_specification($specification, $project, $group
         $hidedesc = '';
     }
 
-    $head = "<table width=\"100%\" class=\"nodecaption\"><tr><td align='left' width='70%'><b>{$checkbox}{$indent}<span class=\"level{$speclevel}\">{$hidesub} <a name=\"node{$specification->id}\"></a>S{$numspec} - ".format_string($specification->abstract)."</span></b></td><td align='right' width='30%'>{$severitysignal} {$prioritysignal} {$complexitysignal} {$reqcount} {$taskcount} {$completion} {$hidedesc}</td></tr></table>";
+    $anchor = '<a name="node"'.$specification->id.'"></a>';
+
+    $head = '<table width="100%" class="nodecaption">';
+    $head .= '<tr>';
+    $head .= '<td align="left" width="70%">';
+    $head .= "<b>{$checkbox}{$indent}<span class=\"level{$speclevel}\">{$hidesub} {$anchor} S{$numspec} - ".format_string($specification->abstract)."</span></b></td><td align='right' width='30%'>{$severitysignal} {$prioritysignal} {$complexitysignal} {$reqcount} {$taskcount} {$completion} {$hidedesc}</td></tr></table>";
 
     unset($innertable);
     $innertable = new html_table();
@@ -392,7 +401,7 @@ function techproject_print_single_specification($specification, $project, $group
         $link[] = '<a href="'.$templateurl.'#node'.$specification->id.'">
                  <img src="'.$templateicon.'" title="'.get_string('markastemplate', 'techproject').'" /></a>';
 
-        techproject_add_entity_tree_controls($cmid, 'specification', 'spec', $specification, $setSize, $link);
+        techproject_add_entity_tree_controls($cmid, 'specification', 'spec', $specification, $setsize, $link);
         $table->data[] = array($indent . implode (' ', $link));
         $table->rowclass[] = 'controls';
     }
@@ -490,7 +499,7 @@ function techproject_print_requirements($project, $group, $fatherid, $cmid, $pro
  * @param setSize the size of the set of objects we are printing an item of
  * @param fullsingle true if prints a single isolated element
  */
-function techproject_print_single_requirement($requirement, $project, $group, $cmid, $setSize, $fullsingle = false) {
+function techproject_print_single_requirement($requirement, $project, $group, $cmid, $setsize, $fullsingle = false) {
     global $CFG, $USER, $DB, $OUTPUT, $PAGE;
 
     $renderer = $PAGE->get_renderer('mod_techproject');
@@ -613,7 +622,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
         $link[] = '<a href="'.$deleteurl.'">
                  <img src="'.$OUTPUT->pix_url('/t/delete').'" alt="'.get_string('delete').'" /></a>';
 
-        techproject_add_entity_tree_controls($cmid, 'requirement', 'requ', $requirement, $setSize, $link);
+        techproject_add_entity_tree_controls($cmid, 'requirement', 'requ', $requirement, $setsize, $link);
         $table->data[] = array($indent . implode(' ', $link));
         $table->rowclass[] = 'controls';
     }
@@ -713,7 +722,7 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
  *
  * // TODO clean up $fullsingle and $style commands
  */
-function techproject_print_single_task($task, $project, $group, $cmid, $setSize, $fullsingle = false, $style='') {
+function techproject_print_single_task($task, $project, $group, $cmid, $setsize, $fullsingle = false, $style='') {
     global $CFG, $USER, $SESSION, $DB, $OUTPUT, $PAGE;
 
     $renderer = $PAGE->get_renderer('mod_techproject');
@@ -880,7 +889,7 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
         $link[] = '<a href="'.$deleteurl.'">
                  <img src="'.$OUTPUT->pix_url('/t/delete').'" title="'.get_string('deletetask', 'techproject').'" /></a>';
 
-        techproject_add_entity_tree_controls($cmid, 'task', 'task', $task, $setSize, $link);
+        techproject_add_entity_tree_controls($cmid, 'task', 'task', $task, $setsize, $link);
         $table->data[] = array($indent . implode(' ', $link));
         $table->rowclass[] = 'controls';
     }
@@ -1103,7 +1112,7 @@ function techproject_print_deliverables($project, $group, $fatherid, $cmid, $pro
  * @param setSize the size of the set of objects we are printing an item of
  * @param fullsingle true if prints a single isolated element
  */
-function techproject_print_single_deliverable($deliverable, $project, $group, $cmid, $setSize, $fullsingle = false) {
+function techproject_print_single_deliverable($deliverable, $project, $group, $cmid, $setsize, $fullsingle = false) {
     global $CFG, $USER, $DB, $OUTPUT, $PAGE;
 
     $fs = get_file_storage();
@@ -1233,7 +1242,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
         $link[] = '<a href="'.$deleteurl.'">
                  <img src="'.$OUTPUT->pix_url('/t/delete').'" alt="'.get_string('delete').'" /></a>';
 
-        techproject_add_entity_tree_controls($cmid, 'deliverable', 'deliv', $deliverable, $setSize, $link);
+        techproject_add_entity_tree_controls($cmid, 'deliverable', 'deliv', $deliverable, $setsize, $link);
         $table->data[] = array($indent . implode (' ' , $link));
         $table->rowclass[] = 'controls';
     }
@@ -1829,7 +1838,8 @@ function techproject_get_full_xml(&$project, $groupid) {
     global $COURSE, $CFG, $DB;
 
     include_once($CFG->dirroot.'/mod/techproject/xmllib.php');
-    // getting heading
+
+    // Getting heading.
     $heading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $groupid));
     $projects[$heading->projectid] = $heading;
     $xmlheading = recordstoxml($projects, 'project', '', false, null);
@@ -1899,12 +1909,44 @@ function techproject_get_full_xml(&$project, $groupid) {
     $techproject = $DB->get_record('techproject', array('id' => $project->id));
     $techproject->wwwroot = $CFG->wwwroot;
     $techprojects[$techproject->id] = $techproject;
-    $project->xslfilter = (empty($project->xslfilter)) ? $CFG->dirroot.'/mod/techproject/xsl/default.xsl' : $CFG->dataroot."/{$COURSE->id}/moddata/techproject/{$project->id}/{$project->xslfilter}" ;
-    $project->cssfilter = (empty($project->cssfilter)) ? $CFG->dirroot.'/mod/techproject/xsl/default.css' : $CFG->dataroot."/{$COURSE->id}/moddata/techproject/{$project->id}/{$project->cssfilter}" ;
-    $xmlstylesheet = "<?xml-stylesheet href=\"{$project->xslfilter}\" type=\"text/xsl\"?>\n";
+    $xslfilter = techproject_get_internal_file($techproject, 'xsl');
+    $xmlstylesheet = "<?xml-stylesheet href=\"{$xslfilter}\" type=\"text/xsl\"?>\n";
     $xml = recordstoxml($techprojects, 'techproject', $xmlheading.$xmlrequs.$xmlspecs.$xmltasks.$xmldelivs.$xmlmiles, true, null, $xmlstylesheet);
 
     return $xml;
+}
+
+/**
+ *
+ */
+function techproject_get_internal_file($project, $filearea) {
+    global $CFG;
+
+    $fs = get_file_storage();
+
+    $context = get_coursemodule_from_instance('techproject', $project->id);
+
+    $files = $fs->get_area_files($context->id, 'mod_techproject', $filearea, 0, 'filename', false);
+
+    if (!empty($files)) {
+        $f = array_pop($files);
+        $filepathname = $f->get_contenthash();
+        return $CFG->dataroot.'/filedir/'.techproject_path_from_hash($filepathname).'/'.$filepathname;
+    }
+
+    return $CFG->dirroot.'/mod/techproject/'.$filearea.'/default.'.$filearea;
+}
+
+/**
+ * Retrieve real path from hash to a stored file.
+ *
+ * @param array $contenthash
+ * @return string the path
+ */
+function techproject_path_from_hash($contenthash) {
+    $l1 = $contenthash[0].$contenthash[1];
+    $l2 = $contenthash[2].$contenthash[3];
+    return "$l1/$l2";
 }
 
 /**
