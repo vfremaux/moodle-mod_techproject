@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/mod/techproject/forms/form_specification.class.php'
 
 $specid = optional_param('specid', '', PARAM_INT);
 
-$mode = ($specid) ? 'update' : 'add' ;
+$mode = ($specid) ? 'update' : 'add';
 
 $url = new moodle_url('/mod/techproject/view.php', array('id' => $id));
 $mform = new Specification_Form($url, $project, $mode, $specid);
@@ -48,8 +48,8 @@ if ($data = $mform->get_data()) {
     $data->lastuserid = $USER->id;
 
     // Editors pre save processing.
-    $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-    $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'specificationdescription',
+    $draftideditor = file_get_submitted_draft_itemid('description_editor');
+    $data->description = file_save_draft_area_files($draftideditor, $context->id, 'mod_techproject', 'specificationdescription',
                                                     $data->id, array('subdirs' => true), $data->description);
     $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject',
                                             'specificationdescription', $data->id);
@@ -65,11 +65,12 @@ if ($data = $mform->get_data()) {
             $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'specid' => $data->id);
             $DB->delete_records('techproject_spec_to_req', $params);
             // Stores new mapping.
-            foreach ($data->spectoreq as $aRequ) {
+            foreach ($data->spectoreq as $arequ) {
+                $amap = new StdClass;
                 $amap->id = 0;
                 $amap->projectid = $project->id;
                 $amap->groupid = $currentgroupid;
-                $amap->reqid = $aRequ;
+                $amap->reqid = $arequ;
                 $amap->specid = $data->id;
                 $res = $DB->insert_record('techproject_spec_to_req', $amap);
             }
@@ -77,7 +78,7 @@ if ($data = $mform->get_data()) {
     } else {
         $data->created = time();
         $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_specification', true, $data->fatherid) + 1;
-        unset($data->id); // id is course module id
+        unset($data->id); // Id is course module id.
         $data->id = $DB->insert_record('techproject_specification', $data);
         $event = \mod_techproject\event\specification_created::create_from_specification($project, $context, $data, $currentgroupid);
         $event->trigger();

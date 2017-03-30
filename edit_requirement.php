@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/mod/techproject/forms/form_requirement.class.php');
 
 $requid = optional_param('requid', '', PARAM_INT);
 
-$mode = ($requid) ? 'update' : 'add' ;
+$mode = ($requid) ? 'update' : 'add';
 
 $url = new moodle_url('/mod/techproject/view.php', array('id' => $id)).'#node'.$requid;
 $mform = new Requirement_Form($url, $project, $mode, $requid);
@@ -48,8 +48,8 @@ if ($data = $mform->get_data()) {
     $data->lastuserid = $USER->id;
 
     // Editors pre save processing.
-    $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-    $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'requirementdescription',
+    $draftideditor = file_get_submitted_draft_itemid('description_editor');
+    $data->description = file_save_draft_area_files($draftideditor, $context->id, 'mod_techproject', 'requirementdescription',
                                                     $data->id, array('subdirs' => true), $data->description);
     $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject',
                                             'requirementdescription', $data->id);
@@ -65,12 +65,12 @@ if ($data = $mform->get_data()) {
             $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'reqid' => $data->id);
             $DB->delete_records('techproject_spec_to_req', $params);
             // Stores new mapping.
-            foreach($data->spectoreq as $aSpec) {
+            foreach($data->spectoreq as $aspec) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
                 $amap->groupid = $currentgroupid;
-                $amap->specid = $aSpec;
+                $amap->specid = $aspec;
                 $amap->reqid = $data->id;
                 $res = $DB->insert_record('techproject_spec_to_req', $amap);
             }

@@ -49,8 +49,8 @@ if ($data = $mform->get_data()) {
     $data->milestoneid = 0;
 
     // Editors pre save processing.
-    $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-    $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject',
+    $draftideditor = file_get_submitted_draft_itemid('description_editor');
+    $data->description = file_save_draft_area_files($draftideditor, $context->id, 'mod_techproject',
                                                     'deliverabledescription', $data->id, array('subdirs' => true),
                                                     $data->description);
     $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject',
@@ -69,12 +69,12 @@ if ($data = $mform->get_data()) {
             $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'delivid' => $data->id);
             $DB->delete_records('techproject_task_to_deliv', $params);
             // Stores new mapping.
-            foreach ($data->tasktodeliv as $aTask) {
+            foreach ($data->tasktodeliv as $atask) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
                 $amap->groupid = $currentgroupid;
-                $amap->taskid = $aTask;
+                $amap->taskid = $atask;
                 $amap->delivid = $data->id;
                 $res = $DB->insert_record('techproject_task_to_deliv', $amap);
             }

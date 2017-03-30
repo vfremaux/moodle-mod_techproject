@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/mod/techproject/forms/form_milestone.class.php');
 
 $mileid = optional_param('milestoneid', '', PARAM_INT);
 
-$mode = ($mileid) ? 'update' : 'add' ;
+$mode = ($mileid) ? 'update' : 'add';
 
 $url = new moodle_url('/mod/techproject/view.php', array('id' => $id));
 $mform = new Milestone_Form($url, $project, $mode, $mileid);
@@ -51,9 +51,9 @@ if ($data = $mform->get_data()) {
     $data->lastuserid = $USER->id;
     $data->deadlineenable = ($data->deadline) ? 1 : 0;
 
-    // editors pre save processing
-    $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-    $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'milestonedescription',
+    // Editors pre save processing.
+    $draftideditor = file_get_submitted_draft_itemid('description_editor');
+    $data->description = file_save_draft_area_files($draftideditor, $context->id, 'mod_techproject', 'milestonedescription',
                                                     $data->id, array('subdirs' => true), $data->description);
     $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject',
                                             'milestonedescription', $data->id);
