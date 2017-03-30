@@ -589,6 +589,7 @@ $string['usefuldesc'] = 'Could do other way, but it is a great and appreciated f
 $string['useriskcorrection'] = 'Use risk correction';
 $string['useriskcorrection_help'] = 'Use risk correction';
 $string['validations'] = 'Validations';
+$string['validationrequirements'] = 'Validation needs either requirements or specifications to be used';
 $string['verycomplex'] = 'Very Complex';
 $string['verycomplexdesc'] = 'Needs breaking major parts of the architecture. Costful.';
 $string['viewalltasks'] = 'View all tasks';

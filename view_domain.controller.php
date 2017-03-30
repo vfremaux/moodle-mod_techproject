@@ -14,45 +14,44 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
-/**
-* Master Controler for all domains
-*/
+/*
+ * Master Controler for all domains
+ */
 
 switch ($action) {
-    /*************************************** adds a new company ***************************/
-    case 'add':
+
+    case 'add': {
+        // Adds a new domain ***************************.
         require_once('forms/form_domain.class.php');
         if ($data = data_submitted()) {
 
         $params = array('id' => $id, 'view' => 'domains_'.$domain, 'what' => 'add', 'view' => 'domains_'.$domain);
         $returnurl = new moodle_url('/mod/techproject/view.php', $params);
 
-        // if there is some error
+        // If there is some error.
             if ($data->code == '') {
                 print_error('err_code', 'techproject', $returnurl);
             } elseif ($data->label == '') {
                 print_error('err_value', 'techproject', $returnurl);
             } else {
-                //data was submitted from this form, process it
+                // Data was submitted from this form, process it.
                 $domainrec->projectid = $scope;
                 $domainrec->domain = $domain;
                 $domainrec->code = clean_param($data->code, PARAM_ALPHANUM);
                 $domainrec->label = clean_param($data->label, PARAM_CLEANHTML);
                 $domainrec->description = clean_param($data->description, PARAM_CLEANHTML);
 
-                if ($DB->get_record('techproject_qualifier', array('domain' => $domain, 'code' => $data->code, 'projectid' => $scope))) {
+                $params = array('domain' => $domain, 'code' => $data->code, 'projectid' => $scope);
+                if ($DB->get_record('techproject_qualifier', $params)) {
                     print_error('err_codeexists', 'techproject', '', $returnurl);
                 } else {
                     $DB->insert_record('techproject_qualifier', $domainrec);
@@ -63,23 +62,25 @@ switch ($action) {
             $default->code = 'XXX';
             $default->label = '';
             $default->description = '';
-            $newdomain = new Domain_Form($domain, $default, new moodle_url('/mod/techproject/view.php', array('id' => $id, 'what' => 'add')));
+            $params = array('id' => $id, 'what' => 'add');
+            $newdomain = new Domain_Form($domain, $default, new moodle_url('/mod/techproject/view.php', $params));
             $newdomain->display();
             return -1;
         }
         break;
-    /********************************** Updates a domain value **************************************/
-    case 'update':
+    }
+
+    case 'update': {
+        // Updates a domain value **************************************.
         $domainid = required_param('domainid', PARAM_INT);
 
         require_once('forms/form_domain.class.php');
 
-        // Check the company
         if (!$domainrec = $DB->get_record('techproject_qualifier', array('id' => $domainid))) {
             print_error('errorinvalidedoomainid', 'techproject');
         }
 
-        // data was submitted from this form, process it
+        // Data was submitted from this form, process it.
         if ($data = data_submitted()){
             $domainrec->id = $domainid;
             // $domainrec->projectid = 0;
@@ -90,15 +91,19 @@ switch ($action) {
             $DB->update_record('techproject_qualifier', $domainrec);
             redirect(new moodle_url('/mod/techproject/view.php', array('id' => $id, 'view' => 'domains_'.$domain)));
         } else {
-            //no data submitted : print the form
-            $newdomain = new Domain_Form($domain, $domainrec, new moodle_url('/mod/techproject/view.php', array('id' => $id, 'what' => 'update')));
+            // No data submitted : print the form.
+            $params = array('id' => $id, 'what' => 'update');
+            $newdomain = new Domain_Form($domain, $domainrec, new moodle_url('/mod/techproject/view.php', $params));
             $newdomain->display();
             return -1;
         }
         break;
-    /********************************** deletes domain value **************************************/
-    case 'delete':
+    }
+
+    case 'delete': {
+        // Deletes domain value **************************************.
         $domainid = required_param('domainid', PARAM_INT);
         $DB->delete_records('techproject_qualifier', array('id' => $domainid));
         break;
+    }
 }

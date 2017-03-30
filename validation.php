@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
@@ -25,10 +23,11 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 $defaultformat = FORMAT_MOODLE;
 
-// Controller
+// Controller.
 
 $validsessid = required_param('validid', PARAM_INT);
 if (!$validsession = $DB->get_record('techproject_valid_session', array('id' => $validsessid))) {
@@ -50,6 +49,7 @@ if ($formdata = data_submitted()){
     }
 }
 echo $pagebuffer;
+
 echo $OUTPUT->heading(get_string('updatevalidation', 'techproject'));
 
 techproject_print_validation_states_form($validsessid, $project, $currentgroupid, 0, $cm->id);
@@ -57,7 +57,6 @@ techproject_print_validation_states_form($validsessid, $project, $currentgroupid
 echo '<br/>';
 echo '<center>';
 echo '<hr>';
-$options['id'] = $cm->id;
-$options['view'] = 'validations';
-echo $OUTPUT->single_button(new moodle_url($CFG->wwwroot."/mod/techproject/view.php", $options), get_string('backtosessions', 'techproject'), 'get');
+$params = array('id' => $cm->id, 'view' => 'validations');
+echo $OUTPUT->single_button(new moodle_url('/mod/techproject/view.php', $params), get_string('backtosessions', 'techproject'), 'get');
 echo '</center>';

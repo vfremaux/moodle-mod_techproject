@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This file defines the main newmodule configuration form
  * It uses the standard core Moodle (>1.8) formslib. For
@@ -39,6 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  *             See lib/weblib.php Constants and the format_text()
  *             function for more info
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/techproject/locallib.php');
@@ -46,17 +45,17 @@ require_once($CFG->dirroot.'/mod/techproject/locallib.php');
 class mod_techproject_mod_form extends moodleform_mod {
 
     public function definition() {
-
         global $COURSE;
+
         $mform =& $this->_form;
 
         $yesnooptions[0] = get_string('no');
         $yesnooptions[1] = get_string('yes');
 
-        // Adding the "general" fieldset, where all the common settings are showed
+        // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        // Adding the standard "name" field
+        // Adding the standard "name" field.
         $mform->addElement('text', 'name', get_string('name'), array('size'=>'64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -69,24 +68,27 @@ class mod_techproject_mod_form extends moodleform_mod {
         $this->standard_intro_elements();
 
         $startyear = date('Y', time());
-        $mform->addElement('date_time_selector', 'projectstart', get_string('projectstart', 'techproject'), array('optional' => true, 'startyear' => $startyear));
+        $options = array('optional' => true, 'startyear' => $startyear);
+        $mform->addElement('date_time_selector', 'projectstart', get_string('projectstart', 'techproject'), $options);
         $mform->setDefault('projectstart', time());
-        $mform->addElement('date_time_selector', 'projectend', get_string('projectend', 'techproject'), array('optional' => true, 'startyear' => $startyear));
-        $mform->setDefault('projectend', time()+90*DAYSECS);
+        $options = array('optional' => true, 'startyear' => $startyear);
+        $mform->addElement('date_time_selector', 'projectend', get_string('projectend', 'techproject'), $options);
+        $mform->setDefault('projectend', time() + 90 * DAYSECS);
 
-        $mform->addElement('date_time_selector', 'assessmentstart', get_string('assessmentstart', 'techproject'), array('optional' => true, 'startyear' => $startyear));
-        $mform->setDefault('assessmentstart', time()+75*DAYSECS);
+        $options = array('optional' => true, 'startyear' => $startyear);
+        $mform->addElement('date_time_selector', 'assessmentstart', get_string('assessmentstart', 'techproject'), $options);
+        $mform->setDefault('assessmentstart', time() + 75 * DAYSECS);
         $mform->addHelpButton('assessmentstart', 'assessmentstart', 'techproject');
 
         $unitoptions[HOURS] = get_string('hours', 'techproject');
         $unitoptions[HALFDAY] = get_string('halfdays', 'techproject');
         $unitoptions[DAY] = get_string('days', 'techproject');
-        $mform->addElement('select', 'timeunit', get_string('timeunit', 'techproject'), $unitoptions); 
+        $mform->addElement('select', 'timeunit', get_string('timeunit', 'techproject'), $unitoptions);
 
-        $mform->addElement('text', 'costunit', get_string('costunit', 'techproject')); 
+        $mform->addElement('text', 'costunit', get_string('costunit', 'techproject'));
         $mform->setType('costunit', PARAM_TEXT);
 
-        $mform->addElement('select', 'allownotifications', get_string('allownotifications', 'techproject'), $yesnooptions); 
+        $mform->addElement('select', 'allownotifications', get_string('allownotifications', 'techproject'), $yesnooptions);
         $mform->addHelpButton('allownotifications', 'allownotifications', 'techproject');
         $mform->setType('allownotifications', PARAM_BOOL);
 
@@ -96,7 +98,7 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->setType('enablecvs', PARAM_BOOL);
         */
 
-        $mform->addElement('select', 'useriskcorrection', get_string('useriskcorrection', 'techproject'), $yesnooptions); 
+        $mform->addElement('select', 'useriskcorrection', get_string('useriskcorrection', 'techproject'), $yesnooptions);
         $mform->addHelpButton('useriskcorrection', 'useriskcorrection', 'techproject');
         $mform->setType('useriskcorrection', PARAM_BOOL);
 
@@ -120,10 +122,12 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addHelpButton('ungroupedsees', 'ungroupedsees', 'techproject');
         $mform->setType('ungroupedsees', PARAM_BOOL);
 
-        $mform->addElement('select', 'allowdeletewhenassigned', get_string('allowdeletewhenassigned', 'techproject'), $yesnooptions);
+        $label = get_string('allowdeletewhenassigned', 'techproject');
+        $mform->addElement('select', 'allowdeletewhenassigned', $label, $yesnooptions);
         $mform->addHelpButton('allowdeletewhenassigned', 'allowdeletewhenassigned', 'techproject');
 
-        $mform->addElement('static', 'tudentscanchange', get_string('studentscanchange', 'techproject'), get_string('seecapabilitysettings', 'techproject'));
+        $label = get_string('studentscanchange', 'techproject');
+        $mform->addElement('static', 'tudentscanchange', $label, get_string('seecapabilitysettings', 'techproject'));
 
         $mform->addElement('header', 'header2', get_string('grading', 'techproject'));
         $mform->addElement('select', 'teacherusescriteria', get_string('teacherusescriteria', 'techproject'), $yesnooptions);

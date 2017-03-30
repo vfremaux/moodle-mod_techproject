@@ -336,4 +336,4 @@ if (count(@$linktable[3])) {
 }
 
 echo '</div>';
-ech '</div>';
+echo '</div>';

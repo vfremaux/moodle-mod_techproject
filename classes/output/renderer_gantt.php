@@ -20,11 +20,11 @@
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-namespace mod_assign\output;
+namespace mod_techproject\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-class gant implements \renderable, \templatable {
+class gantt implements \renderable, \templatable {
 
     public function init($ganttid) {
 

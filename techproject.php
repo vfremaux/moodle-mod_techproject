@@ -17,26 +17,21 @@
 /**
  * Project : Technical Project Manager (IEEE like)
  *
- * A common screenswitcher 
+ * A common screenswitcher
  *
  * @package mod-techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-
-if (!defined('MOODLE_INTERNAL')) {
-    die ('You cannot enter directly in this script');
-}
+defined('MOODLE_INTERNAL') || die ();
 
 // Memorizes current page - typical session switch.
 
 if (!empty($view)) {
     $_SESSION['currentpage'] = $view;
-} elseif (empty($_SESSION['currentpage'])) {
+} else if (empty($_SESSION['currentpage'])) {
     $_SESSION['currentpage'] = 'description';
 }
 $currentpage = $_SESSION['currentpage'];
@@ -46,60 +41,71 @@ $currentpage = $_SESSION['currentpage'];
 $editmode = optional_param('editmode', '', PARAM_ALPHA);
 if (!empty($editmode)) {
     $_SESSION['editmode'] = $editmode;
-} elseif (empty($_SESSION['editmode'])) {
+} else if (empty($_SESSION['editmode'])) {
     $_SESSION['editmode'] = 'off';
 }
 
 // Get general command name.
     $work = optional_param('work', '', PARAM_ALPHA);
 
-// Print group name.
-    /*
-    if ($currentgroupid) {
-        $group = $DB->get_record("groups", array("id" => $currentgroupid));
-        echo "<center><b>". get_string('groupname', 'techproject') . $group->name . "</b></center><br/>";
-    }
-    */
-
 // Make menu.
 
+$pixurltask = $OUTPUT->pix_url('/p/task', 'techproject');
+$pixurllock = $OUTPUT->pix_url('/p/lock', 'techprokect');
+$pixurlspec = $OUTPUT->pix_url('p/spec', 'techproject');
+$pixurldeliv = $OUTPUT->pix_url('p/deliv', 'techproject');
+$pixurlreq = $OUTPUT->pix_url('p/req', 'techproject');
+
 $tabrequtitle = get_string('requirements', 'techproject');
-$tabrequlabel = (!has_capability('mod/techproject:changerequs', $context)) ? $tabrequtitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabrequtitle ;
+$tabrequlabel = (!has_capability('mod/techproject:changerequs', $context)) ? $tabrequtitle.' <img src="'.$pixurllock.'" />' :$tabrequtitle;
 $tabspectitle = get_string('specifications', 'techproject');
-$tabspeclabel = (!has_capability('mod/techproject:changespecs', $context)) ? "<img src=\"".$OUPTUT->pix_url('p/spec', 'techproject').'" /> ' . $tabspectitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabspectitle ;
+$tabspeclabel = (!has_capability('mod/techproject:changespecs', $context)) ? '<img src="'.$pixurlspec.'" /> '.$tabspectitle.' <img src="'.$pixurllock.'" />':$tabspectitle;
 $tabtasktitle = get_string('tasks', 'techproject');
-$tabtasklabel = (!has_capability('mod/techproject:changetasks', $context)) ? "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/task.gif\" /> " . $tabtasktitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabtasktitle ;
+$tabtasklabel = (!has_capability('mod/techproject:changetasks', $context)) ? '<img src="'.$pixurl.'" /> '.$tabtasktitle.' <img src="'.$pixurllock.'" />' : $tabtasktitle;
 $tabmiletitle = get_string('milestones', 'techproject');
-$tabmilelabel = (!has_capability('mod/techproject:changemiles', $context)) ? $tabmiletitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabmiletitle ;
+$tabmilelabel = (!has_capability('mod/techproject:changemiles', $context)) ? $tabmiletitle.' <img src="'.$pixurllock.'" />' : $tabmiletitle;
 $tabdelivtitle = get_string('deliverables', 'techproject');
-$tabdelivlabel = (!has_capability('mod/techproject:changedelivs', $context)) ? $tabdelivtitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabdelivtitle ;
+$tabdelivlabel = (!has_capability('mod/techproject:changedelivs', $context)) ? $tabdelivtitle.' <img src="'.$pixurllock.'" />' : $tabdelivtitle;
 $tabvalidtitle = get_string('validations', 'techproject');
-$tabvalidlabel = (!has_capability('mod/techproject:validate', $context)) ? $tabvalidtitle . " <img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/lock.gif\" />" : $tabvalidtitle ;
-$tabrequlabel = '<img src="'.$OUTPUT->pix_url('p/req', 'techproject').'" height="14" /> ' . $tabrequlabel;
-$tabspeclabel = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject').'" height="14" /> ' . $tabspeclabel;
-$tabtasklabel = '<img src="'.$OUTPUT->pix_url('p/req', 'techproject').'" height="14" /> ' . $tabtasklabel;
-$tabdelivlabel = '<img src="'.$OUTPUT->pix_url('p/deliv', 'techproject').'" height="14" /> ' . $tabdelivlabel;
+$tabvalidlabel = (!has_capability('mod/techproject:validate', $context)) ? $tabvalidtitle.' <img src="'.$pixurllock.'" />' : $tabvalidtitle;
+$tabrequlabel = '<img src="'.$pixurlreq.'" height="14" /> '.$tabrequlabel;
+$tabspeclabel = '<img src="'.$pixurlspec.'" height="14" /> '.$tabspeclabel;
+$tabtasklabel = '<img src="'.$pixurltask.'" height="14" /> '.$tabtasklabel;
+$tabdelivlabel = '<img src="'.$pixurldeliv.'" height="14" /> '.$tabdelivlabel;
 $tabs = array();
-$tabs[0][] = new tabobject('description', "view.php?id={$cm->id}&amp;view=description", get_string('description', 'techproject'));
+$taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'description'));
+$tabs[0][] = new tabobject('description', $taburl, get_string('description', 'techproject'));
 
 if (has_capability('mod/techproject:viewpreproductionentities', $context, $USER->id)) {
     if (@$project->projectusesrequs) {
-        $tabs[0][] = new tabobject('requirements', "view.php?id={$cm->id}&amp;view=requirements", $tabrequlabel, $tabrequtitle);
+        $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'requirements'));
+        $tabs[0][] = new tabobject('requirements', $taburl, $tabrequlabel, $tabrequtitle);
     }
     if (@$project->projectusesspecs) {
-        $tabs[0][] = new tabobject('specifications', "view.php?id={$cm->id}&amp;view=specifications", $tabspeclabel, $tabspectitle);
+        $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'specifications'));
+        $tabs[0][] = new tabobject('specifications', $taburl, $tabspeclabel, $tabspectitle);
     }
 }
-$tabs[0][] = new tabobject('tasks', "view.php?id={$cm->id}&amp;view=tasks", $tabtasklabel, $tabtasktitle);
-$tabs[0][] = new tabobject('milestones', "view.php?id={$cm->id}&amp;view=milestones", $tabmilelabel, $tabmiletitle);
-if (@$project->projectusesdelivs){
-    $tabs[0][] = new tabobject('deliverables', "view.php?id={$cm->id}&amp;view=deliverables", $tabdelivlabel, $tabdelivtitle);
+$taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'tasks'));
+$tabs[0][] = new tabobject('tasks', $taburl, $tabtasklabel, $tabtasktitle);
+
+$taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'milestones'));
+$tabs[0][] = new tabobject('milestones', $taburl, $tabmilelabel, $tabmiletitle);
+
+if (@$project->projectusesdelivs) {
+    $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'deliverables'));
+    $tabs[0][] = new tabobject('deliverables', $taburl, $tabdelivlabel, $tabdelivtitle);
 }
-if (@$project->projectusesvalidations){
-    $tabs[0][] = new tabobject('validations', "view.php?id={$cm->id}&amp;view=validations", $tabvalidlabel, $tabvalidtitle);
+
+if (@$project->projectusesvalidations) {
+    $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'validations'));
+    $tabs[0][] = new tabobject('validations', $taburl, $tabvalidlabel, $tabvalidtitle);
 }
+
+$taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'view_summary'));
 $tabs[0][] = new tabobject('views', "view.php?id={$cm->id}&amp;view=view_summary", get_string('views', 'techproject'));
-if (preg_match("/view_/", $currentpage)){
+
+if (preg_match('/view_/', $currentpage)) {
     $tabs[1][] = new tabobject('view_summary', "view.php?id={$cm->id}&amp;view=view_summary", get_string('summary', 'techproject'));
     $tabs[1][] = new tabobject('view_byassignee', "view.php?id={$cm->id}&amp;view=view_byassignee", get_string('byassignee', 'techproject'));
     $tabs[1][] = new tabobject('view_bypriority', "view.php?id={$cm->id}&amp;view=view_bypriority", get_string('bypriority', 'techproject'));
@@ -108,89 +114,108 @@ if (preg_match("/view_/", $currentpage)){
     $tabs[1][] = new tabobject('view_todo', "view.php?id={$cm->id}&amp;view=view_todo", get_string('todo', 'techproject'));
     $tabs[1][] = new tabobject('view_gantt', "view.php?id={$cm->id}&amp;view=view_gantt", get_string('gantt', 'techproject'));
 }
-if (has_capability('mod/techproject:viewprojectcontrols', $context)){
-    $tabs[0][] = new tabobject('teacher', "view.php?id={$cm->id}&amp;view=teacher_assess", get_string('teacherstools', 'techproject'));
-    if (preg_match("/teacher_/", $currentpage)){
-        if ($project->grade && has_capability('mod/techproject:gradeproject', $context)){
-             $tabs[1][] = new tabobject('teacher_assess', "view.php?id={$cm->id}&amp;view=teacher_assess", get_string('assessments', 'techproject'));
-             if ($project->teacherusescriteria && has_capability('mod/techproject:managecriteria', $context)){
+if (has_capability('mod/techproject:viewprojectcontrols', $context)) {
+    $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'teacher_assess'));
+    $tabs[0][] = new tabobject('teacher', $taburl, get_string('teacherstools', 'techproject'));
+    if (preg_match("/teacher_/", $currentpage)) {
+        if ($project->grade && has_capability('mod/techproject:gradeproject', $context)) {
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'teacher_assess'));
+            $tabs[1][] = new tabobject('teacher_assess', "view.php?id={$cm->id}&amp;view=teacher_assess", get_string('assessments', 'techproject'));
+            if ($project->teacherusescriteria && has_capability('mod/techproject:managecriteria', $context)) {
                 $tabs[1][] = new tabobject('teacher_criteria', "view.php?id={$cm->id}&amp;view=teacher_criteria", get_string('criteria', 'techproject'));
             }
         }
-        if (has_capability('mod/techproject:manage', $context)){
-            $tabs[1][] = new tabobject('teacher_projectcopy', "view.php?id={$cm->id}&amp;view=teacher_projectcopy", get_string('projectcopy', 'techproject'));
+        if (has_capability('mod/techproject:manage', $context)) {
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'teacher_projectcopy'));
+            $tabs[1][] = new tabobject('teacher_projectcopy', $taburl, get_string('projectcopy', 'techproject'));
         }
         if ($project->enablecvs && has_capability('mod/techproject:manageremoterepository', $context)) {
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'teacher_cvs'));
             $tabs[1][] = new tabobject('teacher_cvs', "view.php?id={$cm->id}&amp;view=teacher_cvs", get_string('cvscontrol', 'techproject'));
         }
-        $tabs[1][] = new tabobject('teacher_load', "view.php?id={$cm->id}&amp;view=teacher_load", get_string('load', 'techproject'));
+        $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'teacher_load'));
+        $tabs[1][] = new tabobject('teacher_load', $taburl, get_string('load', 'techproject'));
     }
-    if (has_capability('mod/techproject:configure', $context)){
-        $tabs[0][] = new tabobject('domains', $CFG->wwwroot."/mod/techproject/view.php?view=domains&id={$id}", get_string('domains', 'techproject'));
-        if (preg_match("/domains_?/", $currentpage)){
-            if (!preg_match("/domains_heavyness|domains_complexity|domains_severity|domains_priority|domains_worktype|domains_taskstatus|domains_strength|domains_deliv_status/", $view)) $view = 'domains_complexity';
-            $tabs[1][] = new tabobject('domains_strength', "view.php?id={$id}&amp;view=domains_strength", get_string('strength', 'techproject'));
-            $tabs[1][] = new tabobject('domains_heavyness', "view.php?id={$id}&amp;view=domains_heavyness", get_string('heavyness', 'techproject'));
-            $tabs[1][] = new tabobject('domains_complexity', "view.php?id={$id}&amp;view=domains_complexity", get_string('complexity', 'techproject'));
-            $tabs[1][] = new tabobject('domains_severity', "view.php?id={$id}&amp;view=domains_severity", get_string('severity', 'techproject'));
-            $tabs[1][] = new tabobject('domains_priority', "view.php?id={$id}&amp;view=domains_priority", get_string('priority', 'techproject'));
-            $tabs[1][] = new tabobject('domains_worktype', "view.php?id={$id}&amp;view=domains_worktype", get_string('worktype', 'techproject'));
-            $tabs[1][] = new tabobject('domains_taskstatus', "view.php?id={$id}&amp;view=domains_taskstatus", get_string('taskstatus', 'techproject'));
-            $tabs[1][] = new tabobject('domains_deliv_status', "view.php?id={$id}&amp;view=domains_deliv_status", get_string('deliv_status', 'techproject'));
+    if (has_capability('mod/techproject:configure', $context)) {
+        $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains'));
+        $tabs[0][] = new tabobject('domains', $taburl, get_string('domains', 'techproject'));
+        if (preg_match("/domains_?/", $currentpage)) {
+            if (!preg_match("/domains_heavyness|domains_complexity|domains_severity|domains_priority|domains_worktype|domains_taskstatus|domains_strength|domains_deliv_status/", $view)) {
+                $view = 'domains_complexity';
+            }
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_strength'));
+            $tabs[1][] = new tabobject('domains_strength', $taburl, get_string('strength', 'techproject'));
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_heavyness'));
+            $tabs[1][] = new tabobject('domains_heavyness', $taburl, get_string('heavyness', 'techproject'));
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_complexity'));
+            $tabs[1][] = new tabobject('domains_complexity', $taburl, get_string('complexity', 'techproject'));
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_severity'));
+            $tabs[1][] = new tabobject('domains_severity', $taburl, get_string('severity', 'techproject'));
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_priority'));
+            $tabs[1][] = new tabobject('domains_priority', $taburl, get_string('priority', 'techproject'));
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_worktype'));
+            $tabs[1][] = new tabobject('domains_worktype', $taburl, get_string('worktype', 'techproject'));
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_taskstatus'));
+            $tabs[1][] = new tabobject('domains_taskstatus', $taburl, get_string('taskstatus', 'techproject'));
+            $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_deliv_status'));
+            $tabs[1][] = new tabobject('domains_deliv_status', $taburl, get_string('deliv_status', 'techproject'));
             $currentpage = $view;
         }
     }
 }
 
-if (preg_match("/^view_/", $currentpage)) {
+if (preg_match('/^view_/', $currentpage)) {
     $activated[] = 'views';
-} elseif (preg_match("/^teacher_/", $currentpage)) {
+} else if (preg_match('/^teacher_/', $currentpage)) {
     $activated[] = 'teacher';
-} elseif (preg_match("/^domains_/", $currentpage)) {
+} else if (preg_match('/^domains_/', $currentpage)) {
     $activated[] = 'domains';
 } else {
-    $activated = NULL;
+    $activated = null;
 }
-$pagebuffer .= print_tabs($tabs, $_SESSION['currentpage'], NULL, $activated, true);
+$pagebuffer .= print_tabs($tabs, $_SESSION['currentpage'], null, $activated, true);
 $pagebuffer .= '<br/>';
-/// Route to detailed screens
+
+// Route to detailed screens.
 
 if ($currentpage == 'description') {
     $pagebuffer .= techproject_print_assignement_info($project, true);
     include($CFG->dirroot.'/mod/techproject/description.php');
-} elseif ($currentpage == 'requirements') {
+} else if ($currentpage == 'requirements') {
     include($CFG->dirroot.'/mod/techproject/requirement.php');
-} elseif ($currentpage == 'specifications') {
+} else if ($currentpage == 'specifications') {
     include($CFG->dirroot.'/mod/techproject/specification.php');
-} elseif ($currentpage == 'tasks') {
+} else if ($currentpage == 'tasks') {
     include($CFG->dirroot.'/mod/techproject/task.php');
-} elseif ($currentpage == 'milestones') {
+} else if ($currentpage == 'milestones') {
     include($CFG->dirroot.'/mod/techproject/milestone.php');
-} elseif ($currentpage == 'deliverables') {
+} else if ($currentpage == 'deliverables') {
     include($CFG->dirroot.'/mod/techproject/deliverables.php');
-} elseif ($currentpage == 'validation') {
+} else if ($currentpage == 'validation') {
     include($CFG->dirroot.'/mod/techproject/validation.php');
-} elseif ($currentpage == 'validations') {
+} else if ($currentpage == 'validations') {
     include($CFG->dirroot.'/mod/techproject/validations.php');
-} elseif (preg_match("/view_/", $currentpage)) {
+} else if (preg_match('/view_/', $currentpage)) {
     if ($currentpage == 'view_summary') {
         include($CFG->dirroot.'/mod/techproject/summary.php');
-    } elseif ($currentpage == 'view_byassignee') {
+    } else if ($currentpage == 'view_byassignee') {
         include($CFG->dirroot.'/mod/techproject/byassignee.php');
-    } elseif ($currentpage == 'view_bypriority') {
+    } else if ($currentpage == 'view_bypriority') {
         include($CFG->dirroot.'/mod/techproject/bypriority.php');
-    } elseif ($currentpage == 'view_byworktype') {
+    } else if ($currentpage == 'view_byworktype') {
         include($CFG->dirroot.'/mod/techproject/byworktype.php');
-    } elseif ($currentpage == 'view_detail') {
+    } else if ($currentpage == 'view_detail') {
         include($CFG->dirroot.'/mod/techproject/detail.php');
-    } elseif ($currentpage == 'view_todo') {
+    } else if ($currentpage == 'view_todo') {
         include($CFG->dirroot.'/mod/techproject/todo.php');
-    } elseif ($currentpage == 'view_gantt') {
+    } else if ($currentpage == 'view_gantt') {
         include($CFG->dirroot.'/mod/techproject/gantt.php');
     }
-} elseif (preg_match("/teacher_/", $currentpage)) {
+} else if (preg_match('/teacher_/', $currentpage)) {
     // falldown if no grading enabled.
-    if (!$project->grade && ($currentpage == 'teacher_assess' || $currentpage == 'teacher_criteria')) $currentpage = 'teacher_projectcopy';
+    if (!$project->grade && ($currentpage == 'teacher_assess' || $currentpage == 'teacher_criteria')) {
+        $currentpage = 'teacher_projectcopy';
+    }
     if ($currentpage == 'teacher_assess') {
         include($CFG->dirroot.'/mod/techproject/assessments.php');
     }
@@ -206,7 +231,7 @@ if ($currentpage == 'description') {
     if ($currentpage == 'teacher_load') {
         include($CFG->dirroot.'/mod/techproject/imports.php');
     }
-} elseif (preg_match("/domains_/", $currentpage)) {
+} else if (preg_match('/domains_/', $currentpage)) {
     $action = optional_param('what', '', PARAM_RAW);
     $domain = str_replace('domains_', '', $currentpage);
     include($CFG->dirroot.'/mod/techproject/view_domain.php');

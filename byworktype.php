@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod-techproject
  * @category mod
@@ -27,20 +25,18 @@ defined('MOODLE_INTERNAL') || die();
  *
  * This screen show tasks plan grouped by worktype.
  */
+defined('MOODLE_INTERNAL') || die();
 
 echo $pagebuffer;
 
-$TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
-/** useless ?
-if (!groups_get_activity_groupmode($cm, $project->course)){
-    $groupusers = get_course_users($project->course);
-} else {
-    $groupusers = get_group_users($currentgroupid);
-}*/
+$timeunitsarr = array(get_string('unset', 'techproject'),
+                   get_string('hours', 'techproject'),
+                   get_string('halfdays', 'techproject'),
+                   get_string('days', 'techproject'));
 
 // Get tasks by worktype.
 
-$query = "
+$sql = "
    SELECT
       t.*
    FROM
@@ -57,7 +53,7 @@ $query = "
       qu.id ASC
 ";
 
-if ($tasks = $DB->get_records_sql($query)) {
+if ($tasks = $DB->get_records_sql($sql)) {
 
 echo '
 <script type="text/javascript">
@@ -76,19 +72,20 @@ foreach ($tasks as $aTask) {
     $sortedtasks[$aTask->worktype][] = $aTask;
 }
 
-foreach (array_keys($sortedtasks) as $aWorktype) {
-    $hidesub = "<a href=\"javascript:toggle('{$aWorktype}','sub{$aWorktype}');\"><img name=\"img{$aWorktype}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" style=\"background-color : #E0E0E0\" /></a>";
-    $theWorktype = techproject_get_option_by_key('worktype', $project->id, $aWorktype);
-    if ($aWorktype == '') {
+foreach (array_keys($sortedtasks) as $aworktype) {
+    $pixurl = $OUTPUT->pix_url({'/p/switch_minus', 'techproject');
+    $hidesub = "<a href=\"javascript:toggle('{$aworktype}','sub{$aworktype}');\"><img name=\"img{$aworktype}\" src=\"$pixurl\" alt=\"collapse\" style=\"background-color : #E0E0E0\" /></a>";
+    $theworktype = techproject_get_option_by_key('worktype', $project->id, $aworktype);
+    if ($aworktype == '') {
          $worktypeicon = '';
-         $theWorktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
+         $theworktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
     } else {
-         $worktypeicon = "<img src=\"".$OUTPUT->pix_url('/p/'.strtolower($theWorktype->code), 'techproject')."\" title=\"{$theWorktype->description}\" style=\"background-color : #F0F0F0\" />";
+         $worktypeicon = "<img src=\"".$OUTPUT->pix_url('/p/'.strtolower($theworktype->code), 'techproject')."\" title=\"{$theworktype->description}\" style=\"background-color : #F0F0F0\" />";
     }
-    echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theWorktype->label.'</span>', 'worktypesbox');
-    echo "<div id=\"sub{$aWorktype}\">";
-    foreach ($sortedtasks[$aWorktype] as $aTask) {
-        techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aWorktype]), 'SHORT_WITHOUT_TYPE');
+    echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theworktype->label.'</span>', 'worktypesbox');
+    echo "<div id=\"sub{$aworktype}\">";
+    foreach ($sortedtasks[$aworktype] as $aTask) {
+        techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aworktype]), 'SHORT_WITHOUT_TYPE');
     }
     echo '</div>';
 }

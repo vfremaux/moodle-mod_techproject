@@ -170,8 +170,8 @@ if ($data = $mform->get_data()) {
         $adependency->groupid = $currentgroupid;
         $adependency->slave = $data->fatherid;
         $adependency->master = $data->id;
-        $params = array('projectid' => $project->id, 'slave' => $data->fatherid, 'master' => $data->id));
-        if (!$DB->record_exists('techproject_task_dependency', $params) {
+        $params = array('projectid' => $project->id, 'slave' => $data->fatherid, 'master' => $data->id);
+        if (!$DB->record_exists('techproject_task_dependency', $params)) {
                $DB->insert_record('techproject_task_dependency', $adependency);
            }
     }
