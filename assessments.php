@@ -55,7 +55,7 @@ function make_grading_menu($project, $id, $selected = '', $return = false) {
 
 
 if (!has_capability('mod/techproject:gradeproject', $context)) {
-    print_error(get_string('notateacher','techproject'));
+    print_error(get_string('notateacher', 'techproject'));
     return;
 }
 
@@ -65,7 +65,7 @@ echo $OUTPUT->heading(get_string('assessment'));
 
 // Checks if assessments can occur.
 if (!groups_get_activity_groupmode($cm, $project->course)) {
-    $fields =  'u.id,'.get_all_user_name_fields(true, 'u').',email,'.user_picture::fields();
+    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',email,'.user_picture::fields();
     $groupstudents = get_users_by_capability($context, 'mod/techproject:canbeevaluated', $fields, 'u.lastname');
 } else {
     $groupmembers = groups_get_members($currentgroupid);
@@ -81,12 +81,12 @@ if (!isset($groupstudents) || count($groupstudents) == 0 || empty($groupstudents
     echo $OUTPUT->box(get_string('noonetoassess', 'techproject'), 'center', '70%');
     return;
 } else {
-   $studentlistarr = array();
-   foreach ($groupstudents as $astudent) {
-      $studentlistarr[] = $astudent->lastname . ' ' . $astudent->firstname . ' ' . $OUTPUT->user_picture($astudent);
-   }
-   echo $OUTPUT->box_start('center', '80%');
-   echo '<center><i>'.get_string('evaluatingforusers', 'techproject') .' : </i> '. implode(',', $studentlistarr) . '</center><br/>';
+    $studentlistarr = array();
+    foreach ($groupstudents as $astudent) {
+        $studentlistarr[] = $astudent->lastname.' '.$astudent->firstname.' '.$OUTPUT->user_picture($astudent);
+    }
+    echo $OUTPUT->box_start('center', '80%');
+    echo '<center><i>'.get_string('evaluatingforusers', 'techproject').' : </i> '.implode(',', $studentlistarr).'</center><br/>';
 }
 
 if ($work == 'regrade') {
@@ -120,16 +120,16 @@ if ($work == 'dosave') {
     // Getting candidate keys for grading.
     $parmkeys = array_keys($_POST);
 
-    function filterTeachergradeKeys($var) {
+    function filter_teachergrade_keys($var) {
         return preg_match("/teachergrade_/", $var);
     }
 
-    function filterFreegradeKeys($var) {
+    function filter_freegrade_keys($var) {
         return preg_match("/free_/", $var);
     }
 
-    $teachergrades = array_filter($parmkeys, 'filterTeachergradeKeys');
-    $freegrades = array_filter($parmkeys, 'filterFreegradeKeys');
+    $teachergrades = array_filter($parmkeys, 'filter_teachergrade_keys');
+    $freegrades = array_filter($parmkeys, 'filter_freegrade_keys');
     foreach ($groupstudents as $astudent) {
         // Dispatch autograde for all students.
         if ($project->autogradingenabled) {
@@ -164,8 +164,8 @@ if ($work == 'dosave') {
         }
 
         // Dispatch teachergrades for all students.
-        foreach ($teachergrades as $aGradeKey) {
-            preg_match('/teachergrade_([^_]*?)_([^_]*?)(?:_(.*?))?$/', $aGradeKey, $matches);
+        foreach ($teachergrades as $agradekey) {
+            preg_match('/teachergrade_([^_]*?)_([^_]*?)(?:_(.*?))?$/', $agradekey, $matches);
             unset($assessment);
             $assessment->id = 0;
             $assessment->projectid = $project->id;
@@ -174,12 +174,12 @@ if ($work == 'dosave') {
             $assessment->itemid = $matches[2];
             $assessment->itemclass = $matches[1];
 
-            $criterionClause = '';
-            if (isset($matches[3])){
+            $criterionclause = '';
+            if (isset($matches[3])) {
                  $assessment->criterion = $matches[3];
-                 $criterionClause = "AND criterion='{$assessment->criterion}'";
+                 $criterionclause = "AND criterion='{$assessment->criterion}'";
             }
-            $grade = optional_param($aGradeKey, '', PARAM_INT);
+            $grade = optional_param($agradekey, '', PARAM_INT);
             if (!empty($grade)) {
                 $assessment->grade = $grade;
             }
@@ -187,11 +187,11 @@ if ($work == 'dosave') {
                 projectid = ? AND
                 userid = ? AND
                 itemid = ? AND
-                itemclass = ? 
-                {$criterionClause}
+                itemclass = ?
+                {$criterionclause}
             ";
             $sqlparams = array($project->id, $astudent->id, $assessment->itemid, $assessment->itemclass);
-            if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, $sqlparams)){
+            if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, $sqlparams)) {
                 $assessment->id = $oldrecord->id;
                 $DB->update_record('techproject_assessment', $assessment);
             } else {
@@ -199,8 +199,8 @@ if ($work == 'dosave') {
             }
         }
         // Dispatch freegrades.
-        foreach ($freegrades as $aGradeKey) {
-            preg_match('/free_([^_]*?)$/', $aGradeKey, $matches);
+        foreach ($freegrades as $agradekey) {
+            preg_match('/free_([^_]*?)$/', $agradekey, $matches);
             unset($assessment);
             $assessment->id = 0;
             $assessment->projectid = $project->id;
@@ -209,7 +209,7 @@ if ($work == 'dosave') {
             $assessment->itemclass = 'free';
             $assessment->itemid = 0;
             $assessment->criterion = $matches[1];
-            $grade = optional_param($aGradeKey, '', PARAM_INT);
+            $grade = optional_param($agradekey, '', PARAM_INT);
             if (!empty($grade)) {
                 $assessment->grade = $grade;
             }
@@ -239,7 +239,7 @@ if ($work == 'dosave') {
     }
 }
 if ($project->teacherusescriteria) {
-    $freecriteria =  $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 1", array($project->id));
+    $freecriteria = $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 1", array($project->id));
     $criteria = $DB->get_records_select('techproject_criterion', "projectid = ? AND isfree = 0", array($project->id));
     if (!$criteria && !$freecriteria) {
         echo $OUTPUT->box(format_text(get_string('cannotevaluatenocriteria', 'techproject'), FORMAT_HTML), 'center');
@@ -265,74 +265,74 @@ function cancel(){
 <input type="hidden" name="work" value=""/>
 <table width="80%">
 <?php
-    $sqlparams = array($project->id, $currentgroupid);
-    $milestones = $DB->get_records_select('techproject_milestone', "projectid = ? AND groupid = ?", $sqlparams);
-    $select = "
-        projectid = ? AND
-        groupid = ?
-        GROUP BY itemid, criterion, itemclass
-    ";
-    $grades = $DB->get_records_select('techproject_assessment', $select, $sqlparams);
-    $gradesByClass = array();
+$sqlparams = array($project->id, $currentgroupid);
+$milestones = $DB->get_records_select('techproject_milestone', "projectid = ? AND groupid = ?", $sqlparams);
+$select = "
+    projectid = ? AND
+    groupid = ?
+    GROUP BY itemid, criterion, itemclass
+";
+$grades = $DB->get_records_select('techproject_assessment', $select, $sqlparams);
+$gradesbyclass = array();
 
-    // If there are any grades yet, compile them by categories.
-    if ($grades) {
-        $grades = array_values($grades);
-        for ($i = 0 ; $i < count($grades) ; $i++ ) {
-            $gradesByClass[$grades[$i]->itemclass][$grades[$i]->itemid][$grades[$i]->criterion] = $grades[$i]->grade;
-        }
+// If there are any grades yet, compile them by categories.
+if ($grades) {
+    $grades = array_values($grades);
+    for ($i = 0; $i < count($grades); $i++) {
+        $gradesbyclass[$grades[$i]->itemclass][$grades[$i]->itemid][$grades[$i]->criterion] = $grades[$i]->grade;
     }
-    if ($milestones && (!$project->teacherusescriteria || $criteria)) {
-        $cangrade = true;
-        echo '<tr><td colspan="2" align="center">';
-        echo $OUTPUT->heading(get_string('itemevaluators', 'techproject'));
+}
+if ($milestones && (!$project->teacherusescriteria || $criteria)) {
+    $cangrade = true;
+    echo '<tr><td colspan="2" align="center">';
+    echo $OUTPUT->heading(get_string('itemevaluators', 'techproject'));
+    echo '</td></tr>';
+    foreach ($milestones as $amilestone) {
+        echo '<tr valign="top"><td align="left"><b>';
+        echo get_string('evaluatingfor','techproject')." M.{$amilestone->ordering} {$amilestone->abstract}</b>";
+        echo "</td></tr><tr><td>";
+        if (!$project->teacherusescriteria) {
+            $teachergrade = @$gradesbyclass['milestone'][$amilestone->id][0];
+            echo get_string('teachergrade','techproject').' ';
+            make_grading_menu($project, "teachergrade_milestone_{$amilestone->id}", $teachergrade);
+        } else {
+            foreach ($criteria as $acriterion) {
+                $criteriongrade = @$gradesbyclass['milestone'][$amilestone->id][$acriterion->id];
+                echo $acriterion->label.' : ';
+                make_grading_menu($project, "teachergrade_milestone_{$amilestone->id}_{$acriterion->id}", $criteriongrade);
+                echo ' * ' . $acriterion->weight . '<br/>';
+            }
+        }
         echo '</td></tr>';
-        foreach ($milestones as $amilestone) {
-            echo '<tr valign="top"><td align="left"><b>';
-            echo get_string('evaluatingfor','techproject')." M.{$amilestone->ordering} {$amilestone->abstract}</b>";
-            echo "</td></tr><tr><td>";
-            if (!$project->teacherusescriteria) {
-                $teachergrade = @$gradesByClass['milestone'][$amilestone->id][0];
-                echo get_string('teachergrade','techproject').' ';
-                make_grading_menu($project, "teachergrade_milestone_{$amilestone->id}", $teachergrade);
-            } else {
-                foreach ($criteria as $acriterion) {
-                    $criteriongrade = @$gradesByClass['milestone'][$amilestone->id][$acriterion->id];
-                    echo $acriterion->label.' : ';
-                    make_grading_menu($project, "teachergrade_milestone_{$amilestone->id}_{$acriterion->id}", $criteriongrade);
-                    echo ' * ' . $acriterion->weight . '<br/>';
-                }
-            }
-            echo '</td></tr>';
-        }
     }
+}
 
-    // Additional free criteria for grading (including autograde).
-    if ($project->autogradingenabled || $project->teacherusescriteria) {
-        echo '<tr><td colspan="2">';
-        echo $OUTPUT->heading(get_string('globalevaluators', 'techproject'));
-        echo "</td></tr>";
-        $cangrade = true;
-    }
-    if ($project->autogradingenabled) {
-        $autograde = @$gradesByClass['auto'][0][0];
-        echo '<tr><td align="left">'.get_string('autograde','techproject').'</td><td align="left">';
-        echo make_grading_menu($project, 'autograde', $autograde, true);
-        echo " <a href=\"?work=regrade&amp;id={$cm->id}\">".get_string('calculate','techproject').'</a></td></tr>';
-    }
-    if ($project->teacherusescriteria) {
-        if (@$freecriteria) {
-            foreach($freecriteria as $aFreeCriterion){
-                $freegrade = @$gradesByClass['free'][0][$aFreeCriterion->id];
-                echo "<tr><td align=\"left\">{$aFreeCriterion->label}</td><td align=\"left\">";
-                make_grading_menu($project, "free_{$aFreeCriterion->id}", $freegrade);
-                echo " x {$aFreeCriterion->weight}</td></tr>";
-            }
+// Additional free criteria for grading (including autograde).
+if ($project->autogradingenabled || $project->teacherusescriteria) {
+    echo '<tr><td colspan="2">';
+    echo $OUTPUT->heading(get_string('globalevaluators', 'techproject'));
+    echo "</td></tr>";
+    $cangrade = true;
+}
+if ($project->autogradingenabled) {
+    $autograde = @$gradesbyclass['auto'][0][0];
+    echo '<tr><td align="left">'.get_string('autograde', 'techproject').'</td><td align="left">';
+    echo make_grading_menu($project, 'autograde', $autograde, true);
+    echo " <a href=\"?work=regrade&amp;id={$cm->id}\">".get_string('calculate','techproject').'</a></td></tr>';
+}
+if ($project->teacherusescriteria) {
+    if (@$freecriteria) {
+        foreach ($freecriteria as $aFreeCriterion) {
+            $freegrade = @$gradesbyclass['free'][0][$aFreeCriterion->id];
+            echo "<tr><td align=\"left\">{$aFreeCriterion->label}</td><td align=\"left\">";
+            make_grading_menu($project, "free_{$aFreeCriterion->id}", $freegrade);
+            echo " x {$aFreeCriterion->weight}</td></tr>";
         }
     }
-    if (!$cangrade) {
-        echo $OUTPUT->box(get_string('cannotevaluate', 'techproject'), 'center', '70%');
-    }
+}
+if (!$cangrade) {
+    echo $OUTPUT->box(get_string('cannotevaluate', 'techproject'), 'center', '70%');
+}
 ?>
 </table>
 <br/>

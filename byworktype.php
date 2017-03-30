@@ -73,7 +73,7 @@ foreach ($tasks as $aTask) {
 }
 
 foreach (array_keys($sortedtasks) as $aworktype) {
-    $pixurl = $OUTPUT->pix_url({'/p/switch_minus', 'techproject');
+    $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
     $hidesub = "<a href=\"javascript:toggle('{$aworktype}','sub{$aworktype}');\"><img name=\"img{$aworktype}\" src=\"$pixurl\" alt=\"collapse\" style=\"background-color : #E0E0E0\" /></a>";
     $theworktype = techproject_get_option_by_key('worktype', $project->id, $aworktype);
     if ($aworktype == '') {
