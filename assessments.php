@@ -322,11 +322,11 @@ if ($project->autogradingenabled) {
 }
 if ($project->teacherusescriteria) {
     if (@$freecriteria) {
-        foreach ($freecriteria as $aFreeCriterion) {
-            $freegrade = @$gradesbyclass['free'][0][$aFreeCriterion->id];
-            echo "<tr><td align=\"left\">{$aFreeCriterion->label}</td><td align=\"left\">";
-            make_grading_menu($project, "free_{$aFreeCriterion->id}", $freegrade);
-            echo " x {$aFreeCriterion->weight}</td></tr>";
+        foreach ($freecriteria as $afreecriterion) {
+            $freegrade = @$gradesbyclass['free'][0][$afreecriterion->id];
+            echo "<tr><td align=\"left\">{$afreecriterion->label}</td><td align=\"left\">";
+            make_grading_menu($project, "free_{$afreecriterion->id}", $freegrade);
+            echo " x {$afreecriterion->weight}</td></tr>";
         }
     }
 }
@@ -335,6 +335,7 @@ if (!$cangrade) {
 }
 ?>
 </table>
+
 <br/>
 <br/>
 <input type="button" name="go_btn" value="<?php print_string('updategrades', 'techproject') ?>" onclick="senddata('save')" />

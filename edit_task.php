@@ -78,8 +78,12 @@ if ($data = $mform->get_data()) {
     if ($data->taskid) {
         // Id is course module id.
         $data->id = $data->taskid;
-        $oldAssigneeId = $DB->get_field('techproject_task', 'assignee', array('id' => $data->id));
+        $oldassigneeid = $DB->get_field('techproject_task', 'assignee', array('id' => $data->id));
         $DB->update_record('techproject_task', $data);
+
+        // Get back complete task record for event snapshots.
+        $data = $DB->get_record('techproject_task', array('id' => $data->id));
+
         $event = \mod_techproject\event\task_updated::create_from_task($project, $context, $data, $currentgroupid);
         $event->trigger();
 
@@ -133,15 +137,15 @@ if ($data = $mform->get_data()) {
             }
 
             // If being reassigned, log this special event.
-            if (!empty($oldAssigneeId) && ($data->assignee != $oldAssigneeId)) {
+            if (!empty($oldassigneeid) && ($data->assignee != $oldassigneeid)) {
                 $event = \mod_techproject\event\task_reassigned::create_from_task($project, $context, $data, $currentgroupid, $data->assignee);
                 $event->trigger();
             }
 
             // If notifications allowed and previous assignee exists (and is not the new assignee) notify previous assignee.
-            if ($project->allownotifications && !empty($oldAssigneeId) &&
-                    ($data->assignee != $oldAssigneeId)) {
-                techproject_notify_task_unassign($project, $data, $oldAssigneeId, $currentgroupid);
+            if ($project->allownotifications && !empty($oldassigneeid) &&
+                    ($data->assignee != $oldassigneeid)) {
+                techproject_notify_task_unassign($project, $data, $oldassigneeid, $currentgroupid);
             }
         }
     } else {

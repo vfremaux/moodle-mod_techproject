@@ -68,8 +68,8 @@ echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
 echo '<input type="hidden" name="work" value="groupcmd" />';
 echo '<input type="hidden" name="view" value="tasks" />';
 
-foreach ($tasks as $aTask) {
-    $sortedtasks[$aTask->worktype][] = $aTask;
+foreach ($tasks as $atask) {
+    $sortedtasks[$atask->worktype][] = $atask;
 }
 
 foreach (array_keys($sortedtasks) as $aworktype) {
@@ -84,8 +84,8 @@ foreach (array_keys($sortedtasks) as $aworktype) {
     }
     echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theworktype->label.'</span>', 'worktypesbox');
     echo "<div id=\"sub{$aworktype}\">";
-    foreach ($sortedtasks[$aworktype] as $aTask) {
-        techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aworktype]), 'SHORT_WITHOUT_TYPE');
+    foreach ($sortedtasks[$aworktype] as $atask) {
+        techproject_print_single_task($atask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aworktype]), 'SHORT_WITHOUT_TYPE');
     }
     echo '</div>';
 }

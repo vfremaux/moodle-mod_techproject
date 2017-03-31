@@ -32,7 +32,7 @@ class Description_Form extends moodleform {
 
     protected $project;
     protected $mode;
-    protected $editoroptions;
+    public $editoroptions;
 
     public function __construct($action, &$project, $mode) {
         $this->project = $project;
