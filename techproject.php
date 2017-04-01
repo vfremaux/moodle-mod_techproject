@@ -57,17 +57,43 @@ $pixurldeliv = $OUTPUT->pix_url('p/deliv', 'techproject');
 $pixurlreq = $OUTPUT->pix_url('p/req', 'techproject');
 
 $tabrequtitle = get_string('requirements', 'techproject');
-$tabrequlabel = (!has_capability('mod/techproject:changerequs', $context)) ? $tabrequtitle.' <img src="'.$pixurllock.'" />' :$tabrequtitle;
+
+if (!has_capability('mod/techproject:changerequs', $context)) {
+    $tabrequlabel = $tabrequtitle.' <img src="'.$pixurllock.'" />';
+} else {
+    $tabrequlabel = $tabrequtitle;
+}
+
 $tabspectitle = get_string('specifications', 'techproject');
-$tabspeclabel = (!has_capability('mod/techproject:changespecs', $context)) ? '<img src="'.$pixurlspec.'" /> '.$tabspectitle.' <img src="'.$pixurllock.'" />':$tabspectitle;
+if (!has_capability('mod/techproject:changespecs', $context)) {
+    $tabspeclabel = '<img src="'.$pixurlspec.'" /> '.$tabspectitle.' <img src="'.$pixurllock.'" />';
+} else {
+    $tabspeclabel = $tabspectitle;
+}
 $tabtasktitle = get_string('tasks', 'techproject');
-$tabtasklabel = (!has_capability('mod/techproject:changetasks', $context)) ? '<img src="'.$pixurl.'" /> '.$tabtasktitle.' <img src="'.$pixurllock.'" />' : $tabtasktitle;
+if (!has_capability('mod/techproject:changetasks', $context)) {
+    $tabtasklabel = '<img src="'.$pixurl.'" /> '.$tabtasktitle.' <img src="'.$pixurllock.'" />';
+} else {
+    $tabtasklabel = $tabtasktitle;
+}
 $tabmiletitle = get_string('milestones', 'techproject');
-$tabmilelabel = (!has_capability('mod/techproject:changemiles', $context)) ? $tabmiletitle.' <img src="'.$pixurllock.'" />' : $tabmiletitle;
+if (!has_capability('mod/techproject:changemiles', $context)) {
+    $tabmilelabel = $tabmiletitle.' <img src="'.$pixurllock.'" />';
+} else {
+    $tabmilelabel = $tabmiletitle;
+}
 $tabdelivtitle = get_string('deliverables', 'techproject');
-$tabdelivlabel = (!has_capability('mod/techproject:changedelivs', $context)) ? $tabdelivtitle.' <img src="'.$pixurllock.'" />' : $tabdelivtitle;
+if (!has_capability('mod/techproject:changedelivs', $context)) {
+    $tabdelivlabel = $tabdelivtitle.' <img src="'.$pixurllock.'" />';
+} else {
+    $tabdelivlabel = $tabdelivtitle;
+}
 $tabvalidtitle = get_string('validations', 'techproject');
-$tabvalidlabel = (!has_capability('mod/techproject:validate', $context)) ? $tabvalidtitle.' <img src="'.$pixurllock.'" />' : $tabvalidtitle;
+if (!has_capability('mod/techproject:validate', $context)) {
+    $tabvalidlabel = $tabvalidtitle.' <img src="'.$pixurllock.'" />';
+} else {
+    $tabvalidlabel = $tabvalidtitle;
+}
 $tabrequlabel = '<img src="'.$pixurlreq.'" height="14" /> '.$tabrequlabel;
 $tabspeclabel = '<img src="'.$pixurlspec.'" height="14" /> '.$tabspeclabel;
 $tabtasklabel = '<img src="'.$pixurltask.'" height="14" /> '.$tabtasklabel;
@@ -140,7 +166,9 @@ if (has_capability('mod/techproject:viewprojectcontrols', $context)) {
         $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains'));
         $tabs[0][] = new tabobject('domains', $taburl, get_string('domains', 'techproject'));
         if (preg_match("/domains_?/", $currentpage)) {
-            if (!preg_match("/domains_heavyness|domains_complexity|domains_severity|domains_priority|domains_worktype|domains_taskstatus|domains_strength|domains_deliv_status/", $view)) {
+            $pattern = "/domains_heavyness|domains_complexity|domains_severity|domains_priority|";
+            $pattern .= "domains_worktype|domains_taskstatus|domains_strength|domains_deliv_status/";
+            if (!preg_match($pattern, $view)) {
                 $view = 'domains_complexity';
             }
             $taburl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => 'domains_strength'));
