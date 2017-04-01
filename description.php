@@ -32,16 +32,16 @@ require_once('forms/form_description.class.php');
 $mform = new Description_Form($url, $project, $work);
 
 if ($work == 'doexport') {
-        $heading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
-        $projects[$heading->projectid] = $heading;
-        include_once "xmllib.php";
-        $xml = recordstoxml($projects, 'project', '', true, null);
-        $escaped = str_replace('<', '&lt;', $xml);
-        $escaped = str_replace('>', '&gt;', $escaped);
-        echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
-        echo $OUTPUT->box("<pre>$escaped</pre>");
-        echo $OUTPUT->continue_button("view.php?view=description&amp;id=$cm->id");
-        return;
+    $heading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
+    $projects[$heading->projectid] = $heading;
+    include_once($CFG->dirroot.'/mod/techproject/xmllib.php');
+    $xml = recordstoxml($projects, 'project', '', true, null);
+    $escaped = str_replace('<', '&lt;', $xml);
+    $escaped = str_replace('>', '&gt;', $escaped);
+    echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
+    echo $OUTPUT->box("<pre>$escaped</pre>");
+    echo $OUTPUT->continue_button(new moodle_url('/mod/techproject/view.php', array('view' => 'description', 'id' => $cm->id)));
+    return;
 }
 
 // Header editing form ********************************************************.
@@ -113,14 +113,14 @@ if ($work == 'edit') {
         $linkurl = new moodle_url('/mod/techproject/view.php', array('work' => 'edit', 'id' => $cm->id));
         echo '<br/><a href="'.$linkurl.'" >'.get_string('editheading', 'techproject').'</a>';
         $linkurl = new moodle_url('/mod/techproject/view.php', array('work' => 'doexport', 'id' => $cm->id));
-        echo ' - <a href="'.$linkurl.'" >'.get_string('exportheadingtoXML','techproject').'</a>';
+        echo ' - <a href="'.$linkurl.'" >'.get_string('exportheadingtoxml', 'techproject').'</a>';
     }
     $linkurl = new moodle_url('/mod/techproject/xmlview.php', array('id' => $cm->id));
     echo '<br/><a href="'.$linkurl.'" target="_blank">'.get_string('gettheprojectfulldocument', 'techproject').'</a>';
     if (!empty($project->accesskey)) {
         $encodedkey = urlencode($project->accesskey);
         $docurl = new moodle_url('/mod/techproject/xmlview.php', array('accesskey' => $encodedkey, 'id' => $cm->id));
-        echo '<br/>'.get_string('sharethisdocument','techproject', $docurl);
+        echo '<br/>'.get_string('sharethisdocument', 'techproject', $docurl);
     }
     echo '</center>';
 }

@@ -43,13 +43,14 @@ if ($work == 'update') {
     } else {
         $DB->insert_record('techproject_criterion', $criterion);
     }
-} elseif ($work == 'doconfirmdelete') {
+} else if ($work == 'doconfirmdelete') {
     $criterion = new StdClass;
     $criterion->id = required_param('item', PARAM_INT);
     $criterion->isfree = optional_param('isfree', 0, PARAM_INT);
     if ($DB->get_record('techproject_criterion', array('id' => $criterion->id))) {
         $DB->delete_records('techproject_criterion', array('id' => $criterion->id));
-        $DB->delete_records('techproject_assessment', array('projectid' => $project->id, 'criterion' => $criterion->id));
+        $params = array('projectid' => $project->id, 'criterion' => $criterion->id);
+        $DB->delete_records('techproject_assessment', $params);
     }
 }
 if ($work == 'dodelete') {
@@ -82,10 +83,10 @@ function cancel() {
 </center>
 <?php
 
-// Criteria update form ***************************************************
+// Criteria update form ***************************************************.
 
 } else {
-    $freeCriteria = $DB->get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 1");
+    $freecriteria = $DB->get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 1");
     $criteria = $DB->get_records_select('techproject_criterion', "projectid = {$project->id} AND isfree = 0");
 ?>
 <center>
@@ -121,59 +122,31 @@ function cancel() {
                 $table->head = array();
                 $table->width = "100%";
                 $table->align = array('left', 'left');
-                if ($freeCriteria) {
-                    foreach ($freeCriteria as $aCriterion) {
-                        $links = "<a href=\"view.php?id={$cm->id}&amp;work=dodelete&amp;isfree=1&amp;item={$aCriterion->id}\"><img src=\"{$CFG->pixpath}/t/delete.gif\" title=\"".get_string('deletecriteria', 'techproject')."\" border=\"0\" /></a>";
-                        $links .= "<a href=\"javascript:changefree('{$aCriterion->id}','{$aCriterion->criterion}','{$aCriterion->label}','{$aCriterion->weight}')\"><img src=\"{$CFG->pixpath}/t/edit.gif\" title=\"".get_string('editcriteria', 'techproject')."\" border=\"0\" /></a>";
-                        $table->data[] = array("<b>{$aCriterion->criterion}</b> {$aCriterion->label} ( x {$aCriterion->weight})", $links );
+                if ($freecriteria) {
+                    foreach ($freecriteria as $acriterion) {
+                        $params = array('id' => $cm->id, 'work' => 'dodelete', 'isfree' => 1, 'item' => $acriterion->id);
+                        $linkurl = new moodle_url('/mod/techproject/view.php', $params);
+                        $pixurl = $OUTPUT->pix_url('/t/delete');
+                        $pix = '<img src="'.$pixurl.'" title="'.get_string('deletecriteria', 'techproject').'" />';
+                        $links = '<a href="'.$linkurl.'">'.$pix.'</a>';
+                        $jshandler = 'javascript:changefree(\''.$acriterion->id.'\', \''.$acriterion->criterion.'\', \''.$acriterion->label.'\', \''.$acriterion->weight.'\')';
+                        $pixurl = $OUTPUT->pix_url('/t/edit');
+                        $pix = '<img src="'.$pixurl.'" title="'.get_string('editcriteria', 'techproject').'" />';
+                        $links .= '<a href="'.$jshandler.'">'.$pix.'</a>';
+                        $table->data[] = array('<b>'.$acriterion->criterion.'</b> '.$acriterion->label.' ( x '.$acriterion->weight.')', $links);
                     }
                 }
                 echo html_writer::table($table);
                 unset($table);
+                echo $renderer->criteriaheader();
                 ?>
-                <table>
-                    <tr>
-                        <td align="right">
-                            <?php print_string('criterion', 'techproject') ?>&nbsp;
-                        </td>
-                        <td> 
-                            <input type="text" name="criterion" value="" /> 
-                            <?php $OUTPUT->help_icon('criterion', 'techproject') ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="right">
-                            <?php print_string('label', 'techproject') ?>&nbsp;
-                        </td>
-                        <td> 
-                            <input type="text" name="label" value="" /> 
-                            <?php $OUTPUT->help_icon('label', 'techproject') ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="right">
-                            <?php print_string('weight', 'techproject') ?>&nbsp;
-                        </td>
-                        <td> 
-                            <input type="text" name="weight" value="" /> 
-                            <?php $OUTPUT->help_icon('weight', 'techproject') ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        </td>
-                        <td align="right">
-                            <input type="button" name="go_btn" value="<?php print_string('save', 'techproject') ?>" onclick="senddatafree('save')" />
-                        </td>
-                    </tr>
-                </table>
                 <input type="hidden" name="itemid" value="0" />
                 <input type="hidden" name="isfree" value="1" />
             </form>
         </td>
         <td valign="top">
-            <?php 
-            echo $OUTPUT->heading(get_string('itemcriteriaset', 'techproject') . ' ' . $OUTPUT->help_icon('itemcriteriaset', 'techproject', false)) 
+            <?php
+            echo $OUTPUT->heading(get_string('itemcriteriaset', 'techproject').' '.$OUTPUT->help_icon('itemcriteriaset', 'techproject', false))
             ?>
             <script type="text/javascript">
             //<![CDATA[
@@ -201,11 +174,17 @@ function cancel() {
                 $table->head = array();
                 $table->width = "100%";
                 $table->align = array('left', 'left');
-                if($criteria){
-                    foreach($criteria as $aCriterion){
-                        $links = "<a href=\"view.php?id={$cm->id}&amp;work=dodelete&amp;isfree=0&amp;item={$aCriterion->id}\"><img src=\"{$CFG->pixpath}/t/delete.gif\" border=\"0\" /></a>";
-                        $links .= "<a href=\"javascript:change('{$aCriterion->id}','{$aCriterion->criterion}','{$aCriterion->label}','{$aCriterion->weight}')\"><img src=\"{$CFG->pixpath}/t/edit.gif\" border=\"0\" /></a>";
-                        $table->data[] = array("<b>{$aCriterion->criterion}</b> {$aCriterion->label} ( x {$aCriterion->weight})", $links);
+                if ($criteria) {
+                    foreach ($criteria as $acriterion) {
+                        $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'dodelete', 'isfree' => 0, 'item' => $acriterion->id));
+                        $pixurl = $OUTPUT->pix_url('/t/delete');
+                        $pix = '<img src="'.$pixurl.'" />';
+                        $links = '<a href="'.$linkurl.'">'.$pix.'</a>';
+                        $jshandler = 'javascript:change(\''.$acriterion->id'\',\''.$acriterion->criterion.'\',\''.$acriterion->label.'\',\''.$acriterion->weight.'\')';
+                        $pixurl = $OUTPUT->pix_url('/t/edit');
+                        $pix = '<img src="'.$pixurl.'" />';
+                        $links .= '<a href="'.$jshandler.'">'.$pix.'</a>';
+                        $table->data[] = array('<b>'.$acriterion->criterion.'</b> '.$acriterion->label.' ( x '.$acriterion->weight.')', $links);
                     }
                 }
                 echo html_writer::table($table);

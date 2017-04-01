@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
@@ -25,6 +23,7 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 class mod_techproject_renderer extends plugin_renderer_base {
 
@@ -39,7 +38,7 @@ class mod_techproject_renderer extends plugin_renderer_base {
         $str .= '<div class="header">'.$title.'</div>';
         $str .= '<div class="content">';
         foreach ($content as $elm) {
-        $str .= '<li style="list-style:none"> '.$elm;
+            $str .= '<li style="list-style:none"> '.$elm;
         }
         $str .= '</div>';
         $str .= '<div class="footer">';
@@ -59,24 +58,75 @@ class mod_techproject_renderer extends plugin_renderer_base {
      *
      */
     function bar_graph_over($value, $over, $width = 50, $height = 4, $maxover = 60) {
-        global $CFG, $OUTPUT;
+        global $CFG;
 
         if ($value == -1) {
-            return '<img class="techproject-bargraph" src="'.$OUTPUT->pix_url('p/graypixel', 'techproject').'" title="'.get_string('nc','techproject')."\" width=\"{$width}\" \" />";
+            $pixurl = $this->output->pix_url('p/graypixel', 'techproject');
+            $title = get_string('nc', 'techproject');
+            return '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$title.'" width="'.$width.'" />';
         }
         $done = floor($width * $value / 100);
         $todo = floor($width * (1 - $value / 100));
-        $bargraph = '<img class="techproject-bargraph" src="'.$OUTPUT->pix_url('p/greenpixel', 'techproject')."\" title=\"{$value}%\" width=\"{$done}\" />";
-        $bargraph .= '<img class="techproject-bargraph" src="'.$OUTPUT->pix_url('p/bluepixel', 'techproject')."\" title=\"{$value}%\" width=\"{$todo}\" />";
+        $pixurl = $this->output->pix_url('p/greenpixel', 'techproject');
+        $bargraph = '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$value.'%" width="'.$done.'" />';
+        $pixurl = $this-output->pix_url('p/bluepixel', 'techproject');
+        $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$value.'%" width="'.$todo.'" />';
         if ($over) {
-            $displayOver = (round($over/$width*100))."%";
+            $displayover = (round($over / $width * 100)).'%';
             if ($over < $maxover) {
-                $bargraph .= '<img class="techproject-bargraph" src="'.$OUTPUT->pix_url('p/redpixel', 'techproject')."\" title=\"".get_string('overdone','techproject').':'.$displayOver."\" width=\"{$over}\" />";
+                $pixurl = $this->output->pix_url('p/redpixel', 'techproject');
+                $title = get_string('overdone', 'techproject').': '.$displayover;
+                $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$title.'" width="'.$over.'" />';
             } else {
-                $bargraph .= '<img class="techproject-bargraph" src="'.$OUTPUT->pix_url('p/maxover', 'techproject')."\" title=\"".get_string('overoverdone','techproject').':'.$displayOver."\" width=\"{$width}\" />";
+                $pixurl = $this->output->pix_url('p/maxover', 'techproject');
+                $title = get_string('overoverdone', 'techproject').': '.$displayover;
+                $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$title.'" width="'.$width.'" />';
             }
         }
         return $bargraph;
     }
 
+    public function criteria_header() {
+
+        $str = '';
+
+        $str .= '<table>';
+        $str .= '<tr>';
+        $str .= '<td align="right">';
+        $str .= get_string('criterion', 'techproject').'&nbsp;';
+        $str .= '</td>';
+        $str .= '<td>';
+        $str .= '<input type="text" name="criterion" value="" />';
+        $str .= $this->output->help_icon('criterion', 'techproject');
+        $str .= '</td>';
+        $str .= '</tr>';
+        $str .= '<tr>';
+        $str .= '<td align="right">';
+        $str .= get_string('label', 'techproject').'&nbsp;';
+        $str .= '</td>';
+        $str .= '<td>';
+        $str .= '<input type="text" name="label" value="" />';
+        $str .= $this->output->help_icon('label', 'techproject');
+        $str .= '</td>';
+        $str .= '</tr>';
+        $str .= '<tr>';
+        $str .= '<td align="right">';
+        $str .= get_string('weight', 'techproject').'&nbsp;';
+        $str .= '</td>';
+        $str .= '<td>';
+        $str .= '<input type="text" name="weight" value="" />';
+        $str .= $this->output->help_icon('weight', 'techproject');
+        $str .= '</td>';
+        $str .= '</tr>';
+        $str .= '<tr>';
+        $str .= '<td>';
+        $str .= '</td>';
+        $str .= '<td align="right">';
+        $str .= '<input type="button" name="go_btn" value="'.get_string('save', 'techproject').'" onclick="senddatafree(\'save\')" />';
+        $str .= '</td>';
+        $str .= '</tr>';
+        $str .= '</table>';
+
+        return $str;
+    }
 }

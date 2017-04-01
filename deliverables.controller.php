@@ -30,9 +30,9 @@ defined('MOODLE_INTERNAL') || die();
 if ($work == 'dodelete') {
 
     $delivid = required_param('delivid', PARAM_INT);
-    $oldRecord = $DB->get_record('techproject_deliverable', array('id' => $delivid));
+    $oldrecord = $DB->get_record('techproject_deliverable', array('id' => $delivid));
     techproject_tree_delete($delivid, 'techproject_deliverable');
-    $event = \mod_techproject\event\deliverable_deleted::create_from_deliverable($project, $context, $oldRecord, $currentgroupid);
+    $event = \mod_techproject\event\deliverable_deleted::create_from_deliverable($project, $context, $oldrecord, $currentgroupid);
     $event->trigger();
 
 } else if ($work == 'domove' || $work == 'docopy') {
@@ -75,7 +75,7 @@ if ($work == 'dodelete') {
         $withredirect = 1;
     } else {
         $redirecturl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => $redir.'s'));
-        redirect($redirecturl, get_string('redirectingtoview', 'techproject') . get_string($redir, 'techproject'));
+        redirect($redirecturl, get_string('redirectingtoview', 'techproject').get_string($redir, 'techproject'));
     }
 }
 
@@ -85,19 +85,19 @@ if ($work == 'dodeleteitems') {
 
     foreach ($ids as $anitem) {
         // Save record for further cleanups and propagation.
-        $oldRecord = $DB->get_record('techproject_deliverable', array('id' => $anitem));
+        $oldrecord = $DB->get_record('techproject_deliverable', array('id' => $anitem));
         $childs = $DB->get_records('techproject_deliverable', array('fatherid' => $anitem));
 
         // Update fatherid in childs.
-        $query = "
+        $sql = "
             UPDATE
                 {techproject_deliverable}
             SET
-                fatherid = $oldRecord->fatherid
+                fatherid = ?
             WHERE
                 fatherid = $anitem
         ";
-        $DB->execute($query);
+        $DB->execute($sql, array($oldrecord->fatherid));
         $DB->delete_records('techproject_deliverable', array('id' => $anitem));
 
         // Delete all related records.
@@ -105,12 +105,12 @@ if ($work == 'dodeleteitems') {
         $DB->delete_records('techproject_task_to_deliv', array('delivid' => $anitem));
     }
 
-    $event = \mod_techproject\event\deliverable_deleted::create_from_deliverable($project, $context, $oldRecord, $currentgroupid);
+    $event = \mod_techproject\event\deliverable_deleted::create_from_deliverable($project, $context, $oldrecord, $currentgroupid);
     $event->trigger();
 
     if (isset($withredirect) && $withredirect) {
         $redirecturl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'view' => $redir.'s'));
-        redirect($redirecturl, get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
+        redirect($redirecturl, get_string('redirectingtoview', 'techproject').' : '.get_string($redir, 'techproject'));
     }
 
 } else if ($work == 'doclearall') {

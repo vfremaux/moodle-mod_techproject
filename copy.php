@@ -45,8 +45,8 @@ if ($work == 'docopy') {
     }
 
     /**
-      * @return an array for all copied ids translations so foreign keys can be fixed
-      */
+     * @return an array for all copied ids translations so foreign keys can be fixed
+     */
     function techproject_unit_copy($project, $from, $to, $what, $detail = false) {
         $copied = array();
 
@@ -68,7 +68,7 @@ if ($work == 'docopy') {
                 foreach ($records as $rec) {
                     $id = $rec->id;
                     if ($detail) {
-                        echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying item : ['. $id . '] ' . @$rec->abstract . '</span>';
+                        echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying item : ['. $id . '] '.@$rec->abstract.'</span>';
                     }
                     $rec->id = 0;
                     $rec->groupid = $to;
@@ -82,14 +82,16 @@ if ($work == 'docopy') {
                         $rec->owner = 0;
                     }
                     // If milestones are not copied, no way to keep milestone assignation.
-                    if (isset($rec->milestoneid) && $what['milestone'] == 0){
+                    if (isset($rec->milestoneid) && $what['milestone'] == 0) {
                         $rec->milestoneid = 0;
                     }
                     $insertedid = $DB->insert_record("techproject_$entitytable", $rec);
                     $copied[$entitytable][$id] = $insertedid;
                 }
             }
-            echo '</td><td align="right"><span class="technicals">' . get_string('done', 'techproject') . '</span></td></tr>';
+            echo '</td>';
+            echo '<td align="right"><span class="technicals">'.get_string('done', 'techproject').'</span></td>';
+            echo '</tr>';
         }
         return $copied;
     }
@@ -100,21 +102,21 @@ if ($work == 'docopy') {
      * table.
      * @return true if no errors.
      */
-    function techproject_fix_foreign_keys($project, $group, $table, $fKey, $translations, $recordSet) {
+    function techproject_fix_foreign_keys($project, $group, $table, $fkey, $translations, $recordset) {
        global $CFG;
 
        $result = 1;
-       $recordList = implode(',', $recordSet);
-       foreach (array_keys($translations) as $unfixedValue) {
+       $recordlist = implode(',', $recordset);
+       foreach (array_keys($translations) as $unfixedvalue) {
            $query = "
                UPDATE
                   {techproject_{$table}}
                SET
-                  $fKey = $translations[$unfixedValue]
+                  $fkey = $translations[$unfixedvalue]
                WHERE
                   projectid = {$project->id} AND
-                  $fKey = {$unfixedValue} AND
-                  id IN ($recordList)
+                  $fkey = {$unfixedvalue} AND
+                  id IN ($recordlist)
            ";
            $result = $result && $DB->execute($query);
         }
@@ -174,7 +176,7 @@ if ($work == 'docopy') {
             techproject_fix_foreign_keys($project, $atarget, 'task', 'fatherid', $copied['task'], array_values($copied['task']));
         if(array_key_exists('deliverable', $copied))
             techproject_fix_foreign_keys($project, $atarget, 'deliverable', 'fatherid', $copied['deliverable'], array_values($copied['deliverable']));
-        // must delete all grades in copied group
+        // Must delete all grades in copied group.
         $DB->delete_records('techproject_assessment', array('projectid' => $project->id, 'groupid' => $atarget));
         echo '<span class="technicals">' . get_string('done', 'techproject') . '</td></tr>';
     }
@@ -213,18 +215,18 @@ if ($from) {
 <script type="text/javascript">
 //<![CDATA[
 function senddata(){
-    document.forms['copywhatform'].work.value='confirm';
+    document.forms['copywhatform'].work.value = 'confirm';
     document.forms['copywhatform'].submit();
 }
-function cancel(){
-    document.forms['copywhatform'].work.value='setup';
+function cancel() {
+    document.forms['copywhatform'].work.value = 'setup';
     document.forms['copywhatform'].submit();
 }
 function formControl(entity) {
     switch (entity) {
 
         case 'requs':
-            if (!document.forms['copywhatform'].requs.checked == true) {
+            if (!document.forms['copywhatform'].requs.checked === true) {
                 document.forms['copywhatform'].spectoreq.disabled = true;
                 aDiv = document.getElementById('spectoreq_span');
                 aDiv.className = 'dithered';
@@ -236,7 +238,7 @@ function formControl(entity) {
             break;
 
         case 'specs':
-            if (!document.forms['copywhatform'].specs.checked == true) {
+            if (!document.forms['copywhatform'].specs.checked === true) {
                 document.forms['copywhatform'].spectoreq.disabled = true;
                 document.forms['copywhatform'].tasktospec.disabled = true;
                 aDiv = document.getElementById('tasktospec_span');
@@ -254,7 +256,7 @@ function formControl(entity) {
             break;
 
         case 'tasks':
-            if (!document.forms['copywhatform'].tasks.checked == true) {
+            if (!document.forms['copywhatform'].tasks.checked === true) {
                 document.forms['copywhatform'].tasktospec.disabled = true;
                 document.forms['copywhatform'].tasktodeliv.disabled = true;
                 document.forms['copywhatform'].tasktotask.disabled = true;
@@ -278,7 +280,7 @@ function formControl(entity) {
             break;
 
         case 'deliv':
-            if (!document.forms['copywhatform'].deliv.checked == true) {
+            if (!document.forms['copywhatform'].deliv.checked === true) {
                 document.forms['copywhatform'].tasktodeliv.disabled = true;
                 aDiv = document.getElementById('tasktodeliv_span');
                 aDiv.className = 'dithered';
@@ -364,17 +366,17 @@ if ($work == 'confirm') {
 
     echo '<center>';
 
-    echo $OUTPUT->heading(get_string('copyconfirm', 'techproject')); 
+    echo $OUTPUT->heading(get_string('copyconfirm', 'techproject'));
     echo $OUTPUT->box(get_string('copyadvice', 'techproject'), 'center');
 ?>
 <script type="text/javascript">
 //<![CDATA[
-function senddata(){
-    document.forms['confirmcopyform'].work.value='docopy';
+function senddata() {
+    document.forms['confirmcopyform'].work.value = 'docopy';
     document.forms['confirmcopyform'].submit();
 }
-function cancel(){
-    document.forms['confirmcopyform'].work.value='setup';
+function cancel() {
+    document.forms['confirmcopyform'].work.value = 'setup';
     document.forms['confirmcopyform'].submit();
 }
 //]]>
@@ -406,15 +408,15 @@ function cancel(){
 
 if ($work == '' || $work == 'setup') {
     echo '<center>';
-    echo $OUTPUT->heading(get_string('copysetup', 'techproject')); 
+    echo $OUTPUT->heading(get_string('copysetup', 'techproject'));
     if (isset($errormessage)) {
         echo $OUPPUT->box("<span style=\"color:white\">$errormessage</span>", 'center', '70%', 'warning');
     }
 ?>
 <script type="text/javascript">
 //<![CDATA[
-function senddata(){
-    document.forms['copysetupform'].work.value='what';
+function senddata() {
+    document.forms['copysetupform'].work.value = 'what';
     document.forms['copysetupform'].submit();
 }
 //]]>
@@ -429,11 +431,11 @@ function senddata(){
 <?php 
     $fromgroups = array();
     if (!empty($groups)) {
-        foreach (array_keys($groups) as $aGroupId) {
-            $fromgroups[$groups[$aGroupId]->id] = $groups[$aGroupId]->name;
+        foreach (array_keys($groups) as $agroupid) {
+            $fromgroups[$groups[$agroupid]->id] = $groups[$agroupid]->name;
         }
     }
-    echo html_writer::select($fromgroups,  'from', 0 + groups_get_activity_group($cm, true), get_string('groupless', 'techproject'));
+    echo html_writer::select($fromgroups, 'from', 0 + groups_get_activity_group($cm, true), get_string('groupless', 'techproject'));
 ?>
     </td>
 </tr>
@@ -442,10 +444,10 @@ function senddata(){
     <td align="left">
         <select name="to[]" multiple="multiple" size="6" style="width : 80%">
 <?php
-    echo "<option value=\"0\">".get_string('groupless', 'techproject')."</option>";
+    echo '<option value="0">'.get_string('groupless', 'techproject').'</option>';
     if (!empty($groups)) {
-        foreach ($groups as $aGroup) {
-            echo "<option value=\"{$aGroup->id}\">{$aGroup->name}</option>";
+        foreach ($groups as $agroup) {
+            echo '<option value="'.$agroup->id.'">'.$agroup->name.'</option>';
         }
     }
 ?>

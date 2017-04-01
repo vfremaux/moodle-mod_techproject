@@ -26,6 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$settings->add(new admin_setting_configcheckbox('techproject/preserveglobalqualifiers', get_string('configpreserveglobalqualifiers', 'techproject'),
-                   get_string('configpreserveglobalqualifiers_desc', 'techproject'), 1));
+$label = get_string('configpreserveglobalqualifiers', 'techproject');
+$desc = get_string('configpreserveglobalqualifiers_desc', 'techproject');
+$settings->add(new admin_setting_configcheckbox('techproject/preserveglobalqualifiers', $label, $desc, 1));
 

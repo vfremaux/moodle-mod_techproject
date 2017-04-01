@@ -37,7 +37,7 @@ if ($work == 'dodelete') {
     $event = \mod_techproject\event\task_deleted::create_from_task($project, $context, $oldtask, $currentgroupid);
     $event->trigger();
 
-    // reset indicators.
+    // Reset indicators.
     $oldtask->done      = 0;
     $oldtask->planned   = 0;
     $oldtask->quoted    = 0;
@@ -54,9 +54,12 @@ if ($work == 'dodelete') {
        techproject_tree_propagate_up('techproject_task', 'spent', $oldtask->id, '+');
    }
    // Now can delete records.
-   $DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $taskid));
-   $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'master' => $taskid));
-   $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $taskid));
+   $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $taskid);
+   $DB->delete_records('techproject_task_to_spec', $params);
+   $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'master' => $taskid);
+   $DB->delete_records('techproject_task_dependency', $params);
+   $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $taskid);
+   $DB->delete_records('techproject_task_dependency', $params);
 
 } else if ($work == 'domarkasdone') {
     // Mark as 100% done ************************.
@@ -218,9 +221,12 @@ if ($work == 'dodeleteitems') {
         $event->trigger();
 
         // Delete all related records.
-        $DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $anitem));
-        $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'master' => $anitem));
-        $DB->delete_records('techproject_task_dependency', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $anitem));
+        $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $anitem);
+        $DB->delete_records('techproject_task_to_spec', $params);
+        $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'master' => $anitem);
+        $DB->delete_records('techproject_task_dependency', $params);
+        $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $anitem);
+        $DB->delete_records('techproject_task_dependency', $params);
 
         // Must rebind child dependencies to father.
         if ($oldtask->fatherid != 0 && $childs) {
@@ -240,7 +246,7 @@ if ($work == 'dodeleteitems') {
         redirect($redirecturl, get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
     }
 
-} elseif ($work == 'doclearall') {
+} else if ($work == 'doclearall') {
 
     // Delete all related records. POWERFUL AND DANGEROUS COMMAND.
     // Deletes for the current group. 
@@ -270,7 +276,7 @@ if ($work == 'dodeleteitems') {
     $escaped = str_replace('<', '&lt;', $xml);
     $escaped = str_replace('>', '&gt;', $escaped);
     echo $OUTPUT->heading(get_string('xmlexport', 'techproject'));
-    echo $OUTPUT->simple_box("<pre>$escaped</pre>");
+    echo $OUTPUT->simple_box('<pre>'.$escaped.'</pre>');
     $viewurl = new moodle_url('/mod/techproject/view.php', array('view' => 'tasks', 'id' => $cm->id));
     echo $OUTPUT->continue_button($viewurl);
     return;
