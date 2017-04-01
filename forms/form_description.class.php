@@ -85,32 +85,32 @@ class Description_Form extends moodleform {
 
         $context = context_module::instance($this->project->cmid);
 
-        $abstract_draftid_editor = file_get_submitted_draft_itemid('abstract_editor');
-        $currenttext = file_prepare_draft_area($abstract_draftid_editor, $context->id, 'mod_techproject', 'abstract_editor',
+        $abstractdraftideditor = file_get_submitted_draft_itemid('abstract_editor');
+        $currenttext = file_prepare_draft_area($abstractdraftideditor, $context->id, 'mod_techproject', 'abstract_editor',
                                                $defaults->id, array('subdirs' => true), $defaults->abstract);
         $defaults = file_prepare_standard_editor($defaults, 'abstract', $this->editoroptions, $context, 'mod_techproject',
                                                  'abstract', $defaults->id);
         $defaults->abstract = array('text' => $currenttext,
                                     'format' => $defaults->format,
-                                    'itemid' => $abstract_draftid_editor);
+                                    'itemid' => $abstractdraftideditor);
 
-        $rationale_draftid_editor = file_get_submitted_draft_itemid('rationale_editor');
-        $currenttext = file_prepare_draft_area($rationale_draftid_editor, $context->id, 'mod_techproject', 'rationale_editor',
+        $rationaledraftideditor = file_get_submitted_draft_itemid('rationale_editor');
+        $currenttext = file_prepare_draft_area($rationaledraftideditor, $context->id, 'mod_techproject', 'rationale_editor',
                                                $defaults->id, array('subdirs' => true), $defaults->rationale);
         $defaults = file_prepare_standard_editor($defaults, 'rationale', $this->editoroptions, $context, 'mod_techproject',
                                                  'rationale', $defaults->id);
         $defaults->rationale = array('text' => $currenttext,
                                      'format' => $defaults->format,
-                                     'itemid' => $rationale_draftid_editor);
+                                     'itemid' => $rationaledraftideditor);
 
-        $environment_draftid_editor = file_get_submitted_draft_itemid('environment_editor');
-        $currenttext = file_prepare_draft_area($environment_draftid_editor, $context->id, 'mod_techproject', 'environment_editor',
+        $environmentdraftideditor = file_get_submitted_draft_itemid('environment_editor');
+        $currenttext = file_prepare_draft_area($environmentdraftideditor, $context->id, 'mod_techproject', 'environment_editor',
                                                $defaults->id, array('subdirs' => true), $defaults->environment);
         $defaults = file_prepare_standard_editor($defaults, 'environment', $this->editoroptions, $context, 'mod_techproject',
                                                  'environment', $defaults->id);
         $defaults->environment = array('text' => $currenttext,
                                        'format' => $defaults->format,
-                                       'itemid' => $environment_draftid_editor);
+                                       'itemid' => $environmentdraftideditor);
 
         parent::set_data($defaults);
     }

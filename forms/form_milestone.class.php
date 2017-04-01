@@ -47,7 +47,7 @@ class Milestone_Form extends moodleform {
 
         $mform = $this->_form;
 
-        $currentGroup = 0 + groups_get_course_group($COURSE);
+        $currentgroup = 0 + groups_get_course_group($COURSE);
 
         $modcontext = context_module::instance($this->project->cmid);
 
@@ -80,18 +80,18 @@ class Milestone_Form extends moodleform {
         $this->add_action_buttons(true);
     }
 
-    function set_data($defaults) {
+    public function set_data($defaults) {
 
         $context = context_module::instance($this->project->cmid);
 
-        $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-        $currenttext = file_prepare_draft_area($draftid_editor, $context->id, 'mod_techproject', 'description_editor',
+        $draftideditor = file_get_submitted_draft_itemid('description_editor');
+        $currenttext = file_prepare_draft_area($draftideditor, $context->id, 'mod_techproject', 'description_editor',
                                                $defaults->id, array('subdirs' => true), $defaults->description);
         $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject',
                                                  'milestonedescription', $defaults->id);
         $defaults->description = array('text' => $currenttext,
                                        'format' => $defaults->descriptionformat,
-                                       'itemid' => $draftid_editor);
+                                       'itemid' => $draftideditor);
 
         parent::set_data($defaults);
     }

@@ -117,14 +117,14 @@ class Requirement_Form extends moodleform {
 
         $context = context_module::instance($this->project->cmid);
 
-        $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-        $currenttext = file_prepare_draft_area($draftid_editor, $context->id, 'mod_techproject', 'description_editor',
+        $draftideditor = file_get_submitted_draft_itemid('description_editor');
+        $currenttext = file_prepare_draft_area($draftideditor, $context->id, 'mod_techproject', 'description_editor',
                                                $defaults->id, array('subdirs' => true), $defaults->description);
         $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject',
                                                  'requirementdescription', $defaults->id);
         $defaults->description = array('text' => $currenttext,
                                        'format' => $defaults->descriptionformat,
-                                       'itemid' => $draftid_editor);
+                                       'itemid' => $draftideditor);
 
         parent::set_data($defaults);
     }
