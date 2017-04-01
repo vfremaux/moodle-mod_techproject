@@ -286,7 +286,7 @@ if ($previousobject) {
     $params = array('id' => $cm->id, 'objectId' => $previousobject->id, 'objectClass' => $objectclass);
     $prevurl = new moodle_url('/mod/techproject/view.php', $params);
     echo '<a class="browselink" href="'.$prevurl.'">'.get_string('previous', 'techproject').'</a>';
-}  else {
+} else {
     echo '<span class="disabled">'.get_string('previous', 'techproject').'</span>';
 }
 
