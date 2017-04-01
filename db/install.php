@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Post-install code for the quiz module.
@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Code run after the quiz module database tables have been created.
  */
 function xmldb_techproject_install() {
- global $DB;
+    global $DB;
 
     $record = new stdClass();
     $record->projectid = 0;
@@ -336,7 +336,7 @@ function xmldb_techproject_install() {
     $record->label = 'complete';
     $record->description = 'completedesc';
     $DB->insert_record('techproject_qualifier', $record);
-    
+
     $record = new stdClass();
     $record->projectid = 0;
     $record->domain = 'taskstatus';

@@ -66,7 +66,8 @@ if ($work == 'dodelete') {
         }
     }
     techproject_tree_copy_set($ids, 'techproject_deliverable', $table2);
-    $event = \mod_techproject\event\deliverable_mutated::create_from_deliverable($project, $context, $olddeliverable, $currentgroupid, $redir);
+    $event = \mod_techproject\event\deliverable_mutated::create_from_deliverable($project, $context, $olddeliverable,
+                                                                                 $currentgroupid, $redir);
     $event->trigger();
 
     if ($work == 'domove') {
@@ -152,9 +153,9 @@ if ($work == 'dodeleteitems') {
     techproject_tree_down($project, $currentgroupid, $delivid, 'techproject_deliverable');
 } else if ($work == 'left') {
     $delivid = required_param('delivid', PARAM_INT);
-    techproject_tree_left($project, $currentgroupid,$delivid, 'techproject_deliverable');
+    techproject_tree_left($project, $currentgroupid, $delivid, 'techproject_deliverable');
 } else if ($work == 'right') {
     $delivid = required_param('delivid', PARAM_INT);
-    techproject_tree_right($project, $currentgroupid,$delivid, 'techproject_deliverable');
+    techproject_tree_right($project, $currentgroupid, $delivid, 'techproject_deliverable');
 }
 

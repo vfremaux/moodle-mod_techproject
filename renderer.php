@@ -223,4 +223,38 @@ class mod_techproject_renderer extends plugin_renderer_base {
 
         return $str;
     }
+
+    public function group_op_form() {
+
+        $str = '';
+
+        $str = '<script type="text/javascript">';
+        $str = '//<![CDATA[';
+        $str = 'function senddata(cmd) {';
+        $str = '    document.forms[\'groupopform\'].work.value = "do" + cmd;';
+        $str = '    document.forms[\'groupopform\'].submit();';
+        $str = '}';
+        $str = 'function cancel() {';
+        $str = '    document.forms[\'groupopform\'].submit();';
+        $str = '}';
+        $str = '//]]>';
+        $str = '</script>';
+
+        return $str;
+    }
+
+    public function group_op_form_group() {
+
+        $str = '';
+
+        $str .= '<script type="text/javascript">';
+        $str .= '//<![CDATA[';
+        $str .= 'function sendgroupdata() {';
+        $str .= '    document.forms[\'groupopform\'].submit();';
+        $str .= '}';
+        $str .= '//]]>';
+        $str .= '</script>';
+
+        return $str;
+    }
 }
