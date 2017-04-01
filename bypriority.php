@@ -126,12 +126,12 @@ $sql = "
       t.groupid = ?
    GROUP BY
       t.id
-   HAVING 
+   HAVING
       specs = 0
 ";
 
 if ($unassignedtasks = $DB->get_records_sql($sql, array($project->id, $currentgroupid))) {
-    echo $OUTPUT->heading(get_string('unspecifiedtasks','techproject') . ' ' . $OUTPUT->help_icon('unspecifiedtasks', 'techproject', false));
+    echo $OUTPUT->heading(get_string('unspecifiedtasks', 'techproject').' '.$OUTPUT->help_icon('unspecifiedtasks', 'techproject', false));
     foreach ($unassignedtasks as $atask) {
         if (($viewmode == 'onlyleaves' || $viewmode == 'onlyslaves') &&
                 techproject_count_subs('techproject_task', $atask->id) != 0) {

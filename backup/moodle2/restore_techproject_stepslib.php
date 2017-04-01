@@ -338,7 +338,7 @@ class restore_techproject_activity_structure_step extends restore_activity_struc
         $oldid = $data->id;
 
         $data->projectid = $this->get_new_parentid('techproject');
-        
+
         // The data is actually inserted into the database later in inform_new_usage_id.
         $newitemid = $DB->insert_record('techproject_qualifier', $data);
         $this->set_mapping('techproject_qualifier', $oldid, $newitemid, false); // Has no related files.
@@ -359,7 +359,7 @@ class restore_techproject_activity_structure_step extends restore_activity_struc
     }
 
     /**
-     * Post remaps tree dependencies in a single entity once all records renumbered. 
+     * Post remaps tree dependencies in a single entity once all records renumbered.
      *
      */
     protected function remap_tree($entity, $treekey, $techprojectid) {

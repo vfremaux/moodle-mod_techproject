@@ -105,7 +105,6 @@ if ($work == 'regrade') {
         if ($oldrecord = $DB->get_record_select('techproject_assessment', $select, array($project->id, $astudent->id))) {
             $assessment->id = $oldrecord->id;
             $DB->update_record('techproject_assessment', $assessment);
-            // add_to_log($course->id, 'techproject', 'grade', "view.php?id=$cm->id&view=view_summary", $project->id, $cm->id, $astudent->id);
         } else {
             $DB->insert_record('techproject_assessment', $assessment);
         }
@@ -157,7 +156,6 @@ if ($work == 'dosave') {
                 $DB->update_record('techproject_assessment', $assessment);
                 $event = \mod_techproject\event\grade_updated::create_from_assessment($techproject, $context, $assessment, $astudent->id);
                 $event->trigger();
-                // add_to_log($course->id, 'techproject', 'grade', "view.php?id={$cm->id}&view=view_summary&group={$currentgroupid}", $project->id, $cm->id, $astudent->id);
             } else {
                 $DB->insert_record('techproject_assessment', $assessment);
             }
@@ -289,11 +287,11 @@ if ($milestones && (!$project->teacherusescriteria || $criteria)) {
     echo '</td></tr>';
     foreach ($milestones as $amilestone) {
         echo '<tr valign="top"><td align="left"><b>';
-        echo get_string('evaluatingfor','techproject')." M.{$amilestone->ordering} {$amilestone->abstract}</b>";
+        echo get_string('evaluatingfor', 'techproject')." M.{$amilestone->ordering} {$amilestone->abstract}</b>";
         echo "</td></tr><tr><td>";
         if (!$project->teacherusescriteria) {
             $teachergrade = @$gradesbyclass['milestone'][$amilestone->id][0];
-            echo get_string('teachergrade','techproject').' ';
+            echo get_string('teachergrade', 'techproject').' ';
             make_grading_menu($project, "teachergrade_milestone_{$amilestone->id}", $teachergrade);
         } else {
             foreach ($criteria as $acriterion) {
@@ -318,7 +316,7 @@ if ($project->autogradingenabled) {
     $autograde = @$gradesbyclass['auto'][0][0];
     echo '<tr><td align="left">'.get_string('autograde', 'techproject').'</td><td align="left">';
     echo make_grading_menu($project, 'autograde', $autograde, true);
-    echo " <a href=\"?work=regrade&amp;id={$cm->id}\">".get_string('calculate','techproject').'</a></td></tr>';
+    echo " <a href=\"?work=regrade&amp;id={$cm->id}\">".get_string('calculate', 'techproject').'</a></td></tr>';
 }
 if ($project->teacherusescriteria) {
     if (@$freecriteria) {

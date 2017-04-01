@@ -65,7 +65,7 @@ class gantt_renderer extends \mod_techproject_renderer {
         $tasks = $DB->get_records_select('techproject_task', $select, array($project->id, $group, $parentid), "assignee,taskstart");
         if ($tasks) {
             foreach ($tasks as $t) {
-    
+
                 // This version computes implicit dates based on parent or on project for lead tasks.
                 if (!$t->taskstartenable && !$t->taskendenable) {
                     if ($t->fatherid == 0) {
@@ -97,16 +97,18 @@ class gantt_renderer extends \mod_techproject_renderer {
         $done = $task->done;
         $task->predecessor = 0;
         $user = $DB->get_record('user', array('id' => $task->assignee));
-        $assignee = ($user) ? fullname($user) : '' ;
+        $assignee = ($user) ? fullname($user) : '';
         $user = $DB->get_record('user', array('id' => $task->owner));
-        $owner = ($user) ? fullname($user) : '' ;
+        $owner = ($user) ? fullname($user) : '';
 
         if ($task->fatherid == 0) {
             $str .= "var project{$task->id} = new GanttProjectInfo({$task->id}, \"$task->abstract\", new Date($taskstart));\n";
-            $str .= "var Task{$task->id} = new GanttTaskInfo({$task->id}, \"$task->abstract\", new Date($taskstart), $duration, $done, $task->predecessor, '$assignee', '$task->assignee', '$owner', $task->owner);\n";
+            $str .= "var Task{$task->id} = new GanttTaskInfo({$task->id}, \"$task->abstract\", new Date($taskstart), ";
+            $str .= "$duration, $done, $task->predecessor, '$assignee', '$task->assignee', '$owner', $task->owner);\n";
             $str .= "project{$task->id}.addTask(Task{$task->id});";
         } else {
-            $str .= "var Task{$task->id} = new GanttTaskInfo({$task->id}, \"$task->abstract\", new Date($taskstart), $duration, $done, $task->predecessor, '$assignee', '$task->assignee', '$owner', $task->owner);\n";
+            $str .= "var Task{$task->id} = new GanttTaskInfo({$task->id}, \"$task->abstract\", new Date($taskstart), ";
+            $str .= "$duration, $done, $task->predecessor, '$assignee', '$task->assignee', '$owner', $task->owner);\n";
             $str .= " Task{$task->fatherid}.addChildTask(Task{$task->id});\n";
         }
 
@@ -142,20 +144,16 @@ class gantt_renderer extends \mod_techproject_renderer {
         ganttChartControl.showDescTask(true,'n,s-f');\n
         ganttChartControl.showDescProject(true,'n,d');\n
         // localises monthnames
-        ganttChartControl.setMonthNames(['"
-        .implode("','", array_values($months)).
-        "']);
+        ganttChartControl.setMonthNames(['".implode("','", array_values($months))."']);
         // localises shortmonthnames
-        ganttChartControl.setShortMonthNames(['"
-        .implode("','", array_keys($months)).
-        "']);
+        ganttChartControl.setShortMonthNames(['".implode("','", array_keys($months))."']);
          // Load data structure\n
         ";
         foreach ($leadtasks as $taskid) {
             $str .= "ganttChartControl.addProject(project{$taskid});\n";
         }
         $str .= "
-        // attach events
+        // attach events.
         ganttChartControl.attachEvent('onTaskEndDrag', gantt_handler_onTaskChangeBounds);
         ganttChartControl.attachEvent('onTaskEndResize', gantt_handler_onTaskChangeBounds);
         ganttChartControl.attachEvent('onTaskRename', gantt_handler_onTaskChangeAttributes);
@@ -177,13 +175,15 @@ class gantt_renderer extends \mod_techproject_renderer {
         $m = date("m", $timestamp);
         $d = date("j", $timestamp);
         $m--;
+
         return "$y, $m, $d";
     }
 
     public function gantt($ganttid) {
         $str = "<script type=\"text/javascript\">";
-        $str .= "createChartControl('$ganttid');\n";    
+        $str .= "createChartControl('$ganttid');\n";
         $str .= "</script>\n";
+
         return $str;
     }
 }

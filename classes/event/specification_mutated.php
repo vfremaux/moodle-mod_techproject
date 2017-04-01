@@ -21,8 +21,8 @@
  * @copyright  2013 Valery Fremaux
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace mod_techproject\event;
+
 defined('MOODLE_INTERNAL') || die();
 
 class specification_mutated extends \core\event\base {
@@ -30,7 +30,7 @@ class specification_mutated extends \core\event\base {
      * Create instance of event.
      *
      * @since Moodle 2.7
-     *e
+     *
      * @param \stdClass $techprojct
      * @param \context_module $context
      * @param string $idlist
@@ -56,7 +56,7 @@ class specification_mutated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The specifications $this->idlist in techproject " . $this->contextinstanceid . " has been mutated (moved/copied).";
+        return "The specifications $this->idlist in techproject ".$this->contextinstanceid." has been mutated (moved/copied).";
     }
 
     /**

@@ -37,66 +37,66 @@ $timeunitsarr = array(get_string('unset', 'techproject'),
 // Get tasks by worktype.
 
 $sql = "
-   SELECT
-      t.*
-   FROM
-      {techproject_task} as t
-   LEFT JOIN
-      {techproject_qualifier} as qu
-   ON 
-      qu.code = t.worktype AND
-      qu.domain = 'worktype'
-   WHERE
-      t.projectid = {$project->id} AND
-      t.groupid = {$currentgroupid}
-   ORDER BY
-      qu.id ASC
+    SELECT
+        t.*
+    FROM
+        {techproject_task} as t
+    LEFT JOIN
+        {techproject_qualifier} as qu
+    ON
+        qu.code = t.worktype AND
+        qu.domain = 'worktype'
+    WHERE
+        t.projectid = {$project->id} AND
+        t.groupid = {$currentgroupid}
+    ORDER BY
+        qu.id ASC
 ";
 
 if ($tasks = $DB->get_records_sql($sql)) {
 
-echo '
-<script type="text/javascript">
-function sendgroupdata(){
-    document.groupopform.submit();
-}
-</script>
-';
+    echo '
+        <script type="text/javascript">
+        function sendgroupdata(){
+            document.groupopform.submit();
+        }
+        </script>
+    ';
 
-echo '<form name="groupopform" action="view.php" method="post">';
-echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
-echo '<input type="hidden" name="work" value="groupcmd" />';
-echo '<input type="hidden" name="view" value="tasks" />';
+    echo '<form name="groupopform" action="view.php" method="post">';
+    echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
+    echo '<input type="hidden" name="work" value="groupcmd" />';
+    echo '<input type="hidden" name="view" value="tasks" />';
 
-foreach ($tasks as $atask) {
-    $sortedtasks[$atask->worktype][] = $atask;
-}
-
-foreach (array_keys($sortedtasks) as $aworktype) {
-    $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
-    $jshanlder = 'javascript:toggle(\''.$aworktype.'\',\'sub'.$aworktype.'\');';
-    $pix = '<img name="img'.$aworktype.'" src="'.$pixurl.'" alt="collapse" />';
-    $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
-    $theworktype = techproject_get_option_by_key('worktype', $project->id, $aworktype);
-    if ($aworktype == '') {
-        $worktypeicon = '';
-        $theworktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
-    } else {
-        $pixurl = $OUTPUT->pix_url('/p/'.strtolower($theworktype->code), 'techproject');
-        $worktypeicon = '<img src="'.$pixurl.'" title="'.$theworktype->description.'" style="background-color : #f0f0f0" />';
+    foreach ($tasks as $atask) {
+        $sortedtasks[$atask->worktype][] = $atask;
     }
-    echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theworktype->label.'</span>', 'worktypesbox');
-    echo '<div id="sub'.$aworktype.'">';
-    foreach ($sortedtasks[$aworktype] as $atask) {
-        techproject_print_single_task($atask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aworktype]), 'SHORT_WITHOUT_TYPE');
-    }
-    echo '</div>';
-}
-echo '<p>';
-techproject_print_group_commands();
-echo '</p>';
 
-echo '</form>';
+    foreach (array_keys($sortedtasks) as $aworktype) {
+        $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
+        $jshanlder = 'javascript:toggle(\''.$aworktype.'\',\'sub'.$aworktype.'\');';
+        $pix = '<img name="img'.$aworktype.'" src="'.$pixurl.'" alt="collapse" />';
+        $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
+        $theworktype = techproject_get_option_by_key('worktype', $project->id, $aworktype);
+        if ($aworktype == '') {
+            $worktypeicon = '';
+            $theworktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
+        } else {
+            $pixurl = $OUTPUT->pix_url('/p/'.strtolower($theworktype->code), 'techproject');
+            $worktypeicon = '<img src="'.$pixurl.'" title="'.$theworktype->description.'" style="background-color : #f0f0f0" />';
+        }
+        echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theworktype->label.'</span>', 'worktypesbox');
+        echo '<div id="sub'.$aworktype.'">';
+        foreach ($sortedtasks[$aworktype] as $atask) {
+            techproject_print_single_task($atask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aworktype]), 'SHORT_WITHOUT_TYPE');
+        }
+        echo '</div>';
+    }
+    echo '<p>';
+    techproject_print_group_commands();
+    echo '</p>';
+
+    echo '</form>';
 
 } else {
     echo $OUTPUT->box(get_string('notasks', 'techproject'), 'center', '70%');
