@@ -65,11 +65,12 @@ class mod_techproject_renderer extends plugin_renderer_base {
             $title = get_string('nc', 'techproject');
             return '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$title.'" width="'.$width.'" />';
         }
+        $bargraph = '';
         $done = floor($width * $value / 100);
         $todo = floor($width * (1 - $value / 100));
         $pixurl = $this->output->pix_url('p/greenpixel', 'techproject');
-        $bargraph = '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$value.'%" width="'.$done.'" />';
-        $pixurl = $this-output->pix_url('p/bluepixel', 'techproject');
+        $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$value.'%" width="'.$done.'" />';
+        $pixurl = $this->output->pix_url('p/bluepixel', 'techproject');
         $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$value.'%" width="'.$todo.'" />';
         if ($over) {
             $displayover = (round($over / $width * 100)).'%';
@@ -126,6 +127,99 @@ class mod_techproject_renderer extends plugin_renderer_base {
         $str .= '</td>';
         $str .= '</tr>';
         $str .= '</table>';
+
+        return $str;
+    }
+
+    public function criteria_form($set, $criteria, &$cm) {
+
+        $str = '';
+
+        $formurl = new moodle_url('/mod/techproject/view.php');
+        $str .= '<form name="'.$set.'form" method="post" action="'.$formurl.'">';
+        $str .= '<input type="hidden" name="id" value="'.$cm->id.'" />';
+        $str .= '<input type="hidden" name="work" value="" />';
+        $table->head = array();
+        $table->width = "100%";
+        $table->align = array('left', 'left');
+        foreach ($criteria as $acriterion) {
+            $params = array('id' => $cm->id, 'work' => 'dodelete', 'isfree' => 0, 'item' => $acriterion->id);
+            $linkurl = new moodle_url('/mod/techproject/view.php', $params);
+            $pixurl = $OUTPUT->pix_url('/t/delete');
+            $pix = '<img src="'.$pixurl.'" />';
+            $links = '<a href="'.$linkurl.'">'.$pix.'</a>';
+            $jshandler = 'javascript:change(\''.$acriterion->id.'\', \''.$acriterion->criterion.'\', \''.$acriterion->label.'\', \''.$acriterion->weight.'\')';
+            $pixurl = $OUTPUT->pix_url('/t/edit');
+            $pix = '<img src="'.$pixurl.'" />';
+            $links .= '<a href="'.$jshandler.'">'.$pix.'</a>';
+            $table->data[] = array('<b>'.$acriterion->criterion.'</b> '.$acriterion->label.' ( x '.$acriterion->weight.')', $links);
+        }
+        $str .= html_writer::table($table);
+
+        $str .= $this->criteria_header();
+        $str .= '<input type="hidden" name="itemid" value="0" />';
+        $str .= '<input type="hidden" name="isfree" value="0" />';
+        $str .= '</form>';
+
+        return $str;
+    }
+
+    public function criteria_form_script($set) {
+
+        $str = '';
+
+        $str .= '<script type="text/javascript">';
+        $str .= '//<![CDATA[';
+        $str .= 'function senddatafree() {';
+        $str .= '    if (document.forms[\''.$set.'form\'].criterion == \'\') {';
+        $str .= '        alert(\''.get_string('emptycriterion', 'techproject').'\');';
+        $str .= '        return;';
+        $str .= '    }';
+        $str .= '    document.forms[\''.$set.'form\'].work.value = "update";';
+        $str .= '    document.forms[\''.$set.'form\'].submit();';
+        $str .= '}';
+        $str .= 'function changefree(itemid, criterion, label, weight) {';
+        $str .= '    document.forms[\''.$set.'form\'].itemid.value = itemid;';
+        $str .= '    document.forms[\''.$set.'form\'].criterion.value = criterion;';
+        $str .= '    document.forms[\''.$set.'form\'].label.value = label;';
+        $str .= '    document.forms[\''.$set.'form\'].weight.value = weight;';
+        $str .= '    document.forms[\''.$set.'form\'].work.value = "update";';
+        $str .= '}';
+        $str .= '//]]>';
+        $str .= '</script>';
+
+        return $str;
+    }
+
+    public function criteria_delete_form($cm, $criterion) {
+        $str = '';
+
+        $formurl = new moodle_url('/mod/techproject/view.php');
+        $str = '<form name="confirmdeleteform" method="get" action="'.$formurl.'">';
+        $str = '<input type="hidden" name="id" value="'.$cm->id.'" />';
+        $str = '<input type="hidden" name="work" value="" />';
+        $str = '<input type="hidden" name="item" value="'.$criterion->id.'" />';
+        $str = '<input type="hidden" name="isfree" value="'.$criterion->isfree.'" />';
+        $str = '<input type="button" name="go_btn" value="'.get_string('continue').'" onclick="senddata(\'confirmdelete\')" />';
+        $str = '<input type="button" name="cancel_btn" value="'.get_string('cancel').'" onclick="cancel()" />';
+        $str = '</form>';
+
+        return $str;
+    }
+
+    public function criteria_delete_form_script() {
+
+        $str = '';
+
+        $str .= '<script type="text/javascript">';
+        $str .= 'function senddata(cmd) {';
+        $str .= '    document.confirmdeleteform.work.value = "do" + cmd;';
+        $str .= '    document.confirmdeleteform.submit();';
+        $str .= '}';
+        $str .= 'function cancel() {';
+        $str .= '    document.confirmdeleteform.submit();';
+        $str .= '}';
+        $str .= '</script>';
 
         return $str;
     }

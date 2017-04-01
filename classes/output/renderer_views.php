@@ -45,7 +45,7 @@ class views_renderer extends \mod_techproject_renderer {
         $pixurl = $this->output->pix_url('/p/switch_minus', 'techproject');
         $jshandler = 'javascript:toggle(\''.$auser->id.'\', \'sub'.$auser->id.'\', false);';
         $hidesub = '<a href="'.$jshandler.'"><img name="img'.$auser->id.'" src="'.$pixurl.'" alt="collapse" /></a>';
-        $str .= $hidesub.' '.get_string('assignedto','techproject').' '.fullname($auser).' '.$this->output->user_picture($auser);
+        $str .= $hidesub.' '.get_string('assignedto', 'techproject').' '.fullname($auser).' '.$this->output->user_picture($auser);
 
         $str .= '</td>';
         $str .= '<td class="byassigneeheading level1" align="right">';
@@ -60,8 +60,8 @@ class views_renderer extends \mod_techproject_renderer {
                 $hurryup = (round(($res->spent / $res->planned) * 100) > ($res->done / $res->count)) ? $pix : '';
             }
             $lateclass = ($over > 0) ? 'toolate' : 'intime';
-            $workplan = get_string('assignedwork','techproject').' '.(0 + $res->planned).' '.$timeunits[$project->timeunit];
-            $realwork = get_string('realwork','techproject');
+            $workplan = get_string('assignedwork', 'techproject').' '.(0 + $res->planned).' '.$timeunits[$project->timeunit];
+            $realwork = get_string('realwork', 'techproject');
             $realwork .= ' <span class="'.$lateclass.'">'.(0 + $res->spent).' '.$timeunits[$project->timeunit].'</span>';
             $completion = ($res->count != 0) ? $this->bar_graph_over($res->done / $res->count, $over, 100, 10) : $this->bar_graph_over(-1, 0);
             $str .= "{$workplan} - {$realwork} {$completion} {$hurryup}";
@@ -129,7 +129,8 @@ class views_renderer extends \mod_techproject_renderer {
                 $str .= '<td class="level2">';
                 $branch = techproject_tree_get_upper_branch('techproject_task', $atask->id, true, true);
                 $str .= 'T'.implode('.', $branch) . '. ' . $atask->abstract;
-                $pix = '<img src="'.$this->output->pix_url('p/hide', 'techproject').'" title="'.get_string('detail','techproject').'" />';
+                $title = get_string('detail', 'techproject');
+                $pix = '<img src="'.$this->output->pix_url('p/hide', 'techproject').'" title="'.$title.'" />';
                 $params = array('id' => $cm->id, 'view' => 'view_detail', 'objectClass' => 'task', 'objectId' => $atask->id);
                 $linkurl = new moodle_url('/mod/techproject/view.php', $params);
                 $str .= '&nbsp;<a href="'.$linkurl.'">'.$pix.'</a>';

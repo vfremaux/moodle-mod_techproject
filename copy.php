@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 if (!has_capability('mod/techproject:manage', $context)) {
-    print_error(get_string('notateacher','techproject'));
+    print_error(get_string('notateacher', 'techproject'));
     return;
 }
 
@@ -35,11 +35,11 @@ if (!has_capability('mod/techproject:manage', $context)) {
 $groups = groups_get_all_groups($course->id);
 
 if ($work == 'docopy') {
-    function techproject_protect_text_records(&$rec, $fieldList) {
-        $fields = explode(",", $fieldList);
-        foreach ($fields as $aField) {
-            if (isset($rec->$aField)) {
-                $rec->$aField = str_replace("'", "\\'", $rec->$aField);
+    function techproject_protect_text_records(&$rec, $fieldlist) {
+        $fields = explode(',', $fieldlist);
+        foreach ($fields as $afield) {
+            if (isset($rec->$afield)) {
+                $rec->$afield = str_replace("'", "\\'", $rec->$afield);
             }
         }
     }
@@ -56,23 +56,30 @@ if ($work == 'docopy') {
                 continue;
             }
 
-            echo '<tr><td align="left">' . get_string('copying', 'techproject').' '.get_string("{$entitytable}s", 'techproject') . '...';
+            echo '<tr>';
+            echo '<td align="left">'.get_string('copying', 'techproject').' '.get_string("{$entitytable}s", 'techproject').'...';
             $DB->delete_records("techproject_$entitytable", array('projectid' => $project->id, 'groupid' => $to));
-            if ($records = $DB->get_records_select("techproject_$entitytable", "projectid = ? AND groupid = ?", array($project->id, $from))) {
+            $select = "projectid = ? AND groupid = ?";
+            if ($records = $DB->get_records_select("techproject_$entitytable", $select, array($project->id, $from))) {
 
                 // Copying each record into target recordset.
                 if ($detail) {
-                    echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying '. count($records) . " from $entitytable</span>";
+                    echo '<br/>';
+                    $sp = '&nbsp;&nbsp;&nbsp;';
+                    echo '<span class="smalltechnicals">'.$sp.'copying '.count($records)." from $entitytable</span>";
                 }
 
                 foreach ($records as $rec) {
                     $id = $rec->id;
                     if ($detail) {
-                        echo '<br/><span class="smalltechnicals">&nbsp&nbsp;&nbsp;copying item : ['. $id . '] '.@$rec->abstract.'</span>';
+                        echo '<br/>';
+                        $sp = '&nbsp;&nbsp;&nbsp;';
+                        echo '<span class="smalltechnicals">'.$sp.'copying item : ['. $id . '] '.@$rec->abstract.'</span>';
                     }
                     $rec->id = 0;
                     $rec->groupid = $to;
-                    techproject_protect_text_records($rec, 'title,abstract,rationale,description,environement,organisation,department');
+                    $fields = 'title,abstract,rationale,description,environement,organisation,department';
+                    techproject_protect_text_records($rec, $fields);
 
                     // Unassigns users from entites in copied entities (not relevant context).
                     if (isset($rec->assignee)) {
@@ -103,22 +110,25 @@ if ($work == 'docopy') {
      * @return true if no errors.
      */
     function techproject_fix_foreign_keys($project, $group, $table, $fkey, $translations, $recordset) {
-       global $CFG;
+        global $CFG, $DB;
 
-       $result = 1;
-       $recordlist = implode(',', $recordset);
-       foreach (array_keys($translations) as $unfixedvalue) {
-           $query = "
-               UPDATE
-                  {techproject_{$table}}
-               SET
-                  $fkey = $translations[$unfixedvalue]
-               WHERE
-                  projectid = {$project->id} AND
-                  $fkey = {$unfixedvalue} AND
-                  id IN ($recordlist)
-           ";
-           $result = $result && $DB->execute($query);
+        $result = 1;
+        list($insql, $params) = $DB->get_in_or_equal($recordset, SQL_PARAMS_NAMED);
+        foreach (array_keys($translations) as $unfixedvalue) {
+            $query = "
+                UPDATE
+                    {techproject_{$table}}
+                SET
+                    $fkey = $translations[$unfixedvalue]
+                WHERE
+                    projectid = :projectid AND
+                    $fkey = :unfixed AND
+                    id $insql
+            ";
+
+            $params['projectid'] = $project->id;
+            $parmas['unfixed'] = $unfixedvalue;
+            $result = $result && $DB->execute($query, $params);
         }
         return $result;
     }
@@ -153,29 +163,44 @@ if ($work == 'docopy') {
             techproject_fix_foreign_keys($project, $atarget, 'task_to_spec', 'taskid', $copied['task'], array_values($copied['task_to_spec']));
             techproject_fix_foreign_keys($project, $atarget, 'task_to_spec', 'specid', $copied['specification'], array_values($copied['task_to_spec']));
         }
-        if (array_key_exists('task_to_deliv', $copied) && count(array_values(@$copied['task_to_deliv']))){
+        if (array_key_exists('task_to_deliv', $copied) && count(array_values(@$copied['task_to_deliv']))) {
             techproject_fix_foreign_keys($project, $atarget, 'task_to_deliv', 'taskid', $copied['task'], array_values($copied['task_to_deliv']));
             techproject_fix_foreign_keys($project, $atarget, 'task_to_deliv', 'delivid', $copied['deliverable'], array_values($copied['task_to_deliv']));
         }
-        if (array_key_exists('task_dependency', $copied) && count(array_values(@$copied['task_dependency']))){
+        if (array_key_exists('task_dependency', $copied) && count(array_values(@$copied['task_dependency']))) {
             techproject_fix_foreign_keys($project, $atarget, 'task_dependency', 'master', $copied['task'], array_values($copied['task_dependency']));
             techproject_fix_foreign_keys($project, $atarget, 'task_dependency', 'slave', $copied['task'], array_values($copied['task_dependency']));
         }
-        if (array_key_exists('milestone', $copied) && array_key_exists('task', $copied) && count(array_values(@$copied['task'])) && count(array_values(@$copied['milestone']))){
+        if (array_key_exists('milestone', $copied) &&
+                array_key_exists('task', $copied) &&
+                        count(array_values(@$copied['task'])) &&
+                                count(array_values(@$copied['milestone']))) {
             techproject_fix_foreign_keys($project, $atarget, 'task', 'milestoneid', $copied['milestone'], array_values($copied['task']));
         }
-        if (array_key_exists('milestone', $copied) && array_key_exists('deliverable', $copied) && count(array_values(@$copied['deliverable'])) && count(array_values(@$copied['milestone']))){
+        if (array_key_exists('milestone', $copied) &&
+                array_key_exists('deliverable', $copied) &&
+                        count(array_values(@$copied['deliverable'])) &&
+                                count(array_values(@$copied['milestone']))) {
             techproject_fix_foreign_keys($project, $atarget, 'deliverable', 'milestoneid', $copied['milestone'], array_values($copied['deliverable']));
         }
-        // fixing fatherid values
-        if(array_key_exists('specification', $copied))
-            techproject_fix_foreign_keys($project, $atarget, 'specification', 'fatherid', $copied['specification'], array_values($copied['specification']));
-        if(array_key_exists('requirement', $copied))
-            techproject_fix_foreign_keys($project, $atarget, 'requirement', 'fatherid', $copied['requirement'], array_values($copied['requirement']));
-        if(array_key_exists('task', $copied))
+
+        // Fixing fatherid values.
+        if (array_key_exists('specification', $copied)) {
+            techproject_fix_foreign_keys($project, $atarget, 'specification', 'fatherid',
+                                         $copied['specification'], array_values($copied['specification']));
+        }
+        if (array_key_exists('requirement', $copied)) {
+            techproject_fix_foreign_keys($project, $atarget, 'requirement', 'fatherid',
+                                         $copied['requirement'], array_values($copied['requirement']));
+        }
+        if (array_key_exists('task', $copied)) {
             techproject_fix_foreign_keys($project, $atarget, 'task', 'fatherid', $copied['task'], array_values($copied['task']));
-        if(array_key_exists('deliverable', $copied))
-            techproject_fix_foreign_keys($project, $atarget, 'deliverable', 'fatherid', $copied['deliverable'], array_values($copied['deliverable']));
+        }
+        if (array_key_exists('deliverable', $copied)) {
+            techproject_fix_foreign_keys($project, $atarget, 'deliverable', 'fatherid',
+                                         $copied['deliverable'], array_values($copied['deliverable']));
+        }
+
         // Must delete all grades in copied group.
         $DB->delete_records('techproject_assessment', array('projectid' => $project->id, 'groupid' => $atarget));
         echo '<span class="technicals">' . get_string('done', 'techproject') . '</td></tr>';
@@ -207,9 +232,9 @@ foreach ($to as $atarget) {
 }
 
 if ($from) {
-    echo $OUTPUT->box($groups[$from]->name . ' &gt;&gt; ' . implode(',',$toarr), 'center');
+    echo $OUTPUT->box($groups[$from]->name.' &gt;&gt; '.implode(',', $toarr), 'center');
 } else {
-    echo $OUTPUT->box(get_string('groupless', 'techproject') . ' &gt;&gt; ' . implode(',',$toarr), 'center');
+    echo $OUTPUT->box(get_string('groupless', 'techproject').' &gt;&gt; '.implode(',', $toarr), 'center');
 }
 ?>
 <script type="text/javascript">
@@ -307,44 +332,68 @@ function formControl(entity) {
         <p><input type="checkbox" name="headings" value="1" checked="checked" /> <?php print_string('headings', 'techproject'); ?>
         <?php
         if (@$project->projectusesrequs) {
-            echo '<br/><input type="checkbox" name="requs" value="1" checked="checked" onclick="formControl(\'requs\')" /> '.get_string('requirements', 'techproject');
+            $jshandler = 'formControl(\'requs\')';
+            echo '<br/>';
+            echo '<input type="checkbox" name="requs" value="1" checked="checked" onclick="'.$jshandler.'" /> ';
+            echo get_string('requirements', 'techproject');
         }
         if (@$project->projectusesspecs) {
-            echo '<br/><input type="checkbox" name="specs" value="1" checked="checked" onclick="formControl(\'specs\')" />'. get_string('specifications', 'techproject');
+            echo '<br/>';
+            $jshandler = 'formControl(\'specs\')';
+            echo '<input type="checkbox" name="specs" value="1" checked="checked" onclick="'.$jshandler.'" /> ';
+            echo get_string('specifications', 'techproject');
         }
-        ?>
-        <br/><input type="checkbox" name="tasks" value="1" checked="checked" onclick="formControl('tasks')" /> <?php print_string('tasks', 'techproject'); ?>
-        <br/><input type="checkbox" name="miles" value="1" checked="checked"  onclick="formControl('miles')" /> <?php print_string('milestones', 'techproject'); ?>
-        <?php
+
+        echo '<br/>';
+        $jshandler = 'formControl(\'tasks\')';
+        echo '<input type="checkbox" name="tasks" value="1" checked="checked" onclick="'.$jshandler.'" /> ';
+        echo get_string('tasks', 'techproject');
+
+        echo '<br/>';
+        $jshandler = 'formControl(\'miles\')';
+        echo '<input type="checkbox" name="miles" value="1" checked="checked" onclick="'.$jshandler.'" /> ';
+        echo get_string('milestones', 'techproject');
+
         if (@$project->projectusesspecs) {
-            echo '<br/><input type="checkbox" name="deliv" value="1" checked="checked" onclick="formControl(\'deliv\')" /> '.get_string('deliverables', 'techproject');
+            echo '<br/>';
+            $jshandler = 'formControl(\'deliv\')';
+            echo '<input type="checkbox" name="deliv" value="1" checked="checked" onclick="'.$jshandler.'" /> ';
+            echo get_string('deliverables', 'techproject');
         }
-        ?>
-        </p>
-        <p><b><?php print_string('crossentitiesmappings', 'techproject') ?></b></p>
-        <?php
+
+        echo '</p>';
+        echo '<p><b>'.get_string('crossentitiesmappings', 'techproject').'</b></p>';
+
         if (@$project->projectusesrequs && @$project->projectusesspecs) {
-            echo '<p><input type="checkbox" name="spectoreq" value="1" checked="checked" /> <span id="spectoreq_span"> '.get_string('spec_to_req', 'techproject').'</span>';
+            echo '<p>';
+            echo '<input type="checkbox" name="spectoreq" value="1" checked="checked" /> ';
+            echo '<span id="spectoreq_span"> '.get_string('spec_to_req', 'techproject').'</span>';
         }
         if (@$project->projectusesspecs) {
-            echo '<br/><input type="checkbox" name="tasktospec" value="1" checked="checked" /> <span id="tasktospec_span"> '.get_string('task_to_spec', 'techproject').'</span>';
+            echo '<br/>';
+            echo '<input type="checkbox" name="tasktospec" value="1" checked="checked" /> ';
+            echo '<span id="tasktospec_span"> '.get_string('task_to_spec', 'techproject').'</span>';
         }
-        ?>
-        <br/><input type="checkbox" name="tasktotask" value="1" checked="checked" /> <span id="tasktotask_span" class=""><?php print_string('task_to_task', 'techproject'); ?></span>
-        <?php
+
+        echo '<br/>';
+        echo '<input type="checkbox" name="tasktotask" value="1" checked="checked" /> ';
+        echo '<span id="tasktotask_span" class="">'.get_string('task_to_task', 'techproject').'</span>';
+
         if (@$project->projectusesdelivs) {
-            echo '<br/><input type="checkbox" name="tasktodeliv" value="1" checked="checked" /> <span id="tasktodeliv_span"> '.get_string('task_to_deliv', 'techproject').'</span>';
+            echo '<br/>';
+            echo '<input type="checkbox" name="tasktodeliv" value="1" checked="checked" /> ';
+            echo '<span id="tasktodeliv_span"> '.get_string('task_to_deliv', 'techproject').'</span>';
         }
-        ?>
-        </p>
-    </td>
-</tr>
-</table>
-<p><input type="button" name="go_btn" value="<?php print_string('continue'); ?>" onclick="senddata()" />
-<input type="button" name="cancel_btn" value="<?php print_string('cancel'); ?>" onclick="cancel()" /></p>
-</form>
-</center>
-<?php
+
+        echo '</p>';
+
+        echo '</td>';
+        echo '</tr>';
+        echo '</table>';
+        echo '<p><input type="button" name="go_btn" value="'.get_string('continue').'" onclick="senddata()" />';
+        echo '<input type="button" name="cancel_btn" value="'.get_string('cancel').'" onclick="cancel()" /></p>';
+        echo '</form>';
+        echo '</center>';
     }
 }
 
@@ -410,7 +459,7 @@ if ($work == '' || $work == 'setup') {
     echo '<center>';
     echo $OUTPUT->heading(get_string('copysetup', 'techproject'));
     if (isset($errormessage)) {
-        echo $OUPPUT->box("<span style=\"color:white\">$errormessage</span>", 'center', '70%', 'warning');
+        echo $OUTPUT->box("<span style=\"color:white\">$errormessage</span>", 'center', '70%', 'warning');
     }
 ?>
 <script type="text/javascript">
