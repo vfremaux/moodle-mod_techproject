@@ -51,7 +51,7 @@ class Specification_Form extends moodleform {
 
         $mform = $this->_form;
 
-        $currentGroup = 0 + groups_get_course_group($COURSE);
+        $currentgroup = 0 + groups_get_course_group($COURSE);
 
         $modcontext = context_module::instance($this->project->cmid);
 
@@ -104,7 +104,7 @@ class Specification_Form extends moodleform {
         $mform->addElement('editor', 'description_editor', $label, null, $this->descriptionoptions);
 
         if ($this->project->projectusesrequs && $this->mode == 'update') {
-            $requirements = techproject_get_tree_options('techproject_requirement', $this->project->id, $currentGroup);
+            $requirements = techproject_get_tree_options('techproject_requirement', $this->project->id, $currentgroup);
             $select = "specid = ?";
             $params = array($this->current->id);
             $selection = $DB->get_records_select_menu('techproject_spec_to_req', $select, $params, 'reqid, specid');

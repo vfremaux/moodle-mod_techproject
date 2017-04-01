@@ -30,7 +30,7 @@ require_once($CFG->dirroot.'/mod/techproject/forms/form_import.class.php');
 
 if (!has_capability('mod/techproject:viewprojectcontrols', $context)
         && !has_capability('mod/techproject:manage', $context)) {
-    print_error(get_string('notateacher','techproject'));
+    print_error(get_string('notateacher', 'techproject'));
     return;
 }
 

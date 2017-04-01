@@ -95,23 +95,24 @@ if ($course->format == 'weeks') {
 }
 
 foreach ($projects as $project) {
+    $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $project->coursemodule));
     if (!$project->visible) {
-        //Show dimmed if the mod is hidden
-        $link = "<a class=\"dimmed\" href=\"view.php?id=$project->coursemodule\">".format_string($project->name,true).'</a>';
+        // Show dimmed if the mod is hidden.
+        $link = '<a class="dimmed" href="'.$linkurl.'">'.format_string($project->name, true).'</a>';
     } else {
-        //Show normal if the mod is visible
-        $link = "<a href=\"view.php?id={$project->coursemodule}\">".format_string($project->name,true).'</a>';
+        // Show normal if the mod is visible.
+        $link = '<a href="'.$linkurl.'">'.format_string($project->name, true).'</a>';
     }
 
     if ($project->projectend > $timenow) {
         $due = userdate($project->projectend);
     } else {
-        $due = "<font color=\"red\">".userdate($project->projectend).'</font>';
+        $due = '<font color="red">'.userdate($project->projectend).'</font>';
     }
 
-    if ($course->format == 'weeks' or $course->format == 'topics') {
+    if ($course->format == 'weeks' || $course->format == 'topics') {
         if (isteacher($course->id)) {
-            $grade_value = @$project->grade;
+            $gradevalue = @$project->grade;
         } else {
             // It's a student, show their mean or maximum grade.
             if ($project->usemaxgrade) {
@@ -121,34 +122,36 @@ foreach ($projects as $project) {
                     FROM
                         {techproject_grades}
                     WHERE
-                        projectid = $project->id AND 
-                        userid = $USER->id 
+                        projectid = $project->id AND
+                        userid = $USER->id
                     GROUP BY
                         userid
                 ";
                 $grade = $DB->get_record_sql($sql);
             } else {
                 $sql = "
-                    SELECT 
-                        AVG(grade) AS grade 
-                    FROM 
+                    SELECT
+                        AVG(grade) AS grade
+                    FROM
                         {techproject_grades}
-                    WHERE 
-                        projectid = $project->id AND 
-                        userid = $USER->id GROUP BY userid
+                    WHERE
+                        projectid = ? AND
+                        userid = ?
+                    GROUP BY
+                        userid
                 ";
-                $grade = $DB->get_record_sql($sql);
+                $grade = $DB->get_record_sql($sql, array($project->id, $USER->id));
             }
             if ($grade) {
                 // Grades are stored as percentages.
-                $grade_value = number_format($grade->grade * $project->grade / 100, 1);
+                $gradevalue = number_format($grade->grade * $project->grade / 100, 1);
             } else {
-                $grade_value = 0;
+                $gradevalue = 0;
             }
         }
-        $table->data[] = array ($project->section, $link, $grade_value, $due);
+        $table->data[] = array ($project->section, $link, $gradevalue, $due);
     } else {
-        $table->data[] = array ($link, $grade_value, $due);
+        $table->data[] = array ($link, $gradevalue, $due);
     }
 }
 
