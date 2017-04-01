@@ -223,8 +223,8 @@ function techproject_tree_down(&$project, $group, $id, $table, $istree = 1) {
 
     $res =  $DB->get_record($table, array('id' => $id));
     $treeclause = ($istree) ? " AND fatherid = {$res->fatherid} " : '';
-    $select = " MAX(ordering) ", " projectid = ? AND groupid = ? $treeclause GROUP BY projectid ";
-    $maxordering = $DB->get_field_select($table, $select, array($project->id, $group));
+    $select = " projectid = ? AND groupid = ? $treeclause GROUP BY projectid ";
+    $maxordering = $DB->get_field_select($table, " MAX(ordering) ", $select, array($project->id, $group));
 
     if ($res->ordering < $maxordering) {
         $newordering = $res->ordering + 1;
