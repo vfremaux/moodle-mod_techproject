@@ -50,38 +50,38 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
 
         $requirements = new backup_nested_element('requirements');
         $requirement = new backup_nested_element('requirement', array('id'), array(
-            'fatherid', 'ordering', 'groupid', 'userid', 'created', 
+            'fatherid', 'ordering', 'groupid', 'userid', 'created',
             'modified', 'lastuserid', 'abstract', 'description', 'descriptionformat', 'strength', 'heavyness'));
 
         $specifications = new backup_nested_element('specifications');
         $specification = new backup_nested_element('specification', array('id'), array(
-            'fatherid', 'ordering', 'groupid', 'userid', 
-            'created', 'modified', 'lastuserid', 'abstract', 'description', 'descriptionformat', 
+            'fatherid', 'ordering', 'groupid', 'userid',
+            'created', 'modified', 'lastuserid', 'abstract', 'description', 'descriptionformat',
             'priority', 'severity', 'complexity'));
 
         $tasks = new backup_nested_element('tasks');
         $task = new backup_nested_element('task', array('id'), array(
-            'fatherid', 'ordering', 'owner', 'assignee', 'groupid', 'userid', 
-            'created', 'modified', 'lastuserid', 'abstract', 'description', 
-            'descriptionformat', 'worktype', 'status', 'costrate', 'planned', 'done', 
-            'used', 'quoted', 'spent', 'risk', 'milestoneid', 'taskstartenable', 
+            'fatherid', 'ordering', 'owner', 'assignee', 'groupid', 'userid',
+            'created', 'modified', 'lastuserid', 'abstract', 'description',
+            'descriptionformat', 'worktype', 'status', 'costrate', 'planned', 'done',
+            'used', 'quoted', 'spent', 'risk', 'milestoneid', 'taskstartenable',
             'taskstart', 'taskendenable', 'taskend'));
 
         $milestones = new backup_nested_element('milestones');
         $milestone = new backup_nested_element('milestone', array('id'), array(
-            'ordering', 'groupid', 'userid', 'created', 'modified', 'lastuserid', 
-            'abstract', 'description', 'descriptionformat', 'covered', 'cost', 'timetocomplete', 'deadline', 
+            'ordering', 'groupid', 'userid', 'created', 'modified', 'lastuserid',
+            'abstract', 'description', 'descriptionformat', 'covered', 'cost', 'timetocomplete', 'deadline',
             'deadlineenable'));
 
         $deliverables = new backup_nested_element('deliverables');
         $deliverable = new backup_nested_element('deliverable', array('id'), array(
-            'fatherid', 'ordering', 'groupid', 'userid', 'created', 'modified', 
-            'lastuserid', 'abstract', 'description', 'descriptionformat', 'status', 'milestoneid', 
+            'fatherid', 'ordering', 'groupid', 'userid', 'created', 'modified',
+            'lastuserid', 'abstract', 'description', 'descriptionformat', 'status', 'milestoneid',
             'localfile', 'url'));
 
         $validations = new backup_nested_element('validations');
         $validationsession = new backup_nested_element('validationsession', array('id'), array(
-            'groupid', 'datecreated', 'dateclosed', 'createdby', 'untracked', 
+            'groupid', 'datecreated', 'dateclosed', 'createdby', 'untracked',
             'missing', 'buggy', 'toenhance', 'refused', 'accepted'));
 
         $validationsessions = new backup_nested_element('validationsessions');
@@ -105,7 +105,8 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
         $qualifier = new backup_nested_element('qualifier', array('id'), array('domain', 'code', 'label', 'description'));
 
         $assessments = new backup_nested_element('assessments');
-        $assessment = new backup_nested_element('assessment', array('id'), array('groupid', 'userid', 'itemid', 'itemclass', 'criterion', 'grade'));
+        $assessment = new backup_nested_element('assessment', array('id'), array('groupid', 'userid', 'itemid', 'itemclass',
+                                                                                 'criterion', 'grade'));
 
         $criteria = new backup_nested_element('criteria');
         $criterion = new backup_nested_element('criterion', array('id'), array('criterion', 'label', 'weight', 'isfree'));
@@ -193,7 +194,7 @@ class backup_techproject_activity_structure_step extends backup_activity_structu
                 WHERE
                     projectid = :projectid OR
                     projectid = 0
-            "; 
+            ";
             $qualifier->set_source_sql($sql, array('projectid' => backup::VAR_ACTIVITYID));
 
         } else {

@@ -21,7 +21,7 @@
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  *
- * This screen show tasks plan by assignee. Unassigned tasks are shown 
+ * This screen show tasks plan by assignee. Unassigned tasks are shown
  * below assigned tasks
  */
 defined('MOODLE_INTERNAL') || die();
@@ -45,9 +45,9 @@ if (!groups_get_activity_groupmode($cm, $project->course)) {
     }
 }
 if (!isset($groupusers) || count($groupusers) == 0 || empty($groupusers)) {
-    echo $OUTPUT->box(get_string('noassignee','techproject'), 'center');
+    echo $OUTPUT->box(get_string('noassignee', 'techproject'), 'center');
 } else {
-    echo $OUTPUT->heading(get_string('assignedtasks','techproject'));
+    echo $OUTPUT->heading(get_string('assignedtasks', 'techproject'));
     echo '<br/>';
     echo $OUTPUT->box_start('center', '100%');
     foreach ($groupusers as $auser) {
@@ -112,7 +112,7 @@ $sql = "
       assignee = 0
 ";
 $unassignedtasks = $DB->get_records_sql($sql, array($project->id, $currentgroupid));
-echo $OUTPUT->heading(get_string('unassignedtasks','techproject'));
+echo $OUTPUT->heading(get_string('unassignedtasks', 'techproject'));
 
 echo $OUTPUT->box_start('center', '100%');
 echo $viewrenderer->unassignedtasks($cm, $unassignedtasks);

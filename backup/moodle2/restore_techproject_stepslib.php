@@ -22,6 +22,7 @@
  * @copyright 2010 onwards Valery Fremaux (valery.freamux@club-internet.fr)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Structure step to restore one techproject activity
@@ -79,7 +80,7 @@ class restore_techproject_activity_structure_step extends restore_activity_struc
 
     protected function process_techproject_requirement($data) {
         global $DB;
-        
+
         $data = (object)$data;
         $oldid = $data->id;
 
@@ -97,7 +98,7 @@ class restore_techproject_activity_structure_step extends restore_activity_struc
 
     protected function process_techproject_specification($data) {
         global $DB;
-        
+
         $data = (object)$data;
         $oldid = $data->id;
 
@@ -115,7 +116,7 @@ class restore_techproject_activity_structure_step extends restore_activity_struc
 
     protected function process_techproject_task($data) {
         global $DB;
-        
+
         $data = (object)$data;
         $oldid = $data->id;
 
@@ -134,7 +135,7 @@ class restore_techproject_activity_structure_step extends restore_activity_struc
 
     protected function process_techproject_milestone($data) {
         global $DB;
-        
+
         $data = (object)$data;
         $oldid = $data->id;
 
@@ -358,9 +359,9 @@ class restore_techproject_activity_structure_step extends restore_activity_struc
     }
 
     /**
-    * Post remaps tree dependencies in a single entity once all records renumbered. 
-    *
-    */
+     * Post remaps tree dependencies in a single entity once all records renumbered. 
+     *
+     */
     protected function remap_tree($entity, $treekey, $techprojectid) {
         global $DB;
 

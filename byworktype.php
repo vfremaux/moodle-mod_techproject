@@ -74,16 +74,19 @@ foreach ($tasks as $atask) {
 
 foreach (array_keys($sortedtasks) as $aworktype) {
     $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
-    $hidesub = "<a href=\"javascript:toggle('{$aworktype}','sub{$aworktype}');\"><img name=\"img{$aworktype}\" src=\"$pixurl\" alt=\"collapse\" style=\"background-color : #E0E0E0\" /></a>";
+    $jshanlder = 'javascript:toggle(\''.$aworktype.'\',\'sub'.$aworktype.'\');';
+    $pix = '<img name="img'.$aworktype.'" src="'.$pixurl.'" alt="collapse" />';
+    $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
     $theworktype = techproject_get_option_by_key('worktype', $project->id, $aworktype);
     if ($aworktype == '') {
-         $worktypeicon = '';
-         $theworktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
+        $worktypeicon = '';
+        $theworktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
     } else {
-         $worktypeicon = "<img src=\"".$OUTPUT->pix_url('/p/'.strtolower($theworktype->code), 'techproject')."\" title=\"{$theworktype->description}\" style=\"background-color : #F0F0F0\" />";
+        $pixurl = $OUTPUT->pix_url('/p/'.strtolower($theworktype->code), 'techproject');
+        $worktypeicon = '<img src="'.$pixurl.'" title="'.$theworktype->description.'" style="background-color : #f0f0f0" />';
     }
     echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theworktype->label.'</span>', 'worktypesbox');
-    echo "<div id=\"sub{$aworktype}\">";
+    echo '<div id="sub'.$aworktype.'">';
     foreach ($sortedtasks[$aworktype] as $atask) {
         techproject_print_single_task($atask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aworktype]), 'SHORT_WITHOUT_TYPE');
     }
@@ -96,5 +99,5 @@ echo '</p>';
 echo '</form>';
 
 } else {
-   echo $OUTPUT->box(get_string('notasks', 'techproject'), 'center', '70%');
+    echo $OUTPUT->box(get_string('notasks', 'techproject'), 'center', '70%');
 }
