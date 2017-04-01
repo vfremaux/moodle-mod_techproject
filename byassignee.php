@@ -26,17 +26,15 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot.'/mod/techproject/classes/output/renderer_views.php');
+
 $viewrenderer = $PAGE->get_renderer('techproject', 'views');
 
 echo $pagebuffer;
 
-$TIMEUNITS = array(get_string('unset', 'techproject'),
-                   get_string('hours', 'techproject'),
-                   get_string('halfdays', 'techproject'),
-                   get_string('days', 'techproject'));
 $haveassignedtasks = false;
-if (!groups_get_activity_groupmode($cm, $project->course)){
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.email, u.picture';
+if (!groups_get_activity_groupmode($cm, $project->course)) {
+    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.email, u.picture,'.user_picture::fields();
     $groupusers = get_users_by_capability($context, 'mod/techproject:beassignedtasks', $fields, 'u.lastname');
 } else {
     if ($currentgroupid) {
@@ -72,7 +70,7 @@ if (!isset($groupusers) || count($groupusers) == 0 || empty($groupusers)) {
         ";
         $res = $DB->get_record_sql($sql, array($project->id, $currentgroupid, $auser->id));
 
-        echo $viewrenderer->assignee($res);
+        echo $viewrenderer->assignee($project, $res, $auser);
 
         $sql = "
            SELECT
@@ -96,7 +94,7 @@ if (!isset($groupusers) || count($groupusers) == 0 || empty($groupusers)) {
               t.id
         ";
         $tasks = $DB->get_records_sql($sql, array($project->id, $currentgroupid, $auser->id));
-        echo $viewrenderer->tasks($project, $cm, $currentgroupid, $tasks, $user);
+        echo $viewrenderer->tasks($project, $cm, $currentgroupid, $tasks, $auser);
     }
     echo $OUTPUT->box_end();
 }
@@ -117,5 +115,5 @@ $unassignedtasks = $DB->get_records_sql($sql, array($project->id, $currentgroupi
 echo $OUTPUT->heading(get_string('unassignedtasks','techproject'));
 
 echo $OUTPUT->box_start('center', '100%');
-echo $viewrenderer->unassignedtasks($unassignedtasks);
+echo $viewrenderer->unassignedtasks($cm, $unassignedtasks);
 echo $OUTPUT->box_end();

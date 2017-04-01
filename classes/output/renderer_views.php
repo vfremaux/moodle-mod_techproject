@@ -28,16 +28,24 @@ require_once($CFG->dirroot.'/mod/techproject/renderer.php');
 
 class views_renderer extends \mod_techproject_renderer {
 
-    public function assignee($res) {
+    public function assignee(&$project, $res, &$auser) {
+        static $timeunits;
 
-        $str .= '<table width="100%">';
+        if (!isset($timeunits)) {
+            $timeunits = array(get_string('unset', 'techproject'),
+                       get_string('hours', 'techproject'),
+                       get_string('halfdays', 'techproject'),
+                       get_string('days', 'techproject'));
+        }
+
+        $str = '<table width="100%">';
         $str .= '<tr>';
         $str .= '<td class="byassigneeheading level1">';
 
-        $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
+        $pixurl = $this->output->pix_url('/p/switch_minus', 'techproject');
         $jshandler = 'javascript:toggle(\''.$auser->id.'\', \'sub'.$auser->id.'\', false);';
-        $hidesub = '<a href="'.$jshandler.'"><img name=\"img{$auser->id}\" src="'.$pixurl.'" alt="collapse" /></a>';
-        $str .= $hidesub.' '.get_string('assignedto','techproject').' '.fullname($auser).' '.$this->output->user_picture($USER);
+        $hidesub = '<a href="'.$jshandler.'"><img name="img'.$auser->id.'" src="'.$pixurl.'" alt="collapse" /></a>';
+        $str .= $hidesub.' '.get_string('assignedto','techproject').' '.fullname($auser).' '.$this->output->user_picture($auser);
 
         $str .= '</td>';
         $str .= '<td class="byassigneeheading level1" align="right">';
@@ -52,9 +60,9 @@ class views_renderer extends \mod_techproject_renderer {
                 $hurryup = (round(($res->spent / $res->planned) * 100) > ($res->done / $res->count)) ? $pix : '';
             }
             $lateclass = ($over > 0) ? 'toolate' : 'intime';
-            $workplan = get_string('assignedwork','techproject').' '.(0 + $res->planned).' '.$TIMEUNITS[$project->timeunit];
+            $workplan = get_string('assignedwork','techproject').' '.(0 + $res->planned).' '.$timeunits[$project->timeunit];
             $realwork = get_string('realwork','techproject');
-            $realwork .= ' <span class="'.$lateclass.'">'.(0 + $res->spent).' '.$TIMEUNITS[$project->timeunit].'</span>';
+            $realwork .= ' <span class="'.$lateclass.'">'.(0 + $res->spent).' '.$timeunits[$project->timeunit].'</span>';
             $completion = ($res->count != 0) ? $this->bar_graph_over($res->done / $res->count, $over, 100, 10) : $this->bar_graph_over(-1, 0);
             $str .= "{$workplan} - {$realwork} {$completion} {$hurryup}";
         }
@@ -67,6 +75,8 @@ class views_renderer extends \mod_techproject_renderer {
     }
 
     public function tasks(&$project, &$cm, $currentgroupid, &$tasks, &$user) {
+        global $DB;
+
         $str = '<table id="sub'.$user->id.'" width="100%">';
 
         // Get assigned tasks.
@@ -74,7 +84,7 @@ class views_renderer extends \mod_techproject_renderer {
 
             $str .= '<tr>';
             $str .= '<td>';
-            $str .= $thois->output->notification(get_string('notaskassigned', 'techproject'));
+            $str .= $this->output->notification(get_string('notaskassigned', 'techproject'));
             $str .= '</td>';
             $str .= '</tr>';
 

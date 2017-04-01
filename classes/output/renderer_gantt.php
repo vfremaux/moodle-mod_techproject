@@ -24,7 +24,9 @@ namespace mod_techproject\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-class gantt implements \renderable, \templatable {
+require_once($CFG->dirroot.'/mod/techproject/renderer.php');
+
+class gantt_renderer extends \mod_techproject_renderer {
 
     public function init($ganttid) {
 
@@ -48,8 +50,10 @@ class gantt implements \renderable, \templatable {
         return $str;
     }
 
-    public function all_tasks(&$parent, &$project, $group, &$unscheduled, &$assignees, &$tasks, &$str) {
+    public function all_tasks(&$parent, &$project, $group, &$unscheduled, &$assignees, &$tasks) {
         global $DB;
+
+        $str = '';
 
         if (is_null($parent)) {
             $parentid = 0;
@@ -77,16 +81,17 @@ class gantt implements \renderable, \templatable {
                     }
                 }
 
-                $str .= $this->task($t, $str);
+                $str .= $this->task($t);
                 $ltasks = array();
-                $str .= $this->all_tasks($t, $project, $group, $unscheduled, $assignees, $ltasks, $str);
+                $str .= $this->all_tasks($t, $project, $group, $unscheduled, $assignees, $ltasks);
             }
         }
     }
 
-    public function task(&$task, &$str) {
+    public function task(&$task) {
         global $DB;
 
+        $str = '';
         $taskstart = $this->format_date($task->taskstart);
         $duration = ceil(($task->taskend - $task->taskstart) / DAYSECS * 8);
         $done = $task->done;
@@ -175,7 +180,7 @@ class gantt implements \renderable, \templatable {
         return "$y, $m, $d";
     }
 
-    public function render($ganttid) {
+    public function gantt($ganttid) {
         $str = "<script type=\"text/javascript\">";
         $str .= "createChartControl('$ganttid');\n";    
         $str .= "</script>\n";

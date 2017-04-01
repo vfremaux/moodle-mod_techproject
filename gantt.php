@@ -26,8 +26,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$PAGE->requires->css('/mod/techproject/js/dhtmlxGantt/codebase/dhtmlxgantt.css');
-
+require_once($CFG->dirroot.'/mod/techproject/classes/output/renderer_gantt.php');
 $ganttrenderer = $PAGE->get_renderer('techproject', 'gantt');
 
 echo $pagebuffer;
@@ -43,7 +42,7 @@ $gantt = false;
 $parent = null;
 
 // Delayed printing, allows evaluate if there is somethin inside.
-echo $ganttrenderer->all_tasks($parent, $project, $currentgroupid, $unscheduledtasks, $assignees, $leadtasks, $str);
+echo $ganttrenderer->all_tasks($parent, $project, $currentgroupid, $unscheduledtasks, $assignees, $leadtasks);
 
 if (!empty($leadtasks)) {
     $gantt = true;
@@ -73,5 +72,5 @@ echo '</table>';
 echo '</center>';
 
 if ($gantt) {
-    $ganttrenderer->render('GantDiv');
+    $ganttrenderer->gantt('GantDiv');
 }

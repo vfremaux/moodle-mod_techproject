@@ -48,6 +48,7 @@ if ($view == 'view_gantt') {
     $PAGE->requires->js('/mod/techproject/js/dhtmlxGantt/codebase/dhtmlxcommon.js', true);
     $PAGE->requires->js('/mod/techproject/js/dhtmlxGantt/sources/dhtmlxgantt.js', true);
     $PAGE->requires->js('/mod/techproject/js/dhtmlxGantt/sources/lang/'.$lang.'/'.$lang.'.js', true);
+    $PAGE->requires->css('/mod/techproject/js/dhtmlxGantt/codebase/dhtmlxgantt.css');
 }
 
 $timenow = time();

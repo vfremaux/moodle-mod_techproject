@@ -26,7 +26,7 @@
 * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
 */
 
-require_once($CFG->dirroot.'/mod/techproject/classes/output/mod_techproject_summary_renderer.php');
+require_once($CFG->dirroot.'/mod/techproject/classes/output/renderer_summary.php');
 
 // Counting leaf requests.
 
