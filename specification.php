@@ -52,30 +52,30 @@ function cancel(){
 <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
 <input type="hidden" name="work" value="" />
 <?php
-        foreach ($ids as $anid) {
-            echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
+    foreach ($ids as $anid) {
+        echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
+    }
+    if (($cmd == 'move')||($cmd == 'copy')) {
+        echo get_string('to', 'techproject');
+        if (@$project->projectusesrequs) {
+            $options['requs'] = get_string('requirements', 'techproject');
         }
-        if (($cmd == 'move')||($cmd == 'copy')) {
-            echo get_string('to', 'techproject');
-            if (@$project->projectusesrequs) {
-                $options['requs'] = get_string('requirements', 'techproject');
-            }
-            if (@$project->projectusesrequs) {
-                $options['requswb'] = get_string('requirementswithbindings', 'techproject');
-            }
-            $options['tasks'] = get_string('tasks', 'techproject');
-            $options['taskswb'] = get_string('taskswithbindings', 'techproject');
-            if (@$project->projectusesdelivs) {
-                $options['deliv'] = get_string('deliverables', 'techproject');
-            }
-            echo html_writer::select($options, 'to', '', 'choose');
+        if (@$project->projectusesrequs) {
+            $options['requswb'] = get_string('requirementswithbindings', 'techproject');
         }
+        $options['tasks'] = get_string('tasks', 'techproject');
+        $options['taskswb'] = get_string('taskswithbindings', 'techproject');
+        if (@$project->projectusesdelivs) {
+            $options['deliv'] = get_string('deliverables', 'techproject');
+        }
+        echo html_writer::select($options, 'to', '', 'choose');
+    }
 
-        if ($cmd == 'applytemplate') {
-            echo '<input type="checkbox" name="applyroot" value="1" /> '.get_string('alsoapplyroot', 'techproject');
-            echo '<br/>';
-        }
+    if ($cmd == 'applytemplate') {
+        echo '<input type="checkbox" name="applyroot" value="1" /> '.get_string('alsoapplyroot', 'techproject');
         echo '<br/>';
+    }
+    echo '<br/>';
 ?>
 <input type="button" name="go_btn" value="<?php print_string('continue') ?>" onclick="senddata('<?php p($cmd) ?>')" />
 <input type="button" name="cancel_btn" value="<?php print_string('cancel') ?>" onclick="cancel()" />
@@ -100,20 +100,20 @@ function sendgroupdata() {
 <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
 <input type="hidden" name="work" value="groupcmd" />
 <?php
-        if ($USER->editmode == 'on' && has_capability('mod/techproject:changespecs', $context)) {
-            echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addspec','techproject')."</a>&nbsp; ";
+    if ($USER->editmode == 'on' && has_capability('mod/techproject:changespecs', $context)) {
+        echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addspec','techproject')."</a>&nbsp; ";
+    }
+    techproject_print_specifications($project, $currentgroupid, 0, $cm->id);
+    if ($USER->editmode == 'on' && has_capability('mod/techproject:changespecs', $context)) {
+        echo "<br/><a href='javascript:selectall(document.forms[\"groupopform\"])'>".get_string('selectall','techproject')."</a>&nbsp;";
+        echo "<a href='javascript:unselectall(document.forms[\"groupopform\"])'>".get_string('unselectall','techproject')."</a>&nbsp;";
+        echo "<a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addspec','techproject')."</a>&nbsp; ";
+        if (@$SESSION->techproject->spectemplateid){
+            techproject_print_group_commands(array('applytemplate'));
+        } else {
+            techproject_print_group_commands();
         }
-        techproject_print_specifications($project, $currentgroupid, 0, $cm->id);
-        if ($USER->editmode == 'on' && has_capability('mod/techproject:changespecs', $context)) {
-            echo "<br/><a href='javascript:selectall(document.forms[\"groupopform\"])'>".get_string('selectall','techproject')."</a>&nbsp;";
-            echo "<a href='javascript:unselectall(document.forms[\"groupopform\"])'>".get_string('unselectall','techproject')."</a>&nbsp;";
-            echo "<a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addspec','techproject')."</a>&nbsp; ";
-            if (@$SESSION->techproject->spectemplateid){
-                techproject_print_group_commands(array('applytemplate'));
-            } else {
-                techproject_print_group_commands();
-            }
-        }
+    }
 ?>
 </form>
 <?php

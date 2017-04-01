@@ -46,7 +46,9 @@ $ttffont = "Arial";
 
 // Tracing output for debugging.
 $trace = fopen("outputgs.txt", "a");
-if ($trace) fwrite($trace, "GRAPH $r\n" );
+if ($trace) {
+    fwrite($trace, "GRAPH $r\n" );
+}
 
 // Get project info.
 $timerangeend = ($project->projectend - $project->projectstart);
@@ -104,17 +106,18 @@ if (@$outputtype == 'HTML') {
         echo "[ $startrange - $range ]<br/>";
         $toggle = !$toggle;
         $color = ($toggle) ? 'white' : 'lightgray';
-        echo "($color)" ;
+        echo "($color)";
         $startrange = $range;
         $i += $daystocomplete;
     }
 
-/*
- *
- * This is the GD generation alternative
- *
- */
 } else {
+    /*
+     *
+     * This is the GD generation alternative
+     *
+     */
+
     // Searching for font files.
     $fontfile = $CFG->dirroot . "/mod/techproject/fonts/arial.ttf";
     if (!file_exists($fontfile)) {

@@ -14,24 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 if ($work == 'dodelete') {
     $milestoneid = required_param('milestoneid', PARAM_INT);
     $oldRecord = $DB->get_record('techproject_milestone', array('id' => $milestoneid));
-    techproject_tree_delete($milestoneid, 'techproject_milestone', 0); // uses list option switch
+    techproject_tree_delete($milestoneid, 'techproject_milestone', 0); // Uses list option switch.
 
-    // cleans up any assigned task.
+    // Cleans up any assigned task.
     $query = "
        UPDATE
           {techproject_task}
@@ -42,7 +39,7 @@ if ($work == 'dodelete') {
     ";
     $DB->execute($query);
 
-    // cleans up any assigned deliverable.
+    // Cleans up any assigned deliverable.
     $query = "
        UPDATE
           {techproject_deliverable}
@@ -52,16 +49,15 @@ if ($work == 'dodelete') {
           milestoneid = $milestoneid
     ";
     $DB->execute($query);
-    // add_to_log($course->id, 'techproject', 'changemilestone', "view.php?id=$cm->id&view=milestone&group={$currentgroupid}", 'delete', $cm->id);
     $event = \mod_techproject\event\milestone_deleted::create_from_milestone($project, $context, $oldRecord, $currentgroupid);
     $event->trigger();
 
-} elseif ($work == 'doclearall') {
+} else if ($work == 'doclearall') {
 
     // Delete all records. POWERFUL AND DANGEROUS COMMAND.
     $DB->delete_records('techproject_milestone', array('projectid' => $project->id));
 
-    // do reset all milestone assignation in project
+    // Do reset all milestone assignation in project.
     $query = "
        UPDATE
           {techproject_task}
@@ -73,7 +69,7 @@ if ($work == 'dodelete') {
     ";
     $DB->execute($query);
 
-    // do reset all milestone assignation in project
+    // Do reset all milestone assignation in project.
     $query = "
        UPDATE
           {techproject_deliverable}
@@ -84,37 +80,37 @@ if ($work == 'dodelete') {
           groupid = {$currentgroupid}
     ";
     $DB->execute($query);
-    // add_to_log($course->id, 'techproject', 'changemilestones', "view.php?id=$cm->id&view=milestone&group={$currentgroupid}", 'clear', $cm->id);
     $event = \mod_techproject\event\milestone_cleared::create_for_group($project, $context, $currentgroupid);
     $event->trigger();
 
-} elseif ($work == 'up') {
+} else if ($work == 'up') {
 
     $milestoneid = required_param('milestoneid', PARAM_INT);
     techproject_tree_up($project, $currentgroupid,$milestoneid, 'techproject_milestone', 0);
 
-} elseif ($work == 'down') {
+} else if ($work == 'down') {
 
     $milestoneid = required_param('milestoneid', PARAM_INT);
     techproject_tree_down($project, $currentgroupid,$milestoneid, 'techproject_milestone', 0);
 
-} elseif ($work == 'sortbydate') {
+} else if ($work == 'sortbydate') {
 
-    $milestones = array_values($DB->get_records_select('techproject_milestone', "projectid = {$project->id} AND groupid = {$currentgroupid}"));
+    $select = "projectid = ? AND groupid = ?";
+    $milestones = array_values($DB->get_records_select('techproject_milestone', $select, array($project->id, $currentgroupid)));
 
-    function sortByDate($a, $b) {
+    function sort_by_date($a, $b) {
         if ($a->deadline == $b->deadline) {
             return 0;
         }
-        return ($a->deadline > $b->deadline) ? 1 : -1 ; 
+        return ($a->deadline > $b->deadline) ? 1 : -1;
     }
 
-    usort($milestones, 'sortByDate');
+    usort($milestones, 'sort_by_date');
     // Reorders in memory and stores back.
     $ordering = 1;
-    foreach ($milestones as $aMilestone) {
-        $aMilestone->ordering = $ordering;
-        $DB->update_record('techproject_milestone', $aMilestone);
+    foreach ($milestones as $amilestone) {
+        $amilestone->ordering = $ordering;
+        $DB->update_record('techproject_milestone', $amilestone);
         $ordering++;
     }
 }

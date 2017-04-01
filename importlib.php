@@ -194,7 +194,7 @@ function techproject_import_entity($techprojectid, $cmid, $data, $type, $groupid
                 }
             }
         } else {
-            echo $OUPUT->notification("Could not insert records. Maybe file column names are not compatible. ". mysql_error());
+            echo $OUTPUT->notification("Could not insert records. Maybe file column names are not compatible. ". mysqli_error());
         }
     }
     if ($errors) {

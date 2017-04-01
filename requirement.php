@@ -14,24 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
+
 
 // Controller.
 
 if ($work == 'add' || $work == 'update') {
     include($CFG->dirroot.'/mod/techproject/edit_requirement.php');
-// Group operation form.
-} elseif ($work == 'groupcmd') {
+} else if ($work == 'groupcmd') {
+    // Group operation form.
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
@@ -95,24 +93,25 @@ if ($work == 'add' || $work == 'update') {
     <form name="groupopform" method="post" action="view.php">
     <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
     <input type="hidden" name="work" value="groupcmd" />
-    <?php
-        $indicatordesc = get_string('requirementriskcalculation', 'techproject');
-        $generatorurl = new moodle_url('/mod/techproject/gdgenerators/projectrisk.php', array('id' => $cm->id, 'projectid' => $project->id, 'group' => $currentgroupid));
-        echo '<center><table width="80%"><tr>';
-        echo '<td width="60%">'.$indicatordesc.'</td>';
-        echo '<td><img src="'.$generatorurl.'" width="250" height="250" /></td>';
-        echo '</tr></table></center>';
-        if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
-            echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequ','techproject')."</a>&nbsp;";
-        }
-        techproject_print_requirements($project, $currentgroupid, 0, $cm->id);
-        if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
-            echo "<br/><a href='javascript:selectall(document.forms[\"groupopform\"])'>".get_string('selectall','techproject')."</a>&nbsp;";
-            echo "<a href='javascript:unselectall(document.forms[\"groupopform\"])'>".get_string('unselectall','techproject')."</a>&nbsp;";
-            echo "<a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequ','techproject')."</a>&nbsp;";
-            techproject_print_group_commands();
-        }
-    ?>
+<?php
+    $indicatordesc = get_string('requirementriskcalculation', 'techproject');
+    $params = array('id' => $cm->id, 'projectid' => $project->id, 'group' => $currentgroupid);
+    $generatorurl = new moodle_url('/mod/techproject/gdgenerators/projectrisk.php', $params);
+    echo '<center><table width="80%"><tr>';
+    echo '<td width="60%">'.$indicatordesc.'</td>';
+    echo '<td><img src="'.$generatorurl.'" width="250" height="250" /></td>';
+    echo '</tr></table></center>';
+    if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
+        echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequ','techproject')."</a>&nbsp;";
+    }
+    techproject_print_requirements($project, $currentgroupid, 0, $cm->id);
+    if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
+        echo "<br/><a href='javascript:selectall(document.forms[\"groupopform\"])'>".get_string('selectall','techproject')."</a>&nbsp;";
+        echo "<a href='javascript:unselectall(document.forms[\"groupopform\"])'>".get_string('unselectall','techproject')."</a>&nbsp;";
+        echo "<a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequ','techproject')."</a>&nbsp;";
+        techproject_print_group_commands();
+    }
+?>
     </form>
 <?php
 }

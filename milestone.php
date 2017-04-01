@@ -14,36 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-
-/**
- * a form constraint checking function
- * @param object $project the surrounding project cntext
- * @param object $milestone form object to be checked
- * @return a control hash array telling error statuses
- */
+defined('MOODLE_INTERNAL') || die();
 
 // Controller.
 
 if ($work == 'add' || $work == 'update') {
     include($CFG->dirroot.'/mod/techproject/edit_milestone.php');
-/// Clear all *********************************************************
+    // Clear all *********************************************************.
 
-} elseif ($work == 'clearall') {
+} else if ($work == 'clearall') {
     echo $pagebuffer;
     echo '<center>';
-    echo $OUTPUT->heading(get_string('clearallmilestones','techproject')); 
-    echo $OUTPUT->box(get_string('clearwarning','techproject'), 'generalbox'); 
+    echo $OUTPUT->heading(get_string('clearallmilestones','techproject'));
+    echo $OUTPUT->box(get_string('clearwarning','techproject'), 'generalbox');
 ?>
     <script type="text/javascript">
     function senddata(){
@@ -68,7 +58,7 @@ if ($work == 'add' || $work == 'update') {
     }
 
     echo $pagebuffer;
-    techproject_print_milestones($project, $currentgroupid, NULL, $cm->id);
+    techproject_print_milestones($project, $currentgroupid, null, $cm->id);
        if ($USER->editmode == 'on' && (has_capability('mod/techproject:changemiles', $context))) {
            echo "<br/><a href='view.php?id={$cm->id}&amp;work=add'>".get_string('addmilestone','techproject')."</a>";
            echo " - <a href='view.php?id={$cm->id}&amp;work=clearall'>".get_string('clearall','techproject')."</a>";
