@@ -37,7 +37,7 @@ class Task_Form extends moodleform {
 
         $this->mode = $mode;
         $this->project = $project;
-        if ($taskid){
+        if ($taskid) {
             $this->current = $DB->get_record('techproject_task', array('id' => $taskid));
         } else {
             $this->current = new StdClass;
@@ -141,12 +141,13 @@ class Task_Form extends moodleform {
         $attrs = array('size' => 6, 'onchange' => " task_update('quoted');task_update('spent') ");
         $mform->addElement('text', 'costrate', get_string('costrate', 'techproject'), $attrs);
         $mform->setType('costrate', PARAM_TEXT);
-        $mform->addElement('text', 'planned', get_string('planned', 'techproject'), array('size' => 6, 'onchange' => " task_update('quoted') "));
+        $attrs = array('size' => 6, 'onchange' => " task_update('quoted') ");
+        $mform->addElement('text', 'planned', get_string('planned', 'techproject'), $attrs);
         $mform->setType('planned', PARAM_INT);
 
         $static = '<span id="quoted">'.@$this->current->quoted."</span> ".$this->project->costunit;
         $mform->addElement('static', 'quoted', get_string('quoted', 'techproject'), $static);
-        $mform->addHelpButton('quoted', 'quoted', 'techproject'); 
+        $mform->addHelpButton('quoted', 'quoted', 'techproject');
 
         if (@$this->project->useriskcorrection) {
             $risks = techproject_get_options('risk', $this->project->id);
@@ -201,9 +202,9 @@ class Task_Form extends moodleform {
             $selection = $DB->get_records_select_menu('techproject_task_to_spec', $select, $params, 'specid, taskid');
             $specs = array();
             if (!empty($specifications)) {
-                foreach ($specifications as $aSpecification) {
-                    $shortabstract = shorten_text(format_string($aSpecification->abstract), 90);
-                    $specs[$aSpecification->id] = $aSpecification->ordering .' - '.$shortabstract;
+                foreach ($specifications as $aspecification) {
+                    $shortabstract = shorten_text(format_string($aspecification->abstract), 90);
+                    $specs[$aspecification->id] = $aspecification->ordering .' - '.$shortabstract;
                 }
             }
             $label = get_string('tasktospec', 'techproject');

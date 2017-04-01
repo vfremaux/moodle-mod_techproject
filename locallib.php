@@ -299,18 +299,18 @@ function techproject_print_single_specification($specification, $project, $group
             $hidesub = '<img src="'.$OUTPUT->pix_url('/p/empty', 'techproject').'" />';
         }
     } else {
-       $hidesub = '';
+        $hidesub = '';
     }
 
     $speclevel = count(explode('.', $numspec)) - 1;
     $indent = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $speclevel);
 
     // Assigned tasks by subspecs count.
-    $specList = str_replace(",", "','", techproject_get_subtree_list('techproject_specification', $specification->id));
+    $speclist = str_replace(",", "','", techproject_get_subtree_list('techproject_specification', $specification->id));
     $taskcount = techproject_print_entitycount('techproject_specification', 'techproject_task_to_spec', $project->id, $group,
-                                               'spec', 'task', $specification->id, $specList);
+                                               'spec', 'task', $specification->id, $speclist);
     $reqcount = techproject_print_entitycount('techproject_specification', 'techproject_spec_to_req', $project->id, $group,
-                                              'spec', 'req', $specification->id, $specList);
+                                              'spec', 'req', $specification->id, $speclist);
 
     // Completion count.
     $sql = "
@@ -326,7 +326,7 @@ function techproject_print_single_specification($specification, $project, $group
     ";
     $res = $DB->get_record_sql($sql);
     $completion = ($res->total != 0) ? $renderer->bar_graph_over($res->completion / $res->total, 0) : $renderer->bar_graph_over(-1, 0);
-    $checkbox = ($canedit)? "<input type=\"checkbox\" id=\"sel{$specification->id}\" name=\"ids[]\" value=\"{$specification->id}\" /> " : '';
+    $checkbox = ($canedit) ? "<input type=\"checkbox\" id=\"sel{$specification->id}\" name=\"ids[]\" value=\"{$specification->id}\" /> " : '';
     $priorityoption = techproject_get_option_by_key('priority', $project->id, $specification->priority);
     $severityoption = techproject_get_option_by_key('severity', $project->id, $specification->severity);
     $complexityoption = techproject_get_option_by_key('complexity', $project->id, $specification->complexity);
@@ -546,7 +546,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
             $hidesub = '<img src="'.$OUTPUT->pix_url('/p/empty', 'techproject').'" />';
         }
     } else {
-       $hidesub = '';
+        $hidesub = '';
     }
     $sql = "
        SELECT
@@ -572,9 +572,9 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
     $indent = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $requlevel);
 
     // assigned by subrequs count
-    $reqList = str_replace(",", "','", techproject_get_subtree_list('techproject_requirement', $requirement->id));
+    $reqlist = str_replace(",", "','", techproject_get_subtree_list('techproject_requirement', $requirement->id));
     $speccount = techproject_print_entitycount('techproject_requirement', 'techproject_spec_to_req', $project->id, $group,
-                                               'req', 'spec', $requirement->id, $reqList);
+                                               'req', 'spec', $requirement->id, $reqlist);
     $checkbox = ($canedit) ? '<input type="checkbox" id="sel'.$requirement->id.'" name="ids[]" value="'.$requirement->id.'" /> ' : '';
 
     $strengthoption = techproject_get_option_by_key('strength', $project->id, $requirement->strength);
@@ -590,7 +590,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
     }
 
     if (!$fullsingle) {
-        $hideicon = (!empty($requirement->description)) ? 'hide' : 'hide_shadow' ;
+        $hideicon = (!empty($requirement->description)) ? 'hide' : 'hide_shadow';
         $jshandler = 'javascript:toggle_show(\''.$numrequ.'\',\''.$numrequ.'\');';
         $pixurl = $OUTPUT->pix_url("p/{$hideicon}", 'techproject');
         $pixurl = '<img name="eye'.$numrequ.'" src="'.$pixurl.'" alt="collapse" />';
@@ -636,7 +636,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
         $detailurl = new moodle_url('/mod/techproject/view.php', $params);
         $desc .= '<br/><a href="'.$detailurl.'" >'.get_string('seedetail', 'techproject').'</a>';
     }
-    $desc .='</div>';
+    $desc .= '</div>';
 
     $table = new html_table();
     $table->class = 'entity';
@@ -700,7 +700,7 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
             t.*,
             m.abstract as milestoneabstract,
             c.collapsed
-        FROM 
+        FROM
             {techproject_task} t
         LEFT JOIN
             {techproject_milestone} m
@@ -712,7 +712,7 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
             t.id = c.entryid AND
             c.entity = 'tasks' AND
             c.userid = $USER->id
-        WHERE 
+        WHERE
             t.groupid = {$group} AND
             t.projectid = {$project->id} AND
             t.fatherid = {$fatherid}
@@ -729,15 +729,18 @@ function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated
                 $propagatedroot->milestoneid = $task->milestoneid;
                 $propagatedroot->milestoneabstract = $task->milestoneabstract;
             } else {
-               $task->milestoneid = $propagated->milestoneid;
-               $task->milestoneabstract = $propagated->milestoneabstract;
-               $task->milestoneforced = 1;
+                $task->milestoneid = $propagated->milestoneid;
+                $task->milestoneabstract = $propagated->milestoneabstract;
+                $task->milestoneforced = 1;
             }
             if (!@$propagated->collapsed) {
                 techproject_print_single_task($task, $project, $group, $cmid, count($tasks), false, '');
             }
 
-            if ($task->collapsed) $propagatedroot->collapsed = true; // Give signal for lower branch.
+            if ($task->collapsed) {
+                // Give signal for lower branch.
+                $propagatedroot->collapsed = true;
+            }
             $visibility = ($task->collapsed) ? 'display: none' : 'display: block';
             echo '<div id="sub'.$task->id.'" class="treenode" style="'.$visibility.'" >';
             techproject_print_tasks($project, $group, $task->id, $cmid, $propagatedroot);
@@ -811,7 +814,7 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
             $hidesub = '<img src="'.$OUTPUT->pix_url('/p/empty', 'techproject').'" />';
         }
     } else {
-       $hidesub = '';
+        $hidesub = '';
     }
 
     $tasklevel = count(explode('.', $numtask)) - 1;
@@ -847,7 +850,7 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
         if ($task->taskendenable) {
             $tasklate = ($task->taskend < time()) ? 'toolate' : 'futuretime';
             $timeduestr = '<span class="'.$tasklate.' timedue">['.userdate($task->taskend).']</span>';
-        } 
+        }
     } else {
         $params = array('id' => $cmid, 'view' => 'view_detail', 'objectId' => $task->id, 'objectClass' => 'task');
         $detailurl = new moodle_url('/mod/techproject/view.php', $params);
@@ -970,7 +973,7 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
         $markurl = new moodle_url('/mod/techproject/view.php', $params);
         $pix = '<img src="'.$pixurl.'" title="'.get_string('markastemplate', 'techproject').'" />';
         $link[] = '<a href="'.$markurl.'#node'.$task->id.'">'.$pix.'</a>';
- 
+
         $params = array('id' => $cmid, 'work' => 'dodelete', 'taskid' => $task->id, 'view' => 'tasks');
         $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
         $pixurl = $OUTPUT->pix_url('/t/delete');
@@ -1006,7 +1009,7 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
     $canedit = $USER->editmode == 'on' && has_capability('mod/techproject:changemiles', $context);
 
     $select = "projectid = ? AND groupid = ? ";
-    if ($milestones = $DB->get_records_select('techproject_milestone', $select, array($project->id, $group),'ordering ASC' )) {
+    if ($milestones = $DB->get_records_select('techproject_milestone', $select, array($project->id, $group), 'ordering ASC' )) {
         $i = 1;
         foreach ($milestones as $milestone) {
             echo '<div class="entitynode nodelevel0">';
@@ -1019,7 +1022,7 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
                 }
             }
 
-            // counting effective tasks
+            // Counting effective tasks.
             $tasks = $DB->get_records('techproject_task', array('milestoneid' => $milestone->id), '', 'id');
             $taskcount = 0;
             if ($tasks) {
@@ -1048,7 +1051,7 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
 
             // Printing milestone.
             $passed = ($milestone->deadline < usertime(time())) ? 'passedtime' : 'futuretime';
-            $milestonedeadline = ($milestone->deadlineenable) ? "(<span class='{$passed}'>".userdate($milestone->deadline).'</span>)': '';
+            $milestonedeadline = ($milestone->deadlineenable) ? "(<span class='{$passed}'>".userdate($milestone->deadline).'</span>)' : '';
             $checkbox = ($canedit) ? "<input type=\"checkbox\" name=\"ids[]\" value=\"{$milestone->id}\" />" : '';
             $taskcount = "<img src=\"".$OUTPUT->pix_url('/p/task', 'techproject')."\" />[".$taskcount."]";
             $deliverablecount = " <img src=\"".$OUTPUT->pix_url('/p/deliv', 'techproject')."\" />[".$delivcount."]";
@@ -1225,13 +1228,15 @@ function techproject_print_deliverables($project, $group, $fatherid, $cmid, $pro
             echo '<div class="entitynode nodelevel'.$level.'">';
             $propagatedroot = $propagated;
             if (!$propagated || (!isset($propagated->milestoneid) && $deliverable->milestoneid)) {
-                if (is_null($propagatedroot)) $propagatedroot = new StdClass();
+                if (is_null($propagatedroot)) {
+                    $propagatedroot = new StdClass();
+                }
                 $propagatedroot->milestoneid = $deliverable->milestoneid;
                 $propagatedroot->milestoneabstract = $deliverable->milestoneabstract;
             } else {
-               $deliverable->milestoneid = $propagated->milestoneid;
-               $deliverable->milestoneabstract = $propagated->milestoneabstract;
-               $deliverable->milestoneforced = 1;
+                $deliverable->milestoneid = $propagated->milestoneid;
+                $deliverable->milestoneabstract = $propagated->milestoneabstract;
+                $deliverable->milestoneforced = 1;
             }
             techproject_print_single_deliverable($deliverable, $project, $group, $cmid, count($deliverables));
 
@@ -1279,7 +1284,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
             $hidesub = '<img src="'.$OUTPUT->pix_url('p/empty', 'techproject').'" />';
         }
     } else {
-       $hidesub = '';
+        $hidesub = '';
     }
 
     $delivlevel = count(explode('.', $numdeliv)) - 1;
@@ -1305,7 +1310,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
     ";
     $completion = '';
     if ($res = $DB->get_record_sql($sql)) {
-         if ($res->count != 0) {
+        if ($res->count != 0) {
             $deliverable->done = ($res->count != 0) ? round($res->done / $res->count, 1) : 0;
             $over = ($res->planned && $res->planned < $res->used) ? floor((($res->used - $res->planned) / $res->planned) * 60) : 0;
             $completion = $renderer->bar_graph_over($deliverable->done, $over, 60, 5);
@@ -1341,7 +1346,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
     } else if ($deliverable->url) {
         $abstract = '<a href="'.$deliverable->url.'" target="_blank">'.$deliverable->abstract.'</a>';
     } else {
-       $abstract = format_string($deliverable->abstract);
+        $abstract = format_string($deliverable->abstract);
     }
     $head = '<table width="100%" class="nodecaption">';
     $head .= '<tr>';
@@ -1383,7 +1388,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
     if (!$fullsingle) {
         $params = array('id' => $cmid, 'view' => 'view_detail', 'objectId' => $deliverable->id, 'objectClass' => 'deliverable');
         $detailurl = new moodle_url('/mod/techproject/view.php', $params);
-        $desc .= '<br/><a href="'.$detailurl.'" >'.get_string('seedetail', 'techproject')."</a></div>"; 
+        $desc .= '<br/><a href="'.$detailurl.'" >'.get_string('seedetail', 'techproject')."</a></div>";
     }
     $desc .= "</div>";
 
@@ -1421,7 +1426,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
         $table->data[] = array($indent . implode (' ' , $link));
         $table->rowclass[] = 'controls';
     }
-    
+
     $table->style = "generaltable";
     techproject_print_project_table($table);
     unset($table);
@@ -1585,12 +1590,12 @@ function techproject_check_task_circularity($taskid, $masterid) {
  * @param id an item root of the query. Will be expansed to all its subtree.
  * @param whatlist a list of nodes resulting of a previous id expansion
  */
-function techproject_print_entitycount($table1, $table2, $projectid, $groupid, $what, $relwhat, $id, $whatList = '') {
+function techproject_print_entitycount($table1, $table2, $projectid, $groupid, $what, $relwhat, $id, $whatlist = '') {
     global $CFG, $DB, $OUTPUT;
 
     // Get concerned subtree if not provided.
-    if (!isset($whatList) || empty($whatList)) {
-        $whatList = str_replace(",", "','", techproject_get_subtree_list($table1, $id));
+    if (!isset($whatlist) || empty($whatlist)) {
+        $whatlist = str_replace(",", "','", techproject_get_subtree_list($table1, $id));
     }
 
     // Assigned reqs by subspecs count.
@@ -1600,7 +1605,7 @@ function techproject_print_entitycount($table1, $table2, $projectid, $groupid, $
        FROM
             {{$table2}}
        WHERE
-            {$what}id IN ('{$whatList}') AND
+            {$what}id IN ('{$whatlist}') AND
             projectid = {$projectid} AND
             groupid = {$groupid}
     ";
@@ -1762,7 +1767,8 @@ function techproject_print_project_table($table, $return = false) {
             $output .= '<tr class="r'.$oddeven.'">'."\n";
             if ($row == 'hr' and $countcols) {
                 $output .= '<td colspan="'. $countcols .'"><div class="tabledivider"></div></td>';
-            } else {  /// it's a normal row of data
+            } else {
+                // It's a normal row of data.
                 foreach ($row as $key => $item) {
                     if (!isset($size[$key])) {
                         $size[$key] = '';
@@ -1840,13 +1846,13 @@ function techproject_autograde($project, $groupid) {
                 {techproject_task_to_deliv} as ttd
             WHERE
                 str.reqid IN ('{$upperbranchlist}') AND
-                str.specid = tts.specid AND 
+                str.specid = tts.specid AND
                 tts.taskid = ttd.taskid AND
                 str.projectid = {$project->id} AND
                 str.groupid = {$groupid}
         ";
         $res = $DB->get_record_sql($sql);
-        if($res->coveringChains > 0) {
+        if ($res->coveringChains > 0) {
             $coveredreqs++;
         }
     }
@@ -1884,24 +1890,25 @@ function techproject_autograde($project, $groupid) {
                 {techproject_task_to_spec} as tts,
                 {techproject_task_to_deliv} as ttd
             WHERE
-                str.specid = tts.specid AND 
+                str.specid = tts.specid AND
                 tts.taskid = ttd.taskid AND
                 ttd.delivid IN ('{$upperbranchlist}') AND
                 str.projectid = {$project->id} AND
                 str.groupid = {$groupid}
         ";
         $res = $DB->get_record_sql($sql);
-        if($res->coveringChains > 0) {
+        if ($res->coveringChains > 0) {
             $covereddelivs++;
         }
     }
     $delivrate = ($effectivedeliverablescount) ? $covereddelivs / $effectivedeliverablescount : 0;
-    echo '<br/><b>'.get_string('deliverablesrate', 'techproject').' :</b> '.$covereddelivs.' '.get_string('over', 'techproject').' '.$effectivedeliverablescount.' : '.sprintf("%.02f", $delivrate);
-    // now we know how many deliverables are really covered directly or indirectly.
+    echo '<br/><b>'.get_string('deliverablesrate', 'techproject').' :</b> ';
+    echo $covereddelivs.' '.get_string('over', 'techproject').' '.$effectivedeliverablescount.' : '.sprintf("%.02f", $delivrate);
+    // Now we know how many deliverables are really covered directly or indirectly.
 
     // Step 3 : calculating global completion indicator on tasks (only meaning root tasks is enough).
     $select = "projectid = ? AND groupid = ? AND fatherid = 0";
-    $roottasks = $DB->get_records_select('techproject_task', $select, array($project->id, $group)); 
+    $roottasks = $DB->get_records_select('techproject_task', $select, array($project->id, $group));
     $completion = 0;
     if ($roottasks) {
         foreach ($roottasks as $atask) {
@@ -1951,12 +1958,12 @@ function techproject_autograde($project, $groupid) {
         // Calculating charge mean and variance.
         $totalcharge = array_sum(array_values($membercharge));
         $assigneecount = count(array_keys($membercharge));
-        $meancharge = ($assigneecount == 0) ? 0 : $totalcharge / $assigneecount ;
+        $meancharge = ($assigneecount == 0) ? 0 : $totalcharge / $assigneecount;
         $quadraticsum = 0;
         foreach (array_values($membercharge) as $acharge) {
             $quadraticsum += ($acharge - $meancharge) * ($acharge - $meancharge);
         }
-        $sigma = sqrt($quadraticsum/$assigneecount);
+        $sigma = sqrt($quadraticsum / $assigneecount);
         echo '<br/><b>' . get_string('chargedispersion', 'techproject') . ' :</b> ' . sprintf("%.02f", $sigma);
     }
     $totalgrade = round((0 + @$done + @$requrate + @$delivrate) / 3, 2);
@@ -2109,7 +2116,7 @@ function techproject_get_full_xml(&$project, $groupid) {
     techproject_tree_get_list('techproject_milestone', $project->id, $groupid, $milestones, 0);
     $xmlmiles = recordstoxml($milestones, 'milestone', '', false, null);
 
-    /// Finally, get the master record and make a full XML with it
+    // Finally, get the master record and make a full XML with it.
     $techproject = $DB->get_record('techproject', array('id' => $project->id));
     $techproject->wwwroot = $CFG->wwwroot;
     $techprojects[$techproject->id] = $techproject;
@@ -2207,9 +2214,9 @@ function close_unclosed($string, $opentag, $closetag) {
  * Get qualifier domain or a domain value
  * @param string $domain the qualifier domain name
  * @param int $id if id is given returns a single value
- * @param boolean $how this parameter tels how to search results. When an id is given it tells what the id is as an identifier (a Mysql record id or a code). 
+ * @param boolean $how this parameter tels how to search results. When an id is given it tells what the id is as an identifier (a Mysql record id or a code).
  * @param int $scope the value scope which is assimilable to a project id or 0 if global scope
- * @param string $sortby 
+ * @param string $sortby
  */
 function techproject_get_domain($domain, $id, $how = false, $scope, $sortby = 'label') {
     global $DB;
@@ -2459,7 +2466,7 @@ function techproject_print_validation_states_form($validsessid, &$project, $grou
             e.fatherid = ?
         GROUP BY
             e.id
-        ORDER BY 
+        ORDER BY
             ordering
     ";
     if ($states = $DB->get_records_sql($sql, array($USER->id, $project->id, $validsessid, $groupid, $project->id, $fatherid))) {
@@ -2548,7 +2555,7 @@ function milestone_check_constraints($project, $milestone) {
 
         case DAY: {
             $plannedtime = 3600 * 24;
-            break ;
+            break;
         }
 
         default:
@@ -2593,13 +2600,13 @@ function task_check_constraints($project, $task) {
     $control = null;
     switch($project->timeunit) {
         case HOURS: {
-            $plannedtime = 3600 ;
-            break ;
+            $plannedtime = 3600;
+            break;
         }
 
         case HALFDAY: {
             $plannedtime = 3600 * 12;
-            break ;
+            break;
         }
 
         case DAY: {
@@ -2648,7 +2655,7 @@ function task_check_constraints($project, $task) {
 
 function techproject_check_startup_level($entity, $fatherid, &$level, &$startuplevelcheck) {
     global $DB;
-    
+
     if (!$startuplevelcheck) {
         if (!$fatherid) {
             $level = 0;
@@ -2725,7 +2732,7 @@ function techproject_complete_user(&$user) {
         $fields = get_all_user_name_fields(true);
         $usercomps[$user->id] = $DB->get_record('user', array('id' => $user->id), $fields);
     }
-    foreach ($usercomps[$user->id] AS $var => $value) {
+    foreach ($usercomps[$user->id] as $var => $value) {
         $user->$var = $value;
     }
 }

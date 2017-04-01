@@ -45,8 +45,8 @@ $CFG->systemfonts = "C:/WINNT/fonts/";
 $ttffont = "Arial";
 
 // Tracing output for debugging.
-$TRACE = fopen("outputgs.txt", "a");
-if ($trace) fwrite($TRACE, "GRAPH $r\n" );
+$trace = fopen("outputgs.txt", "a");
+if ($trace) fwrite($trace, "GRAPH $r\n" );
 
 // Get project info.
 $timerangeend = ($project->projectend - $project->projectstart);
@@ -56,10 +56,10 @@ $daysinrange = $zoomedtimerange / (3600 * 24);
 $pixperday = $w / $daysinrange;
 
 // Get first day (being $project->projectstart + $s).
-$jdStart = unixtojd($project->projectstart + $s);
+ $jdstart = unixtojd($project->projectstart + $s);
 
 // draw calendar grid for monthes
-$cal = cal_from_jd($jdStart, CAL_GREGORIAN);
+$cal = cal_from_jd( $jdstart, CAL_GREGORIAN);
 $startmonth = $cal['month'];
 $startyear = $cal['year'];
 
@@ -74,9 +74,9 @@ $select = "
 $milestones = $DB->get_records_select('techproject_milestone', $select, array($project->id, $currentgroupid), 'deadline');
 $milemarks = array();
 if ($milestones) {
-    foreach ($milestones as $aMilestone) {
-        $milestonejd = unixtojd($aMilestone->deadline);
-        $milemarks[$milestonejd] = $aMilestone;
+    foreach ($milestones as $amilestone) {
+        $milestonejd = unixtojd($amilestone->deadline);
+        $milemarks[$milestonejd] = $amilestone;
     }
 }
 
@@ -96,19 +96,18 @@ if (@$outputtype == 'HTML') {
     $startrange = 0;
     $color = 'white';
     $toggle = true;
-    for($i = 0 ; $i < $daysinrange ; ){
-        $cal = cal_from_jd($jdStart + $i, CAL_GREGORIAN);
-        $mdays = cal_days_in_month(CAL_GREGORIAN, $cal['month'], $cal['year']);    
-        $daystocomplete = ($i == 0) ? $mdays - $cal['day'] + 1 : $mdays ;
+    for ($i = 0; $i < $daysinrange;) {
+        $cal = cal_from_jd( $jdstart + $i, CAL_GREGORIAN);
+        $mdays = cal_days_in_month(CAL_GREGORIAN, $cal['month'], $cal['year']);
+        $daystocomplete = ($i == 0) ? $mdays - $cal['day'] + 1 : $mdays;
         $range = min($startrange + $daystocomplete * $pixperday, $w);
         echo "[ $startrange - $range ]<br/>";
         $toggle = !$toggle;
-        $color = ($toggle) ? 'white' : 'lightgray' ;
+        $color = ($toggle) ? 'white' : 'lightgray';
         echo "($color)" ;
         $startrange = $range;
         $i += $daystocomplete;
     }
-    phpinfo();
 
 /*
  *
@@ -116,26 +115,27 @@ if (@$outputtype == 'HTML') {
  *
  */
 } else {
-    // Searching for font files
+    // Searching for font files.
     $fontfile = $CFG->dirroot . "/mod/techproject/fonts/arial.ttf";
-    if (!file_exists($fontfile))
+    if (!file_exists($fontfile)) {
         $fontfile = $CFG->dirroot . "/fonts/{$ttffont}.ttf";
-    // if fonts where not given by project, try with system fonts.
-    if (!file_exists($fontfile))
+    }
+    // If fonts where not given by project, try with system fonts.
+    if (!file_exists($fontfile)) {
         $fontfile = @$CFG->systemfonts . "/{$ttffont}.ttf";
-    if (!file_exists($fontfile)){
+    }
+    if (!file_exists($fontfile)) {
         echo "no font file for generator";
         exit(0);
     }
 
     header("Content-type: image/png");
 
-    $height = (@$outputtype == 'HEADING') ? 22 : 1 ;
-    // output special situations messages 
+    $height = (@$outputtype == 'HEADING') ? 22 : 1;
+    // Output special situations messages.
     $im = imagecreatetruecolor($w, $height);
 
-    // imageantialias($im, TRUE);
-    // Assigning colors
+    // Assigning colors.
     $colors['black'] = imagecolorallocate($im, 0, 0, 0);
     $colors['quiteblack'] = imagecolorallocate($im, 10, 10, 10);
     $colors['white'] = imagecolorallocate($im, 240, 240, 240);
@@ -153,13 +153,13 @@ if (@$outputtype == 'HTML') {
         $color = $colors['white'];
         $toggle = true;
         for ($i = 0; $i < $daysinrange;) {
-            $cal = cal_from_jd($jdStart + $i, CAL_GREGORIAN);
+            $cal = cal_from_jd( $jdstart + $i, CAL_GREGORIAN);
             $mdays = cal_days_in_month(CAL_GREGORIAN, $cal['month'], $cal['year']);
             $daystocomplete = ($i == 0) ? $mdays - $cal['day'] + 1 : $mdays;
             $range = min($startrange + $daystocomplete * $pixperday, $w);
             imagefilledrectangle($im, $startrange, 0, $range, 22, $color);
             if ($range - $startrange > 40) {
-                $monthname = mb_convert_encoding(get_string(strtolower(jdmonthname($jdStart + $i, 1)), 'techproject'), 'auto', 'utf8');
+                $monthname = mb_convert_encoding(get_string(strtolower(jdmonthname( $jdstart + $i, 1)), 'techproject'), 'auto', 'utf8');
                 imagestring($im, 2, 1 + $startrange, 3, $monthname, $colors['quiteblack']);
             }
             $toggle = !$toggle;
@@ -169,19 +169,19 @@ if (@$outputtype == 'HTML') {
         }
         for ($i = 0; $i <= $daysinrange; $i++) {
             // Prints special marks on calendar.
-            if ($jdStart + $i == $today) {
+            if ($jdstart + $i == $today) {
                 imagefilledrectangle($im, $i * $pixperday, 0, ($i + 1) * $pixperday - 1, 22, $colors['lightblue']);
-            } else if (isset($milemarks[$jdStart + $i])) {
+            } else if (isset($milemarks[ $jdstart + $i])) {
                 imagefilledrectangle($im, $i * $pixperday, 0, ($i + 1) * $pixperday - 1, 22, $colors['goldyellow']);
             }
         }
-    // Heading displays Gantt task grid background.
+        // Heading displays Gantt task grid background.
     } else {
         $startrange = 0;
         $color = $colors['white'];
         $toggle = true;
         for ($i = 0; $i < $daysinrange;) {
-            $cal = cal_from_jd($jdStart + $i, CAL_GREGORIAN);
+            $cal = cal_from_jd( $jdstart + $i, CAL_GREGORIAN);
             $mdays = cal_days_in_month(CAL_GREGORIAN, $cal['month'], $cal['year']);
             $daystocomplete = ($i == 0) ? $mdays - $cal['day'] + 1 : $mdays;
             $range = min($startrange + $daystocomplete * $pixperday, $w);
@@ -193,21 +193,23 @@ if (@$outputtype == 'HTML') {
         }
         for ($i = 0; $i <= $daysinrange; $i++) {
             // Prints special marks on calendar.
-            if ($jdStart + $i == $today) {
+            if ( $jdstart + $i == $today) {
                 imagefilledrectangle($im, $i * $pixperday, 0, ($i + 1) * $pixperday - 1, 0, $colors['lightblue']);
-            } elseif(isset($milemarks[$jdStart + $i])) {
+            } else if (isset($milemarks[ $jdstart + $i])) {
                 imagefilledrectangle($im, $i * $pixperday, 0, ($i + 1) * $pixperday - 1, 0, $colors['goldyellow']);
             }
             // Prints day line on calendar.
-            switch (jddayofweek($jdStart + $i)) {
+            switch (jddayofweek($jdstart + $i)) {
                 case 0: {
                     $color = $colors['black'];
                     break;
                 }
+
                 case 6: {
                     $color = $colors['quiteblack'];
                     break;
                 }
+
                 default:
                     $color = $colors['gray'];
             }

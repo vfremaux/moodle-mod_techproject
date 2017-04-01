@@ -46,7 +46,7 @@ class Domain_Form extends moodleform {
         $mform->addElement('hidden', 'view', 'domains_'.$this->domain);
         $mform->setType('view', PARAM_TEXT);
 
-        if (isset($this->domainvalue->id)){
+        if (isset($this->domainvalue->id)) {
             $mform->addElement('hidden', 'domainid', $this->domainvalue->id);
             $mform->setType('domainid', PARAM_INT);
         }

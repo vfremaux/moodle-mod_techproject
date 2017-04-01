@@ -61,7 +61,7 @@ class Specification_Form extends moodleform {
                                           'subdirs' => false,
                                           'maxfiles' => $maxfiles,
                                           'maxbytes' => $maxbytes,
-                                          'context' => $modcontext);        
+                                          'context' => $modcontext);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

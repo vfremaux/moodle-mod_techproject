@@ -873,7 +873,7 @@ function techproject_print_recent_activity($course, $isteacher, $timestart) {
 /**
  * Must return an array of grades for a given instance of this module,
  * indexed by user. It also returns a maximum allowed grade.
- * 
+ *
  * Example:
  *    $return->grades = array of grades;
  *    $return->maxgrade = maximum allowed grade;
@@ -998,7 +998,7 @@ function techproject_get_participants($moduleid) {
         $allusers = array_keys($usersreqs);
     }
     if (!empty($usersspecs)) {
-        $allusers = array_merge($allusers, array_keys($usersspecs));
+        $allusers = array_merge($allusers, array_keys($usersspecs));$delivcount
     }
     if (!empty($userstasks)) {
         $allusers = array_merge($allusers, array_keys($userstasks));

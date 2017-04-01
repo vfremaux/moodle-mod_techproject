@@ -116,7 +116,7 @@ $string['backtosessions'] = 'Back to session summary';
 $string['baddefaultqualifierseterror'] = 'Error : qualifier set is not compatible for restauration';
 $strring['badcopycase'] = 'Bad copy case';
 $string['beta'] = 'Beta';
-$string['betadesc'] = 'Beta testing unit. Use without guarantee'; 
+$string['betadesc'] = 'Beta testing unit. Use without guarantee';
 $string['blocked'] = 'Blocked';
 $string['blockeddesc'] = 'No way to go further, we must override some external issues first.';
 $string['bounditems'] = 'Bindings to {$a}';
@@ -865,7 +865,7 @@ $string['importdata_help'] = '
 <p>The first line of the file must give column names. A semi-column ";" is required. The content must be encoded in UTF-8.</p>
 
 <h4>Mandatory elements</h4>
-	
+
 <p>The CSV file has to provide mandatory information:</p>
 <ul>
 <li><b>"id" :</b> record identifier. An arbitrary identification, whatever the format, pursuant it is an unique code.</li>
@@ -882,12 +882,12 @@ following the branch developement. Values for parent can be:
 
 <p>An additional column is common to all four entities.</p>
 <ul>
-	<li><b>"abstract" :</b> Defines a caption for the entity</li>
+    <li><b>"abstract" :</b> Defines a caption for the entity</li>
 </ul>
 
 <h4>Specific optional elements</h4>
 
-<p>Some specific information may be added in entities (qualifiers).</p> 
+<p>Some specific information may be added in entities (qualifiers).</p>
 ';
 
 $string['label_help'] = '
@@ -1103,7 +1103,7 @@ $string['weight_help'] = '
 $string['unspecifiedtasks_help'] = '
 <p>Priority is given to the specification, whuch stands for a more pregannt project component to do before others. Tasks
 that have no assignation to any specification cannot resolve their priority. They remain within an "unassigned set".</p>
-'; 
+';
 
 $string['newentrynotify_tpl'] = '
 <h2>Project : <%%PROJECT%%></h2>

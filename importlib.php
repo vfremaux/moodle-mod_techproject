@@ -33,8 +33,8 @@ function techproject_import_entity($techprojectid, $cmid, $data, $type, $groupid
     $data = explode("\n", $data);
 
     $errors = 0;
-    $errors_no_parent = 0;
-    $errors_insert = 0;
+    $errorsnoparent = 0;
+    $errorsinsert = 0;
     $errorsbadcounts = 0;
 
     switch ($type) {
@@ -123,26 +123,33 @@ function techproject_import_entity($techprojectid, $cmid, $data, $type, $groupid
 
         if ($DB->insert_record($tablename, $recobject)) {
             $DB->delete_records($tablename, array('projectid' => $techprojectid));
-            // purge crossmappings
+            // Purge crossmappings.
             switch ($type) {
-                case 'requs':
+                case 'requs': {
                     $DB->delete_records('techproject_spec_to_req', array('projectid' => $techprojectid));
-                break;
-                case 'specs':
+                    break;
+                }
+
+                case 'specs': {
                     $DB->delete_records('techproject_spec_to_req', array('projectid' => $techprojectid));
                     $DB->delete_records('techproject_task_to_spec', array('projectid' => $techprojectid));
-                break;
-                case 'tasks':
+                    break;
+                }
+
+                case 'tasks': {
                     $DB->delete_records('techproject_task_to_spec', array('projectid' => $techprojectid));
                     $DB->delete_records('techproject_task_to_deliv', array('projectid' => $techprojectid));
                     $DB->delete_records('techproject_task_dependency', array('projectid' => $techprojectid));
-                break;
-                case 'deliv':
+                    break;
+                }
+
+                case 'deliv': {
                     $DB->delete_records('techproject_task_to_deliv', array('projectid' => $techprojectid));
-                break;
+                    break;
+                }
             }
-            $ID_MAP = array();
-            $PARENT_ORDERING = array();
+            $idmap = array();
+            $parentordering = array();
             $ordering = 1;
             foreach ($checkedrecords as $record) {
                 $recobject = (object)array_combine($columnnames, explode(';', $record));
@@ -150,19 +157,22 @@ function techproject_import_entity($techprojectid, $cmid, $data, $type, $groupid
                 $parent = $recobject->parent;
                 unset($recobject->id);
                 unset($recobject->parent);
-                if (!isset($TREE_ORDERING[$parent])) {
-                    $TREE_ORDERING[$parent] = 1;
+
+                if (!isset($treeordering[$parent])) {
+                    $treeordering[$parent] = 1;
                 } else {
-                    $TREE_ORDERING[$parent]++;
+                    $treeordering[$parent]++;
                 }
-                $recobject->ordering = $TREE_ORDERING[$parent];
+
+                $recobject->ordering = $treeordering[$parent];
+
                 if ($parent != 0) {
-                    if (empty($ID_MAP[$parent])) {
+                    if (empty($idmap[$parent])) {
                         $errors++;
-                        $errors_no_parent++;
+                        $errorsnoparent++;
                         continue;
                     }
-                    $recobject->fatherid = $ID_MAP[$parent];
+                    $recobject->fatherid = $idmap[$parent];
                 } else {
                     $recobject->fatherid = 0;
                 }
@@ -178,9 +188,9 @@ function techproject_import_entity($techprojectid, $cmid, $data, $type, $groupid
                     $recobject->abstract = shorten_text($recobject->description, 100);
                 }
 
-                if (!($ID_MAP["$oldid"] = $DB->insert_record($tablename, $recobject))) {
+                if (!($idmap["$oldid"] = $DB->insert_record($tablename, $recobject))) {
                     $errors++;
-                    $errors_insert++;
+                    $errorsinsert++;
                 }
             }
         } else {
@@ -189,8 +199,8 @@ function techproject_import_entity($techprojectid, $cmid, $data, $type, $groupid
     }
     if ($errors) {
         echo "Errors : $errors<br/>";
-        echo "Errors in tree : $errors_no_parent<br/>";
-        echo "Insertion Errors : $errors_insert<br/>";
+        echo "Errors in tree : $errorsnoparent<br/>";
+        echo "Insertion Errors : $errorsinsert<br/>";
         echo "Insertion Errors : $errorsbadcounts<br/>";
     }
     echo $OUTPUT->continue_button(new moodle_url('/mod/techproject/view.php', array('view' => $view, 'id' => $cmid)));

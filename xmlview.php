@@ -31,7 +31,7 @@ require_once($CFG->dirroot.'/mod/techproject/locallib.php');
 
 // Fixes locale for all date printing.
 
-setLocale(LC_TIME, substr(current_language(), 0, 2));
+setlocale(LC_TIME, substr(current_language(), 0, 2));
 
 // Get context information.
 
@@ -109,7 +109,7 @@ if (is_object($doc)) {
         $html .= $i . " " . $line."\n";
         $i++;
     }
-    $html .="</pre><hr/>";
+    $html .= "</pre><hr/>";
 }
 
 // Deliver the document.

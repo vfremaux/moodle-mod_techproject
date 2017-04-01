@@ -128,7 +128,7 @@ $string['cannotevaluate'] = 'Les réglages ou la composition du projet ne permet
 $string['cannotevaluatenocriteria'] = 'Pas d\'évaluation possible. Aucun critère défini.<br/> Commencez d\'abord par définir des critères.';
 $string['cannotselfcopy'] = 'Un projet ne peut pas être copié sur lui-même. Recommencez votre sélection.';
 $string['canwait'] = 'Peut attendre';
-$string['canwaitdesc'] = 'Pëut attendre encore...'; 
+$string['canwaitdesc'] = 'Pëut attendre encore...';
 $string['chargedispersion'] = 'Répartition de la charge de travail';
 $string['choosewhat'] = 'Choisir une action pour la sélection';
 $string['clearall'] = 'Effacer tout';
@@ -231,7 +231,7 @@ $string['exportheadingtoxml'] = 'Exporter le cartouche en XML';
 $string['exports'] = 'Fonctions d\'export';
 $string['features'] = 'Entités';
 $string['fix'] = 'Réparation';
-$string['fixdesc'] = 'Attention, cette ressource peut contenir des erreurs.'; 
+$string['fixdesc'] = 'Attention, cette ressource peut contenir des erreurs.';
 $string['fixingforeignkeys'] = 'Réassignation des clefs étrangères';
 $string['freecriteriaset'] = 'Critères pour évaluation globale';
 $string['from'] = 'De&nbsp;:&ensp;';
@@ -259,7 +259,7 @@ $string['groupless'] = 'Hors groupe (espace de travail par défaut)';
 $string['groupmove'] = 'Déplacement d\'entités';
 $string['groupname'] = 'Nom du groupe';
 $string['groupoperations'] = 'Opérations de groupe';
-$string['groupxmlexport'] = 'Export d\'entités'; 
+$string['groupxmlexport'] = 'Export d\'entités';
 $string['guestsallowed'] = 'Autoriser les invités à voir';
 $string['guestscanuse'] = 'Autoriser les invités à modifier (demo)';
 $string['guestspermissions'] = 'Permissions des invités';
@@ -447,7 +447,7 @@ $string['severity'] = 'Niveau d\'exigeance';
 $string['sharedscope'] = 'Qualifieurs globaux';
 $string['sharethisdocument'] = 'Partagez ce document avec des personnes extérieures par l\'url suivante :</br> {$a}';
 $string['should'] = 'SHOULD';
-$string['shoulddesc'] = 'Nous souhaitons vivementle voir, mais ça reste encore négociable.'; 
+$string['shoulddesc'] = 'Nous souhaitons vivementle voir, mais ça reste encore négociable.';
 $string['showdetails'] = 'Montrer le détail';
 $string['simple'] = 'Simple';
 $string['simpledesc'] = 'Un petit travail, mais facile à faire.';
@@ -761,7 +761,7 @@ sont résumées ci-dessous :</p>
 <br/>
 Option activée : Les invités peuvent naviguer dans le seul espace de travail "hors groupe", avec des droits d\'édition
 ou non (c.f. <a href="help.php?module=techproject&file=guestscanuse.html&forcelang=fr_utf8">invités éditeurs</a>)</li>
-    
+
 <li>Groupes visibles<br/>
 <br/>
 Option activée : Les invités peuvent naviguer dans tous les espaces de travail pour consultation. Il peuvent recevoir
@@ -788,10 +788,10 @@ $string['importdata_help'] = '
 <p>Cette focntion permet de charger un arbre d\'entités de projet à partir d\'un fichier CSV préconstitué.</p>
 
 <p>Le fichier doit avoir une première ligne qui donne le nom des colonnes. Le séparateur autorisé est le ";". Le fichier
-	peut être indifféremment au format DOS ou au format Unix.</p>
+peut être indifféremment au format DOS ou au format Unix.</p>
 
 <h4>Eléments obligatoires</h4>
-	
+
 <p>Le fichier CSV doit comporter certaines colonnes obligatoires :</p>
 <ul>
 <li><b>"id" :</b> identifie chaque enregistrement. Il s\'agit d\'une identification arbitraire qui peut prendre n\'importe
@@ -816,7 +816,7 @@ sera raccourcie pour générer automatiquent un titre.</li>
 
 <h4>Elements optionnels spécifiques</h4>
 
-<p>Certaines informations peuvent être ajoutées dans certaines entités (qualificateurs).</p> 
+<p>Certaines informations peuvent être ajoutées dans certaines entités (qualificateurs).</p>
 ';
 
 $string['itemcriteriaset_help'] = '
@@ -933,7 +933,7 @@ sont insuffisants ou le "budget" trop faible.</p>
 ';
 
 $string['taskdependency_help'] = '
-<p>Ce sélecteur permet de déterminer les dépendances entre tâches.</p> 
+<p>Ce sélecteur permet de déterminer les dépendances entre tâches.</p>
 
 <p>Il est naturel, dans un projet complexe, qu\'une tâche dépende d\'une autre tâche, parce que les produits
 de cette dernière servent dans l\'exécution de la première.</p>
@@ -952,7 +952,7 @@ dépende d\'une quelconque de ses super-tâches.</p>
 
 $string['taskenddate_help'] = '
 <p>Une date butoir peut être définie pour une tache. Cette date butoir doit être cohérente avec la date de
-début de tâche et la durée prévue pour la tache :</p> 
+début de tâche et la durée prévue pour la tache :</p>
 <ul>
 <li>Si la date de début est définie, la date butoir ne peut être antérieure à la date de début augmentée de la durée prévue.</li>
 <li>Si la date de début n\'est pas activée, elle sera néanmoins automatiquement calculée comme la date butoir diminuée de la durée prévue.</li>
