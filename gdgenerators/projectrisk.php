@@ -25,6 +25,8 @@ define('YOFFSET', 8);
 if (!defined('MOODLE_INTERNAL')) {
     require('../../../config.php');
 
+    include_once($CFG->dirroot.'/mod/techproject/gdgenerators/lib.php');
+
     $outputtype = optional_param('outputType', '', PARAM_CLEAN); // Course Module ID.
     $projectid = required_param('projectid', PARAM_INT); // Project id.
     $id = optional_param('id', 0, PARAM_INT); // Course Module ID.
@@ -36,22 +38,7 @@ if (!defined('MOODLE_INTERNAL')) {
 
     // Check current group and change, for anyone who could.
     $course = $DB->get_record('course', array('id' => $project->course));
-    if (!$groupmode = groups_get_activity_groupmode($cm, $course)) {
-        // Are groups being used?
-        $currentgroupid = 0;
-    } else {
-        $changegroup = isset($_GET['group']) ? $_GET['group'] : -1; // Group change requested?
-        if (isguestuser()) {
-            // For guests, use session.
-            if ($changegroup >= 0) {
-                $_SESSION['guestgroup'] = $changegroup;
-            }
-            $currentgroupid = 0 + @$_SESSION['guestgroup'];
-        } else {
-            // For normal users, change current group.
-            $currentgroupid = 0 + get_and_set_current_group($course, $groupmode, $changegroup);    
-        }
-    }
+    $currentgroupid = techproject_resolve_group($course, $cm);
 }
 $trace = 0;
 

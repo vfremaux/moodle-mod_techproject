@@ -19,6 +19,9 @@
 
 if (!defined('MOODLE_INTERNAL')) {
     require('../../../config.php');
+
+    include_once($CFG->dirroot.'/mod/techproject/gdgenerators/lib.php');
+
     $projectid = required_param('projectid', PARAM_INT);    // Project id.
     $s = optional_param('s', 0, PARAM_INT);    // Start offset.
     $w = optional_param('w', 600, PARAM_INT);    // Graphic width.
@@ -30,24 +33,10 @@ if (!defined('MOODLE_INTERNAL')) {
     $cm = $DB->get_record('course_modules', array('id' => $id));
 
     require_login($project->course);
+
     // Check current group and change, for anyone who could.
     $course = $DB->get_record('course', array('id' => $project->course));
-    if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // Groups are being used ?
-        $currentgroupid = 0;
-    } else {
-        $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;
-        // Group change requested ?
-        if (isguestuser()) {
-            // For guests, use session.
-            if ($changegroup >= 0) {
-                $_SESSION['guestgroup'] = $changegroup;
-            }
-            $currentgroupid = 0 + @$_SESSION['guestgroup'];
-        } else {
-            // For normal users, change current group.
-            $currentgroupid = 0 + get_and_set_current_group($course, $groupmode, $changegroup);
-        }
-    }
+    $currentgroupid = techproject_resolve_group($course, $cm);
 }
 $trace = 0;
 
