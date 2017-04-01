@@ -17,7 +17,7 @@
 /**
  * This screen is a parametric generic object viewer. It displays the full content of
  * an entity entry and related links allowing to browse the dependency network. Standard
- * movements are : 
+ * movements are :
  *
  * If objectClass is entity-tree : up next previous down
  * If objectClass is entity-list : next previous
@@ -28,7 +28,7 @@
  * If objectClass is specification :
  * linkedrequs[], linkedtasks[]
  *
- * If objectClass is task : 
+ * If objectClass is task :
  * linkedspecs[], linkeddelivs[], linkedmasters[], linkedslaves[]
  *
  * If objectClass is milestone
@@ -70,12 +70,12 @@ if (array_key_exists('objectId', $_GET) && !empty($_GET['objectId'])) {
         return;
     }
 }
-$objectClass = $_SESSION['objectClass'];
-$objectId = $_SESSION['objectId'];
+$objectclass = $_SESSION['objectClass'];
+$objectid = $_SESSION['objectId'];
 
 // Making viewer.
-$params = array('id' => $objectId, 'projectid' => $project->id, 'groupid' => $currentgroupid);
-if (!$object = $DB->get_record('techproject_' . $objectClass, $params)) {
+$params = array('id' => $objectid, 'projectid' => $project->id, 'groupid' => $currentgroupid);
+if (!$object = $DB->get_record('techproject_' . $objectclass, $params)) {
     echo '<center>';
     echo $OUTPUT->box(format_text(get_string('selectanobjectfirst', 'techproject'), FORMAT_HTML), 'center', '70%');
     echo '</center>';
@@ -83,16 +83,19 @@ if (!$object = $DB->get_record('techproject_' . $objectClass, $params)) {
 }
 $previousordering = $object->ordering - 1;
 $nextordering = $object->ordering + 1;
+
 $params = array('projectid' => $project->id,
                 'groupid' => $currentgroupid,
                 'fatherid' => $object->fatherid,
                 'ordering' => $previousordering);
-$previousobject = $DB->get_record("techproject_{$objectClass}", $params);
+$previousobject = $DB->get_record("techproject_{$objectclass}", $params);
+
 $params = array('projectid' => $project->id,
                 'groupid' => $currentgroupid,
                 'fatherid' => $object->fatherid,
                 'ordering' => $nextordering);
-$nextobject = $DB->get_record("techproject_{$objectClass}", $params);
+$nextobject = $DB->get_record("techproject_{$objectclass}", $params);
+
 $linktable = array();
 $linktable[0] = array();
 $linktable[1] = array();
@@ -100,13 +103,13 @@ $linktable[2] = array();
 $linktable[3] = array();
 
 if ($object) {
-    switch ($objectClass) {
+    switch ($objectclass) {
 
         case 'requirement': {
-            $linktableTitle[0] = get_string('sublinks', 'techproject');
-            $linktable[0] = techproject_detail_make_sub_table($objectClass, $object, $cm->id);
+            $linktabletitle[0] = get_string('sublinks', 'techproject');
+            $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
             // getting related specifications
-            $linktableTitle[1] = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject')  .'" /> '. get_string('speclinks', 'techproject');
+            $linktabletitle[1] = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject')  .'" /> '. get_string('speclinks', 'techproject');
             $query = "
                SELECT
                   s.*
@@ -132,10 +135,10 @@ if ($object) {
         }
 
         case 'specification': {
-            $linktableTitle[0] = get_string('sublinks', 'techproject');
-            $linktable[0] = techproject_detail_make_sub_table($objectClass, $object, $cm->id);
+            $linktabletitle[0] = get_string('sublinks', 'techproject');
+            $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
             // getting related requirements
-            $linktableTitle[2] = '<img src="'.$OUTPUT->pix_url('p/req', 'techproject').'" /> '. get_string('requlinks', 'techproject');
+            $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/req', 'techproject').'" /> '. get_string('requlinks', 'techproject');
             $query = "
                SELECT
                   r.*
@@ -158,7 +161,7 @@ if ($object) {
                 $linktable[2][] = get_string('norequassigned', 'techproject');
             }
             // Getting related tasks.
-            $linktableTitle[1] = '<img src="'.$OUTPUT->pix_url('p/task', 'techproject').'" /> '. get_string('tasklinks', 'techproject');
+            $linktabletitle[1] = '<img src="'.$OUTPUT->pix_url('p/task', 'techproject').'" /> '. get_string('tasklinks', 'techproject');
             $query = "
                SELECT
                   t.*
@@ -184,11 +187,11 @@ if ($object) {
         }
 
         case 'task': {
-            $linktableTitle[0] = get_string('sublinks', 'techproject');
-            $linktable[0] = techproject_detail_make_sub_table($objectClass, $object, $cm->id);
+            $linktabletitle[0] = get_string('sublinks', 'techproject');
+            $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
 
             // Getting related specifications.
-            $linktableTitle[2] = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject').'" /> '. get_string('speclinks', 'techproject');
+            $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject').'" /> '. get_string('speclinks', 'techproject');
             $query = "
                SELECT
                   s.*
@@ -212,7 +215,7 @@ if ($object) {
             }
 
             // Getting related deliverables.
-            $linktableTitle[3] = '<img src="'.$OUTPUT->pix_url('p/deliv', 'techproject').'" /> '. get_string('delivlinks', 'techproject');
+            $linktabletitle[3] = '<img src="'.$OUTPUT->pix_url('p/deliv', 'techproject').'" /> '. get_string('delivlinks', 'techproject');
             $query = "
                SELECT
                   d.id,
@@ -240,11 +243,11 @@ if ($object) {
 
         case 'milestone':
         case 'deliverable': {
-            $linktableTitle[0] = get_string('sublinks', 'techproject');
-            $linktable[0] = techproject_detail_make_sub_table($objectClass, $object, $cm->id);
+            $linktabletitle[0] = get_string('sublinks', 'techproject');
+            $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
 
             // Getting related tasks.
-            $linktableTitle[2] = '<img src="'.$OUTPUT->pix_url('p/task', 'techproject').'" /> '. get_string('tasklinks', 'techproject');
+            $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/task', 'techproject').'" /> '. get_string('tasklinks', 'techproject');
             $query = "
                SELECT
                   t.id,
@@ -271,7 +274,7 @@ if ($object) {
         }
     }
 } else {
-    echo $OUTPUT->box(get_string('invalidobject','techproject'), 'center', '80%');
+    echo $OUTPUT->box(get_string('invalidobject', 'techproject'), 'center', '80%');
     return;
 }
 
@@ -280,7 +283,7 @@ echo '<div class="row-fluid techproject-entity-detail">';
 echo '<div class="span3">';
 
 if ($previousobject) {
-    $params = array('id' => $cm->id, 'objectId' => $previousobject->id, 'objectClass' => $objectClass);
+    $params = array('id' => $cm->id, 'objectId' => $previousobject->id, 'objectClass' => $objectclass);
     $prevurl = new moodle_url('/mod/techproject/view.php', $params);
     echo '<a class="browselink" href="'.$prevurl.'">'.get_string('previous', 'techproject').'</a>';
 }  else {
@@ -291,31 +294,31 @@ echo '<br/>';
 echo '<br/>';
 
 if (count(@$linktable[0])) {
-    echo $renderer->block(@$linktableTitle[0], @$linktable[0]);
+    echo $renderer->block(@$linktabletitle[0], @$linktable[0]);
 }
 
 echo '<br/>';
 
 if (count(@$linktable[2])) {
-    echo $renderer->block(@$linktableTitle[2], @$linktable[2]);
+    echo $renderer->block(@$linktabletitle[2], @$linktable[2]);
 }
 
 echo '</div>';
 echo '<div class="span6">';
 
 if ($object->fatherid != 0) {
-    $params = array('id' => $cm->id, 'objectId' => $object->fatherid, 'objectClass' => $objectClass);
+    $params = array('id' => $cm->id, 'objectId' => $object->fatherid, 'objectClass' => $objectclass);
     $parenturl = new moodle_url('/mod/techproject/view.php', $params);
     echo '<a class="browselink" href="'.$parenturl.'">'.get_string('parent', 'techproject').'</a>';
 }
-$printfunction = "techproject_print_single_{$objectClass}";
+$printfunction = "techproject_print_single_{$objectclass}";
 $printfunction($object, $project, $currentgroupid, $cm->id, 0, $fullsingle = true);
 
 echo '</div>';
 echo '<div class="span3">';
 
 if ($nextobject) {
-    $params = array('id' => $cm->id, 'objectId' => $nextobject->id, 'objectClass' => $objectClass);
+    $params = array('id' => $cm->id, 'objectId' => $nextobject->id, 'objectClass' => $objectclass);
     $nexturl = new moodle_url('/mod/techproject/view.php', $params);
     echo '<a class="browselink" href="'.$nexturl.'">'.get_string('next', 'techproject').'</a>';
 } else {
@@ -326,13 +329,13 @@ echo '<br/>';
 echo '<br/>';
 
 if (count(@$linktable[1])) {
-    echo $renderer->block(@$linktableTitle[1], @$linktable[1]);
+    echo $renderer->block(@$linktabletitle[1], @$linktable[1]);
 }
 
 echo '<br/>';
 
 if (count(@$linktable[3])) {
-    echo $renderer->block(@$linktableTitle[3], @$linktable[3]);
+    echo $renderer->block(@$linktabletitle[3], @$linktable[3]);
 }
 
 echo '</div>';

@@ -65,7 +65,7 @@ if ($data = $mform->get_data()) {
             $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'reqid' => $data->id);
             $DB->delete_records('techproject_spec_to_req', $params);
             // Stores new mapping.
-            foreach($data->spectoreq as $aspec) {
+            foreach ($data->spectoreq as $aspec) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
@@ -77,7 +77,8 @@ if ($data = $mform->get_data()) {
         }
     } else {
         $data->created = time();
-        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_requirement', true, $data->fatherid) + 1;
+        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_requirement',
+                                                            true, $data->fatherid) + 1;
         unset($data->id); // Id is course module id.
         $data->id = $DB->insert_record('techproject_requirement', $data);
         $event = \mod_techproject\event\requirement_created::create_from_requirement($project, $context, $data, $currentgroupid);
@@ -98,7 +99,7 @@ if ($mode == 'add') {
     $requirement = new StdClass();
     $requirement->fatherid = required_param('fatherid', PARAM_INT);
     $reqtitle = ($requirement->fatherid) ? 'addsubrequ' : 'addrequ';
-    $requirement->id = $cm->id; // course module
+    $requirement->id = $cm->id; // Course module.
     $requirement->projectid = $project->id;
     $requirement->descriptionformat = FORMAT_HTML;
     $requirement->description = '';

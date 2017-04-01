@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/mod/techproject/forms/form_deliverable.class.php');
 
 $delivid = optional_param('delivid', '', PARAM_INT);
 
-$mode = ($delivid) ? 'update' : 'add' ;
+$mode = ($delivid) ? 'update' : 'add';
 
 $url = new moodle_url('/mod/techproject/view.php', array('id' => $id)).'#node'.$delivid;
 $mform = new Deliverable_Form($url, $mode, $project, $delivid);
@@ -81,7 +81,8 @@ if ($data = $mform->get_data()) {
         }
     } else {
         $data->created = time();
-        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_deliverable', true, $data->fatherid) + 1;
+        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_deliverable',
+                                                            true, $data->fatherid) + 1;
         unset($data->id); // Id is course module id.
         $data->id = $DB->insert_record('techproject_deliverable', $data);
         $event = \mod_techproject\event\deliverable_created::create_from_deliverable($project, $context, $data, $currentgroupid);

@@ -138,7 +138,8 @@ if ($data = $mform->get_data()) {
 
             // If being reassigned, log this special event.
             if (!empty($oldassigneeid) && ($data->assignee != $oldassigneeid)) {
-                $event = \mod_techproject\event\task_reassigned::create_from_task($project, $context, $data, $currentgroupid, $data->assignee);
+                $event = \mod_techproject\event\task_reassigned::create_from_task($project, $context, $data,
+                                                                                  $currentgroupid, $data->assignee);
                 $event->trigger();
             }
 
@@ -150,7 +151,8 @@ if ($data = $mform->get_data()) {
         }
     } else {
         $data->created = time();
-        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_task', true, $data->fatherid) + 1;
+        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_task', true,
+                                                            $data->fatherid) + 1;
         unset($data->id); // Id is course module id.
 
         $data->id = $DB->insert_record('techproject_task', $data);
@@ -176,8 +178,8 @@ if ($data = $mform->get_data()) {
         $adependency->master = $data->id;
         $params = array('projectid' => $project->id, 'slave' => $data->fatherid, 'master' => $data->id);
         if (!$DB->record_exists('techproject_task_dependency', $params)) {
-               $DB->insert_record('techproject_task_dependency', $adependency);
-           }
+            $DB->insert_record('techproject_task_dependency', $adependency);
+        }
     }
 
     // If subtask, calculate branch propagation.

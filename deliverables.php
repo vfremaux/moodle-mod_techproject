@@ -31,20 +31,21 @@ require_once($CFG->dirroot.'/lib/uploadlib.php');
 if ($work == 'add' || $work == 'update') {
     include($CFG->dirroot.'/mod/techproject/edit_deliverable.php');
 
-// Group operation form *********************************************************.
+    // Group operation form *********************************************************.
 
 } else if ($work == 'groupcmd') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
+
+    echo '<center>';
+    echo $OUTPUT->heading(get_string('groupoperations', 'techproject'));
+    echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3);
 ?>
-    <center>
-    <?php echo $OUTPUT->heading(get_string('groupoperations', 'techproject')); ?>
-    <?php echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3); ?>
     <script type="text/javascript">
     //<![CDATA[
     function senddata(cmd) {
-        document.forms['groupopform'].work.value="do" + cmd;
+        document.forms['groupopform'].work.value = "do" + cmd;
         document.forms['groupopform'].submit();
     }
     function cancel() {
@@ -56,20 +57,20 @@ if ($work == 'add' || $work == 'update') {
     <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
     <input type="hidden" name="work" value="" />
 <?php
-        foreach ($ids as $anid) {
-            echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
+    foreach ($ids as $anid) {
+        echo '<input type="hidden" name="ids[]" value="'.$anid.'" />'."\n";
+    }
+    if (($cmd == 'move') || ($cmd == 'copy')) {
+        echo get_string('to', 'techproject');
+        if (@$project->projectusesrequs) {
+            $options['requs'] = get_string('requirements', 'techproject');
         }
-        if (($cmd == 'move') || ($cmd == 'copy')) {
-            echo get_string('to', 'techproject');
-            if (@$project->projectusesrequs) {
-                $options['requs'] = get_string('requirements', 'techproject');
-            }
-            if (@$project->projectusesspecs) {
-                $options['specs'] = get_string('specifications', 'techproject');
-            }
-            $options['tasks'] = get_string('tasks', 'techproject');
-            echo html_writer::select($options, 'to', '', 'choose');
+        if (@$project->projectusesspecs) {
+            $options['specs'] = get_string('specifications', 'techproject');
         }
+        $options['tasks'] = get_string('tasks', 'techproject');
+        echo html_writer::select($options, 'to', '', 'choose');
+    }
 ?>
     <input type="button" name="go_btn" value="<?php print_string('continue') ?>" onclick="senddata('<?php p($cmd) ?>')" />
     <input type="button" name="cancel_btn" value="<?php print_string('cancel') ?>" onclick="cancel()" />
@@ -96,11 +97,13 @@ if ($work == 'add' || $work == 'update') {
     $params = array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0);
     $linkurl = new moodle_url('/mod/techproject/view.php', $params);
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changedelivs', $context)) {
-        echo '<br/><a href="'.$linkurl.'">'.get_string('adddeliv', 'techproject')."</a>&nbsp; ";
+        echo '<br/><a href="'.$linkurl.'">'.get_string('adddeliv', 'techproject').'</a>&nbsp; ';
     }
+
     techproject_print_deliverables($project, $currentgroupid, 0, $cm->id);
+
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changedelivs', $context)) {
-        echo '<br/><a href="'.$linkurl.'">'.get_string('adddeliv', 'techproject')."</a>&nbsp; ";
+        echo '<br/><a href="'.$linkurl.'">'.get_string('adddeliv', 'techproject').'</a>&nbsp; ';
         techproject_print_group_commands();
     }
 ?>

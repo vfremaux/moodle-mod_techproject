@@ -54,18 +54,18 @@ if ($work == 'edit') {
 
     if ($heading = $mform->get_data()) {
 
-        $abstract_draftid_editor = file_get_submitted_draft_itemid('abstract_editor');
-        $heading->abstract_editor['text'] = file_save_draft_area_files($abstract_draftid_editor, $context->id, 'mod_techproject',
+        $abstractdraftideditor = file_get_submitted_draft_itemid('abstract_editor');
+        $heading->abstract_editor['text'] = file_save_draft_area_files($abstractdraftideditor, $context->id, 'mod_techproject',
                                                                        'abstract', $heading->id, array('subdirs' => true),
                                                                        $heading->abstract_editor['text']);
 
-        $rationale_draftid_editor = file_get_submitted_draft_itemid('rationale_editor');
-        $heading->rationale_editor['text'] = file_save_draft_area_files($rationale_draftid_editor, $context->id, 'mod_techproject',
+        $rationaledraftideditor = file_get_submitted_draft_itemid('rationale_editor');
+        $heading->rationale_editor['text'] = file_save_draft_area_files($rationaledraftideditor, $context->id, 'mod_techproject',
                                                                         'rationale', $heading->id, array('subdirs' => true),
                                                                         $heading->rationale_editor['text']);
 
-        $environment_draftid_editor = file_get_submitted_draft_itemid('environment_editor');
-        $heading->environment_editor['text'] = file_save_draft_area_files($environment_draftid_editor, $context->id,
+        $environmentdraftideditor = file_get_submitted_draft_itemid('environment_editor');
+        $heading->environment_editor['text'] = file_save_draft_area_files($environmentdraftideditor, $context->id,
                                                                           'mod_techproject', 'environment', $heading->id,
                                                                           array('subdirs' => true),
                                                                           $heading->environment_editor['text']);
@@ -94,7 +94,9 @@ if ($work == 'edit') {
     $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
 
     // Start ouptuting here.
+
     echo $pagebuffer;
+
     echo $OUTPUT->heading(get_string('editheading', 'techproject'));
     $projectheading->headingid = $projectheading->id;
     $projectheading->id = $cm->id;

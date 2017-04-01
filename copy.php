@@ -477,7 +477,7 @@ function senddata() {
 <tr valign="top">
     <td align="right"><b><?php print_string('from', 'techproject') ?></b></td>
     <td align="left">
-<?php 
+<?php
     $fromgroups = array();
     if (!empty($groups)) {
         foreach (array_keys($groups) as $agroupid) {

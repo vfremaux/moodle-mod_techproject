@@ -14,28 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
 class Requirement_Form extends moodleform {
 
-    var $mode;
-    var $project;
-    var $current;
-    var $descriptionoptions;
+    protected $mode;
+    protected $project;
+    protected $current;
+    protected $descriptionoptions;
 
-    public function __construct($action, &$project, $mode, $reqid){
+    public function __construct($action, &$project, $mode, $reqid) {
         global $DB;
 
         $this->mode = $mode;
@@ -46,18 +43,22 @@ class Requirement_Form extends moodleform {
         parent::__construct($action);
     }
 
-    public function definition(){
+    public function definition() {
         global $COURSE, $DB;
 
         $mform = $this->_form;
 
         $modcontext = context_module::instance($this->project->cmid);
 
-        $maxfiles = 99;                // TODO: add some setting
-        $maxbytes = $COURSE->maxbytes; // TODO: add some setting
-        $this->descriptionoptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'context' => $modcontext);
+        $maxfiles = 99;                // TODO: add some setting.
+        $maxbytes = $COURSE->maxbytes; // TODO: add some setting.
+        $this->descriptionoptions = array('trusttext' => true,
+                                          'subdirs' => false,
+                                          'maxfiles' => $maxfiles,
+                                          'maxbytes' => $maxbytes,
+                                          'context' => $modcontext);
 
-        $currentGroup = 0 + groups_get_course_group($COURSE);
+        $currentgroup = 0 + groups_get_course_group($COURSE);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -77,16 +78,16 @@ class Requirement_Form extends moodleform {
 
         $strengthes = techproject_get_options('strength', $this->project->id);
         $strengthoptions = array();
-        foreach ($strengthes as $aStrength) {
-            $strengthoptions[$aStrength->code] = '['. $aStrength->code . '] ' . $aStrength->label;
+        foreach ($strengthes as $astrength) {
+            $strengthoptions[$astrength->code] = '['. $astrength->code . '] '.$astrength->label;
         }
         $mform->addElement('select', 'strength', get_string('strength', 'techproject'), $strengthoptions);
         $mform->addHelpButton('strength', 'strength', 'techproject');
 
         $heavynesses = techproject_get_options('heavyness', $this->project->id);
         $heavynessoptions = array();
-        foreach ($heavynesses as $aHeavyness) {
-            $heavynessoptions[$aHeavyness->code] = '['. $aHeavyness->code . '] ' . $aHeavyness->label;
+        foreach ($heavynesses as $aheavyness) {
+            $heavynessoptions[$aheavyness->code] = '['. $aheavyness->code . '] '.$aheavyness->label;
         }
         $mform->addElement('select', 'heavyness', get_string('heavyness', 'techproject'), $heavynessoptions);
         $mform->addHelpButton('heavyness', 'heavyness', 'techproject');
@@ -94,15 +95,17 @@ class Requirement_Form extends moodleform {
         $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);
 
         if ($this->project->projectusesspecs && $this->mode == 'update') {
-            $specifications = techproject_get_tree_options('techproject_specification', $this->project->id, $currentGroup);
+            $specifications = techproject_get_tree_options('techproject_specification', $this->project->id, $currentgroup);
             $selection = $DB->get_records_select_menu('techproject_spec_to_req', "reqid = {$this->current->id}", array(''), 'specid, reqid');
             $reqs = array();
             if (!empty($specifications)) {
-                foreach ($specifications as $aSpecification) {
-                    $linkedspecs[$aSpecification->id] = $aSpecification->ordering .' - '.shorten_text(format_string($aSpecification->abstract), 90);
+                foreach ($specifications as $aspecification) {
+                    $shortabstract = shorten_text(format_string($aspecification->abstract), 90);
+                    $linkedspecs[$aspecification->id] = $aspecification->ordering.' - '.$shortabstract;
                 }
             }
-            $select = &$mform->addElement('select', 'spectoreq', get_string('assignedspecs', 'techproject'), $linkedspecs, array('size' => 8));
+            $label = get_string('assignedspecs', 'techproject');
+            $select = &$mform->addElement('select', 'spectoreq', $label, $linkedspecs, array('size' => 8));
             $select->setMultiple(true);
             $mform->addHelpButton('spectoreq', 'spec_to_req', 'techproject');
         }
@@ -115,9 +118,13 @@ class Requirement_Form extends moodleform {
         $context = context_module::instance($this->project->cmid);
 
         $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-        $currenttext = file_prepare_draft_area($draftid_editor, $context->id, 'mod_techproject', 'description_editor', $defaults->id, array('subdirs' => true), $defaults->description);
-        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject', 'requirementdescription', $defaults->id);
-        $defaults->description = array('text' => $currenttext, 'format' => $defaults->descriptionformat, 'itemid' => $draftid_editor);
+        $currenttext = file_prepare_draft_area($draftid_editor, $context->id, 'mod_techproject', 'description_editor',
+                                               $defaults->id, array('subdirs' => true), $defaults->description);
+        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject',
+                                                 'requirementdescription', $defaults->id);
+        $defaults->description = array('text' => $currenttext,
+                                       'format' => $defaults->descriptionformat,
+                                       'itemid' => $draftid_editor);
 
         parent::set_data($defaults);
     }
