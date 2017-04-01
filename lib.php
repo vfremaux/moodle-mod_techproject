@@ -998,7 +998,7 @@ function techproject_get_participants($moduleid) {
         $allusers = array_keys($usersreqs);
     }
     if (!empty($usersspecs)) {
-        $allusers = array_merge($allusers, array_keys($usersspecs));$delivcount
+        $allusers = array_merge($allusers, array_keys($usersspecs));
     }
     if (!empty($userstasks)) {
         $allusers = array_merge($allusers, array_keys($userstasks));
