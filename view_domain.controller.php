@@ -34,13 +34,13 @@ switch ($action) {
         require_once('forms/form_domain.class.php');
         if ($data = data_submitted()) {
 
-        $params = array('id' => $id, 'view' => 'domains_'.$domain, 'what' => 'add', 'view' => 'domains_'.$domain);
-        $returnurl = new moodle_url('/mod/techproject/view.php', $params);
-
-        // If there is some error.
+            $params = array('id' => $id, 'view' => 'domains_'.$domain, 'what' => 'add', 'view' => 'domains_'.$domain);
+            $returnurl = new moodle_url('/mod/techproject/view.php', $params);
+    
+            // If there is some error.
             if ($data->code == '') {
                 print_error('err_code', 'techproject', $returnurl);
-            } elseif ($data->label == '') {
+            } else if ($data->label == '') {
                 print_error('err_value', 'techproject', $returnurl);
             } else {
                 // Data was submitted from this form, process it.
@@ -81,9 +81,8 @@ switch ($action) {
         }
 
         // Data was submitted from this form, process it.
-        if ($data = data_submitted()){
+        if ($data = data_submitted()) {
             $domainrec->id = $domainid;
-            // $domainrec->projectid = 0;
             $domainrec->domain = $domain;
             $domainrec->code = clean_param($data->code, PARAM_ALPHANUM);
             $domainrec->label = addslashes(clean_param($data->label, PARAM_CLEANHTML));

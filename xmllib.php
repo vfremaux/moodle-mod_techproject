@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 if (!function_exists('recordstoxml')) {
     /**
-     * recordstoxml : takes an array of records and transforms it to xml structure. 
+     * recordstoxml : takes an array of records and transforms it to xml structure.
      * keys are converted. When an associative array is found, keys are used as element id.
      * Note that any HTML tagged content makes the value being escaped in a <![CDATA[ ]]> section
      * for XSLT escaping.
@@ -39,14 +39,14 @@ if (!function_exists('recordstoxml')) {
      * @param string $subrecords if there are subrecords elements to include as child tree, they are available as an XML formated string
      * @param boolean $withheader if true, adds a standard XML document header
      * @param boolean $translate if true, all fields value are passed thru the get_string() translating call
-     * @param string $stylesheet may mention a stylesheet call to the document header, if header is enabled 
+     * @param string $stylesheet may mention a stylesheet call to the document header, if header is enabled
      * @return a string XML formatted, with or without XML heading entity
      */
-    function recordstoxml(&$array, $baseelement, $subrecords = '', $withheader=true, $translate=false, $stylesheet = '') {
+    function recordstoxml(&$array, $baseelement, $subrecords = '', $withheader = true, $translate = false, $stylesheet = '') {
         global $strings;
 
         $baseelement = strtolower($baseelement); // Calibrates the base name.
-        $xml = ($withheader) ? "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\n{$stylesheet}\n<rootnode>\n" : '' ;
+        $xml = ($withheader) ? "<?xml version=\"1.0\"  encoding=\"UTF-8\" ?>\n{$stylesheet}\n<rootnode>\n" : '';
         $xml .= "<{$baseelement}s>\n";
 
         $ix = 1;
@@ -76,7 +76,7 @@ if (!function_exists('recordstoxml')) {
             $xml .= $subrecords;
         }
         $xml .= "</{$baseelement}s>\n";
-        $xml .= ($withheader) ? "</rootnode>\n" : '' ;
+        $xml .= ($withheader) ? "</rootnode>\n" : '';
         return $xml;
     }
 }
