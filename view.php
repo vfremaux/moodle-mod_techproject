@@ -38,7 +38,7 @@ $PAGE->requires->js('/mod/techproject/js/js.js');
 $PAGE->requires->jquery();
 
 // Fixes locale for all date printing.
-setLocale(LC_TIME, substr(current_language(), 0, 2));
+setlocale(LC_TIME, substr(current_language(), 0, 2));
 
 $id = required_param('id', PARAM_INT);   // Module id.
 $view = optional_param('view', @$_SESSION['currentpage'], PARAM_CLEAN); // Viewed page id.
@@ -79,8 +79,9 @@ $straction = (@$action) ? '-> '.get_string(@$action, 'techproject') : '';
 if (array_key_exists('editmode', $_GET) && !empty($_GET['editmode'])) {
     $_SESSION['editmode'] = $_GET['editmode'];
 } else {
-    if (!array_key_exists('editmode', $_SESSION))
+    if (!array_key_exists('editmode', $_SESSION)) {
         $_SESSION['editmode'] = 'off';
+    }
 }
 $USER->editmode = $_SESSION['editmode'];
 
@@ -141,7 +142,7 @@ if (has_capability('mod/techproject:gradeproject', $context)) {
     }
 } else {
     // It's a guest, just watch if possible!
-    if ($project->guestsallowed){
+    if ($project->guestsallowed) {
         $action = 'guestview';
     } else {
         $action = 'notavailable';
@@ -174,7 +175,7 @@ if ($action == 'displayfinalgrade' ) {
 
     if ($timenow > $project->projectend) {
         // If project is over, just cannot change anything more.
-        $pagebuffer .= $OUTPUT->box('<span class="inconsistency">'.get_string('projectisover','techproject').'</span>', 'center', '70%');
+        $pagebuffer .= $OUTPUT->box('<span class="inconsistency">'.get_string('projectisover', 'techproject').'</span>');
         $USER->editmode = 'off';
     }
     // Print settings and things in a table across the top.
@@ -225,10 +226,10 @@ if ($action == 'displayfinalgrade' ) {
             !$currentgroupid &&
                     $timenow < $project->projectend) {
         // Guest could have edited but project is closed.
-        $demostr = '(' . get_string('demomodeclosedproject', 'techproject') . ') ' . $OUTPUT->help_icon('demomode', 'techproject', false);
+        $demostr = '('.get_string('demomodeclosedproject', 'techproject').') '.$OUTPUT->help_icon('demomode', 'techproject', false);
         $USER->editmode = 'off';
     } else {
-       $demostr = '(' . get_string('demomode', 'techproject') . ') ' . $OUTPUT->help_icon('demomode', 'techproject', false);
+        $demostr = '('.get_string('demomode', 'techproject').') '.$OUTPUT->help_icon('demomode', 'techproject', false);
     }
     // Print settings and things in a table across the top.
     $pagebuffer .= '<table width="100%" border="0" cellpadding="3" cellspacing="0"><tr valign="top">';
@@ -236,7 +237,7 @@ if ($action == 'displayfinalgrade' ) {
     // Allow the guest to change groups (for this session) only for visible groups.
     if ($groupmode == VISIBLEGROUPS) {
         $groups = groups_get_all_groups($course->id);
-        if ($groups){
+        if ($groups) {
             $grouptable = array();
             foreach ($groups as $agroup) {
                 $grouptable[$agroup->id] = $agroup->name;
@@ -249,8 +250,8 @@ if ($action == 'displayfinalgrade' ) {
     $pagebuffer .= '</table>';
     include($CFG->dirroot.'/mod/techproject/techproject.php');
 
-// Teacher's view - display admin page  ************.
 } else if ($action == 'teachersview') {
+    // Teacher's view - display admin page  ************.
     /*
      * Check to see if groups are being used in this workshop
      * and if so, set $currentgroupid to reflect the current group
@@ -285,7 +286,7 @@ if ($action == 'displayfinalgrade' ) {
     echo $OUTPUT->box(format_text($project->description, $project->format), 'center', '70%', '', 5, 'generalbox', 'intro');
     echo $OUTPUT->continue_button($_SERVER["HTTP_REFERER"]);
 
-} elseif ($action == 'notingroup') {
+} else if ($action == 'notingroup') {
     // Student is not in a group *******************************************.
     echo $pagebuffer;
     echo $OUTPUT->box(format_text(get_string('notingroup', 'techproject'), 'HTML'), 'center', '70%', '', 5, 'generalbox', 'intro');

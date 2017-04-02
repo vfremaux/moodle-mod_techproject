@@ -34,7 +34,7 @@ if (!$validsession = $DB->get_record('techproject_valid_session', array('id' => 
     print_error('errorbadvalidsessionid', 'techproject');
 }
 
-if ($formdata = data_submitted()){
+if ($formdata = data_submitted()) {
     $statekeys = preg_grep('/state_\d+/', array_keys($_POST));
     if (!empty($statekeys)) {
         foreach ($statekeys as $statekey) {
@@ -58,5 +58,6 @@ echo '<br/>';
 echo '<center>';
 echo '<hr>';
 $params = array('id' => $cm->id, 'view' => 'validations');
-echo $OUTPUT->single_button(new moodle_url('/mod/techproject/view.php', $params), get_string('backtosessions', 'techproject'), 'get');
+$buttonurl = new moodle_url('/mod/techproject/view.php', $params);
+echo $OUTPUT->single_button($buttonurl, get_string('backtosessions', 'techproject'), 'get');
 echo '</center>';
