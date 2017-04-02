@@ -32,26 +32,29 @@ if ($work == 'add' || $work == 'update') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
+
+    echo '<center>';
+    echo $OUTPUT->heading(get_string('groupoperations', 'techproject'));
+    echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3);
 ?>
 
-    <center>
-    <?php echo $OUTPUT->heading(get_string('groupoperations', 'techproject')); ?>
-    <?php echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3); ?>
-    <script type="text/javascript">
-    //<!{CDATA{
-    function senddata(cmd) {
-        document.forms['groupopform'].work.value="do" + cmd;
-        document.forms['groupopform'].submit();
-    }
-    function cancel() {
-        document.forms['groupopform'].submit();
-    }
-    //]]>
-    </script>
-    <form name="groupopform" method="post" action="view.php">
-    <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
-    <input type="hidden" name="work" value="" />
+<script type="text/javascript">
+//<!{CDATA{
+function senddata(cmd) {
+    document.forms['groupopform'].work.value="do" + cmd;
+    document.forms['groupopform'].submit();
+}
+function cancel() {
+    document.forms['groupopform'].submit();
+}
+//]]>
+</script>
 <?php
+
+    echo '<form name="groupopform" method="post" action="view.php">';
+    echo '<input type="hidden" name="id" value="'.$cm->id).'" />';
+    echo '<input type="hidden" name="work" value="" />';
+
     foreach ($ids as $anid) {
         echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
     }
@@ -70,29 +73,31 @@ if ($work == 'add' || $work == 'update') {
         echo html_writer::select($options, 'to', '', array('' => 'choosedots'));
     }
     echo '<br/>';
-?>
-    <input type="button" name="go_btn" value="<?php print_string('continue') ?>" onclick="senddata('<?php p($cmd) ?>')" />
-    <input type="button" name="cancel_btn" value="<?php print_string('cancel') ?>" onclick="cancel()" />
-    </form>
-    </center>
-<?php
+
+    echo '<input type="button" name="go_btn" value="'.get_string('continue').'" onclick="senddata(\''.$cmd.'\')" />';
+    echo '<input type="button" name="cancel_btn" value="'.get_string('cancel').'" onclick="cancel()" />';
+    echo '</form>';
+    echo '</center>';
+
 } else {
     if ($work) {
         include($CFG->dirroot.'/mod/techproject/requirements.controller.php');
     }
     echo $pagebuffer;
 ?>
-    <script type="text/javascript">
-    //<![CDATA[
-    function sendgroupdata() {
-        document.forms['groupopform'].submit();
-    }
-    //]]>
-    </script>
-    <form name="groupopform" method="post" action="view.php">
-    <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
-    <input type="hidden" name="work" value="groupcmd" />
+<script type="text/javascript">
+//<![CDATA[
+function sendgroupdata() {
+    document.forms['groupopform'].submit();
+}
+//]]>
+</script>
 <?php
+
+    echo '<form name="groupopform" method="post" action="view.php">';
+    echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
+    echo '<input type="hidden" name="work" value="groupcmd" />';
+
     $indicatordesc = get_string('requirementriskcalculation', 'techproject');
     $params = array('id' => $cm->id, 'projectid' => $project->id, 'group' => $currentgroupid);
     $generatorurl = new moodle_url('/mod/techproject/gdgenerators/projectrisk.php', $params);
@@ -110,7 +115,5 @@ if ($work == 'add' || $work == 'update') {
         echo "<a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequ','techproject')."</a>&nbsp;";
         techproject_print_group_commands();
     }
-?>
-    </form>
-<?php
+    echo '</form>';
 }
