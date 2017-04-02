@@ -15,16 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* Project : Technical Project Manager (IEEE like)
-*
-* this screen submarizes activity in the project for the current group
-* 
-* @package mod_techproject
-* @category mod
-* @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
-* @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
-* @license http://www.gnu.org/copyleft/gpl.html GNU Public License
-*/
+ * Project : Technical Project Manager (IEEE like)
+ *
+ * this screen submarizes activity in the project for the current group
+ * 
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/mod/techproject/classes/output/renderer_summary.php');
 
@@ -47,8 +48,8 @@ if (has_capability('mod/techproject:viewpreproductionentities', $context)) {
     $leafrequs = array();
     $leafrequlist = '';
     if ($requirements) {
-        foreach ($requirements as $aRequirement) {
-            $leafrequs = array_merge($leafrequs, techproject_count_leaves('techproject_requirement', $aRequirement->id, true));
+        foreach ($requirements as $arequirement) {
+            $leafrequs = array_merge($leafrequs, techproject_count_leaves('techproject_requirement', $arequirement->id, true));
         }
         $leafrequlist = implode("','", $leafrequs);
     }
@@ -67,7 +68,7 @@ if (has_capability('mod/techproject:viewpreproductionentities', $context)) {
     $leafspeclist = '';
     if ($specifications) {
         foreach ($specifications as $aspec) {
-            $leafspecs = array_merge($leafspecs, techproject_count_leaves('techproject_specification', $aspec->id, true)) ;
+            $leafspecs = array_merge($leafspecs, techproject_count_leaves('techproject_specification', $aspec->id, true));
         }
         $leafspeclist = implode("','", $leafspecs);
     }
@@ -99,7 +100,8 @@ $select = "
     groupid = ? AND
     fatherid = 0
 ";
-$deliverables = $DB->get_records_select('techproject_deliverable', $select, array($project->id, $currentgroupid), '', 'id,abstract');
+$params = array($project->id, $currentgroupid);
+$deliverables = $DB->get_records_select('techproject_deliverable', $select, $params, '', 'id,abstract');
 $leafdelivs = array();
 $leafdelivlist = '';
 if ($deliverables) {
@@ -236,7 +238,7 @@ $table = new html_table();
 $table->head = array(get_string('assessments', 'techproject'), '');
 $table->align = array('left', 'left');
 $table->size = array('40%', '60%');
-$table->wrap = array('','');
+$table->wrap = array('', '');
 
 if (time() < $project->assessmentstart) {
     $table->data[] = array(get_string('notavailable'), '');
@@ -249,8 +251,8 @@ if (time() < $project->assessmentstart) {
     $grades = $DB->get_records_select('techproject_assessment', $select, array($project->id, $currentgroupid));
 
     $select = "projectid = ? AND isfree = 1";
-    $freecriteria =  $DB->get_records_select('techproject_criterion', $select, array($project->id));
-    
+    $freecriteria = $DB->get_records_select('techproject_criterion', $select, array($project->id));
+
     $select = "projectid = ? AND isfree = 0";
     $criteria = $DB->get_records_select('techproject_criterion', $select, array($project->id));
     $gradesbyclass = array();
@@ -263,30 +265,30 @@ if (time() < $project->assessmentstart) {
             $gradesbyclass[$grades[$i]->itemclass][$grades[$i]->itemid][$grades[$i]->criterion] = $grades[$i]->grade;
         }
         if ($milestones && (!$project->teacherusescriteria || $criteria)) {
-            foreach ($milestones as $aMilestone) {
-                $table->data[] = array(get_string('evaluatingfor','techproject'), $aMilestone->abstract);
-                if ($project->autogradingenabled){
-                    $autograde = @$gradesbyclass['auto_milestone'][$aMilestone->id][0];
+            foreach ($milestones as $amilestone) {
+                $table->data[] = array(get_string('evaluatingfor', 'techproject'), $amilestone->abstract);
+                if ($project->autogradingenabled) {
+                    $autograde = @$gradesbyclass['auto_milestone'][$amilestone->id][0];
                     if (empty($autograde)) {
-                        $table->data[] = array(get_string('autograde','techproject'), get_string('notevaluated','techproject'));
+                        $table->data[] = array(get_string('autograde', 'techproject'), get_string('notevaluated', 'techproject'));
                     } else {
-                        $table->data[] = array(get_string('autograde','techproject'), $autograde);
+                        $table->data[] = array(get_string('autograde', 'techproject'), $autograde);
                     }
                 }
                 if (!$project->teacherusescriteria) {
-                    $teachergrade = @$gradesbyclass['milestone'][$aMilestone->id][0];
+                    $teachergrade = @$gradesbyclass['milestone'][$amilestone->id][0];
                     if (empty($teachergrade)) {
-                        $table->data[] = array(get_string('teachergrade','techproject'), get_string('notevaluated','techproject'));
+                        $table->data[] = array(get_string('teachergrade', 'techproject'), get_string('notevaluated', 'techproject'));
                     } else {
-                        $table->data[] = array(get_string('teachergrade','techproject'), $teachergrade);
+                        $table->data[] = array(get_string('teachergrade', 'techproject'), $teachergrade);
                     }
                 } else {
-                    foreach ($criteria as $aCriterion) {
-                        $criteriongrade = @$gradesbyclass['milestone'][$aMilestone->id][$aCriterion->id];
+                    foreach ($criteria as $acriterion) {
+                        $criteriongrade = @$gradesbyclass['milestone'][$amilestone->id][$acriterion->id];
                         if (empty($criteriongrade)) {
-                            $table->data[] = array($aCriterion->label, get_string('notevaluated','techproject'));
+                            $table->data[] = array($acriterion->label, get_string('notevaluated', 'techproject'));
                         } else {
-                            $table->data[] = array($aCriterion->label, $criteriongrade . ' (x' . $aCriterion->weight . ')');
+                            $table->data[] = array($acriterion->label, $criteriongrade . ' (x' . $acriterion->weight . ')');
                         }
                     }
                 }
@@ -296,12 +298,12 @@ if (time() < $project->assessmentstart) {
 
     // Additional free criteria for grading.
     if ($freecriteria) {
-        foreach ($freecriteria as $aFreeCriterion) {
-            $freegrade = @$gradesbyclass['free'][0][$aFreeCriterion->id];
+        foreach ($freecriteria as $afreecriterion) {
+            $freegrade = @$gradesbyclass['free'][0][$afreecriterion->id];
             if (empty($freegrade)) {
-                $table->data[] = array($aFreeCriterion->label, get_string('notevaluated','techproject'));
+                $table->data[] = array($afreecriterion->label, get_string('notevaluated', 'techproject'));
             } else {
-                $table->data[] = array($aFreeCriterion->label, $freegrade.' (x'.$aFreeCriterion->weight.')');
+                $table->data[] = array($afreecriterion->label, $freegrade.' (x'.$afreecriterion->weight.')');
             }
         }
     }
