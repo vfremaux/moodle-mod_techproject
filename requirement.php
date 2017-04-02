@@ -52,7 +52,7 @@ function cancel() {
 <?php
 
     echo '<form name="groupopform" method="post" action="view.php">';
-    echo '<input type="hidden" name="id" value="'.$cm->id).'" />';
+    echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
     echo '<input type="hidden" name="work" value="" />';
 
     foreach ($ids as $anid) {

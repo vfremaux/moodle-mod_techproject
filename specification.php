@@ -115,7 +115,7 @@ function sendgroupdata() {
         echo '<a href="'.$jshandler.'">'.get_string('unselectall', 'techproject').'</a>&nbsp;';
 
         $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0));
-        echo '<a href="'.$linkurl'">'.get_string('addspec', 'techproject').'</a>&nbsp;';
+        echo '<a href="'.$linkurl.'">'.get_string('addspec', 'techproject').'</a>&nbsp;';
 
         if (@$SESSION->techproject->spectemplateid){
             techproject_print_group_commands(array('applytemplate'));
