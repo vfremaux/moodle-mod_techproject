@@ -28,26 +28,28 @@ defined('MOODLE_INTERNAL') || die();
 // Library of tree dedicated operations.
 
 /**
-* deletes into tree a full branch. note that it will work either
-* @param int $id the root node id
-* @param string $table the table where the tree is in 
-* @param boolean $istree if istree is not set, considers table as a simple ordered list
-* @return an array of deleted ids
-*/
+ * deletes into tree a full branch. note that it will work either
+ * @param int $id the root node id
+ * @param string $table the table where the tree is in
+ * @param boolean $istree if istree is not set, considers table as a simple ordered list
+ * @return an array of deleted ids
+ */
 function techproject_tree_delete($id, $table, $istree = 1) {
     techproject_tree_updateordering($id, $table, $istree);
     return tree_delete_rec($id, $table, $istree);
 }
 
 /**
-* deletes recursively a node and its subnodes. this is the recursion deletion
-* @return an array of deleted ids
-*/
+ * deletes recursively a node and its subnodes. this is the recursion deletion
+ * @return an array of deleted ids
+ */
 function tree_delete_rec($id, $table, $istree) {
     global $CFG, $DB;
 
     $deleted = array();
-    if (empty($id)) return $deleted;
+    if (empty($id)) {
+        return $deleted;
+    }
 
     // Getting all subnodes to delete if is tree.
     if ($istree) {
@@ -61,8 +63,8 @@ function tree_delete_rec($id, $table, $istree) {
         ";
         // Deleting subnodes if any.
         if ($subs = $DB->get_records_sql($sql)) {
-            foreach ($subs as $aSub) {
-                $deleted = array_merge($deleted, tree_delete_rec($aSub->id, $table, $istree));
+            foreach ($subs as $asub) {
+                $deleted = array_merge($deleted, tree_delete_rec($asub->id, $table, $istree));
             }
         }
     }
@@ -127,8 +129,8 @@ function techproject_tree_reorderlevel($parentid, $table, $projectid = 0, $group
 }
 
 /**
- * updates ordering of a tree branch from a specific node, reordering 
- * all subsequent siblings. 
+ * updates ordering of a tree branch from a specific node, reordering
+ * all subsequent siblings.
  * @param int $id the node from where to reorder
  * @param string $table the table-tree
  */
@@ -137,7 +139,7 @@ function techproject_tree_updateordering($id, $table, $istree) {
     // Getting ordering value of the current node.
     global $CFG, $DB;
 
-    $res =  $DB->get_record($table, array('id' => $id));
+    $res = $DB->get_record($table, array('id' => $id));
     if (!$res) {
         return;
     }
@@ -180,7 +182,7 @@ function techproject_tree_updateordering($id, $table, $istree) {
 function techproject_tree_up($project, $group, $id, $table, $istree = 1) {
     global $CFG, $DB;
 
-    $res =  $DB->get_record($table, array('id' => $id));
+    $res = $DB->get_record($table, array('id' => $id));
     if (!$res) {
         return;
     }
@@ -221,7 +223,7 @@ function techproject_tree_up($project, $group, $id, $table, $istree = 1) {
 function techproject_tree_down(&$project, $group, $id, $table, $istree = 1) {
     global $DB;
 
-    $res =  $DB->get_record($table, array('id' => $id));
+    $res = $DB->get_record($table, array('id' => $id));
     $treeclause = ($istree) ? " AND fatherid = {$res->fatherid} " : '';
     $select = " projectid = ? AND groupid = ? $treeclause GROUP BY projectid ";
     $maxordering = $DB->get_field_select($table, " MAX(ordering) ", $select, array($project->id, $group));
@@ -229,7 +231,7 @@ function techproject_tree_down(&$project, $group, $id, $table, $istree = 1) {
     if ($res->ordering < $maxordering) {
         $newordering = $res->ordering + 1;
         $select = " projectid = ? AND groupid = ? AND ordering = ? $treeclause";
-        if ($resid =  $DB->get_field_select($table, 'id', $select, array($project->id, $group, $newordering))) {
+        if ($resid = $DB->get_field_select($table, 'id', $select, array($project->id, $group, $newordering))) {
             // Swapping.
             $object = new StdClass;
             $object->id = $resid;
@@ -267,7 +269,7 @@ function techproject_tree_left(&$project, $group, $id, $table) {
         WHERE
             id = $id
     ";
-    $res =  $DB->get_record_sql($sql);
+    $res = $DB->get_record_sql($sql);
     $ordering = $res->ordering;
     $fatherid = $res->fatherid;
 
@@ -280,7 +282,7 @@ function techproject_tree_left(&$project, $group, $id, $table) {
         WHERE
             id = $fatherid
     ";
-    $resfatherid =  $DB->get_record_sql($sql);
+    $resfatherid = $DB->get_record_sql($sql);
     $fatheridbis = $resfatherid->fatherid; // Id granfather
 
     $sql = "
@@ -321,7 +323,7 @@ function techproject_tree_left(&$project, $group, $id, $table) {
             groupid = ? AND
             id = ?
     ";
-    $resorderingfather =  $DB->get_record_sql($sql, array($project->id, $group, $fatherid));
+    $resorderingfather = $DB->get_record_sql($sql, array($project->id, $group, $fatherid));
     $orderingfather = $resorderingfather->ordering;
 
     // Shift orderin of following siblings.
@@ -383,7 +385,7 @@ function techproject_tree_right(&$project, $group, $id, $table) {
         WHERE
             id = $id
     ";
-    $res =  $DB->get_record_sql($sql);
+    $res = $DB->get_record_sql($sql);
     $fatherid = $res->fatherid;
     $group = $res->groupid;
 
@@ -477,7 +479,7 @@ function techproject_get_tree_options($table, $projectid, $groupid, $fatherid = 
     $collected = array();
     if ($elements = $DB->get_records_sql($sql)) {
         foreach ($elements as $anelement) {
-            $anElement->ordering = (empty($ordering)) ? $anelement->ordering : $ordering . '.' . $anelement->ordering;
+            $anelement->ordering = (empty($ordering)) ? $anelement->ordering : $ordering . '.' . $anelement->ordering;
             $collected[] = $anelement;
             $collected = array_merge($collected, techproject_get_tree_options($table, $projectid, $groupid, $anelement->id, $anelement->ordering));
         }
@@ -541,7 +543,9 @@ function techproject_count_leaves($table, $id, $returnlist = false) {
     global $DB;
 
     if (techproject_count_subs($table, $id) == 0) {
-        if ($id == 0) ($returnlist) ? array() : 0;
+        if ($id == 0) {
+            ($returnlist) ? array() : 0;
+        }
         return ($returnlist) ? array($id) : 1;
     }
 
@@ -558,7 +562,7 @@ function techproject_count_leaves($table, $id, $returnlist = false) {
             fatherid = ?
     ";
     $ress = $DB->get_records_sql($sql, array($id));
-    if ($ress){
+    if ($ress) {
         foreach ($ress as $res) {
             if ($returnlist) {
                 $leafids = array_merge($leafids, techproject_count_leaves($table, $res->id, true));
@@ -666,12 +670,14 @@ function techproject_tree_propagate_down(&$project, $table, $field, $fatherid = 
  * @param includeStart true if leaf node is in the list
  * @return array of node ids
  */
-function techproject_tree_get_upper_branch($table, $id, $includeStart = false, $returnordering = false, $reverse = true) {
+function techproject_tree_get_upper_branch($table, $id, $includestart = false, $returnordering = false, $reverse = true) {
     global $DB;
 
     $nodelist = array();
     $res = $DB->get_record($table, array('id' => $id));
-    if ($includeStart) $nodelist[] = ($returnordering) ? $res->ordering : $id;
+    if ($includestart) {
+        $nodelist[] = ($returnordering) ? $res->ordering : $id;
+    }
     while (!empty($res->fatherid)) {
         $res = $DB->get_record($table, array('id' => $res->fatherid));
         $nodelist[] = ($returnordering) ? $res->ordering : $res->id;
@@ -687,7 +693,7 @@ function techproject_tree_get_upper_branch($table, $id, $includeStart = false, $
  * only standard descriptive attributes are copied (abstract and description), unless
  * field parameter is used. Move is destructive (loss of data is possible). Copy
  * is non destructive.
- * Associations are deleted when moved, are not reported in copy. 
+ * Associations are deleted when moved, are not reported in copy.
  * @param array $set the set of ids to be copied/moved
  * @param string $fromtable the origin table-tree given by name
  * @param string $totable the destination table-tree given by name
@@ -743,8 +749,8 @@ function techproject_tree_copy_set($set, $fromtable, $totable, $fields = 'descri
 
     /**
      * recursively inserts tree structure renumbering items
-     * @param int $projectid the project module id 
-     * @param int $group the owning group 
+     * @param int $projectid the project module id
+     * @param int $group the owning group
      * @param string $table the table-tree where to insert by name
      * @param array $set the set of nodes to insert and make a new tree with
      */
@@ -755,7 +761,7 @@ function techproject_tree_copy_set($set, $fromtable, $totable, $fields = 'descri
 
         // Note function is recursive so it has infinite loop protection.
         for ($i = 0; $i < count($set) && $i < 1000; $i++) {
-            $insertedObject = clone($set[$setkeys[$i]]);
+            $insertedobject = clone($set[$setkeys[$i]]);
 
             // Get max ordering at root level.
             if ($set[$setkeys[$i]]->fatherid == 0) {
@@ -764,14 +770,14 @@ function techproject_tree_copy_set($set, $fromtable, $totable, $fields = 'descri
             } else {
                 $position = techproject_tree_get_max_ordering($projectid, $group, $table, true, $set[$setkeys[$i]]->fatherid);
             }
-            $insertedObject->lastuserid = $USER->id;
-            $insertedObject->descriptionformat = FORMAT_MOODLE;
-            $insertedObject->ordering = $position + 1;
+            $insertedobject->lastuserid = $USER->id;
+            $insertedobject->descriptionformat = FORMAT_MOODLE;
+            $insertedobject->ordering = $position + 1;
 
-            $originalid = $insertedObject->id;
+            $originalid = $insertedobject->id;
 
-            unset($insertedObject->childs);
-            $insertid = $DB->insert_record($table, $insertedObject);
+            unset($insertedobject->childs);
+            $insertid = $DB->insert_record($table, $insertedobject);
             if ($autobind) {
                 switch ($bindtable) {
                     case 'techproject_spec_to_req': {

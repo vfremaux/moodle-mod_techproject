@@ -72,8 +72,8 @@ if ($work == 'dodelete') {
             $object->id = $anitem;
             $object->done = 100;
             $DB->update_record('techproject_task', $object);
-       }
-   }
+        }
+    }
 
 // Full fills a task with planned values and 100% done indicator.
 
@@ -249,7 +249,7 @@ if ($work == 'dodeleteitems') {
 } else if ($work == 'doclearall') {
 
     // Delete all related records. POWERFUL AND DANGEROUS COMMAND.
-    // Deletes for the current group. 
+    // Deletes for the current group.
     $DB->delete_records('techproject_task', array('projectid' => $project->id, 'groupid' => $currentgroupid));
     $DB->delete_records('techproject_task_to_spec', array('projectid' => $project->id, 'groupid' => $currentgroupid));
     $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentgroupid));
