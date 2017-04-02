@@ -4,6 +4,20 @@
  */
 // jshint unused:false, undef:false
 
+function senddataconfirm() {
+    document.forms['confirmcopyform'].work.value = 'docopy';
+    document.forms['confirmcopyform'].submit();
+}
+function cancelconfirm() {
+    document.forms['confirmcopyform'].work.value = 'setup';
+    document.forms['confirmcopyform'].submit();
+}
+
+function senddatasetup() {
+    document.forms['copysetupform'].work.value = 'what';
+    document.forms['copysetupform'].submit();
+}
+
 function senddata() {
     document.forms['copywhatform'].work.value = 'confirm';
     document.forms['copywhatform'].submit();

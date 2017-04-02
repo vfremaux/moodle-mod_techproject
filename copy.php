@@ -25,6 +25,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+echo '<script type="text/javascript" src="'.$CFG->wwwroot.'/mod/techproject/js/copy.js"></script>';
+
 if (!has_capability('mod/techproject:manage', $context)) {
     print_error(get_string('notateacher', 'techproject'));
     return;
@@ -348,40 +350,27 @@ if ($work == 'confirm') {
 
     echo $OUTPUT->heading(get_string('copyconfirm', 'techproject'));
     echo $OUTPUT->box(get_string('copyadvice', 'techproject'), 'center');
-?>
-<script type="text/javascript">
-//<![CDATA[
-function senddata() {
-    document.forms['confirmcopyform'].work.value = 'docopy';
-    document.forms['confirmcopyform'].submit();
-}
-function cancel() {
-    document.forms['confirmcopyform'].work.value = 'setup';
-    document.forms['confirmcopyform'].submit();
-}
-//]]>
-</script>
-<form name="confirmcopyform" action="view.php" method="post">
-<input type="hidden" name="id" value="<?php p($cm->id) ?>" />
-<input type="hidden" name="from" value="<?php p($from) ?>" />
-<input type="hidden" name="to" value="<?php p($to) ?>" />
-<input type="hidden" name="headings" value="<?php p($copyheadings) ?>" />
-<input type="hidden" name="requs" value="<?php p($copyrequirements) ?>" />
-<input type="hidden" name="specs" value="<?php p($copyspecifications) ?>" />
-<input type="hidden" name="tasks" value="<?php p($copytasks) ?>" />
-<input type="hidden" name="miles" value="<?php p($copymilestones) ?>" />
-<input type="hidden" name="deliv" value="<?php p($copydeliverables) ?>" />
-<input type="hidden" name="spectoreq" value="<?php p($copyspectoreq) ?>" />
-<input type="hidden" name="tasktospec" value="<?php p($copytasktospec) ?>" />
-<input type="hidden" name="tasktotask" value="<?php p($copytasktotask) ?>" />
-<input type="hidden" name="tasktodeliv" value="<?php p($copytasktodeliv) ?>" />
-<input type="hidden" name="work" value="" />
-<input type="checkbox" name="detail" value="1" /> <?php print_string('givedetail', 'techproject') ?>
-<input type="button" name="go_btn" value="<?php print_string('continue'); ?>" onclick="senddata()" />
-<input type="button" name="cancel_btn" value="<?php print_string('cancel'); ?>" onclick="cancel()" />
-</form>
-</center>
-<?php
+
+    echo '<form name="confirmcopyform" action="view.php" method="post">';
+    echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
+    echo '<input type="hidden" name="from" value="'.$from.'" />';
+    echo '<input type="hidden" name="to" value="'.$to.'" />';
+    echo '<input type="hidden" name="headings" value="'.$copyheadings.'" />';
+    echo '<input type="hidden" name="requs" value="'.$copyrequirements.'" />';
+    echo '<input type="hidden" name="specs" value="'.$copyspecifications.'" />';
+    echo '<input type="hidden" name="tasks" value="'.$copytasks.'" />';
+    echo '<input type="hidden" name="miles" value="'.$copymilestones.'" />';
+    echo '<input type="hidden" name="deliv" value="'.$copydeliverables.'" />';
+    echo '<input type="hidden" name="spectoreq" value="'.$copyspectoreq.'" />';
+    echo '<input type="hidden" name="tasktospec" value="'.$copytasktospec.'" />';
+    echo '<input type="hidden" name="tasktotask" value="'.$copytasktotask.'" />';
+    echo '<input type="hidden" name="tasktodeliv" value="'.$copytasktodeliv.'" />';
+    echo '<input type="hidden" name="work" value="" />';
+    echo '<input type="checkbox" name="detail" value="1" /> '._string('givedetail', 'techproject');
+    echo '<input type="button" name="go_btn" value="'.get_string('continue').'" onclick="senddataconfirm()" />';
+    echo '<input type="button" name="cancel_btn" value="'.get_string('cancel').'" onclick="cancelconfirm()" />';
+    echo '</form>';
+    echo '</center>';
 }
 
 // Copy first setup form.
@@ -392,23 +381,15 @@ if ($work == '' || $work == 'setup') {
     if (isset($errormessage)) {
         echo $OUTPUT->box("<span style=\"color:white\">$errormessage</span>", 'center', '70%', 'warning');
     }
-?>
-<script type="text/javascript">
-//<![CDATA[
-function senddata() {
-    document.forms['copysetupform'].work.value = 'what';
-    document.forms['copysetupform'].submit();
-}
-//]]>
-</script>
-<form name="copysetupform" action="view.php" method="post">
-<input type="hidden" name="id" value="<?php p($cm->id) ?>" />
-<input type="hidden" name="work" value="" />
-<table width="90%">
-<tr valign="top">
-    <td align="right"><b><?php print_string('from', 'techproject') ?></b></td>
-    <td align="left">
-<?php
+
+    echo '<form name="copysetupform" action="view.php" method="post">';
+    echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
+    echo '<input type="hidden" name="work" value="" />';
+    echo '<table width="90%">';
+    echo '<tr valign="top">';
+    echo '<td align="right"><b>'.get_string('from', 'techproject').'</b></td>';
+    echo '<td align="left">';
+
     $fromgroups = array();
     if (!empty($groups)) {
         foreach (array_keys($groups) as $agroupid) {
@@ -416,27 +397,26 @@ function senddata() {
         }
     }
     echo html_writer::select($fromgroups, 'from', 0 + groups_get_activity_group($cm, true), get_string('groupless', 'techproject'));
-?>
-    </td>
-</tr>
-<tr valign="top">
-    <td align="right"><b><?php print_string('upto', 'techproject') ?></b></td>
-    <td align="left">
-        <select name="to[]" multiple="multiple" size="6" style="width : 80%">
-<?php
+
+    echo '</td>';
+    echo '</tr>';
+    echo '<tr valign="top">';
+    echo '<td align="right"><b>'.get_string('upto', 'techproject').'</b></td>';
+    echo '<td align="left">';
+    echo '<select name="to[]" multiple="multiple" size="6" style="width : 80%">';
+
     echo '<option value="0">'.get_string('groupless', 'techproject').'</option>';
     if (!empty($groups)) {
         foreach ($groups as $agroup) {
             echo '<option value="'.$agroup->id.'">'.$agroup->name.'</option>';
         }
     }
-?>
-        </select>
-    </td>
-</tr>
-</table>
-<input type="button" name="go_btn" value="<?php print_string('continue'); ?>" onclick="senddata()" />
-</form>
-</center>
-<?php
+
+    echo '</select>';
+    echo '</td>';
+    echo '</tr>';
+    echo '</table>';
+    echo '<input type="button" name="go_btn" value="'.get_string('continue').'" onclick="senddatasetup()" />';
+    echo '</form>';
+    echo '</center>';
 }
