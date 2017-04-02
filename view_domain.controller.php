@@ -36,7 +36,7 @@ switch ($action) {
 
             $params = array('id' => $id, 'view' => 'domains_'.$domain, 'what' => 'add', 'view' => 'domains_'.$domain);
             $returnurl = new moodle_url('/mod/techproject/view.php', $params);
-    
+
             // If there is some error.
             if ($data->code == '') {
                 print_error('err_code', 'techproject', $returnurl);

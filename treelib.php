@@ -593,7 +593,7 @@ function techproject_tree_propagate_up($table, $field, $id, $function = '~', $by
             $fatherid = 0;
         }
     } else {
-       $fatherid = $id;
+        $fatherid = $id;
     }
     if ($fatherid) {
         // Get all brothers in this tree branch (including me).
@@ -844,22 +844,22 @@ function techproject_tree_copy_set($set, $fromtable, $totable, $fields = 'descri
         $aclone->ordering = $node->ordering;
         $aclone->fatherid = 0; // Destroys all tree information as being reconstructed later.
         $aclone->lastuserid = $USER->id;
-        foreach ($fieldarray as $aField) {
-            $aclone->$aField = $node->$aField;
+        foreach ($fieldarray as $afield) {
+            $aclone->$afield = $node->$afield;
         }
         $items[$node->id] = $aclone;
         $flatitemids[] = $node->id;
     }
-   // Set project and group context using last viewed node.
-   $currentprojectid = $node->projectid;
-   $currentgroupid = $node->groupid;
+    // Set project and group context using last viewed node.
+    $currentprojectid = $node->projectid;
+    $currentgroupid = $node->groupid;
 
     // Remaps tree structure of collected items.
     foreach ($flatitemids as $anitemid) {
         place_in_tree($fromtable, $flatitemids, $items, $anitemid);
     }
 
-    insert_tree($currentprojectid, $currentgroupid, $totable, $items, $autobind, $bindtable);     
+    insert_tree($currentprojectid, $currentgroupid, $totable, $items, $autobind, $bindtable);
 
 }
 

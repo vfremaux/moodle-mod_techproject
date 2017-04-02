@@ -18,7 +18,7 @@
  * Project : Technical Project Manager (IEEE like)
  *
  * this screen submarizes activity in the project for the current group
- * 
+ *
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)

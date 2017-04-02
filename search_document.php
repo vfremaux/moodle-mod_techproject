@@ -191,9 +191,9 @@ function techproject_single_document($id, $itemtype) {
             break;
         }
     }
-    $techproject_course = $DB->get_field('techproject', 'course', array('id' => $entry->projectid));
+    $techprojectcourse = $DB->get_field('techproject', 'course', array('id' => $entry->projectid));
     $coursemodule = $DB->get_field('modules', 'id', array('name' => 'techproject'));
-    $params = array('course' => $techproject_course, 'module' => $coursemodule, 'instance' => $entry->projectid);
+    $params = array('course' => $techprojectcourse, 'module' => $coursemodule, 'instance' => $entry->projectid);
     $cm = $DB->get_record('course_modules', $params);
     $context = context_module::instance($cm->id);
     $entry->type = $itemtype;

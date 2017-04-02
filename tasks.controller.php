@@ -75,9 +75,8 @@ if ($work == 'dodelete') {
         }
     }
 
-// Full fills a task with planned values and 100% done indicator.
-
 } else if ($work == 'recalc') {
+    // Full fills a task with planned values and 100% done indicator.
     techproject_tree_propagate_down($project, 'techproject_task', 'done', 0, '~');
     techproject_tree_propagate_down($project, 'techproject_task', 'planned', 0, '+');
     techproject_tree_propagate_down($project, 'techproject_task', 'quoted', 0, '+');
