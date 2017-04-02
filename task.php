@@ -57,7 +57,7 @@ if ($work == 'add' || $work == 'update') {
     // Special command post options.
     if (($cmd == 'move') || ($cmd == 'copy')) {
         echo get_string('to', 'techproject');
-        if (@$project->projectusesrequs){
+        if (@$project->projectusesrequs) {
              $options['requs'] = get_string('requirements', 'techproject');
         }
         if (@$project->projectusesspecs) {
@@ -108,7 +108,7 @@ if ($work == 'add' || $work == 'update') {
 
         $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0));
         echo '<a href="'.$linkurl.'">'.get_string('addroottask', 'techproject').'</a> ';
-        if (@$SESSION->techproject->tasktemplateid){
+        if (@$SESSION->techproject->tasktemplateid) {
             techproject_print_group_commands(array('markasdone', 'fullfill', 'applytemplate'));
         } else {
             techproject_print_group_commands(array('markasdone', 'fullfill'));
