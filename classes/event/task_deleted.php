@@ -55,7 +55,7 @@ class task_deleted extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The task $this->objectid in techproject " . $this->contextinstanceid . " has been updated.";
+        return "The task $this->objectid in techproject " . $this->contextinstanceid . " has been deleted.";
     }
 
     /**
@@ -64,7 +64,7 @@ class task_deleted extends \core\event\base {
      * @return array|null
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'techproject', 'changetask', $this->get_url(), $this->objectid, $this->contextinstanceid);
+        return array($this->courseid, 'techproject', 'deletetask', $this->get_url(), $this->objectid, $this->contextinstanceid);
     }
 
     /**
@@ -73,7 +73,7 @@ class task_deleted extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_task_updated', 'mod_techproject');
+        return get_string('event_task_deleted', 'mod_techproject');
     }
 
     /**

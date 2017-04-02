@@ -14,19 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- *
- *
- *
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/mod/techproject/forms/form_requirement.class.php');
 
 $requid = optional_param('requid', '', PARAM_INT);
 
-$mode = ($requid) ? 'update' : 'add' ;
+$mode = ($requid) ? 'update' : 'add';
 
 $url = new moodle_url('/mod/techproject/view.php', array('id' => $id)).'#node'.$requid;
 $mform = new Requirement_Form($url, $project, $mode, $requid);
@@ -45,34 +48,38 @@ if ($data = $mform->get_data()) {
     $data->lastuserid = $USER->id;
 
     // Editors pre save processing.
-    $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-    $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'requirementdescription', $data->id, array('subdirs' => true), $data->description);
-    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject', 'requirementdescription', $data->id);
+    $draftideditor = file_get_submitted_draft_itemid('description_editor');
+    $data->description = file_save_draft_area_files($draftideditor, $context->id, 'mod_techproject', 'requirementdescription',
+                                                    $data->id, array('subdirs' => true), $data->description);
+    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject',
+                                            'requirementdescription', $data->id);
 
     if ($data->reqid) {
-        $data->id = $data->reqid; // id is course module id
+        $data->id = $data->reqid; // Id is course module id.
         $DB->update_record('techproject_requirement', $data);
         $event = \mod_techproject\event\requirement_updated::create_from_requirement($project, $context, $data, $currentgroupid);
         $event->trigger();
 
         if (!empty($data->spectoreq)) {
             // Removes previous mapping.
-            $DB->delete_records('techproject_spec_to_req', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'reqid' => $data->id));
+            $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'reqid' => $data->id);
+            $DB->delete_records('techproject_spec_to_req', $params);
             // Stores new mapping.
-            foreach($data->spectoreq as $aSpec) {
+            foreach ($data->spectoreq as $aspec) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
                 $amap->groupid = $currentgroupid;
-                $amap->specid = $aSpec;
+                $amap->specid = $aspec;
                 $amap->reqid = $data->id;
                 $res = $DB->insert_record('techproject_spec_to_req', $amap);
             }
         }
     } else {
         $data->created = time();
-        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_requirement', true, $data->fatherid) + 1;
-        unset($data->id); // id is course module id
+        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_requirement',
+                                                            true, $data->fatherid) + 1;
+        unset($data->id); // Id is course module id.
         $data->id = $DB->insert_record('techproject_requirement', $data);
         $event = \mod_techproject\event\requirement_created::create_from_requirement($project, $context, $data, $currentgroupid);
         $event->trigger();
@@ -92,7 +99,7 @@ if ($mode == 'add') {
     $requirement = new StdClass();
     $requirement->fatherid = required_param('fatherid', PARAM_INT);
     $reqtitle = ($requirement->fatherid) ? 'addsubrequ' : 'addrequ';
-    $requirement->id = $cm->id; // course module
+    $requirement->id = $cm->id; // Course module.
     $requirement->projectid = $project->id;
     $requirement->descriptionformat = FORMAT_HTML;
     $requirement->description = '';
@@ -100,12 +107,12 @@ if ($mode == 'add') {
     echo $OUTPUT->heading(get_string($reqtitle, 'techproject'));
 } else {
     if (!$requirement = $DB->get_record('techproject_requirement', array('id' => $requid))) {
-        print_error('errorrequirement','techproject');
+        print_error('errorrequirement', 'techproject');
     }
     $requirement->reqid = $requirement->id;
     $requirement->id = $cm->id;
 
-    echo $OUTPUT->heading(get_string('updaterequ','techproject'));
+    echo $OUTPUT->heading(get_string('updaterequ', 'techproject'));
 }
 
 $mform->set_data($requirement);

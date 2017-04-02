@@ -14,10 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * @package mod-techproject
+ * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
  * @date 2008/03/03
@@ -27,77 +25,79 @@ defined('MOODLE_INTERNAL') || die();
  *
  * This screen show tasks plan grouped by worktype.
  */
+defined('MOODLE_INTERNAL') || die();
 
 echo $pagebuffer;
 
-$TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
-/** useless ?
-if (!groups_get_activity_groupmode($cm, $project->course)){
-    $groupusers = get_course_users($project->course);
-} else {
-    $groupusers = get_group_users($currentgroupid);
-}*/
+$timeunitsarr = array(get_string('unset', 'techproject'),
+                   get_string('hours', 'techproject'),
+                   get_string('halfdays', 'techproject'),
+                   get_string('days', 'techproject'));
 
 // Get tasks by worktype.
 
-$query = "
-   SELECT
-      t.*
-   FROM
-      {techproject_task} as t
-   LEFT JOIN
-      {techproject_qualifier} as qu
-   ON 
-      qu.code = t.worktype AND
-      qu.domain = 'worktype'
-   WHERE
-      t.projectid = {$project->id} AND
-      t.groupid = {$currentgroupid}
-   ORDER BY
-      qu.id ASC
+$sql = "
+    SELECT
+        t.*
+    FROM
+        {techproject_task} as t
+    LEFT JOIN
+        {techproject_qualifier} as qu
+    ON
+        qu.code = t.worktype AND
+        qu.domain = 'worktype'
+    WHERE
+        t.projectid = {$project->id} AND
+        t.groupid = {$currentgroupid}
+    ORDER BY
+        qu.id ASC
 ";
 
-if ($tasks = $DB->get_records_sql($query)) {
+if ($tasks = $DB->get_records_sql($sql)) {
 
-echo '
-<script type="text/javascript">
-function sendgroupdata(){
-    document.groupopform.submit();
-}
-</script>
-';
+    echo '
+        <script type="text/javascript">
+        function sendgroupdata(){
+            document.groupopform.submit();
+        }
+        </script>
+    ';
 
-echo '<form name="groupopform" action="view.php" method="post">';
-echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
-echo '<input type="hidden" name="work" value="groupcmd" />';
-echo '<input type="hidden" name="view" value="tasks" />';
+    echo '<form name="groupopform" action="view.php" method="post">';
+    echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
+    echo '<input type="hidden" name="work" value="groupcmd" />';
+    echo '<input type="hidden" name="view" value="tasks" />';
 
-foreach ($tasks as $aTask) {
-    $sortedtasks[$aTask->worktype][] = $aTask;
-}
-
-foreach (array_keys($sortedtasks) as $aWorktype) {
-    $hidesub = "<a href=\"javascript:toggle('{$aWorktype}','sub{$aWorktype}');\"><img name=\"img{$aWorktype}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" style=\"background-color : #E0E0E0\" /></a>";
-    $theWorktype = techproject_get_option_by_key('worktype', $project->id, $aWorktype);
-    if ($aWorktype == '') {
-         $worktypeicon = '';
-         $theWorktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
-    } else {
-         $worktypeicon = "<img src=\"".$OUTPUT->pix_url('/p/'.strtolower($theWorktype->code), 'techproject')."\" title=\"{$theWorktype->description}\" style=\"background-color : #F0F0F0\" />";
+    foreach ($tasks as $atask) {
+        $sortedtasks[$atask->worktype][] = $atask;
     }
-    echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theWorktype->label.'</span>', 'worktypesbox');
-    echo "<div id=\"sub{$aWorktype}\">";
-    foreach ($sortedtasks[$aWorktype] as $aTask) {
-        techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aWorktype]), 'SHORT_WITHOUT_TYPE');
-    }
-    echo '</div>';
-}
-echo '<p>';
-techproject_print_group_commands();
-echo '</p>';
 
-echo '</form>';
+    foreach (array_keys($sortedtasks) as $aworktype) {
+        $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
+        $jshanlder = 'javascript:toggle(\''.$aworktype.'\',\'sub'.$aworktype.'\');';
+        $pix = '<img name="img'.$aworktype.'" src="'.$pixurl.'" alt="collapse" />';
+        $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
+        $theworktype = techproject_get_option_by_key('worktype', $project->id, $aworktype);
+        if ($aworktype == '') {
+            $worktypeicon = '';
+            $theworktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
+        } else {
+            $pixurl = $OUTPUT->pix_url('/p/'.strtolower($theworktype->code), 'techproject');
+            $worktypeicon = '<img src="'.$pixurl.'" title="'.$theworktype->description.'" style="background-color : #f0f0f0" />';
+        }
+        echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theworktype->label.'</span>', 'worktypesbox');
+        echo '<div id="sub'.$aworktype.'">';
+        foreach ($sortedtasks[$aworktype] as $atask) {
+            techproject_print_single_task($atask, $project, $currentgroupid, $cm->id, count($sortedtasks[$aworktype]), 'SHORT_WITHOUT_TYPE');
+        }
+        echo '</div>';
+    }
+    echo '<p>';
+    techproject_print_group_commands();
+    echo '</p>';
+
+    echo '</form>';
 
 } else {
-   echo $OUTPUT->box(get_string('notasks', 'techproject'), 'center', '70%');
+    echo $OUTPUT->box(get_string('notasks', 'techproject'), 'center', '70%');
 }

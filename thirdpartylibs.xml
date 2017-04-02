@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>tests</location>
+    <name>Testing code</name>
+    <license>GPL</license>
+    <version>v3</version>
+    <licenseversion>v3</licenseversion>
+  </library>
+  <library>
+    <location>js</location>
+    <name>Extra js add ons</name>
+    <license>GPL</license>
+    <version>v3</version>
+    <licenseversion>v3</licenseversion>
+  </library>
+</libraries>

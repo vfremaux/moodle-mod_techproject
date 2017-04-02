@@ -2,7 +2,7 @@
 
 include '../../../config.php';
 
-$id = required_param('id', PARAM_INT); // course
+$id = required_param('id', PARAM_INT); // Course.
 $lastmodified = filemtime("ganttevents.php");
 $lifetime = 1800;
 
@@ -10,7 +10,7 @@ require_course_login($id);
 
 $projectid = required_param('projectid', PARAM_INT);
 
-header("Content-type: application/x-javascript; charset: utf-8");  // Correct MIME type
+header("Content-type: application/x-javascript; charset: utf-8");  // Correct MIME type.
 header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodified) . " GMT");
 header("Expires: " . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT");
 header("Cache-control: max_age = $lifetime");
