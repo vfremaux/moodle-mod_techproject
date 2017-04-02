@@ -106,13 +106,20 @@ function sendgroupdata() {
     echo '<td><img src="'.$generatorurl.'" width="250" height="250" /></td>';
     echo '</tr></table></center>';
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
-        echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequ','techproject')."</a>&nbsp;";
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0));
+        echo "<br/><a href="'.$linurl.'">".get_string('addrequ','techproject').'</a>&nbsp;';
     }
     techproject_print_requirements($project, $currentgroupid, 0, $cm->id);
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
-        echo "<br/><a href='javascript:selectall(document.forms[\"groupopform\"])'>".get_string('selectall','techproject')."</a>&nbsp;";
-        echo "<a href='javascript:unselectall(document.forms[\"groupopform\"])'>".get_string('unselectall','techproject')."</a>&nbsp;";
-        echo "<a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addrequ','techproject')."</a>&nbsp;";
+
+        $jshandler = 'javascript:selectall(document.forms[\'groupopform\'])',
+        echo '<br/><a href="'.$jshandler.'">'.get_string('selectall', 'techproject').'</a>&nbsp;';
+
+        $jshandler = 'javascript:unselectall(document.forms[\'groupopform\'])';
+        echo '<a href="'.$jshandler.'">'.get_string('unselectall', 'techproject').'</a>&nbsp;';
+
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0));
+        echo '<a href="'.$linkurl.'">'.get_string('addrequ', 'techproject').'</a>&nbsp;';
         techproject_print_group_commands();
     }
     echo '</form>';

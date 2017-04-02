@@ -30,11 +30,11 @@ if ($work == 'add' || $work == 'update') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
-?>
 
-<center>
-<?php echo $OUTPUT->heading(get_string('groupoperations', 'techproject')); ?>
-<?php echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3); ?>
+    echo '<center>';
+    echo $OUTPUT->heading(get_string('groupoperations', 'techproject'));
+    echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3);
+?>
 <script type="text/javascript">
 //<![CDATA[
 function senddata(cmd){
@@ -47,14 +47,15 @@ function cancel(){
 }
 //]]>
 </script>
-<form name="groupopform" method="post" action="view.php">
-<input type="hidden" name="id" value="<?php p($cm->id) ?>" />
-<input type="hidden" name="work" value="" />
 <?php
+    echo '<form name="groupopform" method="post" action="view.php">';
+    echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
+    echo '<input type="hidden" name="work" value="">';
+
     foreach ($ids as $anid) {
-        echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
+        echo '<input type="hidden" name="ids[]" value="'.$anid.'" />';
     }
-    if (($cmd == 'move')||($cmd == 'copy')) {
+    if (($cmd == 'move') || ($cmd == 'copy')) {
         echo get_string('to', 'techproject');
         if (@$project->projectusesrequs) {
             $options['requs'] = get_string('requirements', 'techproject');
@@ -94,18 +95,28 @@ function sendgroupdata() {
 }
 //]]>
 </script>
-<form name="groupopform" method="post" action="view.php">
-<input type="hidden" name="id" value="<?php p($cm->id) ?>" />
-<input type="hidden" name="work" value="groupcmd" />
 <?php
+
+    echo '<form name="groupopform" method="post" action="view.php">';
+    echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
+    echo '<input type="hidden" name="work" value="groupcmd" />';
+
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changespecs', $context)) {
-        echo "<br/><a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addspec','techproject')."</a>&nbsp; ";
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0));
+        echo '<br/><a href="'.$linkurl.'">'.get_string('addspec', 'techproject').'</a>&nbsp;';
     }
     techproject_print_specifications($project, $currentgroupid, 0, $cm->id);
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changespecs', $context)) {
-        echo "<br/><a href='javascript:selectall(document.forms[\"groupopform\"])'>".get_string('selectall','techproject')."</a>&nbsp;";
-        echo "<a href='javascript:unselectall(document.forms[\"groupopform\"])'>".get_string('unselectall','techproject')."</a>&nbsp;";
-        echo "<a href='view.php?id={$cm->id}&amp;work=add&amp;fatherid=0'>".get_string('addspec','techproject')."</a>&nbsp; ";
+
+        $jshandler = 'javascript:selectall(document.forms[\'groupopform\'])';
+        echo '<br/><a href="'.$jshandler.'">'.get_string('selectall', 'techproject').'</a>&nbsp;';
+
+        $jshandler = 'javascript:unselectall(document.forms[\'groupopform\'])';
+        echo '<a href="'.$jshandler.'">'.get_string('unselectall', 'techproject').'</a>&nbsp;';
+
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0));
+        echo '<a href="'.$linkurl'">'.get_string('addspec', 'techproject').'</a>&nbsp;';
+
         if (@$SESSION->techproject->spectemplateid){
             techproject_print_group_commands(array('applytemplate'));
         } else {

@@ -101,7 +101,9 @@ function techproject_get_content_for_index(&$techproject) {
     global $DB;
 
     $documents = array();
-    if (!$techproject) return $documents;
+    if (!$techproject) {
+        return $documents;
+    }
 
     $coursemodule = $DB->get_field('modules', 'id', array('name' => 'techproject'));
     $params = array('course' => $techproject->course, 'module' => $coursemodule, 'instance' => $techproject->id);
@@ -123,7 +125,8 @@ function techproject_get_content_for_index(&$techproject) {
             if ($anentry) {
                 if (strlen($anentry->description) > 0) {
                     $anentry->author = '';
-                    $documents[] = new TechprojectEntrySearchDocument(get_object_vars($anentry), $techproject->course, $context->id);
+                    $vars = get_object_vars($anentry);
+                    $documents[] = new TechprojectEntrySearchDocument($vars, $techproject->course, $context->id);
                 }
             }
         }
@@ -138,7 +141,8 @@ function techproject_get_content_for_index(&$techproject) {
                         $user = $DB->get_record('user', array('id' => $atask->assignee));
                         $atask->author = $user->firstname.' '.$user->lastname;
                     }
-                    $documents[] = new TechprojectEntrySearchDocument(get_object_vars($atask), $techproject->course, $context->id);
+                    $vars = get_object_vars($atask);
+                    $documents[] = new TechprojectEntrySearchDocument($vars, $techproject->course, $context->id);
                 }
             }
         }
@@ -287,10 +291,10 @@ function techproject_get_tasks($projectid) {
 /**
  *
  */
-function techproject_search_get_objectinfo($itemtype, $this_id, $contextid = null) {
+function techproject_search_get_objectinfo($itemtype, $thisid, $contextid = null) {
     global $DB;
 
-    if (!$entry = $DB->get_record("techproject_{$itemtype}", array('id' => $this_id))) {
+    if (!$entry = $DB->get_record("techproject_{$itemtype}", array('id' => $thisid))) {
         return false;
     }
     if (!$techproject = $DB->get_record('techproject', array('id' => $entry->projectid))) {
@@ -315,27 +319,27 @@ function techproject_search_get_objectinfo($itemtype, $this_id, $contextid = nul
 }
 
 /**
- * this function handles the access policy to contents indexed as searchable documents. If this 
+ * this function handles the access policy to contents indexed as searchable documents. If this
  * function does not exist, the search engine assumes access is allowed.
- * When this point is reached, we already know that : 
+ * When this point is reached, we already know that :
  * - user is legitimate in the surrounding context
  * - user may be guest and guest access is allowed to the module
  * - the function may perform local checks within the module information logic
  * @param path the access path to the module script code
  * @param entry_type the information subclassing (usefull for complex modules, defaults to 'standard')
- * @param this_id the item id within the information class denoted by entry_type. In techprojects, this id 
+ * @param this_id the item id within the information class denoted by entry_type. In techprojects, this id
  * points to the techproject instance in which all resources are indexed.
  * @param user the user record denoting the user who searches
  * @param group_id the current group used by the user when searching
  * @return true if access is allowed, false elsewhere
  */
-function techproject_check_text_access($path, $entrytype, $this_id, $user, $groupid, $contextid) {
+function techproject_check_text_access($path, $entrytype, $thisid, $user, $groupid, $contextid) {
     global $CFG, $DB;
 
     include_once($CFG->dirroot.'/'.$path.'/lib.php');
 
     // get the techproject object and all related stuff.
-    if (!$info = techproject_search_get_objectinfo($entrytype, $this_id, $contextid)) {
+    if (!$info = techproject_search_get_objectinfo($entrytype, $thisid, $contextid)) {
         return false;
     }
     $cm = $info->cm;
@@ -359,8 +363,8 @@ function techproject_check_text_access($path, $entrytype, $this_id, $user, $grou
         return true;
     }
     // Trap if user is not same group and groups are separated.
-    $current_group = get_current_group($course->id);
-    if ((groupmode($course) == SEPARATEGROUPS) && $groupid != $current_group && $groupid) {
+    $currentgroup = get_current_group($course->id);
+    if ((groupmode($course) == SEPARATEGROUPS) && $groupid != $currentgroup && $groupid) {
         return false;
     }
     // Trap if ungroupedsees is off in strict access mode and user is not teacher.
