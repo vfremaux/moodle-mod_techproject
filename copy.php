@@ -233,103 +233,22 @@ if ($work == 'what') {
     } else {
 
         echo '<center>';
-        
+
         echo $OUTPUT->heading(get_string('copywhat', 'techproject'));
         $toarr = array();
-        
+
         foreach ($to as $atarget) {
             $toarr[] = $groups[$atarget]->name;
         }
-        
+
         if ($from) {
             echo $OUTPUT->box($groups[$from]->name.' &gt;&gt; '.implode(',', $toarr), 'center');
         } else {
             echo $OUTPUT->box(get_string('groupless', 'techproject').' &gt;&gt; '.implode(',', $toarr), 'center');
         }
-?>
-<script type="text/javascript">
-//<![CDATA[
-function senddata(){
-    document.forms['copywhatform'].work.value = 'confirm';
-    document.forms['copywhatform'].submit();
-}
-function cancel() {
-    document.forms['copywhatform'].work.value = 'setup';
-    document.forms['copywhatform'].submit();
-}
-function formControl(entity) {
-    switch (entity) {
 
-        case 'requs':
-            if (!document.forms['copywhatform'].requs.checked === true) {
-                document.forms['copywhatform'].spectoreq.disabled = true;
-                aDiv = document.getElementById('spectoreq_span');
-                aDiv.className = 'dithered';
-            } else {
-                document.forms['copywhatform'].spectoreq.disabled = false;
-                aDiv = document.getElementById('spectoreq_span');
-                aDiv.className = '';
-            }
-            break;
+        echo '<script type="text/javascript" src="'.$CFG->wwwroot.'/mod/techproject/js/copy.js"></script>';
 
-        case 'specs':
-            if (!document.forms['copywhatform'].specs.checked === true) {
-                document.forms['copywhatform'].spectoreq.disabled = true;
-                document.forms['copywhatform'].tasktospec.disabled = true;
-                aDiv = document.getElementById('tasktospec_span');
-                aDiv.className = 'dithered';
-                aDiv = document.getElementById('spectoreq_span');
-                aDiv.className = 'dithered';
-            } else {
-                document.forms['copywhatform'].spectoreq.disabled = false;
-                document.forms['copywhatform'].tasktospec.disabled = false;
-                aDiv = document.getElementById('tasktospec_span');
-                aDiv.className = '';
-                aDiv = document.getElementById('spectoreq_span');
-                aDiv.className = '';
-            }
-            break;
-
-        case 'tasks':
-            if (!document.forms['copywhatform'].tasks.checked === true) {
-                document.forms['copywhatform'].tasktospec.disabled = true;
-                document.forms['copywhatform'].tasktodeliv.disabled = true;
-                document.forms['copywhatform'].tasktotask.disabled = true;
-                aDiv = document.getElementById('tasktospec_span');
-                aDiv.className = 'dithered';
-                aDiv = document.getElementById('tasktotask_span');
-                aDiv.className = 'dithered';
-                aDiv = document.getElementById('tasktodeliv_span');
-                aDiv.className = 'dithered';
-            } else {
-                document.forms['copywhatform'].tasktospec.disabled = false;
-                document.forms['copywhatform'].tasktodeliv.disabled = false;
-                document.forms['copywhatform'].tasktotask.disabled = false;
-                aDiv = document.getElementById('tasktospec_span');
-                aDiv.className = '';
-                aDiv = document.getElementById('tasktotask_span');
-                aDiv.className = '';
-                aDiv = document.getElementById('tasktodeliv_span');
-                aDiv.className = '';
-            }
-            break;
-
-        case 'deliv':
-            if (!document.forms['copywhatform'].deliv.checked === true) {
-                document.forms['copywhatform'].tasktodeliv.disabled = true;
-                aDiv = document.getElementById('tasktodeliv_span');
-                aDiv.className = 'dithered';
-            } else {
-                document.forms['copywhatform'].tasktodeliv.disabled = false;
-                aDiv = document.getElementById('tasktodeliv_span');
-                aDiv.className = '';
-            }
-            break;
-    }
-}
-//]]>
-</script>
-<?php
         echo '<form name="copywhatform" action="view.php" method="post">';
         echo '<input type="hidden" name="id" value="'.$cm->id.'"/>';
         echo '<input type="hidden" name="from" value="'.$from.'"/>';

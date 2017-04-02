@@ -256,4 +256,17 @@ class mod_techproject_renderer extends plugin_renderer_base {
 
         return $str;
     }
+
+    public function milestone_clear_form($cm) {
+        $str = '';
+
+        $str .= '<form name="clearmilestoneform" method="post" action="view.php">';
+        $str .= '<input type="hidden" name="work" value="" />';
+        $str .= '<input type="hidden" name="id" value="'.$cm->id.'" />';
+        $str .= '<input type="button" name="go_btn" value="'.get_string('yes').'"  onclick="senddata();"/>';
+        $str .= '<input type="button" name="cancel_btn" value="'.get_string('no').'" onclick="cancel();" />';
+        $str .= '</form>';
+
+        return $str;
+    }
 }

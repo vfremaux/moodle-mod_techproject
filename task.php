@@ -27,6 +27,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+echo '<script type="text/javascript" src="'.$CFG->wwwroot.'/mod/techproject/js/groupform.js"></script>';
+
 if ($work == 'add' || $work == 'update') {
     include($CFG->dirroot.'/mod/techproject/edit_task.php');
 
@@ -35,27 +37,15 @@ if ($work == 'add' || $work == 'update') {
     echo $pagebuffer;
     $ids = optional_param_array('ids', array(), PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
-?>
-    <center>
-<?php
-echo $OUTPUT->heading(get_string('groupoperations', 'techproject'));
-echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3);
-if ($cmd == 'copy' || $cmd == 'move') {
-    echo $OUTPUT->box(get_string('groupcopymovewarning', 'techproject'), 'center', '70%');
-}
-?>
-<script type="text/javascript">
-//<![CDATA[
-function senddata(cmd){
-    document.forms['groupopform'].work.value="do" + cmd;
-    document.forms['groupopform'].submit();
-}
-function cancel(){
-    document.forms['groupopform'].submit();
-}
-//]]>
-</script>
-<?php
+
+    echo '<center>';
+    echo $OUTPUT->heading(get_string('groupoperations', 'techproject'));
+    echo $OUTPUT->heading(get_string("group$cmd", 'techproject'), 3);
+
+    if ($cmd == 'copy' || $cmd == 'move') {
+        echo $OUTPUT->box(get_string('groupcopymovewarning', 'techproject'), 'center', '70%');
+    }
+
     echo '<form name="groupopform" method="post" action="view.php">';
     echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
     echo '<input type="hidden" name="work" value="" />';
@@ -100,15 +90,7 @@ function cancel(){
         include($CFG->dirroot.'/mod/techproject/tasks.controller.php');
     }
     echo $pagebuffer;
-?>
-<script type="text/javascript">
-//<![CDATA[
-function sendgroupdata(){
-    document.forms['groupopform'].submit();
-}
-//]]>
-</script>
-<?php
+
     echo '<form name="groupopform" method="post" action="view.php">';
     echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
     echo '<input type="hidden" name="work" value="groupcmd" />';

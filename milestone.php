@@ -23,6 +23,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+echo '<script type="text/javascript" src="'.$CFG->wwwroot.'/mod/techproject/js/milestone.js"></script>';
+
 // Controller.
 
 if ($work == 'add' || $work == 'update') {
@@ -34,24 +36,9 @@ if ($work == 'add' || $work == 'update') {
     echo '<center>';
     echo $OUTPUT->heading(get_string('clearallmilestones', 'techproject'));
     echo $OUTPUT->box(get_string('clearwarning', 'techproject'), 'generalbox');
-?>
-    <script type="text/javascript">
-    function senddata(){
-        document.clearmilestoneform.work.value = 'doclearall';
-        document.clearmilestoneform.submit();
-    }
-    function cancel(){
-        document.clearmilestoneform.submit();
-    }
-    </script>
-    <form name="clearmilestoneform" method="post" action="view.php">
-    <input type="hidden" name="work" value="" />
-    <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
-    <input type="button" name="go_btn" value="<?php print_string('yes') ?>"  onclick="senddata();"/>
-    <input type="button" name="cancel_btn" value="<?php print_string('no') ?>" onclick="cancel();" />
-    </form>
-    </center>
-    <?php
+
+    echo $renderer->milestone_clear_form($cm);
+    echo '</center>';
 } else {
     if ($work) {
         include($CFG->dirroot.'/mod/techproject/milestones.controller.php');
