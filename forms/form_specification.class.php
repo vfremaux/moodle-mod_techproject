@@ -115,7 +115,7 @@ class Specification_Form extends moodleform {
                     $reqs[$arequirement->id] = $arequirement->ordering .' - '.$shortabstract;
                 }
             }
-            $select = &$mform->addElement('select', 'spectoreq', get_string('spectoreq', 'techproject'), $reqs, array('size' => 8));
+            $select = $mform->addElement('select', 'spectoreq', get_string('spectoreq', 'techproject'), $reqs, array('size' => 8));
             $select->setMultiple(true);
             $mform->addHelpButton('spectoreq', 'spec_to_reqs', 'techproject');
         }

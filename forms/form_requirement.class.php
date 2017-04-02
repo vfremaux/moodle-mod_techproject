@@ -105,7 +105,7 @@ class Requirement_Form extends moodleform {
                 }
             }
             $label = get_string('assignedspecs', 'techproject');
-            $select = &$mform->addElement('select', 'spectoreq', $label, $linkedspecs, array('size' => 8));
+            $select = $mform->addElement('select', 'spectoreq', $label, $linkedspecs, array('size' => 8));
             $select->setMultiple(true);
             $mform->addHelpButton('spectoreq', 'spec_to_req', 'techproject');
         }

@@ -48,7 +48,7 @@ if ($work == 'add' || $work == 'update') {
     techproject_print_milestones($project, $currentgroupid, null, $cm->id);
     if ($USER->editmode == 'on' && (has_capability('mod/techproject:changemiles', $context))) {
         $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add'));
-        echo '<br/><a href=".$linkurl.">'.get_string('addmilestone', 'techproject').'</a>';
+        echo '<br/><a href="'.$linkurl.'">'.get_string('addmilestone', 'techproject').'</a>';
         $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'clearall'));
         echo ' - <a href="'.$linkurl.'">'.get_string('clearall', 'techproject').'</a>';
         $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'sortbydate'));
