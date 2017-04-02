@@ -156,32 +156,42 @@ if ($work == 'docopy') {
         // Do fix some foreign keys.
         echo '<tr><td align="left">'.get_string('fixingforeignkeys', 'techproject').'...</td><td align="right">';
         if (array_key_exists('spec_to_req', $copied) && count(array_values(@$copied['spec_to_req']))) {
-            techproject_fix_foreign_keys($project, $atarget, 'spec_to_req', 'specid', $copied['specification'], array_values($copied['spec_to_req']));
-            techproject_fix_foreign_keys($project, $atarget, 'spec_to_req', 'reqid', $copied['requirement'], array_values($copied['spec_to_req']));
+            techproject_fix_foreign_keys($project, $atarget, 'spec_to_req', 'specid', $copied['specification'],
+                                         array_values($copied['spec_to_req']));
+            techproject_fix_foreign_keys($project, $atarget, 'spec_to_req', 'reqid', $copied['requirement'],
+                                         array_values($copied['spec_to_req']));
         }
         if (array_key_exists('task_to_spec', $copied) && count(array_values(@$copied['task_to_spec']))) {
-            techproject_fix_foreign_keys($project, $atarget, 'task_to_spec', 'taskid', $copied['task'], array_values($copied['task_to_spec']));
-            techproject_fix_foreign_keys($project, $atarget, 'task_to_spec', 'specid', $copied['specification'], array_values($copied['task_to_spec']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_to_spec', 'taskid', $copied['task'],
+                                         array_values($copied['task_to_spec']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_to_spec', 'specid', $copied['specification'],
+                                         array_values($copied['task_to_spec']));
         }
         if (array_key_exists('task_to_deliv', $copied) && count(array_values(@$copied['task_to_deliv']))) {
-            techproject_fix_foreign_keys($project, $atarget, 'task_to_deliv', 'taskid', $copied['task'], array_values($copied['task_to_deliv']));
-            techproject_fix_foreign_keys($project, $atarget, 'task_to_deliv', 'delivid', $copied['deliverable'], array_values($copied['task_to_deliv']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_to_deliv', 'taskid', $copied['task'],
+                                         array_values($copied['task_to_deliv']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_to_deliv', 'delivid', $copied['deliverable'],
+                                         array_values($copied['task_to_deliv']));
         }
         if (array_key_exists('task_dependency', $copied) && count(array_values(@$copied['task_dependency']))) {
-            techproject_fix_foreign_keys($project, $atarget, 'task_dependency', 'master', $copied['task'], array_values($copied['task_dependency']));
-            techproject_fix_foreign_keys($project, $atarget, 'task_dependency', 'slave', $copied['task'], array_values($copied['task_dependency']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_dependency', 'master', $copied['task'],
+                                         array_values($copied['task_dependency']));
+            techproject_fix_foreign_keys($project, $atarget, 'task_dependency', 'slave', $copied['task'],
+                                         array_values($copied['task_dependency']));
         }
         if (array_key_exists('milestone', $copied) &&
                 array_key_exists('task', $copied) &&
                         count(array_values(@$copied['task'])) &&
                                 count(array_values(@$copied['milestone']))) {
-            techproject_fix_foreign_keys($project, $atarget, 'task', 'milestoneid', $copied['milestone'], array_values($copied['task']));
+            techproject_fix_foreign_keys($project, $atarget, 'task', 'milestoneid', $copied['milestone'],
+                                         array_values($copied['task']));
         }
         if (array_key_exists('milestone', $copied) &&
                 array_key_exists('deliverable', $copied) &&
                         count(array_values(@$copied['deliverable'])) &&
                                 count(array_values(@$copied['milestone']))) {
-            techproject_fix_foreign_keys($project, $atarget, 'deliverable', 'milestoneid', $copied['milestone'], array_values($copied['deliverable']));
+            techproject_fix_foreign_keys($project, $atarget, 'deliverable', 'milestoneid', $copied['milestone'],
+                                         array_values($copied['deliverable']));
         }
 
         // Fixing fatherid values.
@@ -222,20 +232,20 @@ if ($work == 'what') {
         $work = 'setup';
     } else {
 
-echo '<center>';
-
-echo $OUTPUT->heading(get_string('copywhat', 'techproject'));
-$toarr = array();
-
-foreach ($to as $atarget) {
-    $toarr[] = $groups[$atarget]->name;
-}
-
-if ($from) {
-    echo $OUTPUT->box($groups[$from]->name.' &gt;&gt; '.implode(',', $toarr), 'center');
-} else {
-    echo $OUTPUT->box(get_string('groupless', 'techproject').' &gt;&gt; '.implode(',', $toarr), 'center');
-}
+        echo '<center>';
+        
+        echo $OUTPUT->heading(get_string('copywhat', 'techproject'));
+        $toarr = array();
+        
+        foreach ($to as $atarget) {
+            $toarr[] = $groups[$atarget]->name;
+        }
+        
+        if ($from) {
+            echo $OUTPUT->box($groups[$from]->name.' &gt;&gt; '.implode(',', $toarr), 'center');
+        } else {
+            echo $OUTPUT->box(get_string('groupless', 'techproject').' &gt;&gt; '.implode(',', $toarr), 'center');
+        }
 ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -319,18 +329,20 @@ function formControl(entity) {
 }
 //]]>
 </script>
-<form name="copywhatform" action="view.php" method="post">
-<input type="hidden" name="id" value="<?php p($cm->id) ?>"/>
-<input type="hidden" name="from" value="<?php p($from) ?>"/>
-<input type="hidden" name="to" value="<?php p(implode(',', $to)) ?>"/>
-<input type="hidden" name="work" value=""/>
-<table cellpadding="5">
-<tr valign="top">
-    <td align="right"><b><?php print_string('what', 'techproject') ?></b></td>
-    <td align="left">
-        <p><b><?php print_string('entities', 'techproject') ?></b></p>
-        <p><input type="checkbox" name="headings" value="1" checked="checked" /> <?php print_string('headings', 'techproject'); ?>
-        <?php
+<?php
+        echo '<form name="copywhatform" action="view.php" method="post">';
+        echo '<input type="hidden" name="id" value="'.$cm->id.'"/>';
+        echo '<input type="hidden" name="from" value="'.$from.'"/>';
+        echo '<input type="hidden" name="to" value="'.implode(',', $to).'"/>';
+        echo '<input type="hidden" name="work" value=""/>';
+        echo '<table cellpadding="5">';
+        echo '<tr valign="top">';
+        echo '<td align="right"><b>'.get_string('what', 'techproject').'</b></td>';
+        echo '<td align="left">';
+        echo '<p><b>'.get_string('entities', 'techproject').'</b></p>';
+        echo '<p><input type="checkbox" name="headings" value="1" checked="checked" />';
+
+        print_string('headings', 'techproject');
         if (@$project->projectusesrequs) {
             $jshandler = 'formControl(\'requs\')';
             echo '<br/>';
