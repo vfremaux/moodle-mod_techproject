@@ -72,7 +72,7 @@ if (!function_exists('recordstoxml')) {
                 $ix++;
             }
             $subrecords = "\t" . str_replace("\n", "\n\t", $subrecords); // Give one indent more.
-            $subrecords = substr($subrecords, 0, strlen($subrecords) -1); // Chops last \t.
+            $subrecords = substr($subrecords, 0, strlen($subrecords) - 1); // Chops last \t.
             $xml .= $subrecords;
         }
         $xml .= "</{$baseelement}s>\n";
