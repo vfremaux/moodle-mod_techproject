@@ -58,7 +58,6 @@ class mod_techproject_renderer extends plugin_renderer_base {
      *
      */
     public function bar_graph_over($value, $over, $width = 50, $height = 4, $maxover = 60) {
-        global $CFG;
 
         if ($value == -1) {
             $pixurl = $this->output->pix_url('p/graypixel', 'techproject');

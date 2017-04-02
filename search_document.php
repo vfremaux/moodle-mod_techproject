@@ -71,7 +71,6 @@ class TechprojectEntrySearchDocument extends SearchDocument {
  *
  */
 function techproject_make_link($techprojectid, $entryid, $entrytype, $groupid) {
-    global $CFG;
 
     $params = array('view' => 'view_detail',
                     'id' => $techprojectid,
@@ -235,7 +234,7 @@ function techproject_db_names() {
  * @return an array of records
  */
 function techproject_get_entries($projectid, $type) {
-    global $CFG, $DB;
+    global $DB;
 
     $query = "
         SELECT
@@ -260,7 +259,7 @@ function techproject_get_entries($projectid, $type) {
  * @return an array of records that represent tasks
  */
 function techproject_get_tasks($projectid) {
-    global $CFG, $DB;
+    global $DB;
 
     $query = "
         SELECT

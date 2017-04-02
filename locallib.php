@@ -52,11 +52,11 @@ define('DAY', 3);
  * @return the button code or an empty string
  */
 function techproject_edition_enable_button($cm, $course, $project, $editmode) {
-    global $CFG, $USER;
+    global $SESSION;
 
     // Protect agains some unwanted situations.
     $groupmode = 0 + groups_get_activity_groupmode($cm, $course);
-    $currentgroupid = (isguestuser()) ? $_SESSION['guestgroup'] : groups_get_activity_group($cm);
+    $currentgroupid = (isguestuser()) ? $SESSION->guestgroup : groups_get_activity_group($cm);
     $context = context_course::instance($course->id);
     if (!has_capability('moodle/grade:edit', $context)) {
         if (isguestuser() && !$project->guestscanuse) {
@@ -92,7 +92,7 @@ function techproject_edition_enable_button($cm, $course, $project, $editmode) {
  * @param project the current project
  */
 function techproject_print_assignement_info($project, $return = false) {
-    global $CFG, $SESSION, $DB, $OUTPUT;
+    global $DB, $OUTPUT;
 
     $str = '';
 
@@ -141,7 +141,7 @@ function techproject_print_assignement_info($project, $return = false) {
  * @return a printable representation of the current project phase
  */
 function techproject_phase($project, $style = '') {
-    global $CFG, $SESSION, $DB, $COURSE;
+    global $DB, $COURSE;
 
     $time = time();
     $course = $DB->get_record('course', array('id' => $project->course));
@@ -202,7 +202,7 @@ function techproject_phase($project, $style = '') {
  * @param cmid the module id (for urls)
  */
 function techproject_print_specifications($project, $group, $fatherid, $cmid, $propagated = null) {
-    global $CFG, $USER, $DB, $OUTPUT;
+    global $USER, $DB, $OUTPUT;
     static $level = 0;
     static $startuplevelchecked = false;
 
@@ -283,7 +283,7 @@ function techproject_print_specifications($project, $group, $fatherid, $cmid, $p
  * @param fullsingle true if prints a single isolated element
  */
 function techproject_print_single_specification($specification, $project, $group, $cmid, $setsize, $fullsingle = false) {
-    global $CFG, $USER, $SESSION, $DB, $OUTPUT, $PAGE;
+    global $USER, $SESSION, $DB, $OUTPUT, $PAGE;
 
     $renderer = $PAGE->get_renderer('mod_techproject');
     $context = context_module::instance($cmid);
@@ -447,11 +447,9 @@ function techproject_print_single_specification($specification, $project, $group
  * @fatherid the father node
  * @param numrequ the propagated autonumbering prefix
  * @param cmid the module id (for urls)
- * @uses $CFG
- * @uses $USER
  */
 function techproject_print_requirements($project, $group, $fatherid, $cmid, $propagated = null) {
-    global $CFG, $USER, $DB, $OUTPUT;
+    global $USER, $DB, $OUTPUT;
     static $level = 0;
     static $startuplevelchecked = false;
 
@@ -530,7 +528,7 @@ function techproject_print_requirements($project, $group, $fatherid, $cmid, $pro
  * @param fullsingle true if prints a single isolated element
  */
 function techproject_print_single_requirement($requirement, $project, $group, $cmid, $setsize, $fullsingle = false) {
-    global $CFG, $USER, $DB, $OUTPUT, $PAGE;
+    global $USER, $DB, $OUTPUT, $PAGE;
 
     $renderer = $PAGE->get_renderer('mod_techproject');
     $context = context_module::instance($cmid);
@@ -688,7 +686,7 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
  * @param cmid the module id (for urls)
  */
 function techproject_print_tasks($project, $group, $fatherid, $cmid, $propagated = null) {
-    global $CFG, $USER, $DB, $OUTPUT;
+    global $USER, $DB, $OUTPUT;
     static $level = 0;
     static $startuplevelchecked = false;
 
@@ -998,7 +996,7 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
  * @param cmid the module id (for urls)
  */
 function techproject_print_milestones($project, $group, $numstage, $cmid) {
-    global $CFG, $USER, $DB, $OUTPUT, $PAGE;
+    global $USER, $DB, $OUTPUT, $PAGE;
 
     $renderer = $PAGE->get_renderer('mod_techproject');
     $timeunits = array(get_string('unset', 'techproject'),
@@ -1187,11 +1185,9 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
  * @fatherid the father node
  * @param numspec the propagated autonumbering prefix
  * @param cmid the module id (for urls)
- * @uses $CFG
- * @uses $USER
  */
 function techproject_print_deliverables($project, $group, $fatherid, $cmid, $propagated = null) {
-    global $CFG, $USER, $DB, $OUTPUT;
+    global $USER, $DB, $OUTPUT;
     static $level = 0;
     static $startuplevelchecked = false;
 
@@ -1266,7 +1262,7 @@ function techproject_print_deliverables($project, $group, $fatherid, $cmid, $pro
  * @param fullsingle true if prints a single isolated element
  */
 function techproject_print_single_deliverable($deliverable, $project, $group, $cmid, $setsize, $fullsingle = false) {
-    global $CFG, $USER, $DB, $OUTPUT, $PAGE;
+    global $USER, $DB, $OUTPUT, $PAGE;
 
     $fs = get_file_storage();
 
@@ -1439,7 +1435,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
  * @return void prints only viewable sequences
  */
 function techproject_print_heading(&$project, $group) {
-    global $CFG, $DB, $OUTPUT;
+    global $DB, $OUTPUT;
 
     $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $group));
 
@@ -1591,7 +1587,7 @@ function techproject_check_task_circularity($taskid, $masterid) {
  * @param whatlist a list of nodes resulting of a previous id expansion
  */
 function techproject_print_entitycount($table1, $table2, $projectid, $groupid, $what, $relwhat, $id, $whatlist = '') {
-    global $CFG, $DB, $OUTPUT;
+    global $DB, $OUTPUT;
 
     // Get concerned subtree if not provided.
     if (!isset($whatlist) || empty($whatlist)) {
@@ -1650,7 +1646,6 @@ function techproject_print_entitycount($table1, $table2, $projectid, $groupid, $
  *
  */
 function techproject_print_group_commands($additional = '') {
-    global $CFG;
 
     $optionlist[''] = get_string('choosewhat', 'techproject');
     $optionlist['deleteitems'] = get_string('deleteselected', 'techproject');
@@ -1807,7 +1802,7 @@ function techproject_print_project_table($table, $return = false) {
  * @return the grade
  */
 function techproject_autograde($project, $groupid) {
-    global $CFG, $DB;
+    global $DB, $OUTPUT;
 
     echo $OUTPUT->heading(get_string('autograde', 'techproject'));
 
@@ -2042,10 +2037,9 @@ function techproject_get_group_users($courseid, $cm, $groupid) {
  *
  * @param object $project
  * @param int $groupid
- * @uses $COURSE
  */
 function techproject_get_full_xml(&$project, $groupid) {
-    global $COURSE, $CFG, $DB;
+    global $CFG, $DB;
 
     include_once($CFG->dirroot.'/mod/techproject/xmllib.php');
 
@@ -2258,7 +2252,7 @@ function techproject_get_domain($domain, $id, $how = false, $scope, $sortby = 'l
  *
  */
 function techproject_print_validations($project, $groupid, $fatherid, $cmid) {
-    global $CFG, $USER, $DB, $OUTPUT;
+    global $USER, $DB, $OUTPUT;
 
     static $level = 0;
 
@@ -2367,7 +2361,7 @@ function techproject_print_validations($project, $groupid, $fatherid, $cmid) {
  */
 function techproject_print_single_entity_validation(&$validationsessions, &$entity, &$project, $group, $cmid,
                                                     $countentities, $entityname) {
-    global $CFG, $USER, $DB, $OUTPUT;
+    global $USER, $DB, $OUTPUT;
 
     static $classswitch = 'even';
 
@@ -2428,7 +2422,7 @@ function techproject_print_single_entity_validation(&$validationsessions, &$enti
 }
 
 function techproject_print_validation_states_form($validsessid, &$project, $groupid, $fatherid = 0, $cmid = 0) {
-    global $CFG, $USER, $DB;
+    global $USER, $DB;
     static $level = 0;
 
     if (!empty($project->projectusesrequs)) {
@@ -2498,7 +2492,7 @@ function techproject_print_validation_states_form($validsessid, &$project, $grou
  *
  */
 function techproject_print_single_validation_form($state, $entityname) {
-    global $CFG, $OUTPUT;
+    global $OUTPUT;
 
     $numentity = implode('.', techproject_tree_get_upper_branch('techproject_'.$entityname, $state->reqid, true, true));
     if (techproject_count_subs('techproject_'.$entityname, $state->reqid) > 0) {
@@ -2539,7 +2533,7 @@ function techproject_print_single_validation_form($state, $entityname) {
  *
  */
 function milestone_check_constraints($project, $milestone) {
-    global $CFG, $DB;
+    global $DB;
 
     $control = null;
     switch($project->timeunit) {

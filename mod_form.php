@@ -45,7 +45,7 @@ require_once($CFG->dirroot.'/mod/techproject/locallib.php');
 class mod_techproject_mod_form extends moodleform_mod {
 
     public function definition() {
-        global $COURSE;
+        global $CFG;
 
         $mform =& $this->_form;
 
