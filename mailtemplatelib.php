@@ -1,60 +1,55 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* This library is a third-party proposal for standardizing mail
-* message constitution for third party modules. It is actually used
-* by all ethnoinformatique.fr module. It relies on mail and message content
-* templates tha should reside in a mail/{$lang}_utf8 directory within the 
-* module space.
-*
-* @package extralibs
-* @category third-party libs
-* @author Valery Fremaux (France) (valery@valeisti.fr)
-* @date 2008/03/03
-* @license http://www.gnu.org/copyleft/gpl.html GNU Public License
-*/
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+defined('MOODLE_INTERNAL') || die();
 
 /**
-* useful templating functions from an older project of mine, hacked for Moodle
-* @param template the template's file name from $CFG->sitedir
-* @param infomap a hash containing pairs of parm => data to replace in template
-* @return a fully resolved template where all data has been injected
-*/
-function techproject_compile_mail_template($template, $infomap, $module = 'techproject') {
-    $notification = implode('', techproject_get_mail_template($template, $module));
-    foreach($infomap as $aKey => $aValue){
-        $notification = str_replace("<%%$aKey%%>", $aValue, $notification);
+ * useful templating functions from an older project of mine, hacked for Moodle
+ * @param template the template's file name from $CFG->sitedir
+ * @param infomap a hash containing pairs of parm => data to replace in template
+ * @return a fully resolved template where all data has been injected
+ */
+function techproject_compile_mail_template($template, $infomap, $lang) {
+    global $USER;
+
+    if (empty($lang)) {
+        $lang = $USER->lang;
+    }
+    $lang = substr($lang, 0, 2); // Be sure we are in moodle 2.
+
+    $notification = implode('', techproject_get_mail_template($template, $lang));
+    foreach ($infomap as $akey => $avalue) {
+        $notification = str_replace("<%%$akey%%>", $avalue, $notification);
     }
     return $notification;
 }
 
-/*
-* resolves and get the content of a Mail template, acoording to the user's current language.
-* @param virtual the virtual mail template name
-* @param module the current module
-* @param lang if default language must be overriden
-* @return string the template's content or false if no template file is available
-*/
-function techproject_get_mail_template($virtual, $modulename, $lang = ''){
-    global $CFG;
-
-    if ($lang == '') {
-        $lang = $CFG->lang;
-    }
-    if (preg_match('/^auth_/', $modulename)){
-        $location = 'auth';
-        $modulename = str_replace('auth_', '', $modulename);
-    } elseif (preg_match('/^block_/', $modulename)){
-        $location = 'blocks';
-        $modulename = str_replace('block_', '', $modulename);
-    } else {
-        $location = 'mod';
-    }
-    $templateName = "{$CFG->dirroot}/{$location}/{$modulename}/mails/{$lang}/{$virtual}.tpl";
-    if (file_exists($templateName))
-        return file($templateName);
-
-    notice("template $templateName not found");
-    return array();
+/**
+ * resolves and get the content of a Mail template, acoording to the user's current language.
+ * @param virtual the virtual mail template name
+ * @param lang if default language must be overriden
+ * @return string the template's content or false if no template file is available
+ */
+function techproject_get_mail_template($virtual, $lang = '') {
+    return new lang_string($virtual.'_tpl', 'techproject', '', $lang);
 }
-?>
