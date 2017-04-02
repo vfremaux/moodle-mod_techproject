@@ -45,21 +45,21 @@ if ($work == 'dodelete') {
     $oldtask->used      = 0;
     $DB->update_record('techproject_task', $oldtask);
 
-   // If was subtask, update branch annulation.
-   if ($oldtask->fatherid != 0) {
-       techproject_tree_propagate_up('techproject_task', 'done', $oldtask->id, '~');
-       techproject_tree_propagate_up('techproject_task', 'planned', $oldtask->id, '+');
-       techproject_tree_propagate_up('techproject_task', 'quoted', $oldtask->id, '+');
-       techproject_tree_propagate_up('techproject_task', 'used', $oldtask->id, '+');
-       techproject_tree_propagate_up('techproject_task', 'spent', $oldtask->id, '+');
-   }
-   // Now can delete records.
-   $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $taskid);
-   $DB->delete_records('techproject_task_to_spec', $params);
-   $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'master' => $taskid);
-   $DB->delete_records('techproject_task_dependency', $params);
-   $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $taskid);
-   $DB->delete_records('techproject_task_dependency', $params);
+    // If was subtask, update branch annulation.
+    if ($oldtask->fatherid != 0) {
+        techproject_tree_propagate_up('techproject_task', 'done', $oldtask->id, '~');
+        techproject_tree_propagate_up('techproject_task', 'planned', $oldtask->id, '+');
+        techproject_tree_propagate_up('techproject_task', 'quoted', $oldtask->id, '+');
+        techproject_tree_propagate_up('techproject_task', 'used', $oldtask->id, '+');
+        techproject_tree_propagate_up('techproject_task', 'spent', $oldtask->id, '+');
+    }
+    // Now can delete records.
+    $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'taskid' => $taskid);
+    $DB->delete_records('techproject_task_to_spec', $params);
+    $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'master' => $taskid);
+    $DB->delete_records('techproject_task_dependency', $params);
+    $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'slave' => $taskid);
+    $DB->delete_records('techproject_task_dependency', $params);
 
 } else if ($work == 'domarkasdone') {
     // Mark as 100% done ************************.
@@ -123,7 +123,7 @@ if ($work == 'dodelete') {
         }
 
         case 'specswb': {
-            $table2 = 'techproject_specification'; 
+            $table2 = 'techproject_specification';
             $redir = 'specification';
             $autobind = true;
             $bindtable = 'techproject_spec_to_task';
@@ -178,46 +178,46 @@ if ($work == 'dodelete') {
 
 if ($work == 'dodeleteitems') {
 
-   $ids = required_param_array('ids', PARAM_INT);
-   foreach ($ids as $anitem) {
+    $ids = required_param_array('ids', PARAM_INT);
+    foreach ($ids as $anitem) {
 
-       // Save record for further cleanups and propagation.
-       $oldtask = $DB->get_record('techproject_task', array('id' => $anitem));
-       $childs = $DB->get_records('techproject_task', array('fatherid' => $anitem));
+        // Save record for further cleanups and propagation.
+        $oldtask = $DB->get_record('techproject_task', array('id' => $anitem));
+        $childs = $DB->get_records('techproject_task', array('fatherid' => $anitem));
 
-       // Update fatherid in childs.
-       $query = "
-           UPDATE
-               {techproject_task}
-           SET
-               fatherid = $oldtask->fatherid
-           WHERE
-               fatherid = $anitem
-       ";
-       $DB->execute($query);
+        // Update fatherid in childs.
+        $query = "
+            UPDATE
+                {techproject_task}
+            SET
+                fatherid = $oldtask->fatherid
+            WHERE
+                fatherid = $anitem
+        ";
+        $DB->execute($query);
 
-       // Reset indicators.
-       $oldtask->done    = 0;
-       $oldtask->planned = 0;
-       $oldtask->quoted  = 0;
-       $oldtask->used    = 0;
-       $oldtask->spent   = 0;
-       $DB->update_record('techproject_task', addslashes_recursive($oldtask));
+        // Reset indicators.
+        $oldtask->done    = 0;
+        $oldtask->planned = 0;
+        $oldtask->quoted  = 0;
+        $oldtask->used    = 0;
+        $oldtask->spent   = 0;
+        $DB->update_record('techproject_task', addslashes_recursive($oldtask));
 
-       // If was subtask, update branch propagation.
+        // If was subtask, update branch propagation.
 
-       if ($oldtask->fatherid != 0) {
-           techproject_tree_propagate_up('techproject_task', 'done', $oldtask->id, '~');
-           techproject_tree_propagate_up('techproject_task', 'planned', $oldtask->id, '+');
-           techproject_tree_propagate_up('techproject_task', 'quoted', $oldtask->id, '+');
-           techproject_tree_propagate_up('techproject_task', 'used', $oldtask->id, '+');
-           techproject_tree_propagate_up('techproject_task', 'spent', $oldtask->id, '+');
+        if ($oldtask->fatherid != 0) {
+            techproject_tree_propagate_up('techproject_task', 'done', $oldtask->id, '~');
+            techproject_tree_propagate_up('techproject_task', 'planned', $oldtask->id, '+');
+            techproject_tree_propagate_up('techproject_task', 'quoted', $oldtask->id, '+');
+            techproject_tree_propagate_up('techproject_task', 'used', $oldtask->id, '+');
+            techproject_tree_propagate_up('techproject_task', 'spent', $oldtask->id, '+');
         }
 
         // Delete record for this item.
         $DB->delete_records('techproject_task', array('id' => $anitem));
 
-        $event = \mod_techproject\event\task_deleted::create_from_task($project, $context, $oldRecord, $currentgroupid);
+        $event = \mod_techproject\event\task_deleted::create_from_task($project, $context, $oldrecord, $currentgroupid);
         $event->trigger();
 
         // Delete all related records.
@@ -231,13 +231,13 @@ if ($work == 'dodeleteitems') {
         // Must rebind child dependencies to father.
         if ($oldtask->fatherid != 0 && $childs) {
             foreach ($childs as $achild) {
-                $aDependency = new StdClass;
-                $aDependency->id        = 0;
-                $aDependency->projectid = $project->id;
-                $aDependency->groupid   = $currentgroupid;
-                $aDependency->master    = $oldtask->fatherid;
-                $aDependency->slave     = $achild->id;
-                $DB->insert_record('techproject_task_dependency', $aDependency);
+                $adependency = new StdClass;
+                $adependency->id        = 0;
+                $adependency->projectid = $project->id;
+                $adependency->groupid   = $currentgroupid;
+                $adependency->master    = $oldtask->fatherid;
+                $adependency->slave     = $achild->id;
+                $DB->insert_record('techproject_task_dependency', $adependency);
             }
         }
     }
@@ -288,22 +288,22 @@ if ($work == 'dodeleteitems') {
 
 } else if ($work == 'down') {
 
-   $taskid = required_param('taskid', PARAM_INT);
-   techproject_tree_down($project, $currentgroupid, $taskid, 'techproject_task');
+    $taskid = required_param('taskid', PARAM_INT);
+    techproject_tree_down($project, $currentgroupid, $taskid, 'techproject_task');
 
 } else if ($work == 'left') {
 
-   $taskid = required_param('taskid', PARAM_INT);
-   techproject_tree_left($project, $currentgroupid, $taskid, 'techproject_task');
-   techproject_tree_propagate_up('techproject_task', 'done', $taskid, '~');
-   techproject_tree_propagate_up('techproject_task', 'planned', $taskid, '+');
-   techproject_tree_propagate_up('techproject_task', 'quoted', $taskid, '+');
-   techproject_tree_propagate_up('techproject_task', 'used', $taskid, '+');
-   techproject_tree_propagate_up('techproject_task', 'spent', $taskid, '+');
+    $taskid = required_param('taskid', PARAM_INT);
+    techproject_tree_left($project, $currentgroupid, $taskid, 'techproject_task');
+    techproject_tree_propagate_up('techproject_task', 'done', $taskid, '~');
+    techproject_tree_propagate_up('techproject_task', 'planned', $taskid, '+');
+    techproject_tree_propagate_up('techproject_task', 'quoted', $taskid, '+');
+    techproject_tree_propagate_up('techproject_task', 'used', $taskid, '+');
+    techproject_tree_propagate_up('techproject_task', 'spent', $taskid, '+');
 
 } else if ($work == 'right') {
 
-   $taskid = required_param('taskid', PARAM_INT);
-   techproject_tree_right($project, $currentgroupid, $taskid, 'techproject_task');
+    $taskid = required_param('taskid', PARAM_INT);
+    techproject_tree_right($project, $currentgroupid, $taskid, 'techproject_task');
 
 }

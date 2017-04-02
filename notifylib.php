@@ -26,12 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
-* Notifies all project managers of a new specification being entered
+ * Notifies all project managers of a new specification being entered
  * @param objectref &$project
  * @param int $cmid
  * @param objectref &$specification
  * @param int $currentgroupid
-*/
+ */
 function techproject_notify_new_specification(&$project, $cmid, &$specification, $currentgroupid) {
     global $USER, $COURSE, $CFG, $DB;
 
@@ -173,10 +173,15 @@ function techproject_notify_new_task(&$project, $cmid, &$task, $currentgroupid) 
         $risk->label = "N.Q.";
     }
 
+    $timeunits = array(get_string('unset', 'techproject'),
+                       get_string('hours', 'techproject'),
+                       get_string('halfdays', 'techproject'),
+                       get_string('days', 'techproject'));
+
     $qualifiers[] = get_string('worktype', 'techproject').': '.$worktype->label;
     $qualifiers[] = get_string('assignee', 'techproject').': '.$assignee;
     $qualifiers[] = get_string('status', 'techproject').': '.$status->label;
-    $qualifiers[] = get_string('planned', 'techproject').': '.$planned.' '.@$TIMEUNITS[$project->timeunit];
+    $qualifiers[] = get_string('planned', 'techproject').': '.$planned.' '.@$timeunits[$project->timeunit];
     $qualifiers[] = get_string('risk', 'techproject').': '.$risk->label;
     $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
     $message = techproject_compile_mail_template('newentrynotify', array(

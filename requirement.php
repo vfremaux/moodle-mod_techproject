@@ -23,7 +23,6 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-
 // Controller.
 
 if ($work == 'add' || $work == 'update') {
@@ -33,7 +32,7 @@ if ($work == 'add' || $work == 'update') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
-    ?>
+?>
 
     <center>
     <?php echo $OUTPUT->heading(get_string('groupoperations', 'techproject')); ?>
@@ -52,26 +51,26 @@ if ($work == 'add' || $work == 'update') {
     <form name="groupopform" method="post" action="view.php">
     <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
     <input type="hidden" name="work" value="" />
-    <?php
-        foreach ($ids as $anid) {
-            echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
+<?php
+    foreach ($ids as $anid) {
+        echo "<input type=\"hidden\" name=\"ids[]\" value=\"{$anid}\" />\n";
+    }
+    if (($cmd == 'move')||($cmd == 'copy')) {
+        echo get_string('to', 'techproject');
+        if (@$project->projectusesspecs) {
+            $options['specs'] = get_string('specifications', 'techproject');
         }
-        if (($cmd == 'move')||($cmd == 'copy')) {
-            echo get_string('to', 'techproject');
-            if (@$project->projectusesspecs) {
-                $options['specs'] = get_string('specifications', 'techproject');
-            }
-            if (@$project->projectusesspecs) {
-                $options['specswb'] = get_string('specificationswithbindings', 'techproject');
-            }
-            $options['tasks'] = get_string('tasks', 'techproject');
-            if (@$project->projectusesdelivs) {
-                $options['deliv'] = get_string('deliverables', 'techproject');
-            }
-            echo html_writer::select($options, 'to', '', array('' => 'choosedots'));
+        if (@$project->projectusesspecs) {
+            $options['specswb'] = get_string('specificationswithbindings', 'techproject');
         }
-        echo '<br/>';
-    ?>
+        $options['tasks'] = get_string('tasks', 'techproject');
+        if (@$project->projectusesdelivs) {
+            $options['deliv'] = get_string('deliverables', 'techproject');
+        }
+        echo html_writer::select($options, 'to', '', array('' => 'choosedots'));
+    }
+    echo '<br/>';
+?>
     <input type="button" name="go_btn" value="<?php print_string('continue') ?>" onclick="senddata('<?php p($cmd) ?>')" />
     <input type="button" name="cancel_btn" value="<?php print_string('cancel') ?>" onclick="cancel()" />
     </form>

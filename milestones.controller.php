@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 if ($work == 'dodelete') {
     $milestoneid = required_param('milestoneid', PARAM_INT);
-    $oldRecord = $DB->get_record('techproject_milestone', array('id' => $milestoneid));
+    $oldrecord = $DB->get_record('techproject_milestone', array('id' => $milestoneid));
     techproject_tree_delete($milestoneid, 'techproject_milestone', 0); // Uses list option switch.
 
     // Cleans up any assigned task.
@@ -49,7 +49,7 @@ if ($work == 'dodelete') {
           milestoneid = $milestoneid
     ";
     $DB->execute($query);
-    $event = \mod_techproject\event\milestone_deleted::create_from_milestone($project, $context, $oldRecord, $currentgroupid);
+    $event = \mod_techproject\event\milestone_deleted::create_from_milestone($project, $context, $oldrecord, $currentgroupid);
     $event->trigger();
 
 } else if ($work == 'doclearall') {
@@ -86,12 +86,12 @@ if ($work == 'dodelete') {
 } else if ($work == 'up') {
 
     $milestoneid = required_param('milestoneid', PARAM_INT);
-    techproject_tree_up($project, $currentgroupid,$milestoneid, 'techproject_milestone', 0);
+    techproject_tree_up($project, $currentgroupid, $milestoneid, 'techproject_milestone', 0);
 
 } else if ($work == 'down') {
 
     $milestoneid = required_param('milestoneid', PARAM_INT);
-    techproject_tree_down($project, $currentgroupid,$milestoneid, 'techproject_milestone', 0);
+    techproject_tree_down($project, $currentgroupid, $milestoneid, 'techproject_milestone', 0);
 
 } else if ($work == 'sortbydate') {
 

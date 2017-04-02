@@ -32,8 +32,8 @@ if ($work == 'add' || $work == 'update') {
 } else if ($work == 'clearall') {
     echo $pagebuffer;
     echo '<center>';
-    echo $OUTPUT->heading(get_string('clearallmilestones','techproject'));
-    echo $OUTPUT->box(get_string('clearwarning','techproject'), 'generalbox');
+    echo $OUTPUT->heading(get_string('clearallmilestones', 'techproject'));
+    echo $OUTPUT->box(get_string('clearwarning', 'techproject'), 'generalbox');
 ?>
     <script type="text/javascript">
     function senddata(){
@@ -59,9 +59,12 @@ if ($work == 'add' || $work == 'update') {
 
     echo $pagebuffer;
     techproject_print_milestones($project, $currentgroupid, null, $cm->id);
-       if ($USER->editmode == 'on' && (has_capability('mod/techproject:changemiles', $context))) {
-           echo "<br/><a href='view.php?id={$cm->id}&amp;work=add'>".get_string('addmilestone','techproject')."</a>";
-           echo " - <a href='view.php?id={$cm->id}&amp;work=clearall'>".get_string('clearall','techproject')."</a>";
-           echo " - <a href='view.php?id={$cm->id}&amp;work=sortbydate'>".get_string('sortbydate','techproject')."</a>";
-       }
+    if ($USER->editmode == 'on' && (has_capability('mod/techproject:changemiles', $context))) {
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add'));
+        echo '<br/><a href=".$linkurl.">'.get_string('addmilestone', 'techproject').'</a>';
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'clearall'));
+        echo ' - <a href="'.$linkurl.'">'.get_string('clearall', 'techproject').'</a>';
+        $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'sortbydate'));
+        echo ' - <a href="'.$linkurl.'">'.get_string('sortbydate', 'techproject').'</a>';
+    }
 }

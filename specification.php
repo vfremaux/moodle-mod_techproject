@@ -30,7 +30,6 @@ if ($work == 'add' || $work == 'update') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
-
 ?>
 
 <center>
@@ -76,13 +75,12 @@ function cancel(){
         echo '<br/>';
     }
     echo '<br/>';
-?>
-<input type="button" name="go_btn" value="<?php print_string('continue') ?>" onclick="senddata('<?php p($cmd) ?>')" />
-<input type="button" name="cancel_btn" value="<?php print_string('cancel') ?>" onclick="cancel()" />
-</form>
-</center>
 
-<?php
+    echo '<input type="button" name="go_btn" value="'.get_string('continue').'" onclick="senddata(\''.$cmd.'\')" />';
+    echo '<input type="button" name="cancel_btn" value="'.get_string('cancel').'" onclick="cancel()" />';
+    echo '</form>';
+    echo '</center>';
+
 } else {
     if ($work) {
         include($CFG->dirroot.'/mod/techproject/specifications.controller.php');
@@ -114,7 +112,5 @@ function sendgroupdata() {
             techproject_print_group_commands();
         }
     }
-?>
-</form>
-<?php
-    }
+    echo '</form>';
+}

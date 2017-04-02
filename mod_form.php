@@ -56,7 +56,7 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('name'), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('name'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -91,12 +91,6 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addElement('select', 'allownotifications', get_string('allownotifications', 'techproject'), $yesnooptions);
         $mform->addHelpButton('allownotifications', 'allownotifications', 'techproject');
         $mform->setType('allownotifications', PARAM_BOOL);
-
-        /*
-        $mform->addElement('select', 'enablecvs', get_string('enablecvs', 'techproject'), $yesnooptions); 
-        $mform->addHelpButton('enablecvs', 'enablecvs', 'techproject');
-        $mform->setType('enablecvs', PARAM_BOOL);
-        */
 
         $mform->addElement('select', 'useriskcorrection', get_string('useriskcorrection', 'techproject'), $yesnooptions);
         $mform->addHelpButton('useriskcorrection', 'useriskcorrection', 'techproject');

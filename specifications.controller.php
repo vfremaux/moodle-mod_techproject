@@ -189,21 +189,21 @@ if ($work == 'dodeleteitems') {
 } else if ($work == 'up') {
 
     $specid = required_param('specid', PARAM_INT);
-    techproject_tree_up($project, $currentgroupid,$specid, 'techproject_specification');
+    techproject_tree_up($project, $currentgroupid, $specid, 'techproject_specification');
 
 } else if ($work == 'down') {
 
     $specid = required_param('specid', PARAM_INT);
-    techproject_tree_down($project, $currentgroupid,$specid, 'techproject_specification');
+    techproject_tree_down($project, $currentgroupid, $specid, 'techproject_specification');
 
 } else if ($work == 'left') {
 
     $specid = required_param('specid', PARAM_INT);
-    techproject_tree_left($project, $currentgroupid,$specid, 'techproject_specification');
+    techproject_tree_left($project, $currentgroupid, $specid, 'techproject_specification');
 
 } else if ($work == 'right') {
 
     $specid = required_param('specid', PARAM_INT);
-    techproject_tree_right($project, $currentgroupid,$specid, 'techproject_specification');
+    techproject_tree_right($project, $currentgroupid, $specid, 'techproject_specification');
 
 }

@@ -557,7 +557,7 @@ function techproject_count_leaves($table, $id, $returnlist = false) {
         WHERE
             fatherid = ?
     ";
-    $ress = $DB->get_records_sql($sql array($id));
+    $ress = $DB->get_records_sql($sql, array($id));
     if ($ress){
         foreach ($ress as $res) {
             if ($returnlist) {

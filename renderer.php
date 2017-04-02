@@ -30,8 +30,8 @@ class mod_techproject_renderer extends plugin_renderer_base {
     /**
      * prints a "block-like" widget
      *
-     */ 
-    function block($title, $content) {
+     */
+    public function block($title, $content) {
         $str = '';
 
         $str .= '<div id="inst" class="block_techproject block detail">';
@@ -57,7 +57,7 @@ class mod_techproject_renderer extends plugin_renderer_base {
      * @param maxover the overhead width limit. Will produce an alternate overhead rendering if over is over.
      *
      */
-    function bar_graph_over($value, $over, $width = 50, $height = 4, $maxover = 60) {
+    public function bar_graph_over($value, $over, $width = 50, $height = 4, $maxover = 60) {
         global $CFG;
 
         if ($value == -1) {
