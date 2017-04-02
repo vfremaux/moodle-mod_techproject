@@ -86,7 +86,7 @@ if ($work == 'add' || $work == 'update') {
     echo '</tr></table></center>';
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
         $linkurl = new moodle_url('/mod/techproject/view.php', array('id' => $cm->id, 'work' => 'add', 'fatherid' => 0));
-        echo '<br/><a href="'.$linurl.'">'.get_string('addrequ','techproject').'</a>&nbsp;';
+        echo '<br/><a href="'.$linurl.'">'.get_string('addrequ', 'techproject').'</a>&nbsp;';
     }
     techproject_print_requirements($project, $currentgroupid, 0, $cm->id);
     if ($USER->editmode == 'on' && has_capability('mod/techproject:changerequs', $context)) {
