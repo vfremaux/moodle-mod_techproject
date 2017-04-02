@@ -14,33 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
 class Task_Form extends moodleform {
 
-    var $mode;
-    var $project;
-    var $current;
-    var $descriptionoptions;
+    protected $mode;
+    protected $project;
+    protected $current;
+    protected $descriptionoptions;
 
     public function __construct($action, &$project, $mode, $taskid) {
         global $DB;
 
         $this->mode = $mode;
         $this->project = $project;
-        if ($taskid){
+        if ($taskid) {
             $this->current = $DB->get_record('techproject_task', array('id' => $taskid));
         } else {
             $this->current = new StdClass;
@@ -55,13 +52,17 @@ class Task_Form extends moodleform {
 
         $mform = $this->_form;
 
-        $currentGroup = 0 + groups_get_course_group($COURSE);
+        $currentgroup = 0 + groups_get_course_group($COURSE);
 
         $modcontext = context_module::instance($this->project->cmid);
 
-        $maxfiles = 99;                // TODO: add some setting
-        $maxbytes = $COURSE->maxbytes; // TODO: add some setting
-        $this->descriptionoptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'context' => $modcontext);
+        $maxfiles = 99;                // TODO: add some setting.
+        $maxbytes = $COURSE->maxbytes; // TODO: add some setting.
+        $this->descriptionoptions = array('trusttext' => true,
+                                          'subdirs' => false,
+                                          'maxfiles' => $maxfiles,
+                                          'maxbytes' => $maxbytes,
+                                          'context' => $modcontext);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -81,37 +82,39 @@ class Task_Form extends moodleform {
 
         $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);
 
-        $milestones = $DB->get_records_select('techproject_milestone', "projectid = ? AND groupid = ? ", array($this->project->id, $currentGroup), 'ordering ASC', 'id, abstract, ordering');
+        $select = "projectid = ? AND groupid = ? ";
+        $params = array($this->project->id, $currentgroup);
+        $milestones = $DB->get_records_select('techproject_milestone', $select, $params, 'ordering ASC', 'id, abstract, ordering');
         $milestonesoptions = array();
         $milestonesoptions[0] = get_string('nomilestone', 'techproject');
         if ($milestones) {
-            foreach ($milestones as $aMilestone) {
-                $milestonesoptions[$aMilestone->id] = $aMilestone->abstract;
+            foreach ($milestones as $amilestone) {
+                $milestonesoptions[$amilestone->id] = $amilestone->abstract;
             }
         }
         $mform->addElement('select', 'milestoneid', get_string('milestone', 'techproject'), $milestonesoptions);
         $mform->setType('milestone', PARAM_INT);
         $mform->addHelpButton('milestoneid', 'task_to_miles', 'techproject');
 
-        $ownerstr = $USER->lastname . " " . $USER->firstname . " ";
-        $ownerstr .= $OUTPUT->user_picture($USER); 
+        $ownerstr = $USER->lastname.' '.$USER->firstname.' ';
+        $ownerstr .= $OUTPUT->user_picture($USER);
 
         $mform->addElement('static', 'owner_st', get_string('owner', 'techproject'), $ownerstr);
         $mform->addElement('hidden', 'owner');
         $mform->setType('owner', PARAM_INT);
         $mform->setDefault('owner', $USER->id);
 
-        $assignees = techproject_get_group_users($this->project->course, $this->project->cm, $currentGroup);
+        $assignees = techproject_get_group_users($this->project->course, $this->project->cm, $currentgroup);
         if ($assignees) {
             $assignoptions = array();
-            foreach ($assignees as $anAssignee) {
-                $assignoptions[$anAssignee->id] = $anAssignee->lastname . ' ' . $anAssignee->firstname;
+            foreach ($assignees as $anassignee) {
+                $assignoptions[$anassignee->id] = $anassignee->lastname.' '.$anassignee->firstname;
             }
             $mform->addElement('select', 'assignee', get_string('assignee', 'techproject'), $assignoptions);
             $mform->setType('assignee', PARAM_INT);
-            // $mform->addHelpButton('assignee', 'assignee', 'techproject');
         } else {
-            $mform->addElement('static', 'assignee', get_string('assignee', 'techproject'), get_string('noassignees', 'techproject'));
+            $label = get_string('assignee', 'techproject');
+            $mform->addElement('static', 'assignee', $label, get_string('noassignees', 'techproject'));
         }
 
         $mform->addElement('date_time_selector', 'taskstart', get_string('from'), array('optional' => true));
@@ -119,8 +122,8 @@ class Task_Form extends moodleform {
 
         $worktypes = techproject_get_options('worktype', $this->project->id);
         $worktypeoptions = array();
-        foreach ($worktypes as $aWorktype) {
-            $worktypeoptions[$aWorktype->code] = '['. $aWorktype->code . '] ' . $aWorktype->label;
+        foreach ($worktypes as $aworktype) {
+            $worktypeoptions[$aworktype->code] = '['. $aworktype->code . '] '.$aworktype->label;
         }
         $mform->addElement('select', 'worktype', get_string('worktype', 'techproject'), $worktypeoptions);
         $mform->setType('worktype', PARAM_TEXT);
@@ -128,26 +131,29 @@ class Task_Form extends moodleform {
 
         $statusses = techproject_get_options('taskstatus', $this->project->id);
         $statussesoptions = array();
-        foreach ($statusses as $aStatus) {
-            $statussesoptions[$aStatus->code] = '['. $aStatus->code . '] ' . $aStatus->label;
+        foreach ($statusses as $astatus) {
+            $statussesoptions[$astatus->code] = '['. $astatus->code . '] ' . $astatus->label;
         }
         $mform->addElement('select', 'status', get_string('status', 'techproject'), $statussesoptions);
         $mform->setType('status', PARAM_TEXT);
         $mform->addHelpButton('status', 'status', 'techproject');
 
-        $mform->addElement('text', 'costrate', get_string('costrate', 'techproject'), array('size' => 6, 'onchange' => " task_update('quoted');task_update('spent') "));
+        $attrs = array('size' => 6, 'onchange' => " task_update('quoted');task_update('spent') ");
+        $mform->addElement('text', 'costrate', get_string('costrate', 'techproject'), $attrs);
         $mform->setType('costrate', PARAM_TEXT);
-        $mform->addElement('text', 'planned', get_string('planned', 'techproject'), array('size' => 6, 'onchange' => " task_update('quoted') "));
+        $attrs = array('size' => 6, 'onchange' => " task_update('quoted') ");
+        $mform->addElement('text', 'planned', get_string('planned', 'techproject'), $attrs);
         $mform->setType('planned', PARAM_INT);
 
-        $mform->addElement('static', 'quoted', get_string('quoted', 'techproject'), "<span id=\"quoted\">".@$this->current->quoted."</span> ".$this->project->costunit);
-        $mform->addHelpButton('quoted', 'quoted', 'techproject'); 
+        $static = '<span id="quoted">'.@$this->current->quoted."</span> ".$this->project->costunit;
+        $mform->addElement('static', 'quoted', get_string('quoted', 'techproject'), $static);
+        $mform->addHelpButton('quoted', 'quoted', 'techproject');
 
         if (@$this->project->useriskcorrection) {
             $risks = techproject_get_options('risk', $this->project->id);
             $risksesoptions = array();
-            foreach ($risks as $aRisk) {
-                $risksoptions[$aRisk->code] = '['. $aRisk->code . '] ' . $aRisk->label;
+            foreach ($risks as $arisk) {
+                $risksoptions[$arisk->code] = '['. $arisk->code . '] ' . $arisk->label;
             }
             $mform->addElement('select', 'risk', get_string('risk', 'techproject'), $risksoptions);
             $mform->setType('risk', PARAM_INT);
@@ -156,15 +162,18 @@ class Task_Form extends moodleform {
         $mform->addElement('text', 'done', get_string('done', 'techproject'), array('size' => 6));
         $mform->setType('done', PARAM_INT);
 
-        $mform->addElement('text', 'used', get_string('used', 'techproject'), array('size' => 6, 'onchange' => " task_update('spent') "));
+        $attrs = array('size' => 6, 'onchange' => " task_update('spent') ");
+        $mform->addElement('text', 'used', get_string('used', 'techproject'), $attrs);
         $mform->setType('used', PARAM_INT);
 
-        $mform->addElement('static', 'spent', get_string('spent', 'techproject'), "<span id=\"spent\">".@$this->current->spent."</span> ".$this->project->costunit);
-        // $mform->addHelpButton('spent', 'spent', 'techproject'); 
+        $static = '<span id="spent">'.@$this->current->spent."</span> ".$this->project->costunit;
+        $mform->addElement('static', 'spent', get_string('spent', 'techproject'), $static);
         $mform->setType('spent', PARAM_INT);
 
-        $tasks = techproject_get_tree_options('techproject_task', $this->project->id, $currentGroup);
-        $selection = $DB->get_records_select_menu('techproject_task_dependency', "slave = ? ", array(0 + @$this->current->id), 'master,slave');
+        $tasks = techproject_get_tree_options('techproject_task', $this->project->id, $currentgroup);
+        $select = "slave = ? ";
+        $params = array(0 + @$this->current->id);
+        $selection = $DB->get_records_select_menu('techproject_task_dependency', $select, $params, 'master,slave');
         $uptasksoptions = array();
         if (isset($this->current->id)) {
             foreach ($tasks as $atask) {
@@ -181,34 +190,43 @@ class Task_Form extends moodleform {
                 }
                 $uptasksoptions[$atask->id] = $atask->ordering.' - '.shorten_text($atask->abstract, 90);
             }
-            $select = &$mform->addElement('select', 'taskdependency', get_string('taskdependency', 'techproject'), $uptasksoptions, array('size' => 8));
+            $label = get_string('taskdependency', 'techproject');
+            $select = &$mform->addElement('select', 'taskdependency', $label, $uptasksoptions, array('size' => 8));
             $select->setMultiple(true);
         }
 
         if ($this->project->projectusesspecs && $this->mode == 'update') {
-            $specifications = techproject_get_tree_options('techproject_specification', $this->project->id, $currentGroup);
-            $selection = $DB->get_records_select_menu('techproject_task_to_spec', "taskid = ? ", array($this->current->id), 'specid, taskid');
+            $specifications = techproject_get_tree_options('techproject_specification', $this->project->id, $currentgroup);
+            $select = "taskid = ? ";
+            $params = array($this->current->id);
+            $selection = $DB->get_records_select_menu('techproject_task_to_spec', $select, $params, 'specid, taskid');
             $specs = array();
             if (!empty($specifications)) {
-                foreach ($specifications as $aSpecification) {
-                    $specs[$aSpecification->id] = $aSpecification->ordering .' - '.shorten_text(format_string($aSpecification->abstract), 90);
+                foreach ($specifications as $aspecification) {
+                    $shortabstract = shorten_text(format_string($aspecification->abstract), 90);
+                    $specs[$aspecification->id] = $aspecification->ordering .' - '.$shortabstract;
                 }
             }
-            $select = &$mform->addElement('select', 'tasktospec', get_string('tasktospec', 'techproject'), $specs, array('size' => 8));
+            $label = get_string('tasktospec', 'techproject');
+            $select = &$mform->addElement('select', 'tasktospec', $label, $specs, array('size' => 8));
             $select->setMultiple(true);
             $mform->addHelpButton('tasktospec', 'task_to_spec', 'techproject');
         }
 
         if ($this->project->projectusesdelivs && $this->mode == 'update') {
-            $deliverables = techproject_get_tree_options('techproject_deliverable', $this->project->id, $currentGroup);
-            $selection = $DB->get_records_select_menu('techproject_task_to_deliv', "taskid = ? ", array($this->current->id), 'delivid, taskid');
+            $deliverables = techproject_get_tree_options('techproject_deliverable', $this->project->id, $currentgroup);
+            $select = "taskid = ? ";
+            $params = array($this->current->id);
+            $selection = $DB->get_records_select_menu('techproject_task_to_deliv', $select, $params, 'delivid, taskid');
             $delivs = array();
             if (!empty($deliverables)) {
-                foreach ($deliverables as $aDeliverable) {
-                    $delivs[$aDeliverable->id] = $aDeliverable->ordering .' - '.shorten_text(format_string($aDeliverable->abstract), 90);
+                foreach ($deliverables as $adeliverable) {
+                    $shortabstract = shorten_text(format_string($adeliverable->abstract), 90);
+                    $delivs[$adeliverable->id] = $adeliverable->ordering .' - '.$shortabstract;
                 }
             }
-            $select = &$mform->addElement('select', 'tasktodeliv', get_string('tasktodeliv', 'techproject'), $delivs, array('size' => 8));
+            $label = get_string('tasktodeliv', 'techproject');
+            $select = &$mform->addElement('select', 'tasktodeliv', $label, $delivs, array('size' => 8));
             $select->setMultiple(true);
             $mform->addHelpButton('tasktodeliv', 'task_to_deliv', 'techproject');
         }
@@ -220,10 +238,14 @@ class Task_Form extends moodleform {
 
         $context = context_module::instance($this->project->cmid);
 
-        $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-        $currenttext = file_prepare_draft_area($draftid_editor, $context->id, 'mod_techproject', 'description_editor', $defaults->id, array('subdirs' => true), $defaults->description);
-        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject', 'taskdescription', $defaults->id);
-        $defaults->description = array('text' => $currenttext, 'format' => $defaults->descriptionformat, 'itemid' => $draftid_editor);
+        $draftideditor = file_get_submitted_draft_itemid('description_editor');
+        $currenttext = file_prepare_draft_area($draftideditor, $context->id, 'mod_techproject', 'description_editor', $defaults->id,
+                                               array('subdirs' => true), $defaults->description);
+        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject',
+                                                 'taskdescription', $defaults->id);
+        $defaults->description = array('text' => $currenttext,
+                                       'format' => $defaults->descriptionformat,
+                                       'itemid' => $draftideditor);
 
         parent::set_data($defaults);
     }
