@@ -1064,7 +1064,7 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
             $head .= '</td>';
             $head .= '<td class="entity-right">';
             $head .= "{$taskcount} {$deliverablecount} {$completion} {$hide}";
-            $heand .= '</td>';
+            $head .= '</td>';
             $head .= '</tr>';
             $head .= '</table>';
             $rows = array();

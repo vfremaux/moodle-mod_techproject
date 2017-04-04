@@ -23,7 +23,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-echo '<script type="text/javascript" src="'.$CFG->wwwroot.'/mod/techproject/js/milestone.js"></script>';
+$pagebuffer .= '<script type="text/javascript" src="'.$CFG->wwwroot.'/mod/techproject/js/milestone.js"></script>';
 
 // Controller.
 
