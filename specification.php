@@ -23,7 +23,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-echo '<script type="text/javascript" src="'.$CFG->wwwroot.'/mod/techproject/js/groupform.js"></script>';
+$pagebuffer .= '<script type="text/javascript" src="'.$CFG->wwwroot.'/mod/techproject/js/groupform.js"></script>';
 
 if ($work == 'add' || $work == 'update') {
     include($CFG->dirroot.'/mod/techproject/edit_specification.php');
