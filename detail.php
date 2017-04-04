@@ -110,7 +110,7 @@ if ($object) {
             $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
             // getting related specifications
             $linktabletitle[1] = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject')  .'" /> '. get_string('speclinks', 'techproject');
-            $query = "
+            $sql = "
                SELECT
                   s.*
                FROM
@@ -120,7 +120,7 @@ if ($object) {
                   s.id = str.specid AND
                   str.reqid = {$object->id}
             ";
-            $specifications = $DB->get_records_sql($query);
+            $specifications = $DB->get_records_sql($sql);
             if ($specifications) {
                 foreach ($specifications as $spec) {
                     $numspec = implode('.', techproject_tree_get_upper_branch('techproject_specification', $spec->id, true, true));
@@ -139,7 +139,7 @@ if ($object) {
             $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
             // getting related requirements
             $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/req', 'techproject').'" /> '. get_string('requlinks', 'techproject');
-            $query = "
+            $sql = "
                SELECT
                   r.*
                FROM
@@ -149,7 +149,7 @@ if ($object) {
                   r.id = str.reqid AND
                   str.specid = {$object->id}
             ";
-            $requirements = $DB->get_records_sql($query);
+            $requirements = $DB->get_records_sql($sql);
             if ($requirements) {
                 foreach ($requirements as $requ) {
                     $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_requirement', $requ->id, true, true));
@@ -162,7 +162,7 @@ if ($object) {
             }
             // Getting related tasks.
             $linktabletitle[1] = '<img src="'.$OUTPUT->pix_url('p/task', 'techproject').'" /> '. get_string('tasklinks', 'techproject');
-            $query = "
+            $sql = "
                SELECT
                   t.*
                FROM
@@ -172,8 +172,8 @@ if ($object) {
                   t.id = stt.taskid AND
                   stt.specid = {$object->id}
             ";
-            $tasks = $DB->get_records_sql($query);
-            if ($res) {
+            $tasks = $DB->get_records_sql($sql);
+            if ($tasks) {
                 foreach ($tasks as $task) {
                     $numtask = implode('.', techproject_tree_get_upper_branch('techproject_task', $task->id, true, true));
                     $params = array('id' => $cm->id, 'objectId' => $task->id, 'objectClass' => 'task');
@@ -192,7 +192,7 @@ if ($object) {
 
             // Getting related specifications.
             $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject').'" /> '. get_string('speclinks', 'techproject');
-            $query = "
+            $sql = "
                SELECT
                   s.*
                FROM
@@ -202,7 +202,7 @@ if ($object) {
                   s.id = stt.specid AND
                   stt.taskid = {$object->id}
             ";
-            $specifications = $DB->get_records_sql($query);
+            $specifications = $DB->get_records_sql($sql);
             if ($specifications) {
                 foreach ($specifications as $spec) {
                     $numspec = implode('.', techproject_tree_get_upper_branch('techproject_specification', $spec->id, true, true));
@@ -216,7 +216,7 @@ if ($object) {
 
             // Getting related deliverables.
             $linktabletitle[3] = '<img src="'.$OUTPUT->pix_url('p/deliv', 'techproject').'" /> '. get_string('delivlinks', 'techproject');
-            $query = "
+            $sql = "
                SELECT
                   d.id,
                   d.abstract
@@ -227,7 +227,7 @@ if ($object) {
                   d.id = std.delivid AND
                   std.taskid = {$object->id}
             ";
-            $deliverables = $DB->get_records_sql($query);
+            $deliverables = $DB->get_records_sql($sql);
             if ($deliverables) {
                 foreach ($deliverables as $deliv) {
                     $numdeliv = implode('.', techproject_tree_get_upper_branch('techproject_deliverable', $deliv->id, true, true));
@@ -248,7 +248,7 @@ if ($object) {
 
             // Getting related tasks.
             $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/task', 'techproject').'" /> '. get_string('tasklinks', 'techproject');
-            $query = "
+            $sql = "
                SELECT
                   t.id,
                   t.abstract
@@ -259,7 +259,7 @@ if ($object) {
                   std.id = std.taskid AND
                   std.delivid = {$object->id}
             ";
-            $tasks = $DB->get_records_sql($query);
+            $tasks = $DB->get_records_sql($sql);
             if ($tasks) {
                 foreach ($tasks as $task) {
                     $numtask = implode('.', techproject_tree_get_upper_branch('techproject_task', $task->id, true, true));
