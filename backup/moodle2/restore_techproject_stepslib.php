@@ -266,9 +266,9 @@ class restore_techproject_activity_structure_step extends restore_activity_struc
         $data->criterion = $this->get_mappingid('group', $data->criterion);
         if ($data->itemclass == 'milestone'){
             $data->itemid = $this->get_mappingid('techproject_milestone', $data->itemid);
-        } elseif ($data->itemclass == 'task'){
+        } else if ($data->itemclass == 'task'){
             $data->itemid = $this->get_mappingid('techproject_task', $data->itemid);
-        } elseif ($data->itemclass == 'deliverable'){
+        } else if ($data->itemclass == 'deliverable'){
             $data->itemid = $this->get_mappingid('techproject_deliverable', $data->itemid);
         }
 

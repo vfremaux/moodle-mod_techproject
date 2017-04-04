@@ -37,7 +37,7 @@ if ($work == 'dodelete') {
     $event = \mod_techproject\event\requirement_deleted::create_from_requirement($project, $context, $oldRecord, $currentgroupid);
     $event->trigger();
 }
-elseif ($work == 'domove' || $work == 'docopy') {
+else if ($work == 'domove' || $work == 'docopy') {
     $ids = required_param_array('ids', PARAM_INT);
     $to = required_param('to', PARAM_ALPHA);
     $autobind = false;
@@ -117,7 +117,7 @@ if ($work == 'dodeleteitems') {
         redirect($redirecturl, get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
     }
 
-} elseif ($work == 'doclearall') {
+} else if ($work == 'doclearall') {
 
     // delete all records. POWERFUL AND DANGEROUS COMMAND.
     $DB->delete_records('techproject_requirement', array('projectid' => $project->id, 'groupid' => $currentgroupid));
@@ -126,7 +126,7 @@ if ($work == 'dodeleteitems') {
     $event = \mod_techproject\event\requirement_cleared::create_for_group($project, $context, $currentgroupid);
     $event->trigger();
 
-} elseif ($work == 'doexport') {
+} else if ($work == 'doexport') {
 
     $ids = required_param_array('ids', PARAM_INT);
     $idlist = implode("','", $ids);
@@ -150,22 +150,22 @@ if ($work == 'dodeleteitems') {
     echo $OUTPUT->continue_button(new moodle_url('/mod/techproject/view.php', array('view' => 'requirements', 'id' => $cm->id)));
     return;
 
-} elseif ($work == 'up') {
+} else if ($work == 'up') {
 
     $requid = required_param('requid', PARAM_INT);
     techproject_tree_up($project, $currentgroupid, $requid, 'techproject_requirement');
 
-} elseif ($work == 'down') {
+} else if ($work == 'down') {
 
     $requid = required_param('requid', PARAM_INT);
     techproject_tree_down($project, $currentgroupid, $requid, 'techproject_requirement');
 
-} elseif ($work == 'left') {
+} else if ($work == 'left') {
 
     $requid = required_param('requid', PARAM_INT);
     techproject_tree_left($project, $currentgroupid, $requid, 'techproject_requirement');
 
-} elseif ($work == 'right') {
+} else if ($work == 'right') {
 
     $requid = required_param('requid', PARAM_INT);
     techproject_tree_right($project, $currentgroupid, $requid, 'techproject_requirement');

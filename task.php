@@ -32,7 +32,7 @@ if ($work == 'add' || $work == 'update') {
     include($CFG->dirroot.'/mod/techproject/edit_task.php');
 /// Group operation form *********************************************************
 
-} elseif ($work == 'groupcmd') {
+} else if ($work == 'groupcmd') {
     echo $pagebuffer;
     $ids = optional_param_array('ids', array(), PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);

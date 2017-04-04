@@ -54,8 +54,6 @@ switch ($target) {
         break;
 }
 
-// echo "techproject_$targettable";
-
 $targettree = techproject_get_tree_options('techproject_'.$targettable, $projectid, $groupid);
 
 echo '<select name="parent">';

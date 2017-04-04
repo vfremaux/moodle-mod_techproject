@@ -56,7 +56,7 @@ if ($work == 'dodelete') {
     $event = \mod_techproject\event\milestone_deleted::create_from_milestone($project, $context, $oldRecord, $currentgroupid);
     $event->trigger();
 
-} elseif ($work == 'doclearall') {
+} else if ($work == 'doclearall') {
 
     // Delete all records. POWERFUL AND DANGEROUS COMMAND.
     $DB->delete_records('techproject_milestone', array('projectid' => $project->id));
@@ -88,17 +88,17 @@ if ($work == 'dodelete') {
     $event = \mod_techproject\event\milestone_cleared::create_for_group($project, $context, $currentgroupid);
     $event->trigger();
 
-} elseif ($work == 'up') {
+} else if ($work == 'up') {
 
     $milestoneid = required_param('milestoneid', PARAM_INT);
     techproject_tree_up($project, $currentgroupid,$milestoneid, 'techproject_milestone', 0);
 
-} elseif ($work == 'down') {
+} else if ($work == 'down') {
 
     $milestoneid = required_param('milestoneid', PARAM_INT);
     techproject_tree_down($project, $currentgroupid,$milestoneid, 'techproject_milestone', 0);
 
-} elseif ($work == 'sortbydate') {
+} else if ($work == 'sortbydate') {
 
     $milestones = array_values($DB->get_records_select('techproject_milestone', "projectid = {$project->id} AND groupid = {$currentgroupid}"));
 

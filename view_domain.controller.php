@@ -42,7 +42,7 @@ switch ($action) {
         // if there is some error
             if ($data->code == '') {
                 print_error('err_code', 'techproject', $returnurl);
-            } elseif ($data->label == '') {
+            } else if ($data->label == '') {
                 print_error('err_value', 'techproject', $returnurl);
             } else {
                 //data was submitted from this form, process it

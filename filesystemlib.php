@@ -40,7 +40,7 @@ function filesystem_create_dir($path, $recursive = 0, $pathbase=null) {
    
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -75,7 +75,7 @@ function filesystem_is_dir($relativepath, $pathbase=null){
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -95,7 +95,7 @@ function filesystem_file_exists($relativepath, $pathbase=null){
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -118,7 +118,7 @@ function filesystem_scan_dir($relativepath, $hiddens = 0, $what = 0, $pathbase=n
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -160,7 +160,7 @@ function filesystem_clear_dir($relativepath, $fullDelete = false, $pathbase=null
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -200,7 +200,7 @@ function filesystem_copy_tree($source, $dest, $pathbase=null) {
    
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -239,7 +239,7 @@ function filesystem_store_file($relativepath, $data, $pathbase=null) {
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -266,7 +266,7 @@ function filesystem_read_a_file($relativepath, $pathbase=null) {
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -292,7 +292,7 @@ function filesystem_delete_file($relativepath, $pathbase=null){
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -314,7 +314,7 @@ function filesystem_remove_dir($relativepath, $pathbase=null){
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -335,7 +335,7 @@ function filesystem_move_file($source, $dest, $pathbase=null){
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -359,7 +359,7 @@ function filesystem_copy_file($source, $dest, $pathbase=null) {
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 
@@ -383,7 +383,7 @@ function filesystem_get_file_list($path, $filemask = "*.*", $pathbase=null) {
 
     if (is_null($pathbase)){
         $pathbase = $CFG->dataroot . '/';
-    } elseif ($pathbase === '') {
+    } else if ($pathbase === '') {
         $pathbase = '';
     } else {
         $pathbase = $pathbase . '/'; 

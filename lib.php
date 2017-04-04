@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @subpackage framework
@@ -25,6 +23,8 @@ defined('MOODLE_INTERNAL') || die();
  * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  */
+defined('MOODLE_INTERNAL') || die();
+
 
 if (file_exists($CFG->libdir.'/openlib.php')) {
     require_once($CFG->libdir.'/openlib.php');//openmod lib by rick chaides
@@ -39,18 +39,29 @@ require_once($CFG->dirroot.'/calendar/lib.php');
  */
 function techproject_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_OTHER;
-        case FEATURE_GROUPS:                  return true;
-        case FEATURE_GROUPINGS:               return true;
-        case FEATURE_GROUPMEMBERSONLY:        return true;
-        case FEATURE_MOD_INTRO:               return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
-        case FEATURE_GRADE_HAS_GRADE:         return true;
-        case FEATURE_GRADE_OUTCOMES:          return false;
-        case FEATURE_BACKUP_MOODLE2:          return true;
-        case FEATURE_SHOW_DESCRIPTION:        return true;
+        case FEATURE_MOD_ARCHETYPE:
+            return MOD_ARCHETYPE_OTHER;
+        case FEATURE_GROUPS:
+            return true;
+        case FEATURE_GROUPINGS:
+            return true;
+        case FEATURE_GROUPMEMBERSONLY:
+            return true;
+        case FEATURE_MOD_INTRO:
+            return true;
+        case FEATURE_COMPLETION_TRACKS_VIEWS:
+            return true;
+        case FEATURE_GRADE_HAS_GRADE:
+            return true;
+        case FEATURE_GRADE_OUTCOMES:
+            return false;
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
+        case FEATURE_SHOW_DESCRIPTION:
+            return true;
 
-        default: return null;
+        default:
+            return null;
     }
 }
 
@@ -141,7 +152,7 @@ function techproject_update_instance($project) {
                 $event->timestart = $date;
                 $eventobj = calendar_event::load($event->id);
                 $eventobj->update($event);
-            }  elseif ($date) {
+            }  else if ($date) {
                 $event = new StdClass;
                 $event->name = get_string($type.'event','techproject', $project->name);
                 $event->description = $project->intro;
@@ -1028,7 +1039,6 @@ function techproject_pluginfile($course, $cm, $context, $filearea, $args, $force
     );
 
     if (!in_array($filearea, $fileareas)) {
-        debug_trace("bad filearea $filearea ");
         return false;
     }
 
@@ -1037,7 +1047,6 @@ function techproject_pluginfile($course, $cm, $context, $filearea, $args, $force
     $entryid = (int)array_shift($args);
 
     if (!$project = $DB->get_record('techproject', array('id' => $cm->instance))) {
-        debug_trace("bad project $cm->instance ");
         return false;
     }
 
@@ -1045,38 +1054,30 @@ function techproject_pluginfile($course, $cm, $context, $filearea, $args, $force
     $relativepath = implode('/', $args);
     $fullpath = "/$context->id/mod_techproject/$filearea/$entryid/$relativepath";
 
-    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
-        if ($file && $file->is_directory()) {
-            debug_trace("$fullpath is dir");
-        } else {
-            debug_trace("bad fileref $fullpath");
-        }
+    if ((!$file = $fs->get_file_by_hash(sha1($fullpath))) || $file->is_directory()) {
         return false;
     }
 
     $entry = $DB->get_record($relatedtable, array('id' => $entryid));
 
-    // Make sure groups allow this user to see this file
-    if ($entry->groupid > 0 and $groupmode = groups_get_activity_groupmode($cm, $course)) {   // Groups are being used
-        if (!groups_group_exists($entry->groupid)) { // Can't find group
-            debug_trace("bad group $entry->groupid ");
-            return false;                           // Be safe and don't send it to anyone
+    // Make sure groups allow this user to see this file.
+    if ($entry->groupid > 0 and $groupmode = groups_get_activity_groupmode($cm, $course)) {   // Groups are being used.
+        if (!groups_group_exists($entry->groupid)) { // Can't find group.
+            return false;                           // Be safe and don't send it to anyone.
         }
 
-        if (!groups_is_member($entry->groupid) and !has_capability('moodle/site:accessallgroups', $context)) {
-            // do not send posts from other groups when in SEPARATEGROUPS or VISIBLEGROUPS
-            debug_trace("group capability lock $entry->groupid ");
+        if (!groups_is_member($entry->groupid) && !has_capability('moodle/site:accessallgroups', $context)) {
+            // Do not send posts from other groups when in SEPARATEGROUPS or VISIBLEGROUPS.
             return false;
         }
     }
     
     if ((!isloggedin() || isguestuser()) && !$project->guestsallowed) {
-        debug_trace("guest trap ");
         return false;
     }
 
-    // finally send the file
-    send_stored_file($file, 0, 0, true); // download MUST be forced - security!
+    // Finally send the file.
+    send_stored_file($file, 0, 0, true); // Download MUST be forced - security!
 }
 
 /**

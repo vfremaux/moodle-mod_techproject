@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
@@ -25,6 +23,7 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
@@ -118,7 +117,7 @@ class Deliverable_Form extends moodleform {
         if ($this->mode == 'update') {
             if (!empty($this->current->url)) {
                 $mform->addElement('static', 'uploaded', get_string('deliverable', 'techproject'), "<a href=\"{$deliverable->url}\" target=\"_blank\">{$deliverable->url}</a>");
-            } elseif ($this->current->localfile) {
+            } else if ($this->current->localfile) {
                 // TODO : using file API give access to locally stored file
             } else {
                 $mform->addElement('static', 'uploaded', get_string('notsubmittedyet','techproject'));

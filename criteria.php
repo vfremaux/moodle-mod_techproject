@@ -44,7 +44,7 @@ if ($work == 'update') {
     } else {
         $DB->insert_record('techproject_criterion', $criterion);
     }
-} elseif ($work == 'doconfirmdelete') {
+} else if ($work == 'doconfirmdelete') {
     $criterion = new StdClass;
     $criterion->id = required_param('item', PARAM_INT);
     $criterion->isfree = optional_param('isfree', 0, PARAM_INT);

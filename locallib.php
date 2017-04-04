@@ -186,7 +186,7 @@ function techproject_phase($project, $style='') {
     }
     if ($dated[$i]->id == 'projectstart') {
         return get_string('phasestart', 'techproject');
-    } elseif ($dated[$i]->id == 'projectend') {
+    } else if ($dated[$i]->id == 'projectend') {
         return get_string('phaseend', 'techproject');
     } else {
        return "M{$dated[$i]->ordering} : {$dated[$i]->abstract} (<font color=\"green\">".format_time($dated[$i]->phasedate - $time)."</font>)";
@@ -730,9 +730,9 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setSize,
     $taskDependency = '<img src="'.$OUTPUT->pix_url('p/task_alone', 'techproject').'" title="'.get_string('taskalone', 'techproject').'" />';
     if ($hasSlaves && $hasMasters) {
         $taskDependency = '<img src="'.$OUTPUT->pix_url('/p/task_middle', 'techproject').'" title="'.get_string('taskmiddle', 'techproject').'" />';
-    } elseif ($hasMasters) {
+    } else if ($hasMasters) {
         $taskDependency = "<img src=\"".$OUTPUT->pix_url('/p/task_end', 'techproject')."\" title=\"".get_string('taskend', 'techproject').'" />';
-    } elseif ($hasSlaves) {
+    } else if ($hasSlaves) {
         $taskDependency = '<img src="'.$OUTPUT->pix_url('/p/task_start', 'techproject').'" title="'.get_string('taskstart', 'techproject').'" />';
     }
 
@@ -1173,7 +1173,7 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
         } else {
             $abstract = format_string($deliverable->abstract);
         }
-    } elseif ($deliverable->url) {
+    } else if ($deliverable->url) {
         $abstract = '<a href="'.$deliverable->url.'" target="_blank">'.$deliverable->abstract.'</a>';
     } else {
        $abstract = format_string($deliverable->abstract);
@@ -2033,9 +2033,9 @@ function techproject_print_validations($project, $groupid, $fatherid, $cmid) {
         }
         if (!empty($project->projectusesrequs)) {
             $entityname = 'requirement';
-        } elseif (!empty($project->projectusesspecs)) {
+        } else if (!empty($project->projectusesspecs)) {
             $entityname = 'specification';
-        } elseif (!empty($project->projectusesdelivs)) {
+        } else if (!empty($project->projectusesdelivs)) {
             $entityname = 'deliverable';
         } else {
             print_error('errornovalidatingentity', 'techproject');
@@ -2151,9 +2151,9 @@ function techproject_print_validation_states_form($validsessid, &$project, $grou
 
     if (!empty($project->projectusesrequs)) {
         $entityname = 'requirement';
-    } elseif (!empty($project->projectusesspecs)) {
+    } else if (!empty($project->projectusesspecs)) {
         $entityname = 'specification';
-    } elseif (!empty($project->projectusesdelivs)) {
+    } else if (!empty($project->projectusesdelivs)) {
         $entityname = 'deliverable';
     } else {
         print_error('errornovalidatingentity', 'techproject');
@@ -2320,28 +2320,28 @@ function task_checkConstraints($project, $task) {
     }
 
     // Task too late (absolute).
-    elseif ($task->taskstartenable && ($task->taskstart + $plannedtime > $project->projectend)) {
+    else if ($task->taskstartenable && ($task->taskstart + $plannedtime > $project->projectend)) {
         $control['taskstartdate'] = get_string('tasktoolate','techproject') . '<br/>' . userdate($project->projectend);
     }
 
     // Checking too late end.
-    elseif ($task->taskendenable && $task->milestoneid) {
+    else if ($task->taskendenable && $task->milestoneid) {
         $milestone = $DB->get_record('techproject_milestone', array('projectid' => $project->id, 'id' => $task->milestoneid));
         if ($milestone->deadlineenable && ($task->taskend > $milestone->deadline)) {
             $control['taskenddate'] = get_string('taskfinishesaftermilestone','techproject') . '<br/>' . userdate($milestone->deadline);
         }
     }
     // Checking too late end.
-    elseif ($task->taskendenable && $task->taskend > $project->projectend) {
+    else if ($task->taskendenable && $task->taskend > $project->projectend) {
         $control['taskenddate'] = get_string('taskfinishestoolate','techproject') . '<br/>' . userdate($project->projectend);
     }
 
     // Checking switched end and start.
-    elseif ($task->taskendenable && $task->taskstartenable && $task->taskend <= $task->taskstart) {
+    else if ($task->taskendenable && $task->taskstartenable && $task->taskend <= $task->taskstart) {
         $control['taskenddate'] = get_string('taskfinishesbeforeitstarts','techproject');
     }
     // Checking unfeseabletask.
-    elseif ($task->taskendenable && $task->taskstartenable && $task->taskend < $task->taskstart + $plannedtime) {
+    else if ($task->taskendenable && $task->taskstartenable && $task->taskend < $task->taskstart + $plannedtime) {
         $control['taskenddate'] = get_string('tasktooshort','techproject') . '<br/> >> ' . userdate($task->taskstart + $plannedtime);
     }
     return $control;
@@ -2390,7 +2390,7 @@ function techproject_print_localfile($deliverable, $cmid, $type = null, $align =
                 $output .= '<a href="'.$path.'">'.s($filename).'</a>';
                 $output .= '<br />';
 
-            } elseif ($type == 'text') {
+            } else if ($type == 'text') {
                 $output .= "$strattachment ".s($filename).":\n$path\n";
 
             } else {

@@ -39,7 +39,7 @@ if ($work == 'add' || $work == 'update') {
     include($CFG->dirroot.'/mod/techproject/edit_milestone.php');
 /// Clear all *********************************************************
 
-} elseif ($work == 'clearall') {
+} else if ($work == 'clearall') {
     echo $pagebuffer;
     echo '<center>';
     echo $OUTPUT->heading(get_string('clearallmilestones','techproject')); 

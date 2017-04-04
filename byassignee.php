@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
@@ -28,18 +26,25 @@ defined('MOODLE_INTERNAL') || die();
  * This screen show tasks plan by assignee. Unassigned tasks are shown 
  * below assigned tasks
  */
+defined('MOODLE_INTERNAL') || die();
 
 echo $pagebuffer;
 
-$TIMEUNITS = array(get_string('unset','techproject'),get_string('hours','techproject'),get_string('halfdays','techproject'),get_string('days','techproject'));
-$haveAssignedTasks = false;
-if (!groups_get_activity_groupmode($cm, $project->course)){
-    $groupusers = get_users_by_capability($context, 'mod/techproject:beassignedtasks', 'u.id,'.get_all_user_name_fields(true, 'u').',u.email, u.picture', 'u.lastname');
+$timeunits = array(get_string('unset','techproject'),
+                   get_string('hours','techproject'),
+                   get_string('halfdays','techproject'),
+                   get_string('days','techproject'));
+
+$haveassignedtasks = false;
+
+if (!groups_get_activity_groupmode($cm, $project->course)) {
+    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.email, u.picture';
+    $groupusers = get_users_by_capability($context, 'mod/techproject:beassignedtasks', $fields, 'u.lastname');
 } else {
     if ($currentgroupid) {
         $groupusers = groups_get_members($currentgroupid);
     } else {
-        // we could not rely on the legacy function
+        // We could not rely on the legacy function.
         $groupusers = techproject_get_users_not_in_group($project->course);
     }
 }
@@ -49,15 +54,16 @@ if (!isset($groupusers) || count($groupusers) == 0 || empty($groupusers)) {
     echo $OUTPUT->heading(get_string('assignedtasks','techproject'));
     echo '<br/>';
     echo $OUTPUT->box_start('center', '100%');
-    foreach ($groupusers as $aUser) {
-        techproject_complete_user($aUser);
+    foreach ($groupusers as $auser) {
+        techproject_complete_user($auser);
 ?>
 <table width="100%">
     <tr>
         <td class="byassigneeheading level1">
 <?php
-        $hidesub = "<a href=\"javascript:toggle('{$aUser->id}','sub{$aUser->id}', false, '{$CFG->wwwroot}');\"><img name=\"img{$aUser->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
-        echo $hidesub.' '.get_string('assignedto','techproject').' '.fullname($aUser).' '.$OUTPUT->user_picture($USER);
+        $jshandler = 'javascript:toggle('.$auser->id.',\'sub'.$auser->id.'\', false);';
+        $hidesub = '<a href="'.$jshandler.'"><img name=\"img{$auser->id}\" src=\"{$CFG->wwwroot}/mod/techproject/pix/p/switch_minus.gif\" alt=\"collapse\" /></a>";
+        echo $hidesub.' '.get_string('assignedto','techproject').' '.fullname($auser).' '.$OUTPUT->user_picture($USER);
 ?>
         </td>
         <td class="byassigneeheading level1" align="right">
@@ -77,27 +83,31 @@ if (!isset($groupusers) || count($groupusers) == 0 || empty($groupusers)) {
                GROUP BY
                   t.assignee
             ";
-            $res = $DB->get_record_sql($query, array($project->id, $currentgroupid, $aUser->id));
-            if ($res){
-                $over = ($res->planned) ? round((($res->spent - $res->planned) / $res->planned) * 100) : 0 ;
+            $res = $DB->get_record_sql($query, array($project->id, $currentgroupid, $auser->id));
+            if ($res) {
+                $over = ($res->planned) ? round((($res->spent - $res->planned) / $res->planned) * 100) : 0;
                 // calculates a local alarm for lateness
                 $hurryup = '';
-                if ($res->planned && ($res->spent <= $res->planned)){
-                    $hurryup = (round(($res->spent / $res->planned) * 100) > ($res->done / $res->count)) ? "<img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/late.gif\" title=\"".mb_convert_encoding(get_string('hurryup','techproject'), 'UTF8', 'ISO-8859-1')."\" />" : '' ;
+                if ($res->planned && ($res->spent <= $res->planned)) {
+                    $pixurl = $OUTPUT->pix_url('p/late', 'techproject');
+                    $pix = '<img src="'.$pixurl.'" title="'.get_string('hurryup','techproject').'" />';
+                    $hurryup = (round(($res->spent / $res->planned) * 100) > ($res->done / $res->count)) ? $pix : '';
                 }
                 $lateclass = ($over > 0) ? 'toolate' : 'intime';
-                $workplan = get_string('assignedwork','techproject').' '.(0 + $res->planned).' '.$TIMEUNITS[$project->timeunit];
-                $realwork = get_string('realwork','techproject')." <span class=\"{$lateclass}\">".(0 + $res->spent).' '.$TIMEUNITS[$project->timeunit].'</span>';
-                $completion = ($res->count != 0) ? $renderer->bar_graph_over($res->done / $res->count, $over, 100, 10) : $renderer->bar_graph_over(-1, 0);
+                $workplan = get_string('assignedwork','techproject').' '.(0 + $res->planned).' '.$timeunits[$project->timeunit];
+                $latespan = ' <span class="'.$lateclass.'">'.(0 + $res->spent).' '.$timeunits[$project->timeunit].'</span>';
+                $realwork = get_string('realwork','techproject').$latespan;
+                $bar = $renderer->bar_graph_over($res->done / $res->count, $over, 100, 10);
+                $completion = ($res->count != 0) ? $bar : $renderer->bar_graph_over(-1, 0);
                 echo "{$workplan} - {$realwork} {$completion} {$hurryup}";
             }
 ?>
         </td>
     </tr>
 </table>
-<table id="<?php echo "sub{$aUser->id}" ?>" width="100%">
+<table id="<?php echo "sub{$auser->id}" ?>" width="100%">
 <?php
-        // get assigned tasks
+        // Get assigned tasks.
         $query = "
            SELECT
               t.*,
@@ -119,29 +129,26 @@ if (!isset($groupusers) || count($groupusers) == 0 || empty($groupusers)) {
            GROUP BY
               t.id
         ";
-        $tasks = $DB->get_records_sql($query, array($project->id, $currentgroupid, $aUser->id));
-        if (!isset($tasks) || count($tasks) == 0 || empty($tasks)){
-?>
-    <tr>
-        <td>
-            <?php print_string('notaskassigned', 'techproject') ?>
-        </td>
-    </tr>
-<?php        
+        $tasks = $DB->get_records_sql($query, array($project->id, $currentgroupid, $auser->id));
+        if (!isset($tasks) || count($tasks) == 0 || empty($tasks)) {
+            echo '<tr>';
+            echo '<td>';
+            echo $OUTPUT->notification(get_string('notaskassigned', 'techproject'));
+            echo '</td>';
+            echo '</tr>';
         } else {
-            foreach($tasks as $aTask){
-                $haveAssignedTasks = true;
-                // feed milestone titles for popup display
-                if ($milestone = $DB->get_record('techproject_milestone', array('id' => $aTask->milestoneid))){
-                    $aTask->milestoneabstract = $milestone->abstract;
+            foreach($tasks as $atask) {
+                $haveassignedtasks = true;
+                // Feed milestone titles for popup display.
+                if ($milestone = $DB->get_record('techproject_milestone', array('id' => $atask->milestoneid))) {
+                    $atask->milestoneabstract = $milestone->abstract;
                 }
-?>
-    <tr>
-        <td class="level2">
-        <?php techproject_print_single_task($aTask, $project, $currentgroupid, $cm->id, count($tasks), true, 'SHORT_WITHOUT_ASSIGNEE_NOEDIT'); ?>
-        </td>
-    </tr>
-<?php
+                echo '<tr>';
+                echo '<td class="level2">';
+                techproject_print_single_task($atask, $project, $currentgroupid, $cm->id, count($tasks), true,
+                                              'SHORT_WITHOUT_ASSIGNEE_NOEDIT');
+                echo '</td>';
+                echo '</tr>';
             }
         }
 ?>
@@ -150,7 +157,7 @@ if (!isset($groupusers) || count($groupusers) == 0 || empty($groupusers)) {
     }
     echo $OUTPUT->box_end();
 }
-// get unassigned tasks
+// Get unassigned tasks.
 $query = "
    SELECT
       *
@@ -171,7 +178,7 @@ echo $OUTPUT->box_start('center', '100%');
 <center>
 <table width="100%">
 <?php
-if (!isset($unassignedtasks) || count($unassignedtasks) == 0 || empty($unassignedtasks)){
+if (!isset($unassignedtasks) || count($unassignedtasks) == 0 || empty($unassignedtasks)) {
 ?>
     <tr>
         <td>
@@ -180,14 +187,18 @@ if (!isset($unassignedtasks) || count($unassignedtasks) == 0 || empty($unassigne
     </tr>
 <?php
 } else {
-    foreach($unassignedtasks as $aTask){
+    foreach ($unassignedtasks as $atask) {
 ?>
     <tr>
         <td class="level2">
             <?php
-            $branch = techproject_tree_get_upper_branch('techproject_task', $aTask->id, true, true);
-            echo 'T'.implode('.', $branch) . '. ' . $aTask->abstract ;
-            echo "&nbsp;<a href=\"view.php?id={$cm->id}&amp;view=view_detail&amp;objectClass=task&amp;objectId=$aTask->id\"><img src=\"{$CFG->wwwroot}/mod/techproject/pix/p/hide.gif\" title=\"".get_string('detail','techproject')."\" /></a>";
+            $branch = techproject_tree_get_upper_branch('techproject_task', $atask->id, true, true);
+            echo 'T'.implode('.', $branch) . '. ' . $atask->abstract ;
+            $params = array('id' => $cm->id, 'view' => 'view_detail', 'objectClass' => 'task', 'objectId' => $atask->id);
+            $detailurl = new moodle_url('/mod/techproject/view.php', $params);
+            $pixurl = $OUTPUT->pix_url('p/hide', 'techproject');
+            $pix = '<img src="'.$pixurl.'" title="'.get_string('detail','techproject').'" />';
+            echo '&nbsp;<a href="'.$detailurl.'">'.$pix.'</a>';
             ?>
         </td>
         <td>
@@ -199,5 +210,5 @@ if (!isset($unassignedtasks) || count($unassignedtasks) == 0 || empty($unassigne
 ?>
 </table>
 </center>
-<?php 
+<?php
 echo $OUTPUT->box_end();

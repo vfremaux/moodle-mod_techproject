@@ -103,10 +103,10 @@ if ($event == 'taskinsert') {
     }
 
     die;
-} 
+}
 
 $task = $DB->get_record('techproject_task', array('id' => $taskid, 'projectid' => $projectid));
-$taskduration = $task->taskend - $task->taskstart; // task duration in seconds
+$taskduration = $task->taskend - $task->taskstart; // Task duration in seconds.
 
 if ($event == 'taskchangebounds') {
 
@@ -114,13 +114,13 @@ if ($event == 'taskchangebounds') {
     $m++;
 
     $taskstartdate = getdate($task->taskstart);
-    $Y = $taskstartdate['year'] = $y;
-    $M = $taskstartdate['mon'] = $m;
-    $D = $taskstartdate['day'] = $d;
-    $H = $taskstartdate['hours'];
-    $I = $taskstartdate['minutes'];
-    $S = $taskstartdate['seconds'];
-    $newstart = mktime($H, $I, $S, $M, $D, $Y);
+    $y = $taskstartdate['year'] = $y;
+    $m = $taskstartdate['mon'] = $m;
+    $d = $taskstartdate['day'] = $d;
+    $h = $taskstartdate['hours'];
+    $i = $taskstartdate['minutes'];
+    $s = $taskstartdate['seconds'];
+    $newstart = mktime($h, $i, $s, $m, $d, $y);
 
     $task->taskstart = $newstart;
     $task->taskstartenable = 1;
@@ -129,26 +129,26 @@ if ($event == 'taskchangebounds') {
     $m++;
 
     $taskenddate = getdate($task->taskend);
-    $Y = $taskenddate['year'] = $y;
-    $M = $taskenddate['mon'] = $m;
-    $D = $taskenddate['day'] = $d;
-    $H = $taskenddate['hours'];
-    $I = $taskenddate['minutes'];
-    $S = $taskenddate['seconds'];
-    $newend = mktime($H, $I, $S, $M, $D, $Y);
+    $y = $taskenddate['year'] = $y;
+    $m = $taskenddate['mon'] = $m;
+    $d = $taskenddate['day'] = $d;
+    $h = $taskenddate['hours'];
+    $i = $taskenddate['minutes'];
+    $s = $taskenddate['seconds'];
+    $newend = mktime($h, $i, $s, $m, $d, $y);
 
     $task->taskend = $newend;
     $task->taskendenable = 1;
 
     $DB->update_record('techproject_task', $task);
-} elseif ($event == 'taskupdateattributes') {
+} else if ($event == 'taskupdateattributes') {
     $task->abstract = $arg1;
     $task->done = $arg2;
     $DB->update_record('techproject_task', $task);
     if ($task->fatherid) {
         techproject_tree_propagate_up('techproject_task', 'done', $task->id, '~', false);
     }
-} elseif ($event == 'taskdelete') {
+} else if ($event == 'taskdelete') {
     // Propagate 0 load for this task.
     if ($task->fatherid) {
         $task->done = 0;
@@ -169,7 +169,7 @@ if ($event == 'taskchangebounds') {
     $DB->delete_records('techproject_task_to_spec', array('taskid' => $task->id));
     $DB->delete_records('techproject_task_dependency', array('master' => $task->id));
     $DB->delete_records('techproject_task_dependency', array('slave' => $task->id));
-} elseif ($event == 'taskget') {
+} else if ($event == 'taskget') {
     // Provides an interpretable JSON serialized object.
     echo "var obj = ".json_encode($task);
 }

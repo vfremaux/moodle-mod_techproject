@@ -82,7 +82,7 @@ if ($work == 'new') {
     } else {
         if (@$project->projectusesrequs) {
             $items = $DB->count_records_select('techproject_requirement', " projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
-        } elseif (@$project->projectusesspecs) {
+        } else if (@$project->projectusesspecs) {
             $items = $DB->count_records_select('techproject_specification', " projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
         } else {
             print_error('errornotpossible', 'techproject');
@@ -91,14 +91,14 @@ if ($work == 'new') {
     }
     // second stage 
     $DB->update_record('techproject_valid_session', $validation);
-} elseif ($work == 'close') {
+} else if ($work == 'close') {
     $validation = new StdClass;
     $validation->id = required_param('validid', PARAM_INT);
     $validation->dateclosed = time();
 
     $res = $DB->update_record('techproject_valid_session', $validation);
     // add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=validations&amp;group={$currentgroupid}", 'close', $cm->id);
-} elseif ($work == 'dodelete') {
+} else if ($work == 'dodelete') {
     $validid = required_param('validid', PARAM_INT);
 
     // delete all related records

@@ -85,7 +85,7 @@ $table = new stdClass;
 if ($course->format == 'weeks') {
     $table->head  = array ($strweek, $strname, $strgrade, $strprojectend);
     $table->align = array ('center', 'left', 'center', 'center');
-} elseif ($course->format == 'topics') {
+} else if ($course->format == 'topics') {
     $table->head  = array ($strtopic, $strname, $strgrade, $strprojectend);
     $table->align = array ('center', 'left', 'center', 'center');
 } else {

@@ -178,7 +178,7 @@ if (@$outputType == 'HTML') {
             // prints special marks on calendar
             if ($jdStart + $i == $today){
                 imagefilledrectangle($im, $i * $pixPerDay, 0, ($i + 1) * $pixPerDay - 1, 22, $colors['lightblue']);
-            } elseif(isset($milemarks[$jdStart + $i])){
+            } else if(isset($milemarks[$jdStart + $i])){
                 imagefilledrectangle($im, $i * $pixPerDay, 0, ($i + 1) * $pixPerDay - 1, 22, $colors['goldyellow']);
             }
         }
@@ -202,7 +202,7 @@ if (@$outputType == 'HTML') {
             // prints special marks on calendar
             if ($jdStart + $i == $today) {
                 imagefilledrectangle($im, $i * $pixPerDay, 0, ($i + 1) * $pixPerDay - 1, 0, $colors['lightblue']);
-            } elseif(isset($milemarks[$jdStart + $i])) {
+            } else if(isset($milemarks[$jdStart + $i])) {
                 imagefilledrectangle($im, $i * $pixPerDay, 0, ($i + 1) * $pixPerDay - 1, 0, $colors['goldyellow']);
             }
             // prints day line on calendar

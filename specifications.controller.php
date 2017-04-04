@@ -37,7 +37,7 @@ if ($work == 'delete') {
     $event = \mod_techproject\event\specification_deleted::create_from_specification($project, $context, $oldRecord, $currentgroupid);
     $event->trigger();
 
-} elseif ($work == 'domove' || $work == 'docopy') {
+} else if ($work == 'domove' || $work == 'docopy') {
 
     $ids = required_param_array('ids', PARAM_INT);
     $to = required_param('to', PARAM_ALPHA);
@@ -92,12 +92,12 @@ if ($work == 'delete') {
         redirect($redirecturl, get_string('redirectingtoview', 'techproject').' : '.get_string($redir, 'techproject'));
     }
 
-} elseif ($work == 'domarkastemplate') {
+} else if ($work == 'domarkastemplate') {
     
     $specid = required_param('specid', PARAM_INT);
     $SESSION->techproject->spectemplateid = $specid;
 
-} elseif ($work == 'doapplytemplate') {
+} else if ($work == 'doapplytemplate') {
 
     $specids = required_param_array('ids', PARAM_INT);
     $templateid = $SESSION->techproject->spectemplateid;
@@ -143,7 +143,7 @@ if ($work == 'dodeleteitems') {
         redirect($redirecturl, get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
     }
 
-} elseif ($work == 'doclearall') {
+} else if ($work == 'doclearall') {
 
     // Delete all records. POWERFUL AND DANGEROUS COMMAND.
     $DB->delete_records('techproject_specification', array('projectid' => $project->id));
@@ -153,7 +153,7 @@ if ($work == 'dodeleteitems') {
     $event = \mod_techproject\event\specification_cleared::create_for_group($project, $context, $currentgroupid);
     $event->trigger();
 
-} elseif ($work == 'doexport') {
+} else if ($work == 'doexport') {
 
     $ids = required_param_array('ids', PARAM_INT);
     $idlist = implode("','", $ids);
@@ -186,22 +186,22 @@ if ($work == 'dodeleteitems') {
     echo $OUTPUT->continue_button("view.php?view=specifications&amp;id=$cm->id");
     return;
 
-} elseif ($work == 'up') {
+} else if ($work == 'up') {
 
     $specid = required_param('specid', PARAM_INT);
     techproject_tree_up($project, $currentgroupid,$specid, 'techproject_specification');
 
-} elseif ($work == 'down') {
+} else if ($work == 'down') {
 
     $specid = required_param('specid', PARAM_INT);
     techproject_tree_down($project, $currentgroupid,$specid, 'techproject_specification');
 
-} elseif ($work == 'left') {
+} else if ($work == 'left') {
 
     $specid = required_param('specid', PARAM_INT);
     techproject_tree_left($project, $currentgroupid,$specid, 'techproject_specification');
 
-} elseif ($work == 'right') {
+} else if ($work == 'right') {
 
     $specid = required_param('specid', PARAM_INT);
     techproject_tree_right($project, $currentgroupid,$specid, 'techproject_specification');

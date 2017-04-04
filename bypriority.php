@@ -38,7 +38,7 @@ $viewmode = optional_param('viewMode', '', PARAM_ALPHA);
 
 if (!empty($viewmode)) {
     $_SESSION['viewmode'] = $viewmode;
-} elseif (empty($_SESSION['viewmode'])) {
+} else if (empty($_SESSION['viewmode'])) {
     $_SESSION['viewmode'] = 'alltasks';
 }
 $viewmode = $_SESSION['viewmode'];

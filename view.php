@@ -121,7 +121,7 @@ if (has_capability('mod/techproject:gradeproject', $context)) {
     if (empty($action)) { // no action specified, either go straight to elements page else the admin page
         $action = 'teachersview';
     }
-} elseif (!isguestuser()) { // it's a student then
+} else if (!isguestuser()) { // it's a student then
     if (!$cm->visible) {
         echo $OUTPUT->notification(get_string('activityiscurrentlyhidden'));
     }
@@ -130,7 +130,7 @@ if (has_capability('mod/techproject:gradeproject', $context)) {
     }
     if ($timenow < $project->projectstart) {
         $action = 'notavailable';
-    } elseif (!@$action) {
+    } else if (!@$action) {
         $action = 'studentsview';
     }
 } else {
@@ -159,12 +159,12 @@ if ($action == 'displayfinalgrade' ) {
     echo $pagebuffer;
     echo get_string('endofproject', 'techproject');
 /****************** assignment not available (for students)***********************/
-} elseif ($action == 'notavailable') {
+} else if ($action == 'notavailable') {
     echo $pagebuffer;
     echo $OUTPUT->heading(get_string('notavailable', 'techproject'));
 
 /****************** student's view  ***********************/
-} elseif ($action == 'studentsview') {
+} else if ($action == 'studentsview') {
 
     if ($timenow > $project->projectend) { // if project is over, just cannot change anything more
         $pagebuffer .= $OUTPUT->box('<span class="inconsistency">'.get_string('projectisover','techproject').'</span>', 'center', '70%');
@@ -208,13 +208,13 @@ if ($action == 'displayfinalgrade' ) {
 }
 
 /****************** guest's view - display projects without editing capabilities  ************/
-elseif ($action == 'guestview') {
+else if ($action == 'guestview') {
 
     $demostr = '';
     if (!$project->guestscanuse || $currentgroupid != 0){
         // guest can sometimes edit group 0
         $USER->editmode = 'off';
-    } elseif ($project->guestscanuse && !$currentgroupid && $timenow < $project->projectend) { // guest could have edited but project is closed
+    } else if ($project->guestscanuse && !$currentgroupid && $timenow < $project->projectend) { // guest could have edited but project is closed
         $demostr = '(' . get_string('demomodeclosedproject', 'techproject') . ') ' . $OUTPUT->help_icon('demomode', 'techproject', false);
         $USER->editmode = 'off';
     } else {
@@ -240,7 +240,7 @@ elseif ($action == 'guestview') {
     include('techproject.php');
 
 /****************** teacher's view - display admin page  ************/
-} elseif ($action == 'teachersview') {
+} else if ($action == 'teachersview') {
     /// Check to see if groups are being used in this workshop
     /// and if so, set $currentgroupid to reflect the current group
     $currentgroupid = 0 + groups_get_course_group($course, true); 
@@ -267,14 +267,14 @@ elseif ($action == 'guestview') {
     include('techproject.php');
 
 /****************** show description  ************/
-} elseif ($action == 'showdescription') {
+} else if ($action == 'showdescription') {
     echo $pagebuffer;
     techproject_print_assignement_info($project);
     echo $OUTPUT->box(format_text($project->description, $project->format), 'center', '70%', '', 5, 'generalbox', 'intro');
     echo $OUTPUT->continue_button($_SERVER["HTTP_REFERER"]);
 
 /*************** student is not in a group **************************************/
-} elseif ($action == 'notingroup') {
+} else if ($action == 'notingroup') {
     echo $pagebuffer;
     echo $OUTPUT->box(format_text(get_string('notingroup', 'techproject'), 'HTML'), 'center', '70%', '', 5, 'generalbox', 'intro');
     echo $OUTPUT->continue_button($_SERVER["HTTP_REFERER"]);

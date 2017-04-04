@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod-techproject
  * @category mod
@@ -25,6 +23,8 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot.'/lib/uploadlib.php');
 
 // Controller.
@@ -33,7 +33,7 @@ if ($work == 'add' || $work == 'update') {
 
 // Group operation form *********************************************************.
 
-} elseif ($work == 'groupcmd') {
+} else if ($work == 'groupcmd') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);

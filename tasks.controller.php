@@ -52,7 +52,7 @@ if ($work == 'dodelete') {
 
 /************************ Mark as 100% done ************************/
 
-} elseif ($work == 'domarkasdone') {
+} else if ($work == 'domarkasdone') {
 
     // Just completes a task with 100% done indicator.
     $ids = required_param_array('ids', PARAM_INT);
@@ -67,14 +67,14 @@ if ($work == 'dodelete') {
 
 // Full fills a task with planned values and 100% done indicator.
 
-} elseif ($work == 'recalc') {
+} else if ($work == 'recalc') {
     techproject_tree_propagate_down($project, 'techproject_task', 'done', 0, '~');
     techproject_tree_propagate_down($project, 'techproject_task', 'planned', 0, '+');
     techproject_tree_propagate_down($project, 'techproject_task', 'quoted', 0, '+');
     techproject_tree_propagate_down($project, 'techproject_task', 'used', 0, '+');
     techproject_tree_propagate_down($project, 'techproject_task', 'spent', 0, '+');
 
-} elseif ($work == 'fullfill') {
+} else if ($work == 'fullfill') {
 
     $ids = required_param_array('ids', PARAM_INT);
     if (is_array($ids)) {
@@ -92,7 +92,7 @@ if ($work == 'dodelete') {
         }
     }
 
-} elseif ($work == 'domove' || $work == 'docopy') {
+} else if ($work == 'domove' || $work == 'docopy') {
 
     $ids = required_param_array('ids', PARAM_INT);
     $to = required_param('to', PARAM_ALPHA);
@@ -146,12 +146,12 @@ if ($work == 'dodelete') {
         redirect($redirurl, get_string('redirectingtoview', 'techproject').' : '.get_string($redir, 'techproject'));
     }
 
-} elseif ($work == 'domarkastemplate') {
+} else if ($work == 'domarkastemplate') {
 
     $taskid = required_param('taskid', PARAM_INT);
     $SESSION->techproject->tasktemplateid = $taskid;
 
-} elseif ($work == 'doapplytemplate') {
+} else if ($work == 'doapplytemplate') {
 
     $taskids = required_param('ids', PARAM_INT);
     $templateid = $SESSION->techproject->tasktemplateid;
@@ -229,7 +229,7 @@ if ($work == 'dodeleteitems') {
         redirect($redirecturl, get_string('redirectingtoview', 'techproject') . ' : ' . get_string($redir, 'techproject'));
     }
 
-} elseif ($work == 'doclearall') {
+} else if ($work == 'doclearall') {
 
     // Delete all related records. POWERFUL AND DANGEROUS COMMAND.
     // Deletes for the current group. 
@@ -241,7 +241,7 @@ if ($work == 'dodeleteitems') {
     $event = \mod_techproject\event\task_cleared::create_for_group($project, $context, $currentgroupid);
     $event->trigger();
 
-} elseif ($work == 'doexport') {
+} else if ($work == 'doexport') {
 
     $ids = required_param_array('ids', PARAM_INT);
     $idlist = implode("','", $ids);
@@ -266,17 +266,17 @@ if ($work == 'dodeleteitems') {
     echo $OUTPUT->continue_button($viewurl);
     return;
 
-} elseif ($work == 'up') {
+} else if ($work == 'up') {
 
     $taskid = required_param('taskid', PARAM_INT);
     techproject_tree_up($project, $currentgroupid, $taskid, 'techproject_task');
 
-} elseif ($work == 'down') {
+} else if ($work == 'down') {
 
    $taskid = required_param('taskid', PARAM_INT);
    techproject_tree_down($project, $currentgroupid, $taskid, 'techproject_task');
 
-} elseif ($work == 'left') {
+} else if ($work == 'left') {
 
    $taskid = required_param('taskid', PARAM_INT);
    techproject_tree_left($project, $currentgroupid, $taskid, 'techproject_task');
@@ -286,7 +286,7 @@ if ($work == 'dodeleteitems') {
    techproject_tree_propagate_up('techproject_task', 'used', $taskid, '+');
    techproject_tree_propagate_up('techproject_task', 'spent', $taskid, '+');
 
-} elseif ($work == 'right') {
+} else if ($work == 'right') {
 
    $taskid = required_param('taskid', PARAM_INT);
    techproject_tree_right($project, $currentgroupid, $taskid, 'techproject_task');

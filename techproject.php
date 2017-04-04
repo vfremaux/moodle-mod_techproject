@@ -36,7 +36,7 @@ if (!defined('MOODLE_INTERNAL')) {
 
 if (!empty($view)) {
     $_SESSION['currentpage'] = $view;
-} elseif (empty($_SESSION['currentpage'])) {
+} else if (empty($_SESSION['currentpage'])) {
     $_SESSION['currentpage'] = 'description';
 }
 $currentpage = $_SESSION['currentpage'];
@@ -46,7 +46,7 @@ $currentpage = $_SESSION['currentpage'];
 $editmode = optional_param('editmode', '', PARAM_ALPHA);
 if (!empty($editmode)) {
     $_SESSION['editmode'] = $editmode;
-} elseif (empty($_SESSION['editmode'])) {
+} else if (empty($_SESSION['editmode'])) {
     $_SESSION['editmode'] = 'off';
 }
 
@@ -144,9 +144,9 @@ if (has_capability('mod/techproject:viewprojectcontrols', $context)){
 
 if (preg_match("/^view_/", $currentpage)) {
     $activated[] = 'views';
-} elseif (preg_match("/^teacher_/", $currentpage)) {
+} else if (preg_match("/^teacher_/", $currentpage)) {
     $activated[] = 'teacher';
-} elseif (preg_match("/^domains_/", $currentpage)) {
+} else if (preg_match("/^domains_/", $currentpage)) {
     $activated[] = 'domains';
 } else {
     $activated = NULL;
@@ -158,37 +158,37 @@ $pagebuffer .= '<br/>';
 if ($currentpage == 'description') {
     $pagebuffer .= techproject_print_assignement_info($project, true);
     include($CFG->dirroot.'/mod/techproject/description.php');
-} elseif ($currentpage == 'requirements') {
+} else if ($currentpage == 'requirements') {
     include($CFG->dirroot.'/mod/techproject/requirement.php');
-} elseif ($currentpage == 'specifications') {
+} else if ($currentpage == 'specifications') {
     include($CFG->dirroot.'/mod/techproject/specification.php');
-} elseif ($currentpage == 'tasks') {
+} else if ($currentpage == 'tasks') {
     include($CFG->dirroot.'/mod/techproject/task.php');
-} elseif ($currentpage == 'milestones') {
+} else if ($currentpage == 'milestones') {
     include($CFG->dirroot.'/mod/techproject/milestone.php');
-} elseif ($currentpage == 'deliverables') {
+} else if ($currentpage == 'deliverables') {
     include($CFG->dirroot.'/mod/techproject/deliverables.php');
-} elseif ($currentpage == 'validation') {
+} else if ($currentpage == 'validation') {
     include($CFG->dirroot.'/mod/techproject/validation.php');
-} elseif ($currentpage == 'validations') {
+} else if ($currentpage == 'validations') {
     include($CFG->dirroot.'/mod/techproject/validations.php');
-} elseif (preg_match("/view_/", $currentpage)) {
+} else if (preg_match("/view_/", $currentpage)) {
     if ($currentpage == 'view_summary') {
         include($CFG->dirroot.'/mod/techproject/summary.php');
-    } elseif ($currentpage == 'view_byassignee') {
+    } else if ($currentpage == 'view_byassignee') {
         include($CFG->dirroot.'/mod/techproject/byassignee.php');
-    } elseif ($currentpage == 'view_bypriority') {
+    } else if ($currentpage == 'view_bypriority') {
         include($CFG->dirroot.'/mod/techproject/bypriority.php');
-    } elseif ($currentpage == 'view_byworktype') {
+    } else if ($currentpage == 'view_byworktype') {
         include($CFG->dirroot.'/mod/techproject/byworktype.php');
-    } elseif ($currentpage == 'view_detail') {
+    } else if ($currentpage == 'view_detail') {
         include($CFG->dirroot.'/mod/techproject/detail.php');
-    } elseif ($currentpage == 'view_todo') {
+    } else if ($currentpage == 'view_todo') {
         include($CFG->dirroot.'/mod/techproject/todo.php');
-    } elseif ($currentpage == 'view_gantt') {
+    } else if ($currentpage == 'view_gantt') {
         include($CFG->dirroot.'/mod/techproject/gantt.php');
     }
-} elseif (preg_match("/teacher_/", $currentpage)) {
+} else if (preg_match("/teacher_/", $currentpage)) {
     // falldown if no grading enabled.
     if (!$project->grade && ($currentpage == 'teacher_assess' || $currentpage == 'teacher_criteria')) $currentpage = 'teacher_projectcopy';
     if ($currentpage == 'teacher_assess') {
@@ -206,7 +206,7 @@ if ($currentpage == 'description') {
     if ($currentpage == 'teacher_load') {
         include($CFG->dirroot.'/mod/techproject/imports.php');
     }
-} elseif (preg_match("/domains_/", $currentpage)) {
+} else if (preg_match("/domains_/", $currentpage)) {
     $action = optional_param('what', '', PARAM_RAW);
     $domain = str_replace('domains_', '', $currentpage);
     include($CFG->dirroot.'/mod/techproject/view_domain.php');

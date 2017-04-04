@@ -46,7 +46,7 @@ function techproject_get_mail_template($virtual, $modulename, $lang = ''){
     if (preg_match('/^auth_/', $modulename)){
         $location = 'auth';
         $modulename = str_replace('auth_', '', $modulename);
-    } elseif (preg_match('/^block_/', $modulename)){
+    } else if (preg_match('/^block_/', $modulename)){
         $location = 'blocks';
         $modulename = str_replace('block_', '', $modulename);
     } else {

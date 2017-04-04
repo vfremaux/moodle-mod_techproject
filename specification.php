@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 if ($work == 'add' || $work == 'update') {
     include($CFG->dirroot.'/mod/techproject/edit_specification.php');
 /// Group operation form *********************************************************
-} elseif ($work == 'groupcmd') {
+} else if ($work == 'groupcmd') {
     echo $pagebuffer;
     $ids = required_param_array('ids', PARAM_INT);
     $cmd = required_param('cmd', PARAM_ALPHA);
