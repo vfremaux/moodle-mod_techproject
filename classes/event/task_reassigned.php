@@ -87,7 +87,7 @@ class task_reassigned extends \core\event\base {
             'id' => $this->contextinstanceid,
             'view' => 'tasks',
             'itemid' => $this->objectid,
-            'group' => $this->other['groupid'],
+            'group' => $this->other['group'],
         ));
     }
 

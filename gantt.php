@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Gant chart for the project.
  *
@@ -26,34 +24,31 @@ defined('MOODLE_INTERNAL') || die();
  * @date 2008/03/03
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-require_once($CFG->dirroot.'/mod/techproject/ganttlib.php');
+defined('MOODLE_INTERNAL') || die();
 
-// we cannot use require_js because of the parameters
+require_once($CFG->dirroot.'/mod/techproject/classes/output/renderer_gantt.php');
+$ganttrenderer = $PAGE->get_renderer('techproject', 'gantt');
 
 echo $pagebuffer;
 
 echo "<script type=\"text/javascript\" src=\"{$CFG->wwwroot}/mod/techproject/js/ganttevents.php?id={$course->id}&projectid={$project->id}\"></script>";
 
-echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$CFG->wwwroot}/mod/techproject/js/dhtmlxGantt/codebase/dhtmlxgantt.css\">";
-    
 echo $OUTPUT->heading(get_string('ganttchart', 'techproject'));
 
-$sortedTasks = array();
-$unscheduledTasks = array();
+$unscheduledtasks = array();
 $assignees = array();
 $leadtasks = array();
 $gantt = false;
 $parent = null;
 
 // Delayed printing, allows evaluate if there is somethin inside.
-gantt_print_all_tasks($parent, $project, $currentgroupid, $unscheduledTasks, $assignees, $leadtasks, $str);
+echo $ganttrenderer->all_tasks($parent, $project, $currentgroupid, $unscheduledtasks, $assignees, $leadtasks);
 
 if (!empty($leadtasks)) {
     $gantt = true;
-    gantt_print_init('GantDiv');
-    echo $str;
-    gantt_print_control(array_keys($leadtasks));
-    gantt_print_end();
+    echo $ganttrenderer->init('GantDiv');
+    echo $ganttrenderer->control(array_keys($leadtasks));
+    echo $ganttrenderer->finish();
 } else {
     echo '<center>';
     echo $OUTPUT->box(get_string('notasks', 'techproject'));
@@ -61,23 +56,21 @@ if (!empty($leadtasks)) {
     return;
 }
 
-?>
-<br/>
-<table width="100%">
-<?php
-if ($unscheduledTasks) {
-    echo $OUTPUT->heading_block(get_string('unscheduledtasks','techproject'));
-    echo $OUTPUT->box_start('center', $labelWidth + $timeXWidth);
-    foreach ($unscheduledTasks as $atask) {
-        techproject_print_single_task($atask, $project, $currentgroupid, $cm->id, count($unscheduledTasks), false, $style='NOEDIT');
+echo '<br/>';
+echo '<table width="100%">';
+
+if ($unscheduledtasks) {
+    echo $OUTPUT->heading_block(get_string('unscheduledtasks', 'techproject'));
+    echo $OUTPUT->box_start('center', $labelwidth + $timexwidth);
+    foreach ($unscheduledtasks as $atask) {
+        techproject_print_single_task($atask, $project, $currentgroupid, $cm->id, count($unscheduledtasks), false, 'NOEDIT');
     }
     echo $OUTPUT->box_end();
 }
-?>
-</table>
-</center>
 
-<?php
+echo '</table>';
+echo '</center>';
+
 if ($gantt) {
-    gantt_render('GantDiv');
+    $ganttrenderer->gantt('GantDiv');
 }

@@ -17,20 +17,20 @@
 /**
  * Version details.
  *
- * @package     mod_techproject
  * @category    mod
- * @author      Valery Fremaux <valery.fremaux@gmail.com>
- * @copyright   2007 onwards Valery Fremaux (http://www.mylearningfactory.com)
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @package     mod_techproject
+ * @author      Valery Fremaux (valery.fremaux@gmail.com)
+ * @copyright   2011 onwards Valery Fremaux (valery.fremaux@gmeil.com)
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2015101300;  // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2014111000;  // Requires this Moodle version.
+$plugin->version  = 2017040200;  // The current module version (Date: YYYYMMDDXX).
+$plugin->requires = 2014110400;  // Requires this Moodle version.
 $plugin->component = 'mod_techproject';   // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '2.8.0 (Build 2015101300)';
+$plugin->release = '2.8.0 (Build 2017040200)';
 
-// Non moodle attributes.
-$plugin->codeincrement = '2.8.0000';
+// Non Moodle attributes.
+$plugin->codeincrement = '2.8.0003';

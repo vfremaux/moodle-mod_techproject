@@ -25,36 +25,29 @@ define('YOFFSET', 8);
 if (!defined('MOODLE_INTERNAL')) {
     require('../../../config.php');
 
-    $projectid = required_param('projectid', PARAM_INT);    // project id
-    $id = optional_param('id', 0, PARAM_INT);    // Course Module ID
-    $outputType = optional_param('outputType', '', PARAM_CLEAN);    // Course Module ID
+    include_once($CFG->dirroot.'/mod/techproject/gdgenerators/lib.php');
+
+    $outputtype = optional_param('outputType', '', PARAM_CLEAN); // Course Module ID.
+    $projectid = required_param('projectid', PARAM_INT); // Project id.
+    $id = optional_param('id', 0, PARAM_INT); // Course Module ID.
 
     $project = $DB->get_record('techproject', array('id' => $projectid));
     $cm = $DB->get_record('course_modules', array('id' => $id));
 
     require_login($project->course);
 
-    // check current group and change, for anyone who could
+    // Check current group and change, for anyone who could.
     $course = $DB->get_record('course', array('id' => $project->course));
-    if (!$groupmode = groups_get_activity_groupmode($cm, $course)){ // groups are being used ?
-        $currentgroupid = 0;
-    } else {
-        $changegroup = isset($_GET['group']) ? $_GET['group'] : -1;  // Group change requested?
-        if (isguestuser()) {
-            // for guests, use session
-            if ($changegroup >= 0) {
-                $_SESSION['guestgroup'] = $changegroup;
-            }
-            $currentgroupid = 0 + @$_SESSION['guestgroup'];
-        } else { // for normal users, change current group
-            $currentgroupid = 0 + get_and_set_current_group($course, $groupmode, $changegroup);    
-        }
-    }
+    $currentgroupid = techproject_resolve_group($course, $cm);
 }
 $trace = 0;
 
-// get requirements information
-$requirements = $DB->get_records_select('techproject_requirement', "projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
+// Get requirements information.
+$select = "
+    projectid = ? AND
+    groupid = ?
+";
+$requirements = $DB->get_records_select('techproject_requirement', $select, array($project->id, $currentgroupid));
 
 $heavyness['WEHAVE'] = 0;
 $heavyness[''] = 1;
@@ -80,24 +73,24 @@ if ($requirements) {
             continue;
         }
         $count++;
-        $strengthsum += (array_key_exists($r->strength, $strength)) ? $strength[$r->strength] : 2.5 ;
-        $heavynesssum += (array_key_exists($r->heavyness, $heavyness)) ? $heavyness[$r->heavyness] : 2.5 ;
+        $strengthsum += (array_key_exists($r->strength, $strength)) ? $strength[$r->strength] : 2.5;
+        $heavynesssum += (array_key_exists($r->heavyness, $heavyness)) ? $heavyness[$r->heavyness] : 2.5;
     }
 }
 
 header("Content-type: image/png");
 
-// Searching for font files
-$fontFile = $CFG->dirroot . "/mod/techproject/fonts/arial.ttf";
-if (!file_exists($fontFile)) {
-    $fontFile = $CFG->dirroot . "/fonts/{$ttffont}.ttf";
+// Searching for font files.
+$fontfile = $CFG->dirroot.'/mod/techproject/fonts/arial.ttf';
+if (!file_exists($fontfile)) {
+    $fontfile = $CFG->dirroot . '/fonts/'.$ttffont.'.ttf';
 }
 // If fonts where not given by project, try with system fonts.
-if (!file_exists($fontFile)) {
-    $fontFile = @$CFG->systemfonts . "/{$ttffont}.ttf";
+if (!file_exists($fontfile)) {
+    $fontfile = @$CFG->systemfonts.'/'.$ttffont.'.ttf';
 }
-if (!file_exists($fontFile)) {
-    echo "no font file for generator";
+if (!file_exists($fontfile)) {
+    echo "No font file for generator";
     exit(0);
 }
 
@@ -105,28 +98,28 @@ if ($count) {
     $strengthmean = $strengthsum / $count;
     $heavynessmean = $heavynesssum / $count;
 
-    $projectposx = XOFFSET + GRAPHWIDTH * $strengthmean / 5; // from left edge
-    $projectposy = YOFFSET + GRAPHWIDTH * (1 - $heavynessmean / 5); // from bottom edge
+    $projectposx = XOFFSET + GRAPHWIDTH * $strengthmean / 5; // From left edge.
+    $projectposy = YOFFSET + GRAPHWIDTH * (1 - $heavynessmean / 5); // From bottom edge.
 
     $lang = current_language();
-    $background = $CFG->dirroot."/mod/techproject/pix/risk_bg_{$lang}.png";
+    $background = $CFG->dirroot.'/mod/techproject/pix/risk_bg_'.$lang.'.png';
     if (!file_exists($background)) {
-        $background = $CFG->dirroot."/mod/techproject/pix/risk_bg_en.png";
+        $background = $CFG->dirroot.'/mod/techproject/pix/risk_bg_en.png';
     }
     $image = imagecreatefrompng($background);
 
     $colors['blue'] = imagecolorallocate($image, 0, 0, 180);
 
-    imageellipse ($image , $projectposx , $projectposy , 19 , 19 , $colors['blue'] );
-    imageellipse ($image , $projectposx , $projectposy , 18 , 18 , $colors['blue'] );
-    imageellipse ($image , $projectposx , $projectposy , 13 , 13 , $colors['blue'] );
-    imageellipse ($image , $projectposx , $projectposy , 12 , 12 , $colors['blue'] );
-    imageellipse ($image , $projectposx , $projectposy , 11 , 11 , $colors['blue'] );
-    imageellipse ($image , $projectposx , $projectposy , 10 , 10 , $colors['blue'] );
-    imageellipse ($image , $projectposx , $projectposy , 9 , 9 , $colors['blue'] );
-    imageellipse ($image , $projectposx , $projectposy , 8 , 8 , $colors['blue'] );
+    imageellipse ($image , $projectposx , $projectposy , 19 , 19 , $colors['blue']);
+    imageellipse ($image , $projectposx , $projectposy , 18 , 18 , $colors['blue']);
+    imageellipse ($image , $projectposx , $projectposy , 13 , 13 , $colors['blue']);
+    imageellipse ($image , $projectposx , $projectposy , 12 , 12 , $colors['blue']);
+    imageellipse ($image , $projectposx , $projectposy , 11 , 11 , $colors['blue']);
+    imageellipse ($image , $projectposx , $projectposy , 10 , 10 , $colors['blue']);
+    imageellipse ($image , $projectposx , $projectposy , 9 , 9 , $colors['blue']);
+    imageellipse ($image , $projectposx , $projectposy , 8 , 8 , $colors['blue']);
 
-    // delivering image
+    // Delivering image.
     imagepng($image);
     imagedestroy($image);
 } else {
