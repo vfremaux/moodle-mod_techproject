@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -21,10 +20,9 @@
  * @copyright 2012 Valery Fremaux
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/techproject/backup/moodle2/restore_techproject_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot.'/mod/techproject/backup/moodle2/restore_techproject_stepslib.php'); // Because it exists (must).
 
 /**
  * label restore task that provides all the settings and steps to perform one
@@ -36,14 +34,15 @@ class restore_techproject_activity_task extends restore_activity_task {
      * Define (add) particular settings this activity can have
      */
     protected function define_my_settings() {
-        // No particular settings for this activity
+        // No particular settings for this activity.
+        assert(1);
     }
 
     /**
      * Define (add) particular steps this activity can have
      */
     protected function define_my_steps() {
-        // techproject only has one structure step
+        // Techproject only has one structure step.
         $this->add_step(new restore_techproject_activity_structure_step('techproject_structure', 'techproject.xml'));
     }
 

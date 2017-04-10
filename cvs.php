@@ -14,22 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This screen allows remote code repository setup and control.
  *
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
-if (!has_capability('mod/techproject:manage', $context)){
-    print_error(get_string('notateacher','techproject'));
+if (!has_capability('mod/techproject:manage', $context)) {
+    print_error(get_string('notateacher', 'techproject'));
     return;
 }
 
