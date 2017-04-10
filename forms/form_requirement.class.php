@@ -28,9 +28,12 @@ require_once($CFG->libdir.'/formslib.php');
 class Requirement_Form extends moodleform {
 
     protected $mode;
+
     protected $project;
+
     protected $current;
-    protected $descriptionoptions;
+
+    public $editoroptions;
 
     public function __construct($action, &$project, $mode, $reqid) {
         global $DB;
@@ -52,7 +55,7 @@ class Requirement_Form extends moodleform {
 
         $maxfiles = 99;                // TODO: add some setting.
         $maxbytes = $COURSE->maxbytes; // TODO: add some setting.
-        $this->descriptionoptions = array('trusttext' => true,
+        $this->editoroptions = array('trusttext' => true,
                                           'subdirs' => false,
                                           'maxfiles' => $maxfiles,
                                           'maxbytes' => $maxbytes,
@@ -92,7 +95,7 @@ class Requirement_Form extends moodleform {
         $mform->addElement('select', 'heavyness', get_string('heavyness', 'techproject'), $heavynessoptions);
         $mform->addHelpButton('heavyness', 'heavyness', 'techproject');
 
-        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);
+        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->editoroptions);
 
         if ($this->project->projectusesspecs && $this->mode == 'update') {
             $specifications = techproject_get_tree_options('techproject_specification', $this->project->id, $currentgroup);
@@ -120,7 +123,7 @@ class Requirement_Form extends moodleform {
         $draftideditor = file_get_submitted_draft_itemid('description_editor');
         $currenttext = file_prepare_draft_area($draftideditor, $context->id, 'mod_techproject', 'description_editor',
                                                $defaults->id, array('subdirs' => true), $defaults->description);
-        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject',
+        $defaults = file_prepare_standard_editor($defaults, 'description', $this->editoroptions, $context, 'mod_techproject',
                                                  'requirementdescription', $defaults->id);
         $defaults->description = array('text' => $currenttext,
                                        'format' => $defaults->descriptionformat,

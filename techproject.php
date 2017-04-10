@@ -51,7 +51,7 @@ if (!empty($editmode)) {
 // Make menu.
 
 $pixurltask = $OUTPUT->pix_url('/p/task', 'techproject');
-$pixurllock = $OUTPUT->pix_url('/p/lock', 'techprokect');
+$pixurllock = $OUTPUT->pix_url('/p/lock', 'techproject');
 $pixurlspec = $OUTPUT->pix_url('p/spec', 'techproject');
 $pixurldeliv = $OUTPUT->pix_url('p/deliv', 'techproject');
 $pixurlreq = $OUTPUT->pix_url('p/req', 'techproject');
@@ -66,13 +66,13 @@ if (!has_capability('mod/techproject:changerequs', $context)) {
 
 $tabspectitle = get_string('specifications', 'techproject');
 if (!has_capability('mod/techproject:changespecs', $context)) {
-    $tabspeclabel = '<img src="'.$pixurlspec.'" /> '.$tabspectitle.' <img src="'.$pixurllock.'" />';
+    $tabspeclabel = $tabspectitle.' <img src="'.$pixurllock.'" />';
 } else {
     $tabspeclabel = $tabspectitle;
 }
 $tabtasktitle = get_string('tasks', 'techproject');
 if (!has_capability('mod/techproject:changetasks', $context)) {
-    $tabtasklabel = '<img src="'.$pixurl.'" /> '.$tabtasktitle.' <img src="'.$pixurllock.'" />';
+    $tabtasklabel = $tabtasktitle.' <img src="'.$pixurllock.'" />';
 } else {
     $tabtasklabel = $tabtasktitle;
 }

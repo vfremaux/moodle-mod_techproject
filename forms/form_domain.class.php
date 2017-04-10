@@ -27,9 +27,9 @@ require_once($CFG->libdir.'/formslib.php');
 
 class Domain_Form extends moodleform {
 
-    private $domainvalue;
+    protected $domainvalue;
 
-    private $domain;
+    protected $domain;
 
     public function __construct($domain, $domainvalue, $action = '') {
         $this->domain = $domain;
