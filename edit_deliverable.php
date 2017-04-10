@@ -53,7 +53,7 @@ if ($data = $mform->get_data()) {
     $data->description = file_save_draft_area_files($draftideditor, $context->id, 'mod_techproject',
                                                     'deliverabledescription', $data->id, array('subdirs' => true),
                                                     $data->description);
-    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject',
+    $data = file_postupdate_standard_editor($data, 'description', $mform->editoroptions, $context, 'mod_techproject',
                                             'deliverabledescription', $data->id);
     $data = file_postupdate_standard_filemanager($data, 'localfile', $mform->attachmentoptions, $context, 'mod_techproject',
                                                  'deliverablelocalfile', $data->id);
