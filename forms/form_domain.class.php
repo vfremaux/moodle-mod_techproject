@@ -14,23 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
 class Domain_Form extends moodleform {
-    private $domainvalue;
-    private $domain;
+
+    protected $domainvalue;
+
+    protected $domain;
 
     public function __construct($domain, $domainvalue, $action = '') {
         $this->domain = $domain;
@@ -41,19 +40,20 @@ class Domain_Form extends moodleform {
     public function definition() {
         global $CFG, $OUTPUT;
 
-        // Setting variables
+        // Setting variables.
         $mform =& $this->_form;
 
         $mform->addElement('hidden', 'view', 'domains_'.$this->domain);
         $mform->setType('view', PARAM_TEXT);
 
-        if (isset($this->domainvalue->id)){
+        if (isset($this->domainvalue->id)) {
             $mform->addElement('hidden', 'domainid', $this->domainvalue->id);
             $mform->setType('domainid', PARAM_INT);
         }
 
         // Adding title and description.
-        $mform->addElement('html', $OUTPUT->heading(get_string('newvalueformfor', 'techproject', get_string($this->domain, 'techproject'))));
+        $html = $OUTPUT->heading(get_string('newvalueformfor', 'techproject', get_string($this->domain, 'techproject')));
+        $mform->addElement('html', $html);
 
         // Adding fieldset.
         $codeattributes = 'size="10" maxlength="10"';
@@ -74,6 +74,6 @@ class Domain_Form extends moodleform {
         $mform->addRule('label', null, 'required');
 
         // Adding submit and reset button.
-        $this->add_aciton_buttons();
+        $this->add_action_buttons();
     }
 }

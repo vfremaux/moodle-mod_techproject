@@ -14,17 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
  * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
- * @date 2008/03/03
- * @version phase1
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 // Master controller.
 
@@ -43,10 +40,11 @@ if ($result == -1) {
 }
 
 echo $pagebuffer;
+
 echo '<table width="100%" class="generaltable">';
 echo '<tr>';
 echo '<td align="left">';
-// print the scopechanging 
+// Print the scopechanging.
 echo '<form name="changescopeform">';
 echo '<input type="hidden" name="view" value="domains_'.$domain.'" />';
 echo '<input type="hidden" name="id" value="'.$cm->id.'" />';
