@@ -465,3 +465,7 @@ div#allpage,
 img.techproject-bargraph {
     height:14px;
 }
+
+.block.detail li {
+    margin-bottom:8px;
+}

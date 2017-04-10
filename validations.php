@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @package mod_techproject
  * @category mod
@@ -25,19 +23,26 @@ defined('MOODLE_INTERNAL') || die();
  * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
-// Preconditions
+// Preconditions.
 
-if (empty($project->projectusesrequs) && empty($project->projectusesspecs)){
-    echo $OUTPUT->notification('Validation needs either requirements or specifications to be used', $CFG->wwwroot.'/mod/techproject/view.php?id='.$cm->id);
+if (empty($project->projectusesrequs) && empty($project->projectusesspecs)) {
+    $returnurl = new moodle_url('/mod/techproject/view.php', array('id' => $c->id));
+    echo $OUTPUT->notification(get_string('validationrequirements', 'techproject'), $returnurl);
 }
 
-// Controller
+// Controller.
 
 if ($work == 'new') {
-    // close all unclosed
-    if ($unclosedrecords = $DB->get_records_select('techproject_valid_session', " projectid = '$project->id' AND groupid = $currentgroupid AND dateclosed = 0 ")){
-        foreach($unclosedrecords as $unclosed){
+    // Close all unclosed.
+    $select = "
+        projectid = ? AND
+        groupid = ? AND
+        dateclosed = 0
+    ";
+    if ($unclosedrecords = $DB->get_records_select('techproject_valid_session', $select, array($project->id, $currentgroupid))) {
+        foreach ($unclosedrecords as $unclosed) {
             $unclosed->dateclosed = time();
             $DB->update_record('techproject_valid_session', $unclosed);
         }
@@ -49,9 +54,8 @@ if ($work == 'new') {
     $validation->datecreated = time();
     $validation->dateclosed = 0;
 
-    // pre add validation session record
+    // Pre add validation session record.
     $validation->id = $DB->insert_record('techproject_valid_session', $validation);
-    // add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=validations&amp;group={$currentgroupid}", 'create', $cm->id);
 
     $validation->untracked = 0;
     $validation->refused = 0;
@@ -62,9 +66,21 @@ if ($work == 'new') {
     $validation->regressions = 0;
 
     // Check if follow up so we need to copy previous test results as start.
+
     if (optional_param('followup', false, PARAM_BOOL)) {
-        $lastsessiondate = $DB->get_field_select('techproject_valid_session', 'MAX(datecreated)', " projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
-        $lastsession = $DB->get_record_select('techproject_valid_session', " datecreated = $lastsessiondate AND projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
+        $select = "
+            projectid = ? AND
+            groupid = ?
+        ";
+        $params = array($project->id, $currentgroupid);
+        $lastsessiondate = $DB->get_field_select('techproject_valid_session', 'MAX(datecreated)', $select, $params);
+        $select = "
+            datecreated = ? AND
+            projectid = ? AND
+            groupid = ?
+        ";
+        $params = array($lastsessiondate, $project->id, $currentgroupid);
+        $lastsession = $DB->get_record_select('techproject_valid_session', $select, $params);
         // copy all states
         if ($states = $DB->get_records('techproject_valid_state', array('validationsessionid' => $lastsession->id))) {
             foreach ($states as $state) {
@@ -81,42 +97,56 @@ if ($work == 'new') {
         }
     } else {
         if (@$project->projectusesrequs) {
-            $items = $DB->count_records_select('techproject_requirement', " projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
-        } elseif (@$project->projectusesspecs) {
-            $items = $DB->count_records_select('techproject_specification', " projectid = ? AND groupid = ? ", array($project->id, $currentgroupid));
+            $select = "
+                projectid = ? AND
+                groupid = ?
+            ";
+            $items = $DB->count_records_select('techproject_requirement', $select, array($project->id, $currentgroupid));
+        } else if (@$project->projectusesspecs) {
+            $select = "
+                projectid = ? AND
+                groupid = ?
+            ";
+            $items = $DB->count_records_select('techproject_specification', $select, array($project->id, $currentgroupid));
         } else {
             print_error('errornotpossible', 'techproject');
         }
         $validation->untracked = $items;
     }
-    // second stage 
+
+    // Second stage.
     $DB->update_record('techproject_valid_session', $validation);
-} elseif ($work == 'close') {
+} else if ($work == 'close') {
     $validation = new StdClass;
     $validation->id = required_param('validid', PARAM_INT);
     $validation->dateclosed = time();
 
     $res = $DB->update_record('techproject_valid_session', $validation);
-    // add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=validations&amp;group={$currentgroupid}", 'close', $cm->id);
-} elseif ($work == 'dodelete') {
+} else if ($work == 'dodelete') {
     $validid = required_param('validid', PARAM_INT);
 
-    // delete all related records
+    // Delete all related records.
     $DB->delete_records('techproject_valid_state', array('validationsessionid' => $validid));
     $DB->delete_records('techproject_valid_session', array('id' => $validid));
-    // add_to_log($course->id, 'techproject', 'validationsession', "view.php?id={$cm->id}&amp;view=requirements&amp;group={$currentgroupid}", 'delete', $cm->id);
 }
 
-// view
+// View.
 
 echo $pagebuffer;
+
 techproject_print_validations($project, $currentgroupid, 0, $cm->id);
 $createvalidationstr = get_string('createvalidationsession', 'techproject');
 $copyvalidationstr = get_string('copyvalidationsession', 'techproject');
 if (has_capability('mod/techproject:managevalidations', context_module::instance($cm->id))) {
     echo '<p><center>';
-    echo "<a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id={$cm->id}&amp;view=validations&amp;work=new\">$createvalidationstr</a>";
-    echo "- <a href=\"{$CFG->wwwroot}/mod/techproject/view.php?id={$cm->id}&amp;view=validations&amp;work=new&amp;followup=1\">$copyvalidationstr</a>";
+    $params = array('id' => $cm->id, 'view' => 'validations', 'work' => 'new');
+    $linkurl = new moodle_url('/mod/techproject/view.php', $params);
+    echo '<a href="'.$linkurl.'">'.$createvalidationstr.'</a>';
+
+    $params = array('id' => $cm->id, 'view' => 'validations', 'work' => 'new', 'followup' => 1);
+    $linkurl = new moodle_url('/mod/techproject/view.php', $params);
+    echo ' - <a href="'.$linkurl.'">'.$copyvalidationstr.'</a>';
+
     echo '</center></p>';
 }
 

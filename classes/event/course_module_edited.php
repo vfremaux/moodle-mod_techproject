@@ -28,12 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Event for when a techproject activity is viewed.
  *
- * @property-read array $other {
- *      Extra information about event.
- *
- *      @type int cmid course module id.
- * }
- *
  * @package    mod_techproject
  * @since      Moodle 2.7
  * @author Valery Fremaux

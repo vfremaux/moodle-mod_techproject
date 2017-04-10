@@ -14,19 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- *
- *
- *
+ * @package mod_techproject
+ * @category mod
+ * @author Valery Fremaux (France) (admin@www.ethnoinformatique.fr)
+ * @date 2008/03/03
+ * @version phase1
+ * @contributors LUU Tao Meng, So Gerard (parts of treelib.php), Guillaume Magnien, Olivier Petit
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/mod/techproject/forms/form_deliverable.class.php');
 
 $delivid = optional_param('delivid', '', PARAM_INT);
 
-$mode = ($delivid) ? 'update' : 'add' ;
+$mode = ($delivid) ? 'update' : 'add';
 
 $url = new moodle_url('/mod/techproject/view.php', array('id' => $id)).'#node'.$delivid;
 $mform = new Deliverable_Form($url, $mode, $project, $delivid);
@@ -46,10 +49,14 @@ if ($data = $mform->get_data()) {
     $data->milestoneid = 0;
 
     // Editors pre save processing.
-    $draftid_editor = file_get_submitted_draft_itemid('description_editor');
-    $data->description = file_save_draft_area_files($draftid_editor, $context->id, 'mod_techproject', 'deliverabledescription', $data->id, array('subdirs' => true), $data->description);
-    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject', 'deliverabledescription', $data->id);
-    $data = file_postupdate_standard_filemanager($data, 'localfile', $mform->attachmentoptions, $context, 'mod_techproject', 'deliverablelocalfile', $data->id);
+    $draftideditor = file_get_submitted_draft_itemid('description_editor');
+    $data->description = file_save_draft_area_files($draftideditor, $context->id, 'mod_techproject',
+                                                    'deliverabledescription', $data->id, array('subdirs' => true),
+                                                    $data->description);
+    $data = file_postupdate_standard_editor($data, 'description', $mform->editoroptions, $context, 'mod_techproject',
+                                            'deliverabledescription', $data->id);
+    $data = file_postupdate_standard_filemanager($data, 'localfile', $mform->attachmentoptions, $context, 'mod_techproject',
+                                                 'deliverablelocalfile', $data->id);
 
     if ($data->delivid) {
         $data->id = $data->delivid; // Id is course module id.
@@ -59,21 +66,23 @@ if ($data = $mform->get_data()) {
 
         if (!empty($data->tasktodeliv)) {
             // Removes previous mapping.
-            $DB->delete_records('techproject_task_to_deliv', array('projectid' => $project->id, 'groupid' => $currentgroupid, 'delivid' => $data->id));
+            $params = array('projectid' => $project->id, 'groupid' => $currentgroupid, 'delivid' => $data->id);
+            $DB->delete_records('techproject_task_to_deliv', $params);
             // Stores new mapping.
-            foreach ($data->tasktodeliv as $aTask) {
+            foreach ($data->tasktodeliv as $atask) {
                 $amap = new StdClass();
                 $amap->id = 0;
                 $amap->projectid = $project->id;
                 $amap->groupid = $currentgroupid;
-                $amap->taskid = $aTask;
+                $amap->taskid = $atask;
                 $amap->delivid = $data->id;
                 $res = $DB->insert_record('techproject_task_to_deliv', $amap);
             }
         }
     } else {
         $data->created = time();
-        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_deliverable', true, $data->fatherid) + 1;
+        $data->ordering = techproject_tree_get_max_ordering($project->id, $currentgroupid, 'techproject_deliverable',
+                                                            true, $data->fatherid) + 1;
         unset($data->id); // Id is course module id.
         $data->id = $DB->insert_record('techproject_deliverable', $data);
         $event = \mod_techproject\event\deliverable_created::create_from_deliverable($project, $context, $data, $currentgroupid);
@@ -90,23 +99,24 @@ if ($data = $mform->get_data()) {
 }
 
 echo $pagebuffer;
+
 if ($mode == 'add') {
     $deliverable = new StdClass();
     $deliverable->fatherid = required_param('fatherid', PARAM_INT);
     $delivtitle = ($deliverable->fatherid) ? 'addsubdeliv' : 'adddeliv';
     echo $OUTPUT->heading(get_string($delivtitle, 'techproject'));
-    $deliverable->id = $cm->id; // course module
+    $deliverable->id = $cm->id; // Course module.
     $deliverable->projectid = $project->id;
     $deliverable->descriptionformat = FORMAT_HTML;
     $deliverable->description = '';
 } else {
     if (!$deliverable = $DB->get_record('techproject_deliverable', array('id' => $delivid))) {
-        print_error('errordeliverable','techproject');
+        print_error('errordeliverable', 'techproject');
     }
     $deliverable->delivid = $deliverable->id;
     $deliverable->id = $cm->id;
 
-    echo $OUTPUT->heading(get_string('updatedeliv','techproject'));
+    echo $OUTPUT->heading(get_string('updatedeliv', 'techproject'));
 }
 
 $mform->set_data($deliverable);
