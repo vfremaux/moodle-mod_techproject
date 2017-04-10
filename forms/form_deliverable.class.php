@@ -28,9 +28,14 @@ require_once($CFG->libdir.'/formslib.php');
 class Deliverable_Form extends moodleform {
 
     protected $mode;
+
     protected $project;
+
     protected $current;
-    protected $descriptionoptions;
+
+    public $editoroptions;
+
+    public $attachmentoptions;
 
     public function __construct($action, $mode, &$project, $delivid) {
         global $DB;
@@ -55,7 +60,7 @@ class Deliverable_Form extends moodleform {
 
         $maxfiles = 99;                // TODO: add some setting.
         $maxbytes = $COURSE->maxbytes; // TODO: add some setting.
-        $this->descriptionoptions = array('trusttext' => true,
+        $this->editoroptions = array('trusttext' => true,
                                           'subdirs' => false,
                                           'maxfiles' => $maxfiles,
                                           'maxbytes' => $maxbytes,
@@ -112,7 +117,7 @@ class Deliverable_Form extends moodleform {
         }
 
         $label = get_string('description', 'techproject');
-        $mform->addElement('editor', 'description_editor', $label, null, $this->descriptionoptions);
+        $mform->addElement('editor', 'description_editor', $label, null, $this->editoroptions);
         $mform->setType('decription_editor', PARAM_RAW);
 
         $mform->addElement('header', 'headerupload', get_string('delivered', 'techproject'));
@@ -161,7 +166,7 @@ class Deliverable_Form extends moodleform {
         $draftideditor = file_get_submitted_draft_itemid('description_editor');
         $currenttext = file_prepare_draft_area($draftideditor, $context->id, 'mod_techproject', 'description_editor',
                                                $defaults->id, array('subdirs' => true), $defaults->description);
-        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject',
+        $defaults = file_prepare_standard_editor($defaults, 'description', $this->editoroptions, $context, 'mod_techproject',
                                                  'deliverabledescription', $defaults->id);
         $defaults = file_prepare_standard_filemanager($defaults, 'localfile', $this->attachmentoptions, $context,
                                                       'mod_techproject', 'deliverablelocalfile', $defaults->id);

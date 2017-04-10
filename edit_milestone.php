@@ -55,7 +55,7 @@ if ($data = $mform->get_data()) {
     $draftideditor = file_get_submitted_draft_itemid('description_editor');
     $data->description = file_save_draft_area_files($draftideditor, $context->id, 'mod_techproject', 'milestonedescription',
                                                     $data->id, array('subdirs' => true), $data->description);
-    $data = file_postupdate_standard_editor($data, 'description', $mform->descriptionoptions, $context, 'mod_techproject',
+    $data = file_postupdate_standard_editor($data, 'description', $mform->editoroptions, $context, 'mod_techproject',
                                             'milestonedescription', $data->id);
 
     if ($data->milestoneid) {
