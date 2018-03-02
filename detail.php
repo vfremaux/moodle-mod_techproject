@@ -109,7 +109,7 @@ if ($object) {
             $linktabletitle[0] = get_string('sublinks', 'techproject');
             $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
             // getting related specifications
-            $linktabletitle[1] = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject')  .'" /> '. get_string('speclinks', 'techproject');
+            $linktabletitle[1] = $OUTPUT->pix_icon('p/spec', '', 'techproject').' '. get_string('speclinks', 'techproject');
             $sql = "
                SELECT
                   s.*
@@ -138,7 +138,7 @@ if ($object) {
             $linktabletitle[0] = get_string('sublinks', 'techproject');
             $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
             // getting related requirements
-            $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/req', 'techproject').'" /> '. get_string('requlinks', 'techproject');
+            $linktabletitle[2] = $OUTPUT->pix_icon('p/req', '', 'techproject').' '. get_string('requlinks', 'techproject');
             $sql = "
                SELECT
                   r.*
@@ -161,7 +161,7 @@ if ($object) {
                 $linktable[2][] = get_string('norequassigned', 'techproject');
             }
             // Getting related tasks.
-            $linktabletitle[1] = '<img src="'.$OUTPUT->pix_url('p/task', 'techproject').'" /> '. get_string('tasklinks', 'techproject');
+            $linktabletitle[1] = $OUTPUT->pix_icon('p/task', '', 'techproject').' '. get_string('tasklinks', 'techproject');
             $sql = "
                SELECT
                   t.*
@@ -191,7 +191,7 @@ if ($object) {
             $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
 
             // Getting related specifications.
-            $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/spec', 'techproject').'" /> '. get_string('speclinks', 'techproject');
+            $linktabletitle[2] = $OUTPUT->pix_icon('p/spec', '', 'techproject').' '. get_string('speclinks', 'techproject');
             $sql = "
                SELECT
                   s.*
@@ -215,7 +215,7 @@ if ($object) {
             }
 
             // Getting related deliverables.
-            $linktabletitle[3] = '<img src="'.$OUTPUT->pix_url('p/deliv', 'techproject').'" /> '. get_string('delivlinks', 'techproject');
+            $linktabletitle[3] = $OUTPUT->pix_icon('p/deliv', '', 'techproject').' '. get_string('delivlinks', 'techproject');
             $sql = "
                SELECT
                   d.id,
@@ -247,7 +247,7 @@ if ($object) {
             $linktable[0] = techproject_detail_make_sub_table($objectclass, $object, $cm->id);
 
             // Getting related tasks.
-            $linktabletitle[2] = '<img src="'.$OUTPUT->pix_url('p/task', 'techproject').'" /> '. get_string('tasklinks', 'techproject');
+            $linktabletitle[2] = $OUTPUT->pix_icon('p/task', '', 'techproject').' '. get_string('tasklinks', 'techproject');
             $sql = "
                SELECT
                   t.id,
