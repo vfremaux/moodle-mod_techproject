@@ -153,7 +153,7 @@ if ($object) {
             if ($requirements) {
                 foreach ($requirements as $requ) {
                     $numrequ = implode('.', techproject_tree_get_upper_branch('techproject_requirement', $requ->id, true, true));
-                    $params = array('id' => $cm->id, 'objectId' => $spec->id, 'objectClass' => 'requirement');
+                    $params = array('id' => $cm->id, 'objectId' => $requ->id, 'objectClass' => 'requirement');
                     $browselink = new moodle_url('/mod/techproject/view.php', $params);
                     $linktable[2][] = '<a class="browselink" href="'.$browselink.'">'.$numrequ.' '.$req->abstract.'</a>';
                 }

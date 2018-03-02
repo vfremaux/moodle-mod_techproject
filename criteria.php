@@ -25,6 +25,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+echo $pagebuffer;
+
 if (!has_capability('mod/techproject:manage', $context)) {
     print_error(get_string('notateacher', 'techproject'));
     return;

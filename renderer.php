@@ -134,6 +134,8 @@ class mod_techproject_renderer extends plugin_renderer_base {
 
         $str = '';
 
+        $table = new html_table();
+
         $formurl = new moodle_url('/mod/techproject/view.php');
         $str .= '<form name="'.$set.'form" method="post" action="'.$formurl.'">';
         $str .= '<input type="hidden" name="id" value="'.$cm->id.'" />';

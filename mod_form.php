@@ -121,7 +121,7 @@ class mod_techproject_mod_form extends moodleform_mod {
         $mform->addHelpButton('allowdeletewhenassigned', 'allowdeletewhenassigned', 'techproject');
 
         $label = get_string('studentscanchange', 'techproject');
-        $mform->addElement('static', 'tudentscanchange', $label, get_string('seecapabilitysettings', 'techproject'));
+        $mform->addElement('static', 'studentscanchange', $label, get_string('seecapabilitysettings', 'techproject'));
 
         $mform->addElement('header', 'header2', get_string('grading', 'techproject'));
         $mform->addElement('select', 'teacherusescriteria', get_string('teacherusescriteria', 'techproject'), $yesnooptions);

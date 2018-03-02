@@ -77,7 +77,7 @@ function techproject_notify_new_specification(&$project, $cmid, &$specification,
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=specifications&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',email, picture, mailformat';
+    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
     $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
     if (!empty($managers)) {
         foreach ($managers as $manager) {
@@ -122,7 +122,7 @@ function techproject_notify_new_requirement(&$project, $cmid, &$requirement, $cu
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=requirements&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',email, picture, mailformat';
+    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
     $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
 
     if (!empty($managers)) {
@@ -195,7 +195,7 @@ function techproject_notify_new_task(&$project, $cmid, &$task, $currentgroupid) 
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=tasks&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $fields = 'u.id, '.get_all_user_name_fields(true, 'u').',email, picture, mailformat';
+    $fields = 'u.id, '.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
     $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
     if (!empty($managers)) {
         foreach ($managers as $manager) {
@@ -235,7 +235,7 @@ function techproject_notify_new_milestone(&$project, $cmid, &$milestone, $curren
     ), 'techproject');
 
     $context = context_module::instance($cmid);
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',email, picture, mailformat';
+    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
     $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
     if (!empty($managers)) {
         foreach ($managers as $manager) {
