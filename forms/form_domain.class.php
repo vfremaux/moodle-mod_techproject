@@ -74,6 +74,6 @@ class Domain_Form extends moodleform {
         $mform->addRule('label', null, 'required');
 
         // Adding submit and reset button.
-        $this->add_action_buttons();
+        $this->add_action_buttons(true);
     }
 }

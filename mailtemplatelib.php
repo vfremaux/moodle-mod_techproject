@@ -37,7 +37,7 @@ function techproject_compile_mail_template($template, $infomap, $lang) {
     }
     $lang = substr($lang, 0, 2); // Be sure we are in moodle 2.
 
-    $notification = implode('', techproject_get_mail_template($template, $lang));
+    $notification = techproject_get_mail_template($template, $lang);
     foreach ($infomap as $akey => $avalue) {
         $notification = str_replace("<%%$akey%%>", $avalue, $notification);
     }

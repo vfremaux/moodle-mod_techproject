@@ -78,17 +78,15 @@ if (!empty($domainvalues)) {
         $view[] = format_string($value->label);
         $view[] = format_string($value->description);
 
-        $updatestr = get_string('update');
-        $cmdicon = '<img src="'.$OUTPUT->pix_url('t/edit').'">';
+        $cmdicon = $OUTPUT->pix_icon('t/edit', get_string('edit'));
         $params = array('view' => 'domains_'.$domain, 'id' => $id, 'what' => 'update', 'domainid' => $value->id);
         $cmdurl = new moodle_url('/mod/techproject/view.php', $params);
-        $commands = '<a href="'.$cmdurl.'" title="'.$updatestr.'" >'.$cmdicon.'</a>';
+        $commands = '<a href="'.$cmdurl.'">'.$cmdicon.'</a>';
 
-        $deletestr = get_string('delete');
-        $cmdicon = '<img src="'.$OUTPUT->pix_url('t/delete').'">';
+        $cmdicon = $OUTPUT->pix_icon('t/delete', get_string('delete'));
         $params = array('view' => 'domains_'.$domain, 'id' => $id, 'what' => 'delete', 'domainid' => $value->id);
         $cmdurl = new moodle_url('/mod/techproject/view.php', $params);
-        $commands .= ' <a href="'.$cmdurl.'" title="'.$deletestr.'" >'.$cmdicon.'</a>';
+        $commands .= ' <a href="'.$cmdurl.'">'.$cmdicon.'</a>';
 
         $view[] = $commands;
         $table->data[] = $view;

@@ -60,26 +60,26 @@ class mod_techproject_renderer extends plugin_renderer_base {
     public function bar_graph_over($value, $over, $width = 50, $height = 4, $maxover = 60) {
 
         if ($value == -1) {
-            $pixurl = $this->output->pix_url('p/graypixel', 'techproject');
+            $pixurl = $this->output->image_url('p/graypixel', 'techproject');
             $title = get_string('nc', 'techproject');
             return '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$title.'" width="'.$width.'" />';
         }
         $bargraph = '';
         $done = floor($width * $value / 100);
         $todo = floor($width * (1 - $value / 100));
-        $pixurl = $this->output->pix_url('p/greenpixel', 'techproject');
+        $pixurl = $this->output->image_url('p/greenpixel', 'techproject');
         $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$value.'%" width="'.$done.'" />';
-        $pixurl = $this->output->pix_url('p/bluepixel', 'techproject');
+        $pixurl = $this->output->image_url('p/bluepixel', 'techproject');
         $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$value.'%" width="'.$todo.'" />';
         if ($over) {
             $displayover = (round($over / $width * 100)).'%';
             if ($over < $maxover) {
-                $pixurl = $this->output->pix_url('p/redpixel', 'techproject');
+                $pixurl = $this->output->image_url('p/redpixel', 'techproject');
                 $title = get_string('overdone', 'techproject').': '.$displayover;
                 $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$title.'" width="'.$over.'" />';
             } else {
-                $pixurl = $this->output->pix_url('p/maxover', 'techproject');
                 $title = get_string('overoverdone', 'techproject').': '.$displayover;
+                $pixurl = $this->output->image_url('p/maxover', 'techproject');
                 $bargraph .= '<img class="techproject-bargraph" src="'.$pixurl.'" title="'.$title.'" width="'.$width.'" />';
             }
         }
@@ -134,6 +134,8 @@ class mod_techproject_renderer extends plugin_renderer_base {
 
         $str = '';
 
+        $table = new html_table();
+
         $formurl = new moodle_url('/mod/techproject/view.php');
         $str .= '<form name="'.$set.'form" method="post" action="'.$formurl.'">';
         $str .= '<input type="hidden" name="id" value="'.$cm->id.'" />';
@@ -144,12 +146,10 @@ class mod_techproject_renderer extends plugin_renderer_base {
         foreach ($criteria as $acriterion) {
             $params = array('id' => $cm->id, 'work' => 'dodelete', 'isfree' => 0, 'item' => $acriterion->id);
             $linkurl = new moodle_url('/mod/techproject/view.php', $params);
-            $pixurl = $OUTPUT->pix_url('/t/delete');
-            $pix = '<img src="'.$pixurl.'" />';
+            $pix = $OUTPUT->pix_icon('/t/delete', get_string('delete'));
             $links = '<a href="'.$linkurl.'">'.$pix.'</a>';
             $jshandler = 'javascript:change(\''.$acriterion->id.'\', \''.$acriterion->criterion.'\', \''.$acriterion->label.'\', \''.$acriterion->weight.'\')';
-            $pixurl = $OUTPUT->pix_url('/t/edit');
-            $pix = '<img src="'.$pixurl.'" />';
+            $pix = $OUTPUT->pix_icon('/t/edit', get_string('edit'));
             $links .= '<a href="'.$jshandler.'">'.$pix.'</a>';
             $table->data[] = array('<b>'.$acriterion->criterion.'</b> '.$acriterion->label.' ( x '.$acriterion->weight.')', $links);
         }
