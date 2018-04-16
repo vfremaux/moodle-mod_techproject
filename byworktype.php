@@ -74,7 +74,7 @@ if ($tasks = $DB->get_records_sql($sql)) {
 
     foreach (array_keys($sortedtasks) as $aworktype) {
         $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
-        $jshanlder = 'javascript:toggle(\''.$aworktype.'\',\'sub'.$aworktype.'\');';
+        $jshandler = 'javascript:toggle(\''.$aworktype.'\',\'sub'.$aworktype.'\');';
         $pix = '<img name="img'.$aworktype.'" src="'.$pixurl.'" alt="collapse" />';
         $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
         $theworktype = techproject_get_option_by_key('worktype', $project->id, $aworktype);

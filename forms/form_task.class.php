@@ -28,9 +28,12 @@ require_once($CFG->libdir.'/formslib.php');
 class Task_Form extends moodleform {
 
     protected $mode;
+
     protected $project;
+
     protected $current;
-    protected $descriptionoptions;
+
+    public $editoroptions;
 
     public function __construct($action, &$project, $mode, $taskid) {
         global $DB;
@@ -58,7 +61,7 @@ class Task_Form extends moodleform {
 
         $maxfiles = 99;                // TODO: add some setting.
         $maxbytes = $COURSE->maxbytes; // TODO: add some setting.
-        $this->descriptionoptions = array('trusttext' => true,
+        $this->editoroptions = array('trusttext' => true,
                                           'subdirs' => false,
                                           'maxfiles' => $maxfiles,
                                           'maxbytes' => $maxbytes,
@@ -80,7 +83,7 @@ class Task_Form extends moodleform {
         $mform->addElement('text', 'abstract', get_string('tasktitle', 'techproject'), array('size' => "100%"));
         $mform->setType('abstract', PARAM_CLEANHTML);
 
-        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->descriptionoptions);
+        $mform->addElement('editor', 'description_editor', get_string('description', 'techproject'), null, $this->editoroptions);
 
         $select = "projectid = ? AND groupid = ? ";
         $params = array($this->project->id, $currentgroup);
@@ -241,7 +244,7 @@ class Task_Form extends moodleform {
         $draftideditor = file_get_submitted_draft_itemid('description_editor');
         $currenttext = file_prepare_draft_area($draftideditor, $context->id, 'mod_techproject', 'description_editor', $defaults->id,
                                                array('subdirs' => true), $defaults->description);
-        $defaults = file_prepare_standard_editor($defaults, 'description', $this->descriptionoptions, $context, 'mod_techproject',
+        $defaults = file_prepare_standard_editor($defaults, 'description', $this->editoroptions, $context, 'mod_techproject',
                                                  'taskdescription', $defaults->id);
         $defaults->description = array('text' => $currenttext,
                                        'format' => $defaults->descriptionformat,

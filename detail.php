@@ -256,7 +256,7 @@ if ($object) {
                   {techproject_task} as t,
                   {techproject_task_to_deliv} as std
                WHERE
-                  std.id = std.taskid AND
+                  t.id = std.taskid AND
                   std.delivid = {$object->id}
             ";
             $tasks = $DB->get_records_sql($sql);
