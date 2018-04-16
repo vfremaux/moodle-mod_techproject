@@ -29,10 +29,10 @@ require_once($CFG->libdir.'/formslib.php');
 
 class Deliverable_Form extends moodleform {
 
-    var $mode;
-    var $project;
-    var $current;
-    var $descriptionoptions;
+    protected $mode;
+    protected $project;
+    protected $current;
+    public $descriptionoptions;
 
     public function __construct($action, $mode, &$project, $delivid) {
         global $DB;
