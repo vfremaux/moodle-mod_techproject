@@ -59,13 +59,16 @@ switch ($action) {
                 }
             }
         } else {
+            $default = new StdClass;
             $default->code = 'XXX';
             $default->label = '';
             $default->description = '';
             $params = array('id' => $id, 'what' => 'add');
             $newdomain = new Domain_Form($domain, $default, new moodle_url('/mod/techproject/view.php', $params));
+            echo $pagebuffer; // Prints header.
             $newdomain->display();
-            return -1;
+            echo $OUTPUT->footer();
+            die();
         }
         break;
     }
@@ -93,8 +96,10 @@ switch ($action) {
             // No data submitted : print the form.
             $params = array('id' => $id, 'what' => 'update');
             $newdomain = new Domain_Form($domain, $domainrec, new moodle_url('/mod/techproject/view.php', $params));
+            echo $pagebuffer; // Prints header.
             $newdomain->display();
-            return -1;
+            echo $OUTPUT->footer();
+            die;
         }
         break;
     }

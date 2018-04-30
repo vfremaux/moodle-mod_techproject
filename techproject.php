@@ -50,11 +50,11 @@ if (!empty($editmode)) {
 
 // Make menu.
 
-$pixurltask = $OUTPUT->pix_url('/p/task', 'techproject');
-$pixurllock = $OUTPUT->pix_url('/p/lock', 'techproject');
-$pixurlspec = $OUTPUT->pix_url('p/spec', 'techproject');
-$pixurldeliv = $OUTPUT->pix_url('p/deliv', 'techproject');
-$pixurlreq = $OUTPUT->pix_url('p/req', 'techproject');
+$pixurltask = $OUTPUT->image_url('/p/task', 'techproject');
+$pixurllock = $OUTPUT->image_url('/p/lock', 'techproject');
+$pixurlspec = $OUTPUT->image_url('p/spec', 'techproject');
+$pixurldeliv = $OUTPUT->image_url('p/deliv', 'techproject');
+$pixurlreq = $OUTPUT->image_url('p/req', 'techproject');
 
 $tabrequtitle = get_string('requirements', 'techproject');
 

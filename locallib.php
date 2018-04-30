@@ -292,11 +292,10 @@ function techproject_print_single_specification($specification, $project, $group
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_specification', $specification->id) > 0) {
             $jshandler = 'javascript:toggle(\''.$specification->id.'\', \'sub'.$specification->id.'\', true);';
-            $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
-            $pix = '<img name="img'.$specification->id.'" src="'.$pixurl.'" alt="collapse" />';
+            $pix = $OUTPUT->pix_icon('/p/switch_minus', '', 'techproject', array('name' => 'img'.$specification->id));
             $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
         } else {
-            $hidesub = '<img src="'.$OUTPUT->pix_url('/p/empty', 'techproject').'" />';
+            $hidesub = $OUTPUT->pix_icon('/p/empty', '', 'techproject');
         }
     } else {
         $hidesub = '';
@@ -330,18 +329,14 @@ function techproject_print_single_specification($specification, $project, $group
     $priorityoption = techproject_get_option_by_key('priority', $project->id, $specification->priority);
     $severityoption = techproject_get_option_by_key('severity', $project->id, $specification->severity);
     $complexityoption = techproject_get_option_by_key('complexity', $project->id, $specification->complexity);
-    $pixurl = $OUTPUT->pix_url("priority_{$priorityoption->truelabel}", 'techproject');
-    $prioritysignal = '<img src="'.$pixurl.'" title="'.$priorityoption->label.'" />';
-    $pixurl = $OUTPUT->pix_url("severity_{$severityoption->truelabel}", 'techproject');
-    $severitysignal = '<img src="'.$pixurl.'" title="'.$severityoption->label.'" />';
-    $pixurl = $OUTPUT->pix_url("complexity_{$complexityoption->truelabel}", 'techproject');
-    $complexitysignal = '<img src="'.$pixurl.'" title="'.$complexityoption->label.'" />';
+    $prioritysignal = $OUTPUT->pix_icon("priority_{$priorityoption->truelabel}", $priorityoption->label, 'techproject');
+    $severitysignal = $OUTPUT->pix_icon("severity_{$severityoption->truelabel}", $severityoption->label, 'techproject');
+    $complexitysignal = $OUTPUT->pix_icon("complexity_{$complexityoption->truelabel}", $complexityoption->label, 'techproject');
 
     if (!$fullsingle) {
         $hideicon = (!empty($specification->description)) ? 'hide' : 'hide_shadow';
         $jshandler = 'javascript:toggle_show(\''.$numspec.'\', \''.$numspec.'\');';
-        $pixurl = $OUTPUT->pix_url('/p/'.$hideicon, 'techproject');
-        $pix = '<img name="eye'.$numspec.'" src="'.$pixurl.'" alt="collapse" />';
+        $pix = $OUTPUT->pix_icon('/p/'.$hideicon, '', 'techproject', array('name' => 'eye'.$numspec));
         $hidedesc = '<a href="'.$jshandler.'">'.$pix.'</a>';
     } else {
         $hidedesc = '';
@@ -403,30 +398,27 @@ function techproject_print_single_specification($specification, $project, $group
         $link = array();
         $params = array('id' => $cmid, 'work' => 'add', 'fatherid' => $specification->id, 'view' => 'specifications');
         $addsuburl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/p/newnode', 'techproject');
-        $pix = '<img src="'.$pixurl.'" alt="'.get_string('addsubspec', 'techproject').'" />';
+        $pix = $OUTPUT->pix_icon('/p/newnode', get_string('addsubspec', 'techproject'), 'techproject');
         $link[] = '<a href="'.$addsuburl.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'update', 'specid' => $specification->id, 'view' => 'specifications');
         $updateurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/t/edit');
-        $pix = '<img src="'.$pixurl.'" title="'.get_string('update').'" />';
+        $pix = $OUTPUT->pix_icon('/t/edit', get_string('edit'));
         $link[] = '<a href="'.$updateurl.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'dodelete', 'specid' => $specification->id, 'view' => 'specifications');
         $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/t/delete');
-        $pix = '<img src="'.$pixurl.'" title="'.get_string('delete').'" />';
+        $pix = $OUTPUT->pix_icon('/t/delete', get_string('delete'));
         $link[] = '<a href="'.$deleteurl.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'domarkastemplate', 'specid' => $specification->id, 'view' => 'specifications');
         $templateurl = new moodle_url('/mod/techproject/view.php', $params);
+        $title = get_string('markastemplate', 'techproject');
         if ($specification->id == @$SESSION->techproject->spectemplateid) {
-            $pixurl = $OUTPUT->pix_url('p/activetemplate', 'techproject');
+            $pix = $OUTPUT->pix_icon('p/activetemplate', $title, 'techproject');
         } else {
-            $pixurl = $OUTPUT->pix_url('p/marktemplate', 'techproject');
+            $pix = $OUTPUT->pix_icon('p/marktemplate', $title, 'techproject');
         }
-        $pix = '<img src="'.$pixurl.'" title="'.get_string('markastemplate', 'techproject').'" />';
         $link[] = '<a href="'.$templateurl.'#node'.$specification->id.'">'.$pix.'</a>';
 
         techproject_add_entity_tree_controls($cmid, 'specification', 'spec', $specification, $setsize, $link);
@@ -537,11 +529,10 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_requirement', $requirement->id) > 0) {
             $jshandler = 'javascript:toggle(\''.$requirement->id.'\', \'sub'.$requirement->id.'\', 1);';
-            $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
-            $pix = '<img name="img'.$requirement->id.'" src="'.$pixurl.'" alt="collapse" />';
+            $pix = $OUTPUT->pix_icon('/p/switch_minus', '', 'techproject', array('name' => 'img'.$requirement->id));
             $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
         } else {
-            $hidesub = '<img src="'.$OUTPUT->pix_url('/p/empty', 'techproject').'" />';
+            $hidesub = $OUTPUT->pix_icon('/p/empty', '', 'techproject');
         }
     } else {
         $hidesub = '';
@@ -590,9 +581,8 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
     if (!$fullsingle) {
         $hideicon = (!empty($requirement->description)) ? 'hide' : 'hide_shadow';
         $jshandler = 'javascript:toggle_show(\''.$numrequ.'\',\''.$numrequ.'\');';
-        $pixurl = $OUTPUT->pix_url("p/{$hideicon}", 'techproject');
-        $pixurl = '<img name="eye'.$numrequ.'" src="'.$pixurl.'" alt="collapse" />';
-        $hidedesc = '<a href="'.$jshandler.'">'.$pixurl.'</a>';
+        $pix = $OUTPUT->pix_icon("p/{$hideicon}", '', 'techproject', array('name' => 'eye'.$numrequ));
+        $hidedesc = '<a href="'.$jshandler.'">'.$pix.'</a>';
     } else {
         $hidedesc = '';
     }
@@ -651,20 +641,17 @@ function techproject_print_single_requirement($requirement, $project, $group, $c
 
         $params = array('id' => $cmid, 'work' => 'add', 'fatherid' => $requirement->id, 'view' => 'requirements');
         $addsuburl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/p/newnode', 'techproject');
-        $pix = '<img src="'.$pixurl.'" alt="'.get_string('addsubrequ', 'techproject').'" />';
+        $pix = $OUTPUT->pix_icon('/p/newnode', get_string('addsubrequ', 'techproject'), 'techproject');
         $link[] = '<a href="'.$addsuburl.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'update', 'requid' => $requirement->id, 'view' => 'requirements');
         $updateurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/t/edit');
-        $pix = '<img src="'.$pixurl.'" alt="'.get_string('update').'" />';
+        $pix = $OUTPUT->pix_icon('/t/edit', get_string('edit'));
         $link[] = '<a href="'.$updateurl.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'dodelete', 'requid' => $requirement->id, 'view' => 'requirements');
         $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/t/delete');
-        $pix = '<img src="'.$pixurl.'" alt="'.get_string('delete').'" />';
+        $pix = $OUTPUT->pix_icon('/t/delete', get_string('delete'));
         $link[] = '<a href="'.$deleteurl.'">'.$pix.'</a>';
 
         techproject_add_entity_tree_controls($cmid, 'requirement', 'requ', $requirement, $setsize, $link);
@@ -788,28 +775,23 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
     }
     $hasmasters = $DB->count_records('techproject_task_dependency', array('slave' => $task->id));
     $hasslaves = $DB->count_records('techproject_task_dependency', array('master' => $task->id));
-    $pixurl = $OUTPUT->pix_url('p/task_alone', 'techproject');
-    $taskdependency = '<img src="'.$pixurl.'" title="'.get_string('taskalone', 'techproject').'" />';
+    $taskdependency = $OUTPUT->pix_icon('p/task_alone', get_string('taskalone', 'techproject'), 'techproject');
     if ($hasslaves && $hasmasters) {
-        $pixurl = $OUTPUT->pix_url('/p/task_middle', 'techproject');
-        $taskdependency = '<img src="'.$pixurl.'" title="'.get_string('taskmiddle', 'techproject').'" />';
+        $taskdependency = $OUTPUT->pix_icon('/p/task_middle', get_string('taskmiddle', 'techproject'), 'techproject');
     } else if ($hasmasters) {
-        $pixurl = $OUTPUT->pix_url('/p/task_end', 'techproject');
-        $taskdependency = '<img src="'.$pixurl.'" title="'.get_string('taskend', 'techproject').'" />';
+        $taskdependency = $OUTPUT->pix_icon('/p/task_end', get_string('taskend', 'techproject'), 'techproject');
     } else if ($hasslaves) {
-        $pixurl = $OUTPUT->pix_url('/p/task_start', 'techproject');
-        $taskdependency = '<img src="'.$pixurl.'" title="'.get_string('taskstart', 'techproject').'" />';
+        $taskdependency = $OUTPUT->pix_icon('/p/task_start', get_string('taskstart', 'techproject'), 'techproject');
     }
 
     $numtask = implode('.', techproject_tree_get_upper_branch('techproject_task', $task->id, true, true));
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_task', $task->id) > 0) {
             $jshandler = 'javascript:toggle(\''.$task->id.'\',\'sub'.$task->id.'\', 1);';
-            $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
-            $pix = '<img name="img'.$task->id.'" src="'.$pixurl.'" alt="collapse" />';
+            $pix = $OUTPUT->pix_icon('/p/switch_minus', '', 'techproject', array('name' => 'img'.$task->id));
             $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
         } else {
-            $hidesub = '<img src="'.$OUTPUT->pix_url('/p/empty', 'techproject').'" />';
+            $hidesub = $OUTPUT->pix_icon('/p/empty', '', 'techproject');
         }
     } else {
         $hidesub = '';
@@ -828,13 +810,12 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
     $barwidth = ($task->planned) ? 60 : 0; // Unplanned tasks should not provide progress bar.
     $completion = $renderer->bar_graph_over($task->done, $over, $barwidth, 5);
     $milestonepix = (isset($task->milestoneforced)) ? 'milestoneforced' : 'milestone';
-    $pixurl = $OUTPUT->pix_url('/p/'.$milestonepix, 'techproject');
-    $milestone = ($task->milestoneid) ? '<img src="'.$pixurl.'" title="'.format_string(@$task->milestoneabstract).'" />' : '';
+    $pix = $OUTPUT->pix_icon('/p/'.$milestonepix, format_string(@$task->milestoneabstract), 'techproject');
+    $milestone = ($task->milestoneid) ? $pix : '';
     if (!$fullsingle || $fullsingle === 'HEAD') {
         $hideicon = (!empty($task->description)) ? 'hide' : 'hide_shadow';
         $jshandler = 'javascript:toggle_show(\''.$numtask.'\', \''.$numtask.'\');';
-        $pixurl = $OUTPUT->pix_url("/p/{$hideicon}", 'techproject');
-        $pix = '<img name="eye'.$numtask.'" src="'.$pixurl.'" alt="collapse" />';
+        $pix = $OUTPUT->pix_icon("/p/{$hideicon}", '', 'techproject', array('name' => 'eye'.$numtask));
         $hidetask = '<a href="'.$jshandler.'">'.$pix.'</a>';
     } else {
         $hidetask = '';
@@ -852,8 +833,7 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
     } else {
         $params = array('id' => $cmid, 'view' => 'view_detail', 'objectId' => $task->id, 'objectClass' => 'task');
         $detailurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('p/hide', 'techproject');
-        $pix = '<img src="'.$pixurl.'" title="'.get_string('detail', 'techproject').'" />';
+        $pix = $OUTPUT->pix_icon('p/hide', get_string('detail', 'techproject'), 'techproject');
         $headdetaillink = '<a href="'.$detailurl.'" >'.$pix.'</a>';
     }
 
@@ -861,8 +841,8 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
     $worktypeoption = techproject_get_option_by_key('worktype', $project->id, $task->worktype);
     if ($style == '' || !$style === 'SHORT_WITHOUT_TYPE') {
         if (file_exists($CFG->dirroot.'/mod/techproject/pix/p/'.core_text::strtolower(@$worktypeoption->code).'.gif')) {
-            $pixurl = $OUTPUT->pix_url('/p/'.strtolower($worktypeoption->code), 'techproject');
-            $worktypeicon = '<img src="'.$pixurl.'" title="'.$worktypeoption->label.'" height="24" align="middle" />';
+            $attrs = array('height' => 24, 'align' => 'middle');
+            $worktypeicon = $OUTPUT->pix_icon('/p/'.strtolower($worktypeoption->code), $worktypeoption->label, 'techproject', $attrs);
         }
     }
     $ordercell = '';
@@ -952,30 +932,27 @@ function techproject_print_single_task($task, $project, $group, $cmid, $setsize,
 
         $params = array('id' => $cmid, 'work' => 'add', 'fatherid' => $task->id, 'view' => 'tasks');
         $editurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/p/newnode', 'techproject');
-        $pix = '<img src="'.$pixurl.'" title="'.get_string('addsubtask', 'techproject').'" />';
+        $pix = $OUTPUT->pix_icon('/p/newnode', get_string('addsubtask', 'techproject'), 'techproject');
         $link[] = '<a href="'.$editurl.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'update', 'taskid' => $task->id, 'view' => 'tasks');
         $updateurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/t/edit');
-        $pix = '<img src="'.$pixurl.'" title="'.get_string('updatetask', 'techproject').'" />';
+        $pix = $OUTPUT->pix_icon('/t/edit', get_string('updatetask', 'techproject'));
         $link[] = '<a href="'.$updateurl.'">'.$pix.'</a>';
 
+        $title = get_string('markastemplate', 'techproject');
         if ($task->id == @$SESSION->techproject->tasktemplateid) {
-            $pixurl = $OUTPUT->pix_url('/p/activetemplate', 'techproject');
+            $pix = $OUTPUT->pix_icon('/p/activetemplate', $title, 'techproject');
         } else {
-            $pixurl = $OUTPUT->pix_url('/p/marktemplate', 'techproject');
+            $pix = $OUTPUT->pix_icon('/p/marktemplate', $title, 'techproject');
         }
         $params = array('id' => $cmid, 'work' => 'domarkastemplate', 'taskid' => $task->id, 'view' => 'tasks');
         $markurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pix = '<img src="'.$pixurl.'" title="'.get_string('markastemplate', 'techproject').'" />';
         $link[] = '<a href="'.$markurl.'#node'.$task->id.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'dodelete', 'taskid' => $task->id, 'view' => 'tasks');
         $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/t/delete');
-        $pix = '<img src="'.$pixurl.'" title="'.get_string('deletetask', 'techproject').'" />';
+        $pix = $OUTPUT->pix_icon('/t/delete', get_string('deletetask', 'techproject'));
         $link[] = '<a href="'.$deleteurl.'">'.$pix.'</a>';
 
         techproject_add_entity_tree_controls($cmid, 'task', 'task', $task, $setsize, $link);
@@ -1051,8 +1028,8 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
             $passed = ($milestone->deadline < usertime(time())) ? 'passedtime' : 'futuretime';
             $milestonedeadline = ($milestone->deadlineenable) ? "(<span class='{$passed}'>".userdate($milestone->deadline).'</span>)' : '';
             $checkbox = ($canedit) ? "<input type=\"checkbox\" name=\"ids[]\" value=\"{$milestone->id}\" />" : '';
-            $taskcount = "<img src=\"".$OUTPUT->pix_url('/p/task', 'techproject')."\" />[".$taskcount."]";
-            $deliverablecount = " <img src=\"".$OUTPUT->pix_url('/p/deliv', 'techproject')."\" />[".$delivcount."]";
+            $taskcount = ' '.$OUTPUT->pix_icon('/p/task', '', 'techproject').'['.$taskcount.']';
+            $deliverablecount = ' '.$OUTPUT->pix_icon('/p/deliv', '', 'techproject').'['.$delivcount.']';
 
             $hide = '';
             $head = '<table width="100%" class="nodecaption">';
@@ -1136,29 +1113,25 @@ function techproject_print_milestones($project, $group, $numstage, $cmid) {
                 $link = array();
                 $params = array('id' => $cmid, 'work' => 'update', 'milestoneid' => $milestone->id, 'view' => 'milestones');
                 $updateurl = new moodle_url('/mod/techproject/view.php', $params);
-                $pixurl = $OUTPUT->pix_url('/t/edit');
-                $pix = '<img src="'.$pixurl.'" alt="'.get_string('update').'" />';
+                $pix = $OUTPUT->pix_icon('/t/edit', get_string('edit'));
                 $link[] = '<a href="'.$updateurl.'">'.$pix.'</a>';
 
                 if ($toptasks->count == 0 || $project->allowdeletewhenassigned) {
                     $params = array('id' => $cmid, 'work' => 'dodelete', 'milestoneid' => $milestone->id, 'view' => 'milestones');
                     $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
-                    $pixurl = $OUTPUT->pix_url('/t/delete');
-                    $pix .= '<img src="'.$pixurl.'" alt="'.get_string('delete').'" />';
+                    $pix = $OUTPUT->pix_icon('/t/delete', get_string('delete'));
                     $link[] = '<a href="'.$deleteurl.'">'.$pix.'</a>';
                 }
                 if ($i > 1) {
                     $params = array('id' => $cmid, 'work' => 'up', 'milestoneid' => $milestone->id, 'view' => 'milestones');
                     $upurl = new moodle_url('/mod/techproject/view.php', $params);
-                    $pixurl = $OUTPUT->pix_url('/t/up');
-                    $pix = '<img src="'.$pixurl.'" alt="'.get_string('up', 'techproject').'" />';
+                    $pix = $OUTPUT->pix_icon('/t/up', get_string('up', 'techproject'));
                     $link[] = '<a href="'.$upurl.'">'.$pix.'</a>';
                 }
                 if ($i < count($milestones)) {
                     $params = array('id' => $cmid, 'work' => 'down', 'milestoneid' => $milestone->id, 'view' => 'milestones');
                     $downurl = new moodle_url('/mod/techproject/view.php', $params);
-                    $pixurl = $OUTPUT->pix_url('/t/down');
-                    $pix = '<img src="'.$pixurl.'" alt="'.get_string('down', 'techproject').'" />';
+                    $pix = $OUTPUT->pix_icon('/t/down', get_string('down', 'techproject'));
                     $link[] = '<a href="'.$downurl.'">'.$pix.'</a>';
                 }
                 $table->data[] = array(implode(' ', $link));
@@ -1273,11 +1246,10 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
     if (!$fullsingle) {
         if (techproject_count_subs('techproject_deliverable', $deliverable->id) > 0) {
             $jshandler = 'javascript:toggle(\''.$deliverable->id.'\',\'sub'.$deliverable->id.'\', 1);';
-            $pixurl = $OUTPUT->pix_url('p/switch_minus', 'techproject');
-            $pix = '<img name="img'.$deliverable->id.'" src="'.$pixurl.'" alt="collapse" />';
+            $pix = $OUTPUT->pix_icon('p/switch_minus', '', 'techproject', array('name' => 'img'.$deliverable->id));
             $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
         } else {
-            $hidesub = '<img src="'.$OUTPUT->pix_url('p/empty', 'techproject').'" />';
+            $hidesub = $OUTPUT->pix_icon('p/empty', '', 'techproject');
         }
     } else {
         $hidesub = '';
@@ -1314,8 +1286,8 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
     }
 
     $milestonepix = (isset($deliverable->milestoneforced)) ? 'milestoneforced' : 'milestone';
-    $pixurl = $OUTPUT->pix_url("p/{$milestonepix}", 'techproject');
-    $milestone = ($deliverable->milestoneid) ? '<img src="'.$pixurl.'" title="'.@$deliverable->milestoneabstract.'" />' : '';
+    $pix = $OUTPUT->pix_icon("p/{$milestonepix}", @$deliverable->milestoneabstract, 'techproject');
+    $milestone = ($deliverable->milestoneid) ? $pix : '';
 
     $taskcount = techproject_print_entitycount('techproject_deliverable', 'techproject_task_to_deliv', $project->id, $group, 'deliv',
                                                'task', $deliverable->id);
@@ -1324,8 +1296,8 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
     if (!$fullsingle) {
         $hideicon = (!empty($deliverable->description)) ? 'hide' : 'hide_shadow';
         $jshandler = 'javascript:toggle_show(\''.$numdeliv.'\',\''.$numdeliv.'\');';
-        $pixurl = $OUTPUT->pix_url("/p/{$hideicon}", 'techproject');
-        $hidedeliv = '<a href="'.$jshandler.'"><img name="eye'.$numdeliv.'" src="'.$pixurl.'" alt="collapse" /></a>';
+        $pix = $OUTPUT->pix_icon("/p/{$hideicon}", '', 'techproject', array('name' => 'eye'.$numdeliv));
+        $hidedeliv = '<a href="'.$jshandler.'">'.$pix.'</a>';
     } else {
         $hidedeliv = '';
     }
@@ -1402,20 +1374,17 @@ function techproject_print_single_deliverable($deliverable, $project, $group, $c
         $link = array();
         $params = array('id' => $cmid, 'work' => 'add', 'fatherid' => $deliverable->id, 'view' => 'deliverables');
         $addsuburl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/p/newnode', 'techproject');
-        $pix = '<img src="'.$pixurl.'" alt="'.get_string('addsubdeliv', 'techproject').'" />';
+        $pix = $OUTPUT->pix_icon('/p/newnode', get_string('addsubdeliv', 'techproject'), 'techproject');
         $link[] = '<a href="'.$addsuburl.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'update', 'delivid' => $deliverable->id, 'view' => 'deliverables');
         $updateurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/t/edit');
-        $pix = '<img src="'.$pixurl.'" alt="'.get_string('update').'" />';
+        $pix = $OUTPUT->pix_icon('/t/edit', get_string('edit'));
         $link[] = '<a href="'.$updateurl.'">'.$pix.'</a>';
 
         $params = array('id' => $cmid, 'work' => 'dodelete', 'delivid' => $deliverable->id, 'view' => 'deliverables');
         $deleteurl = new moodle_url('/mod/techproject/view.php', $params);
-        $pixurl = $OUTPUT->pix_url('/t/delete');
-        $pix = '<img src="'.$pixurl.'" alt="'.get_string('delete').'" />';
+        $pix = $OUTPUT->pix_icon('/t/delete', get_string('delete'));
         $link[] = '<a href="'.$deleteurl.'">'.$pix.'</a>';
 
         techproject_add_entity_tree_controls($cmid, 'deliverable', 'deliv', $deliverable, $setsize, $link);
@@ -1632,8 +1601,8 @@ function techproject_print_entitycount($table1, $table2, $projectid, $groupid, $
         $res->subs += 0;
     }
     if ($res->subs > 0 || $subcount > 0) {
-        $pixurl = $OUTPUT->pix_url('p/'.$relwhat, 'techproject');
-        $output = '<img src="'.$pixurl.'" title="'.get_string('bounditems', 'techproject', $relwhat).'" />('.$res->subs.') '.$subcount;
+        $pixurl = $OUTPUT->pix_icon('p/'.$relwhat, get_string('bounditems', 'techproject', $relwhat), 'techproject');
+        $output = $pix.'('.$res->subs.') '.$subcount;
     } else {
         $output = '';
     }
@@ -2370,11 +2339,10 @@ function techproject_print_single_entity_validation(&$validationsessions, &$enti
     $numrec = implode('.', techproject_tree_get_upper_branch('techproject_'.$entityname, $entity->id, true, true));
     if (techproject_count_subs('techproject_'.$entityname, $entity->id) > 0) {
         $jshandler = 'javascript:toggle(\''.$entity->id.'\',\'sub'.$entity->id.'\', 1);';
-        $pixurl = $OUTPUT->pix_url('p/switch_minus', 'techproject');
-        $pix = '<img name="img'.$entity->id.'" src="'.$pixurl.'" alt="collapse" />';
+        $pix = $OUTPUT->pix_icon('p/switch_minus', '', 'techproject', array('name' => 'img'.$entity->id));
         $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
     } else {
-        $hidesub = '<img src="'.$OUTPUT->pix_url('p/empty', 'techproject').'" />';
+        $hidesub = $OUTPUT->pix_icon('p/empty', '', 'techproject');
     }
     $select = " projectid = ? AND groupid = ? AND reqid = ? ";
     $validations = $DB->get_records_select('techproject_valid_state', $select, array($project->id, $group, $entity->id));
@@ -2497,11 +2465,10 @@ function techproject_print_single_validation_form($state, $entityname) {
     $numentity = implode('.', techproject_tree_get_upper_branch('techproject_'.$entityname, $state->reqid, true, true));
     if (techproject_count_subs('techproject_'.$entityname, $state->reqid) > 0) {
         $jshandler = 'javascript:toggle(\''.$state->reqid.'\',\'sub'.$state->reqid.'\');';
-        $pixurl = $OUTPUT->pix_url('p/switch_minus', 'techproject');
-        $pix = '<img name="img'.$state->reqid.'" src="'.$pixurl.'" alt="collapse" />';
+        $pix = $OUTPUT->pix_icon('p/switch_minus', '', 'techproject', array('name' => 'img'.$state->reqid));
         $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
     } else {
-        $hidesub = '<img src="'.$OUTPUT->pix_url('p/empty', 'techproject').'" />';
+        $hidesub = $OUTPUT->pix_icon('p/empty', '', 'techproject');
     }
 
     $entitylevel = count(explode('.', $numentity)) - 1;
@@ -2682,7 +2649,7 @@ function techproject_print_localfile($deliverable, $cmid, $type = null, $align =
         foreach ($files as $file) {
             $filename = $file->get_filename();
             $mimetype = $file->get_mimetype();
-            $iconimage = '<img src="'.$OUTPUT->pix_url(file_mimetype_icon($mimetype)).'" class="icon" alt="'.$mimetype.'" />';
+            $iconimage = $OUTPUT->pix_icon(file_mimetype_icon($mimetype), $mimetype);
             $path = file_encode_url($CFG->wwwroot.'/pluginfile.php', '/'.$context->id.'/mod_techproject/localfile/'.$deliverable->id.'/'.$filename);
 
             if ($type == 'html') {
@@ -2741,26 +2708,26 @@ function techproject_add_entity_tree_controls($cmid, $entityname, $shortentityna
     if ($entity->ordering > 1) {
         $params = array('id' => $cmid, 'work' => 'up', $shortentityname.'id' => $entity->id, 'view' => $entityname.'s', 't' => time());
         $upurl = new moodle_url('/mod/techproject/view.php', $params);
-        $link[] = '<a href="'.$upurl.'#node'.$entity->id.'">
-             <img src="'.$OUTPUT->pix_url('/t/up').'" alt="'.get_string('up', 'techproject').'" /></a>';
+        $pix = $OUTPUT->pix_icon('/t/up', get_string('up', 'techproject'));
+        $link[] = '<a href="'.$upurl.'#node'.$entity->id.'">'.$pix.'</a>';
     }
     if ($entity->ordering < $setsize) {
         $params = array('id' => $cmid, 'work' => 'down', $shortentityname.'id' => $entity->id, 'view' => $entityname.'s', 't' => time());
         $downurl = new moodle_url('/mod/techproject/view.php', $params);
-        $link[] = '<a href="'.$downurl.'#node'.$entity->id.'">
-             <img src="'.$OUTPUT->pix_url('/t/down').'" alt="'.get_string('down', 'techproject').'" /></a>';
+        $pix = $OUTPUT->pix_icon('/t/down', get_string('down', 'techproject'));
+        $link[] = '<a href="'.$downurl.'#node'.$entity->id.'">'.$pix.'</a>';
     }
     if ($entity->fatherid != 0) {
         $params = array('id' => $cmid, 'work' => 'left', $shortentityname.'id' => $entity->id, 'view' => $entityname.'s', 't' => time());
         $lefturl = new moodle_url('/mod/techproject/view.php', $params);
-        $link[] = '<a href="'.$lefturl.'#node'.$entity->id.'">
-             <img src="'.$OUTPUT->pix_url('/t/left').'" alt="'.get_string('left', 'techproject').'" /></a>';
+        $pix = $OUTPUT->pix_icon('/t/left', get_string('left', 'techproject'));
+        $link[] = '<a href="'.$lefturl.'#node'.$entity->id.'">'.$pix.'</a>';
     }
     if ($entity->ordering > 1) {
         $params = array('id' => $cmid, 'work' => 'right', $shortentityname.'id' => $entity->id, 'view' => $entityname.'s', 't' => time());
         $righturl = new moodle_url('/mod/techproject/view.php', $params);
-        $link[] = '<a href="'.$righturl.'#node'.$entity->id.'">
-             <img src="'.$OUTPUT->pix_url('/t/right').'" alt="'.get_string('right', 'techproject').'" /></a>';
+        $pix = $OUTPUT->pix_icon('/t/right', get_string('right', 'techproject'));
+        $link[] = '<a href="'.$righturl.'#node'.$entity->id.'">'.$pix.'</a>';
     }
 }
 

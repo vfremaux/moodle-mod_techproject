@@ -1126,7 +1126,7 @@ $string['newentrynotify_tpl'] = '
 <p><a href="<%%ENTRYLINK%%>">See this entry in its context</a></p>
 ';
 
-$string['newtasknotify'] = '
+$string['newtasknotify_tpl'] = '
 <h2>Project : <%%PROJECT%%></h2>
 <p><b><%%OWNER%%>, owner of the task:</b>
 
@@ -1142,7 +1142,7 @@ $string['newtasknotify'] = '
 <hr/>
 ';
 
-$string['takreleasenotify'] = '
+$string['takreleasenotify_tpl'] = '
 <h2>Project : <%%PROJECT%%></h2>
 <p><b><%%OWNER%%>, owner of the task:</b>
 
@@ -1152,3 +1152,5 @@ $string['takreleasenotify'] = '
 
 <p><b>has released you from this job.</b></p>
 ';
+
+$string['freecriteriaset_help'] = '';

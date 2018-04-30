@@ -73,17 +73,16 @@ if ($tasks = $DB->get_records_sql($sql)) {
     }
 
     foreach (array_keys($sortedtasks) as $aworktype) {
-        $pixurl = $OUTPUT->pix_url('/p/switch_minus', 'techproject');
+        $pix = $OUTPUT->pix_icon('/p/switch_minus', '', 'techproject', array('name' => 'img'.$aworktype));
         $jshandler = 'javascript:toggle(\''.$aworktype.'\',\'sub'.$aworktype.'\');';
-        $pix = '<img name="img'.$aworktype.'" src="'.$pixurl.'" alt="collapse" />';
         $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
         $theworktype = techproject_get_option_by_key('worktype', $project->id, $aworktype);
         if ($aworktype == '') {
             $worktypeicon = '';
             $theworktype->label = format_text(get_string('untypedtasks', 'techproject'), FORMAT_HTML)."</span>";
         } else {
-            $pixurl = $OUTPUT->pix_url('/p/'.strtolower($theworktype->code), 'techproject');
-            $worktypeicon = '<img src="'.$pixurl.'" title="'.$theworktype->description.'" style="background-color : #f0f0f0" />';
+            $attrs = array('class' => 'worktypeicon');
+            $worktypeicon = $OUTPUT->pix_icon('/p/'.strtolower($theworktype->code), $theworktype->description, 'techproject', $attrs);
         }
         echo $OUTPUT->box($hidesub.' '.$worktypeicon.' <span class="worktypesheadingcontent">'.$theworktype->label.'</span>', 'worktypesbox');
         echo '<div id="sub'.$aworktype.'">';

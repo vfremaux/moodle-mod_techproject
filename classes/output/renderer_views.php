@@ -42,9 +42,9 @@ class views_renderer extends \mod_techproject_renderer {
         $str .= '<tr>';
         $str .= '<td class="byassigneeheading level1">';
 
-        $pixurl = $this->output->pix_url('/p/switch_minus', 'techproject');
+        $pix = $this->output->pix_icon('/p/switch_minus', '', 'techproject', array('name' => 'img'.$auser->id));
         $jshandler = 'javascript:toggle(\''.$auser->id.'\', \'sub'.$auser->id.'\', false);';
-        $hidesub = '<a href="'.$jshandler.'"><img name="img'.$auser->id.'" src="'.$pixurl.'" alt="collapse" /></a>';
+        $hidesub = '<a href="'.$jshandler.'">'.$pix.'</a>';
         $str .= $hidesub.' '.get_string('assignedto', 'techproject').' '.fullname($auser).' '.$this->output->user_picture($auser);
 
         $str .= '</td>';
@@ -55,8 +55,7 @@ class views_renderer extends \mod_techproject_renderer {
             // Calculates a local alarm for lateness.
             $hurryup = '';
             if ($res->planned && ($res->spent <= $res->planned)) {
-                $pixurl = $this->output->pix_url('/p/late', 'techproject');
-                $pix = '<img src="'.$pixurl.'" title="'.get_string('hurryup', 'techproject').'" />';
+                $pix = $this->output->pix_icon('/p/late', get_string('hurryup', 'techproject'), 'techproject');
                 $hurryup = (round(($res->spent / $res->planned) * 100) > ($res->done / $res->count)) ? $pix : '';
             }
             $lateclass = ($over > 0) ? 'toolate' : 'intime';
@@ -130,7 +129,7 @@ class views_renderer extends \mod_techproject_renderer {
                 $branch = techproject_tree_get_upper_branch('techproject_task', $atask->id, true, true);
                 $str .= 'T'.implode('.', $branch) . '. ' . $atask->abstract;
                 $title = get_string('detail', 'techproject');
-                $pix = '<img src="'.$this->output->pix_url('p/hide', 'techproject').'" title="'.$title.'" />';
+                $pix = $this->output->pix_icon('p/hide', $title, 'techproject');
                 $params = array('id' => $cm->id, 'view' => 'view_detail', 'objectClass' => 'task', 'objectId' => $atask->id);
                 $linkurl = new moodle_url('/mod/techproject/view.php', $params);
                 $str .= '&nbsp;<a href="'.$linkurl.'">'.$pix.'</a>';
