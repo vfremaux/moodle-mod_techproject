@@ -113,7 +113,6 @@ $PAGE->set_url($url);
 $PAGE->set_heading('');
 $PAGE->set_focuscontrol('');
 $PAGE->set_cacheable(true);
-$PAGE->set_button(update_module_button($cm->id, $course->id, $strproject));
 $renderer = $PAGE->get_renderer('mod_techproject');
 
 $pagebuffer = $OUTPUT->header();
