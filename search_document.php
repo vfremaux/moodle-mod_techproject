@@ -20,7 +20,7 @@
  * @package search
  * @category mod
  * @subpackage document_wrappers
- * @author Valery Fremaux [valery.fremaux@club-internet.fr] > 1.8
+ * @author Valery Fremaux [valery.fremaux@gmail.com] > 1.8
  * @date 2008/03/31
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  *
@@ -82,7 +82,7 @@ class techproject_document_wrapper extends document_wrapper {
      * constructs a valid link to a description detail
      *
      */
-    public static function make_link($instanceid) {
+    public static function make_link($instanceid, $contextid = null) {
 
         // Get an additional subentity id dynamically.
         $extravars = func_get_args();

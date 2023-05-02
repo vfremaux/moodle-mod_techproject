@@ -17,7 +17,7 @@
 /**
  * @package    mod
  * @subpackage techproject
- * @copyright  2010 onwards Valery Fremaux {valery.fremaux@club-internet.fr}
+ * @copyright  2010 onwards Valery Fremaux {valery.fremaux@gmail.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
