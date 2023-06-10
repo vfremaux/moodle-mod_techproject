@@ -65,7 +65,9 @@ echo $OUTPUT->heading(get_string('assessment'));
 
 // Checks if assessments can occur.
 if (!groups_get_activity_groupmode($cm, $project->course)) {
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',email,'.user_picture::fields();
+    // M4.
+    $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+    $fields = 'u.id,'.implode(',', $fields);
     $groupstudents = get_users_by_capability($context, 'mod/techproject:canbeevaluated', $fields, 'u.lastname');
 } else {
     $groupmembers = groups_get_members($currentgroupid);

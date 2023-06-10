@@ -34,7 +34,9 @@ echo $pagebuffer;
 
 $haveassignedtasks = false;
 if (!groups_get_activity_groupmode($cm, $project->course)) {
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.email, u.picture,'.user_picture::fields();
+    // M4.
+    $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+    $fields = 'u.id,'.implode(',', $fields);
     $groupusers = get_users_by_capability($context, 'mod/techproject:beassignedtasks', $fields, 'u.lastname');
 } else {
     if ($currentgroupid) {
