@@ -34,4 +34,4 @@ $plugin->supported = [400, 401];
 $plugin->release = '4.0.0 (Build 2017040200)';
 
 // Non Moodle attributes.
-$plugin->codeincrement = '4.0.0003';
+$plugin->codeincrement = '4.0.0004';

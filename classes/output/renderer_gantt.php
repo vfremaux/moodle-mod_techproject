@@ -86,6 +86,8 @@ class gantt_renderer extends \mod_techproject_renderer {
                 $str .= $this->all_tasks($t, $project, $group, $unscheduled, $assignees, $ltasks);
             }
         }
+
+        return $str;
     }
 
     public function task(&$task) {

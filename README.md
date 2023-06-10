@@ -6,11 +6,7 @@ A module for teaching and handling technical project management using an IEEE pr
 Version information
 ===================
 
-Moodle 1.9 : Checkout branch MOODLE_19_STABLE
-
-Moodle 2.2 and maybe before : Checkout branch master
-
-Moddle 2.3 : Checkout branch MOODLE_23
+Checkout the branch matching your moodle installation.
 
 Featuring
 =========
