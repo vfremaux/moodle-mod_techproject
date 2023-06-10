@@ -30,7 +30,7 @@ $plugin->version  = 2017040200;  // The current module version (Date: YYYYMMDDXX
 $plugin->requires = 2020060900;  // Requires this Moodle version.
 $plugin->component = 'mod_techproject';   // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
-$plugin->supported = [39, 311];
+$plugin->supported = [40, 40];
 $plugin->release = '3.9.0 (Build 2017040200)';
 
 // Non Moodle attributes.

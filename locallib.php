@@ -1895,7 +1895,9 @@ function techproject_autograde($project, $groupid) {
          * get student list
          */
         if (!groups_get_activity_groupmode($cm, $course)) {
-            $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.mail, u.picture';
+            // M4.
+            $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+            $fields = 'u.id,'.implode(',', $fields);
             $groupstudents = get_users_by_capability($coursecontext, 'mod/techproject:canbeevaluated', $fields, 'u.lastname');
         } else {
             $groupmembers = get_group_members($groupid);
@@ -1946,7 +1948,8 @@ function techproject_autograde($project, $groupid) {
  */
 function techproject_get_users_not_in_group($courseid) {
     $coursecontext = context_course::instance($courseid);
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',picture,email';
+    $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+    $fields = 'u.id,'.implode(',', $fields);
     $users = get_users_by_capability($coursecontext, 'mod/techproject:beassignedtasks', $fields, 'lastname');
     if ($users) {
         if ($groups = groups_get_all_groups($courseid)) {
@@ -1979,7 +1982,8 @@ function techproject_get_group_users($courseid, $cm, $groupid) {
     $course = $DB->get_record('course', array('id' => $courseid));
     if (!groups_get_activity_groupmode($cm, $course)) {
         $coursecontext = context_course::instance($courseid);
-        $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',picture,email';
+        $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+        $fields = 'u.id,'.implode(',', $fields);
         $users = get_users_by_capability($coursecontext, 'mod/techproject:beassignedtasks', $fields, 'lastname');
     } else {
         if ($groupid) {
@@ -2690,8 +2694,8 @@ function techproject_complete_user(&$user) {
     static $usercomps;
 
     if (empty($usercomps[$user->id])) {
-        $fields = get_all_user_name_fields(true);
-        $usercomps[$user->id] = $DB->get_record('user', array('id' => $user->id), $fields);
+        $fields = \core_user\fields::for_name()->with_userpic()->get_required_fields();
+        $usercomps[$user->id] = $DB->get_record('user', array('id' => $user->id), implode(',', $fields));
     }
     foreach ($usercomps[$user->id] as $var => $value) {
         $user->$var = $value;

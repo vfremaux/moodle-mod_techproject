@@ -77,7 +77,8 @@ function techproject_notify_new_specification(&$project, $cmid, &$specification,
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=specifications&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
+    $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+    $fields = 'u.id,'.implode(',', $fields);
     $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
     if (!empty($managers)) {
         foreach ($managers as $manager) {
@@ -122,7 +123,8 @@ function techproject_notify_new_requirement(&$project, $cmid, &$requirement, $cu
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=requirements&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
+    $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+    $fields = 'u.id,'.implode(',', $fields);
     $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
 
     if (!empty($managers)) {
@@ -195,7 +197,8 @@ function techproject_notify_new_task(&$project, $cmid, &$task, $currentgroupid) 
         'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=tasks&group={$currentgroupid}"
     ), 'techproject');
     $context = context_module::instance($cmid);
-    $fields = 'u.id, '.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
+    $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+    $fields = 'u.id, '.implode(',', $fields);
     $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
     if (!empty($managers)) {
         foreach ($managers as $manager) {
@@ -235,7 +238,9 @@ function techproject_notify_new_milestone(&$project, $cmid, &$milestone, $curren
     ), 'techproject');
 
     $context = context_module::instance($cmid);
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
+    // M4.
+    $fields = \core_user\fields::for_name()->with_userpic()->excluding('id')->get_required_fields();
+    $fields = 'u.id,'.implode(',', $fields);
     $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
     if (!empty($managers)) {
         foreach ($managers as $manager) {
@@ -284,51 +289,6 @@ function techproject_notify_task_unassign(&$project, &$task, $oldassigneeid, $cu
     email_to_user ($oldassignee, $owner, $subject, html_to_text($message), $message);
 }
 
-/**
- * Notifies all project managers of a new requirement being entered
- * @param objectref &$project
- * @param int $cmid
- * @param objectref &$requirement
- * @param int $currentgroupid
- */
-function techproject_notify_new_deliverable(&$project, $cmid, &$deliverable, $currentgroupid) {
-    global $USER, $COURSE, $CFG, $DB;
-
-    techproject_complete_user($USER);
-
-    $class = get_string('deliverable', 'techproject');
-    $params = array('code' => $deliverable->status, 'domain' => 'strength', 'projectid' => $project->id);
-    if (!$strength = $DB->get_record('techproject_qualifier', $params)) {
-        $params = array('code' => $deliverable->strength, 'domain' => 'strength', 'projectid' => 0);
-        $strength = $DB->get_record('techproject_qualifier', $params);
-    }
-    if (!$strength) {
-        $strength->label = "N.Q.";
-    }
-    $qualifiers[] = get_string('strength', 'techproject').': '.$strength->label;
-    $projectheading = $DB->get_record('techproject_heading', array('projectid' => $project->id, 'groupid' => $currentgroupid));
-    $message = techproject_compile_mail_template('newentrynotify', array(
-        'PROJECT' => $projectheading->title,
-        'CLASS' => $class,
-        'USER' => fullname($USER),
-        'ENTRYNODE' => implode(".", techproject_tree_get_upper_branch('techproject_deliverable', $deliverable->id, true, true)),
-        'ENTRYABSTRACT' => stripslashes($deliverable->abstract),
-        'ENTRYDESCRIPTION' => $deliverable->description,
-        'QUALIFIERS' => implode('<br/>', $qualifiers),
-        'ENTRYLINK' => $CFG->wwwroot."/mod/techproject/view.php?id={$cmid}&view=deliverables&group={$currentgroupid}"
-    ), 'techproject');
-    $context = context_module::instance($cmid);
-    $fields = 'u.id,'.get_all_user_name_fields(true, 'u').',u.username, u.email, picture, mailformat';
-    $managers = get_users_by_capability($context, 'mod/techproject:manage', $fields);
-
-    if (!empty($managers)) {
-        foreach ($managers as $manager) {
-            techproject_complete_user($manager);
-            $subject = $COURSE->shortname .' - '.get_string('notifynewrequ', 'techproject');
-            email_to_user($manager, $USER, $subject, html_to_text($message), $message);
-        }
-    }
-}
 
 /**
  * Notifies an assignee when getting assigned
