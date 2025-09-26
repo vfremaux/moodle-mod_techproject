@@ -67,7 +67,7 @@ class mod_techproject_mod_form extends moodleform_mod {
 
         $this->standard_intro_elements();
 
-        $startyear = date('Y', time());
+        $startyear = date('Y', time()) - 5;
         $options = array('optional' => true, 'startyear' => $startyear);
         $mform->addElement('date_time_selector', 'projectstart', get_string('projectstart', 'techproject'), $options);
         $mform->setDefault('projectstart', time());
@@ -145,6 +145,20 @@ class mod_techproject_mod_form extends moodleform_mod {
         $this->standard_coursemodule_elements();
 
         $this->add_action_buttons();
+    }
+
+    public function validation($data, $files = null) {
+
+        $errors = [];
+
+        $project = (object)$data;
+
+        if (!techproject_check_dates($project)) {
+            $errors['projectstart'] = get_string('invaliddates', 'techproject');
+            $errors['projectend'] = get_string('invaliddates', 'techproject');
+        }
+
+        return $errors;
     }
 }
 

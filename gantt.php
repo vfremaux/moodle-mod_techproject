@@ -42,11 +42,12 @@ $gantt = false;
 $parent = null;
 
 // Delayed printing, allows evaluate if there is somethin inside.
-echo $ganttrenderer->all_tasks($parent, $project, $currentgroupid, $unscheduledtasks, $assignees, $leadtasks);
+$js = $ganttrenderer->all_tasks($parent, $project, $currentgroupid, $unscheduledtasks, $assignees, $leadtasks);
 
 if (!empty($leadtasks)) {
     $gantt = true;
     echo $ganttrenderer->init('GantDiv');
+    echo $js;
     echo $ganttrenderer->control(array_keys($leadtasks));
     echo $ganttrenderer->finish();
 } else {
@@ -72,5 +73,5 @@ echo '</table>';
 echo '</center>';
 
 if ($gantt) {
-    $ganttrenderer->gantt('GantDiv');
+    echo $ganttrenderer->gantt('GantDiv');
 }

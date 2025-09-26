@@ -29,6 +29,7 @@ if (file_exists($CFG->libdir.'/openlib.php')) {
     require_once($CFG->libdir.'/openlib.php'); // Openmod lib by rick chaides.
 }
 
+require_once($CFG->dirroot.'/mod/techproject/compatlib.php'); // Version compatibility code..
 require_once($CFG->dirroot.'/calendar/lib.php');
 
 /**
@@ -143,7 +144,7 @@ function techproject_update_instance($project) {
     $project->timemodified = time();
 
     if (!techproject_check_dates($project)) {
-        return get_string('invalid dates', 'techproject');
+        return get_string('invaliddates', 'techproject');
     }
 
     $project->id = $project->instance;
@@ -161,41 +162,40 @@ function techproject_update_instance($project) {
         $project->projectusesvalidations = 0;
     }
 
-    if ($returnid = $DB->update_record('techproject', $project)) {
+    $DB->update_record('techproject', $project);
 
-        $dates = array(
-            'projectstart' => $project->projectstart,
-            'projectend' => $project->projectend,
-            'assessmentstart' => $project->assessmentstart);
-        $moduleid = $DB->get_field('modules', 'id', array('name' => 'techproject'));
-        foreach ($dates as $type => $date) {
-            $params = array('modulename' => 'techproject', 'instance' => $project->id, 'eventtype' => $type);
-            if ($event = $DB->get_record('event', $params)) {
-                $event->name = get_string($type.'event', 'techproject', $project->name);
-                $event->description = $project->intro;
-                $event->eventtype   = $type;
-                $event->timestart = $date;
-                $eventobj = calendar_event::load($event->id);
-                $eventobj->update($event);
-            } else if ($date) {
-                $event = new StdClass;
-                $event->name = get_string($type.'event', 'techproject', $project->name);
-                $event->description = $project->intro;
-                $event->courseid = $project->course;
-                $event->groupid = 0;
-                $event->userid = 0;
-                $event->modulename = 'techproject';
-                $event->instance = $project->instance;
-                $event->eventtype = $type;
-                $event->timestart = $date;
-                $event->timeduration = 0;
-                $params = array('module' => $moduleid, 'instance' => $project->id);
-                $event->visible = $DB->get_field('course_modules', 'visible', $params);
-                calendar_event::create($event);
-            }
+    $dates = array(
+        'projectstart' => $project->projectstart,
+        'projectend' => $project->projectend,
+        'assessmentstart' => $project->assessmentstart);
+    $moduleid = $DB->get_field('modules', 'id', array('name' => 'techproject'));
+    foreach ($dates as $type => $date) {
+        $params = array('modulename' => 'techproject', 'instance' => $project->id, 'eventtype' => $type);
+        if ($event = $DB->get_record('event', $params)) {
+            $event->name = get_string($type.'event', 'techproject', $project->name);
+            $event->description = $project->intro;
+            $event->eventtype   = $type;
+            $event->timestart = $date;
+            $eventobj = calendar_event::load($event->id);
+            $eventobj->update($event);
+        } else if ($date) {
+            $event = new StdClass;
+            $event->name = get_string($type.'event', 'techproject', $project->name);
+            $event->description = $project->intro;
+            $event->courseid = $project->course;
+            $event->groupid = 0;
+            $event->userid = 0;
+            $event->modulename = 'techproject';
+            $event->instance = $project->instance;
+            $event->eventtype = $type;
+            $event->timestart = $date;
+            $event->timeduration = 0;
+            $params = array('module' => $moduleid, 'instance' => $project->id);
+            $event->visible = $DB->get_field('course_modules', 'visible', $params);
+            calendar_event::create($event);
         }
     }
-    return $returnid;
+    return $project->id;
 }
 
 /**
