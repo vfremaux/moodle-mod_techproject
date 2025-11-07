@@ -60,15 +60,6 @@ class deliverable_mutated extends \core\event\base {
     }
 
     /**
-     * Return the legacy event log data.
-     *
-     * @return array|null
-     */
-    protected function get_legacy_logdata() {
-        return array($this->courseid, 'techproject', 'movecopydeliv', $this->get_url(), 0, $this->contextinstanceid);
-    }
-
-    /**
      * Return localised event name.
      *
      * @return string

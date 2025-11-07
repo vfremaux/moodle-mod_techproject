@@ -59,15 +59,6 @@ class specification_created extends \core\event\base {
     }
 
     /**
-     * Return the legacy event log data.
-     *
-     * @return array|null
-     */
-    protected function get_legacy_logdata() {
-        return array($this->courseid, 'techproject', 'addspec', $this->get_url(), $this->objectid, $this->contextinstanceid);
-    }
-
-    /**
      * Return localised event name.
      *
      * @return string
