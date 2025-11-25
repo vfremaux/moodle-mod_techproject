@@ -64,6 +64,8 @@ if (! $project = $DB->get_record('techproject', array('id' => $cm->instance))) {
     print_error('invalidtechprojectid', 'techproject');
 }
 
+\mod_techproject\compat::page_init($cm, $project);
+
 $project->cmid = $cm->id;
 
 require_login($course->id, false, $cm);
