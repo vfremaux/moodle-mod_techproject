@@ -29,6 +29,7 @@ if (file_exists($CFG->libdir.'/openlib.php')) {
     require_once($CFG->libdir.'/openlib.php'); // Openmod lib by rick chaides.
 }
 
+require_once($CFG->dirroot.'/mod/techproject/compatlib.php'); // Version compatibility code..
 require_once($CFG->dirroot.'/calendar/lib.php');
 
 /**
