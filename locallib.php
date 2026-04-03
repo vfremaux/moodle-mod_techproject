@@ -1601,7 +1601,7 @@ function techproject_print_entitycount($table1, $table2, $projectid, $groupid, $
         $res->subs += 0;
     }
     if ($res->subs > 0 || $subcount > 0) {
-        $pixurl = $OUTPUT->pix_icon('p/'.$relwhat, get_string('bounditems', 'techproject', $relwhat), 'techproject');
+        $pix = $OUTPUT->pix_icon('p/'.$relwhat, get_string('bounditems', 'techproject', $relwhat), 'techproject');
         $output = $pix.'('.$res->subs.') '.$subcount;
     } else {
         $output = '';
@@ -2181,7 +2181,7 @@ function close_unclosed($string, $opentag, $closetag) {
  * @param int $scope the value scope which is assimilable to a project id or 0 if global scope
  * @param string $sortby
  */
-function techproject_get_domain($domain, $id, $how = false, $scope, $sortby = 'label') {
+function techproject_get_domain($domain, $id, $how = false, $scope = 0, $sortby = 'label') {
     global $DB;
 
     if (empty($id)) {
